@@ -91,6 +91,14 @@
           <groupId>junit-addons</groupId>
           <artifactId>junit-addons-runner</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xmlParserAPIs</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
   </dependencies>
