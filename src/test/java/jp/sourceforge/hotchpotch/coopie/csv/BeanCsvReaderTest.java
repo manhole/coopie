@@ -11,6 +11,8 @@ import java.util.NoSuchElementException;
 import jp.sourceforge.hotchpotch.coopie.Closable;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.ColumnLayout;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.ColumnName;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,6 +37,11 @@ import au.com.bytecode.opencsv.CSVReader;
 public class BeanCsvReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
+
+    /*
+     * TODO
+     * 末端まで達した後のreadでは、例外が発生すること。
+     */
 
     @Test
     public void read1() throws Throwable {
@@ -69,6 +76,46 @@ public class BeanCsvReaderTest {
         assertEquals("あ3", bean.getAaa());
         assertEquals("い3", bean.getBbb());
         assertEquals("う3", bean.getCcc());
+
+        csvReader.close();
+    }
+
+    /**
+     * CSVヘッダがBeanのプロパティ名と異なる場合。
+     */
+    @Test
+    public void read2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-2", "tsv");
+
+        final ColumnLayout layout = new ColumnLayout();
+        //layout.setNames(new String[] { "あ", "ううう", "いい" });
+        layout.addAlias("あ", "aaa");
+        layout.addAlias("いい", "bbb");
+        layout.addAlias("ううう", "ccc");
+
+        final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(
+            AaaBean.class, layout);
+
+        // ## Act ##
+        csvReader.open(new InputStreamReader(is, "UTF-8"));
+        //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
+
+        final AaaBean bean = new AaaBean();
+        csvReader.read(bean);
+
+        // ## Assert ##
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.getAaa());
+        assertEquals("い2", bean.getBbb());
+        assertEquals("う2", bean.getCcc());
 
         csvReader.close();
     }
@@ -133,7 +180,7 @@ public class BeanCsvReaderTest {
         /**
          * CSV列名。
          */
-        private String name;
+        private ColumnName name;
 
         /**
          * CSV列番号。
@@ -144,11 +191,11 @@ public class BeanCsvReaderTest {
 
         private PropertyDesc<T> propertyDesc;
 
-        public String getName() {
+        public ColumnName getName() {
             return name;
         }
 
-        public void setName(final String name) {
+        public void setName(final ColumnName name) {
             this.name = name;
         }
 
@@ -196,6 +243,7 @@ public class BeanCsvReaderTest {
         private final BeanDesc<T> beanDesc;
         private String[] nextLine;
         private BeanColumnDesc<T>[] columnDescs;
+        private ColumnLayout columnLayout;
 
         public void read(final T bean) {
             if (!hasNext()) {
@@ -221,7 +269,27 @@ public class BeanCsvReaderTest {
                 csvSetting.getQuoteMark());
             closed = false;
 
-            setupColumnDescByHeader();
+            if (columnDescs == null) {
+                setupColumnDescByHeader();
+            } else {
+                // 1行目を
+                final String[] header = readLine();
+                final BeanColumnDesc<T>[] tmp = columnDescs;
+                columnDescs = new BeanColumnDesc[columnDescs.length];
+
+                int i = 0;
+                HEADER: for (final String headerElem : header) {
+                    for (final BeanColumnDesc<T> cd : tmp) {
+                        if (cd.getName().getLabel().equals(headerElem)) {
+                            columnDescs[i] = cd;
+                            i++;
+                            continue HEADER;
+                        }
+                    }
+                    // TODO
+                    throw new RuntimeException("headerElem=" + headerElem);
+                }
+            }
         }
 
         private void setupColumnDescByHeader() {
@@ -229,10 +297,14 @@ public class BeanCsvReaderTest {
 
             columnDescs = new BeanColumnDesc[header.length];
             for (int i = 0; i < header.length; i++) {
-                final PropertyDesc<T> pd = beanDesc.getPropertyDesc(header[i]);
+                final String headerElem = header[i];
+                final PropertyDesc<T> pd = beanDesc.getPropertyDesc(headerElem);
                 final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
                 cd.setIndex(i);
-                cd.setName(pd.getPropertyName());
+                final ColumnName columnName = new ColumnName();
+                columnName.setLabel(pd.getPropertyName());
+                columnName.setName(pd.getPropertyName());
+                cd.setName(columnName);
                 cd.setPropertyDesc(pd);
                 columnDescs[i] = cd;
             }
@@ -262,6 +334,25 @@ public class BeanCsvReaderTest {
 
         public BeanCsvReader(final Class<T> beanClass) {
             beanDesc = BeanDescFactory.getBeanDesc(beanClass);
+            final ColumnLayout columnLayout = new ColumnLayout();
+            //columnDescs = new BeanColumnDesc[]
+
+        }
+
+        public BeanCsvReader(final Class<T> beanClass,
+            final ColumnLayout columnLayout) {
+            beanDesc = BeanDescFactory.getBeanDesc(beanClass);
+            this.columnLayout = columnLayout;
+            columnDescs = columnLayout.getColumnDescs();
+            for (final BeanColumnDesc<T> cd : columnDescs) {
+                final String pn = cd.getName().getName();
+                final PropertyDesc<T> pd = beanDesc.getPropertyDesc(pn);
+                if (pd == null) {
+                    // TODO 例外
+                    throw new RuntimeException();
+                }
+                cd.setPropertyDesc(pd);
+            }
         }
 
         public void setCloseReader(final boolean closeReader) {
