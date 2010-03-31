@@ -104,9 +104,9 @@ public class BeanCsvWriterTest {
         assertEquals(expected, actual);
     }
 
-    public static class ColumnLayout {
+    public static class ColumnLayout<T> {
 
-        private BeanColumnDesc[] columnDescs;
+        private BeanColumnDesc<T>[] columnDescs;
         private List<ColumnName> columnNames;
 
         public BeanColumnDesc[] getColumnDescs() {
@@ -158,7 +158,6 @@ public class BeanCsvWriterTest {
         }
 
         public void addAlias(final String alias, final String propertyName) {
-            // TODO Auto-generated method stub
             final ColumnName columnName = new ColumnName();
             columnName.setLabel(alias);
             columnName.setName(propertyName);
@@ -166,6 +165,14 @@ public class BeanCsvWriterTest {
                 columnNames = CollectionsUtil.newArrayList();
             }
             columnNames.add(columnName);
+        }
+
+        public void setValues(final T bean, final String[] line) {
+            for (int i = 0; i < line.length; i++) {
+                final String elem = line[i];
+                final BeanColumnDesc<T> cd = columnDescs[i];
+                cd.setValue(bean, elem);
+            }
         }
 
     }
