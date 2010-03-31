@@ -4,11 +4,10 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class IOUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(IOUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger();
 
     public static void closeNoException(final Closeable closeable) {
         if (closeable != null) {
