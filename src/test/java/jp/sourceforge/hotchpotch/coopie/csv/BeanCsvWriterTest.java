@@ -104,23 +104,93 @@ public class BeanCsvWriterTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * CSVヘッダがBeanのプロパティ名と異なる場合。
+     */
+    @Test
+    public void write3() throws Throwable {
+        // ## Arrange ##
+        final ColumnLayout layout = new ColumnLayout();
+        //layout.setNames(new String[] { "aaa", "ccc", "bbb" });
+        layout.addAlias("あ", "aaa");
+        layout.addAlias("ううう", "ccc");
+        layout.addAlias("いい", "bbb");
+
+        final BeanCsvWriter<AaaBean> csvWriter = new BeanCsvWriter<AaaBean>(
+            AaaBean.class, layout);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        csvWriter.open(writer);
+
+        final AaaBean bean = new AaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う1");
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb("い2");
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-2", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is,
+            "UTF-8"));
+        assertEquals(expected, actual);
+    }
+
     public static class ColumnLayout<T> {
 
         private BeanColumnDesc<T>[] columnDescs;
+        // 一時的
         private List<ColumnName> columnNames;
 
-        private BeanColumnDesc[] getColumnDescs() {
+        private BeanColumnDesc<T>[] getColumnDescs() {
             if (columnDescs == null) {
+                if (columnNames == null) {
+                    return null;
+                }
                 columnDescs = new BeanColumnDesc[columnNames.size()];
                 int i = 0;
                 for (final ColumnName columnName : columnNames) {
-                    final BeanColumnDesc columnDesc = new BeanColumnDesc();
-                    columnDesc.setName(columnName);
-                    columnDescs[i] = columnDesc;
+                    final BeanColumnDesc<T> cd = new BeanColumnDesc();
+                    cd.setName(columnName);
+                    columnDescs[i] = cd;
                     i++;
                 }
             }
             return columnDescs;
+        }
+
+        public void setup(final BeanDesc<T> beanDesc) {
+            final BeanColumnDesc<T>[] cds = getColumnDescs();
+            if (cds == null) {
+                final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
+                columnDescs = new BeanColumnDesc[pds.size()];
+                int i = 0;
+                for (final PropertyDesc<T> pd : pds) {
+                    final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
+                    cd.setPropertyDesc(pd);
+                    cd.setName(new ColumnName(pd.getPropertyName()));
+                    columnDescs[i] = cd;
+                    i++;
+                }
+            } else {
+                for (int i = 0; i < cds.length; i++) {
+                    final BeanColumnDesc<T> cd = cds[i];
+                    final String name = cd.getName().getName();
+                    final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
+                    cd.setPropertyDesc(pd);
+                }
+                columnDescs = cds;
+            }
         }
 
         public ColumnName[] getNames() {
@@ -130,7 +200,6 @@ public class BeanCsvWriterTest {
                 final BeanColumnDesc cd = cds[i];
                 names[i] = cd.getName();
             }
-
             return names;
         }
 
@@ -164,6 +233,19 @@ public class BeanCsvWriterTest {
                 columnNames = CollectionsUtil.newArrayList();
             }
             columnNames.add(columnName);
+        }
+
+        public String[] getValues(final T bean) {
+            final BeanColumnDesc<T>[] cds = getColumnDescs();
+            final String[] line = new String[cds.length];
+            int i = 0;
+            for (int j = 0; j < cds.length; j++) {
+                final BeanColumnDesc cd = cds[j];
+                final String v = cd.getValue(bean);
+                line[i] = v;
+                i++;
+            }
+            return line;
         }
 
         public void setValues(final T bean, final String[] line) {
@@ -289,26 +371,21 @@ public class BeanCsvWriterTest {
          */
         private boolean closeWriter = true;
         private CSVWriter csvWriter;
-        private final PropertyDesc<T>[] propertyDescs;
+        private final ColumnLayout columnLayout;
 
         @SuppressWarnings("unchecked")
         public BeanCsvWriter(final Class<T> beanClass) {
             beanDesc = BeanDescFactory.getBeanDesc(beanClass);
-            final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
-            propertyDescs = pds.toArray(new PropertyDesc[pds.size()]);
+            columnLayout = new ColumnLayout<T>();
+            columnLayout.setup(beanDesc);
         }
 
         @SuppressWarnings("unchecked")
         public BeanCsvWriter(final Class<T> beanClass,
             final ColumnLayout columnLayout) {
             beanDesc = BeanDescFactory.getBeanDesc(beanClass);
-            final ColumnName[] names = columnLayout.getNames();
-            propertyDescs = new PropertyDesc[names.length];
-            for (int i = 0; i < names.length; i++) {
-                final String name = names[i].getName();
-                final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
-                propertyDescs[i] = pd;
-            }
+            this.columnLayout = columnLayout;
+            columnLayout.setup(beanDesc);
         }
 
         public void open(final Writer writer) {
@@ -319,26 +396,18 @@ public class BeanCsvWriterTest {
         }
 
         private void writeHeader() {
-            final String[] line = new String[propertyDescs.length];
+            final ColumnName[] names = columnLayout.getNames();
+            final String[] line = new String[names.length];
             int i = 0;
-            for (final PropertyDesc<T> pd : propertyDescs) {
-                final String v = pd.getPropertyName();
-                line[i] = v;
+            for (final ColumnName name : names) {
+                line[i] = name.getLabel();
                 i++;
             }
-
             csvWriter.writeNext(line);
-
         }
 
         public void write(final T bean) {
-            final String[] line = new String[propertyDescs.length];
-            int i = 0;
-            for (final PropertyDesc<T> pd : propertyDescs) {
-                final Object v = pd.getValue(bean);
-                line[i] = v != null ? String.valueOf(v) : null;
-                i++;
-            }
+            final String[] line = columnLayout.getValues(bean);
             csvWriter.writeNext(line);
         }
 
