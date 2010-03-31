@@ -229,10 +229,6 @@ public class BeanCsvWriterTest {
         private CSVWriter csvWriter;
         private final PropertyDesc<T>[] propertyDescs;
 
-        public void setCloseWriter(final boolean closeWriter) {
-            this.closeWriter = closeWriter;
-        }
-
         @SuppressWarnings("unchecked")
         public BeanCsvWriter(final Class<T> beanClass) {
             beanDesc = BeanDescFactory.getBeanDesc(beanClass);
@@ -296,6 +292,10 @@ public class BeanCsvWriterTest {
                 csvWriter.close();
                 csvWriter = null;
             }
+        }
+
+        public void setCloseWriter(final boolean closeWriter) {
+            this.closeWriter = closeWriter;
         }
 
     }
