@@ -227,27 +227,18 @@ public class BeanCsvReaderTest {
         protected boolean closed = true;
         private final BeanDesc<T> beanDesc;
         private String[] nextLine;
-        private ColumnLayout columnLayout;
+        private final ColumnLayout columnLayout;
 
         public BeanCsvReader(final Class<T> beanClass) {
             beanDesc = BeanDescFactory.getBeanDesc(beanClass);
+            columnLayout = new ColumnLayout<T>();
         }
 
         public BeanCsvReader(final Class<T> beanClass,
             final ColumnLayout columnLayout) {
             beanDesc = BeanDescFactory.getBeanDesc(beanClass);
             this.columnLayout = columnLayout;
-            final BeanColumnDesc<T>[] columnDescs = columnLayout
-                .getColumnDescs();
-            for (final BeanColumnDesc<T> cd : columnDescs) {
-                final String pn = cd.getName().getName();
-                final PropertyDesc<T> pd = beanDesc.getPropertyDesc(pn);
-                if (pd == null) {
-                    // TODO 例外
-                    throw new RuntimeException();
-                }
-                cd.setPropertyDesc(pd);
-            }
+            columnLayout.adjust(beanDesc);
         }
 
         public void open(final Reader reader) {
@@ -255,28 +246,7 @@ public class BeanCsvReaderTest {
                 csvSetting.getQuoteMark());
             closed = false;
 
-            if (columnLayout == null) {
-                setupColumnDescByHeader();
-            } else {
-                // 1行目から項目順序を再設定
-                final String[] header = readLine();
-                final BeanColumnDesc<T>[] tmp = columnLayout.getColumnDescs();
-                final BeanColumnDesc<T>[] columnDescs = new BeanColumnDesc[tmp.length];
-
-                int i = 0;
-                HEADER: for (final String headerElem : header) {
-                    for (final BeanColumnDesc<T> cd : tmp) {
-                        if (cd.getName().getLabel().equals(headerElem)) {
-                            columnDescs[i] = cd;
-                            i++;
-                            continue HEADER;
-                        }
-                    }
-                    // TODO
-                    throw new RuntimeException("headerElem=" + headerElem);
-                }
-                columnLayout.setColumnDescs(columnDescs);
-            }
+            setupColumnDescByHeader();
         }
 
         public void read(final T bean) {
@@ -297,21 +267,7 @@ public class BeanCsvReaderTest {
 
         private void setupColumnDescByHeader() {
             final String[] header = readLine();
-
-            columnLayout = new ColumnLayout<T>();
-            final BeanColumnDesc[] columnDescs = new BeanColumnDesc[header.length];
-            for (int i = 0; i < header.length; i++) {
-                final String headerElem = header[i];
-                final PropertyDesc<T> pd = beanDesc.getPropertyDesc(headerElem);
-                final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
-                final ColumnName columnName = new ColumnName();
-                columnName.setLabel(pd.getPropertyName());
-                columnName.setName(pd.getPropertyName());
-                cd.setName(columnName);
-                cd.setPropertyDesc(pd);
-                columnDescs[i] = cd;
-            }
-            columnLayout.setColumnDescs(columnDescs);
+            columnLayout.setupColumnDescByHeader(beanDesc, header);
         }
 
         private String[] readLine() {
