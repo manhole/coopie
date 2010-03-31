@@ -66,13 +66,13 @@
   <dependencies>
     <dependency>
       <groupId>org.t2framework.commons</groupId>
-      <artifactId>commons-ext</artifactId>
-      <version>0.5.1-ga</version>
-    </dependency>
-    <dependency>
-      <groupId>org.t2framework.commons</groupId>
       <artifactId>commons</artifactId>
       <version>0.6.7-ga</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>2.1</version>
     </dependency>
 
     <dependency>
