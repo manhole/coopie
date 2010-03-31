@@ -45,6 +45,46 @@ public class BeanCsvWriterTest {
         bean.setCcc("う2");
         csvWriter.write(bean);
 
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvWriterTest.class.getName() + "-1", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is,
+            "UTF-8"));
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * カラム順を設定できること。
+     */
+    @Test
+    public void write2() throws Throwable {
+        // ## Arrange ##
+
+        final ColumnLayout layout = new ColumnLayout();
+        layout.setNames(new String[] { "aaa", "ccc", "bbb" });
+
+        final BeanCsvWriter<AaaBean> csvWriter = new BeanCsvWriter<AaaBean>(
+            AaaBean.class, layout);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        csvWriter.open(writer);
+
+        final AaaBean bean = new AaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う1");
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb("い2");
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
         bean.setAaa("あ3");
         bean.setBbb("い3");
         bean.setCcc("う3");
@@ -56,10 +96,24 @@ public class BeanCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvWriterTest.class.getName() + "-1", "tsv");
+            BeanCsvReaderTest.class.getName() + "-1", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
             "UTF-8"));
         assertEquals(expected, actual);
+    }
+
+    public static class ColumnLayout {
+
+        private String[] names;
+
+        public String[] getNames() {
+            return names;
+        }
+
+        public void setNames(final String[] names) {
+            this.names = names;
+        }
+
     }
 
     public static class BeanCsvWriter<T> implements Closable {
@@ -92,6 +146,19 @@ public class BeanCsvWriterTest {
             beanDesc = BeanDescFactory.getBeanDesc(beanClass);
             final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
             propertyDescs = pds.toArray(new PropertyDesc[pds.size()]);
+        }
+
+        @SuppressWarnings("unchecked")
+        public BeanCsvWriter(final Class<T> beanClass,
+            final ColumnLayout columnLayout) {
+            beanDesc = BeanDescFactory.getBeanDesc(beanClass);
+            final String[] names = columnLayout.getNames();
+            propertyDescs = new PropertyDesc[names.length];
+            for (int i = 0; i < names.length; i++) {
+                final String name = names[i];
+                final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
+                propertyDescs[i] = pd;
+            }
         }
 
         public void open(final Writer writer) {
