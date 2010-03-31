@@ -186,7 +186,7 @@ public class BeanCsvWriterTest {
                 for (int i = 0; i < cds.length; i++) {
                     final BeanColumnDesc<T> cd = cds[i];
                     final String name = cd.getName().getName();
-                    final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
+                    final PropertyDesc<T> pd = getPropertyDesc(beanDesc, name);
                     cd.setPropertyDesc(pd);
                 }
                 columnDescs = cds;
@@ -256,29 +256,18 @@ public class BeanCsvWriterTest {
             }
         }
 
-        public void adjust(final BeanDesc<T> beanDesc) {
-            final BeanColumnDesc<T>[] cds = getColumnDescs();
-            for (final BeanColumnDesc<T> cd : cds) {
-                final String propertyName = cd.getName().getName();
-                final PropertyDesc<T> pd = beanDesc
-                    .getPropertyDesc(propertyName);
-                if (pd == null) {
-                    // TODO 例外
-                    throw new RuntimeException();
-                }
-                cd.setPropertyDesc(pd);
-            }
-        }
-
         public void setupColumnDescByHeader(final BeanDesc<T> beanDesc,
             final String[] header) {
 
-            if (columnDescs == null) {
+            if (getColumnDescs() == null) {
+                /*
+                 * CSVヘッダ名をbeanのプロパティ名として扱う。
+                 */
                 final BeanColumnDesc<T>[] cds = new BeanColumnDesc[header.length];
                 for (int i = 0; i < header.length; i++) {
                     final String headerElem = header[i];
-                    final PropertyDesc<T> pd = beanDesc
-                        .getPropertyDesc(headerElem);
+                    final PropertyDesc<T> pd = getPropertyDesc(beanDesc,
+                        headerElem);
                     final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
                     final ColumnName columnName = new ColumnName();
                     columnName.setLabel(pd.getPropertyName());
@@ -292,6 +281,8 @@ public class BeanCsvWriterTest {
                 /*
                  * 既にColumnDescが設定されている場合は、
                  * ヘッダの順序に合わせてソートし直す。
+                 * 
+                 * CSVヘッダ名を別名として扱う。
                  */
                 final BeanColumnDesc<T>[] tmpCds = getColumnDescs();
                 final BeanColumnDesc<T>[] cds = new BeanColumnDesc[tmpCds.length];
@@ -299,7 +290,12 @@ public class BeanCsvWriterTest {
                 int i = 0;
                 HEADER: for (final String headerElem : header) {
                     for (final BeanColumnDesc<T> cd : tmpCds) {
-                        if (cd.getName().getLabel().equals(headerElem)) {
+                        final ColumnName name = cd.getName();
+                        if (name.getLabel().equals(headerElem)) {
+                            final PropertyDesc<T> pd = getPropertyDesc(
+                                beanDesc, name.getName());
+                            cd.setPropertyDesc(pd);
+
                             cds[i] = cd;
                             i++;
                             continue HEADER;
@@ -312,6 +308,15 @@ public class BeanCsvWriterTest {
             }
         }
 
+        private PropertyDesc<T> getPropertyDesc(final BeanDesc<T> beanDesc,
+            final String name) {
+            final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
+            if (pd == null) {
+                // TODO
+                throw new RuntimeException(name);
+            }
+            return pd;
+        }
     }
 
     public static class ColumnName {
@@ -325,17 +330,14 @@ public class BeanCsvWriterTest {
         }
 
         /**
+         * Beanのプロパティ名
+         */
+        private String name;
+
+        /**
          * CSVの項目名
          */
         private String label;
-
-        public String getLabel() {
-            return label;
-        }
-
-        public void setLabel(final String label) {
-            this.label = label;
-        }
 
         public String getName() {
             return name;
@@ -345,10 +347,13 @@ public class BeanCsvWriterTest {
             this.name = name;
         }
 
-        /**
-         * Beanのプロパティ名
-         */
-        private String name;
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(final String label) {
+            this.label = label;
+        }
 
     }
 
