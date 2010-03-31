@@ -200,6 +200,12 @@ public class BeanCsvReaderTest {
             this.propertyDesc = propertyDesc;
         }
 
+        public String getValue(final T bean) {
+            final Object v = propertyDesc.getValue(bean);
+            // TODO null値の場合
+            return String.valueOf(v);
+        }
+
         public void setValue(final T bean, final String value) {
             propertyDesc.setValue(bean, value);
         }
