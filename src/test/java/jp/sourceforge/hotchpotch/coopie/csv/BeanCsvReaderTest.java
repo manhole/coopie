@@ -50,7 +50,7 @@ public class BeanCsvReaderTest {
         //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
 
         final AaaBean bean = new AaaBean();
-        csvReader.fetch(bean);
+        csvReader.read(bean);
 
         // ## Assert ##
         logger.debug(bean.toString());
@@ -58,13 +58,13 @@ public class BeanCsvReaderTest {
         assertEquals("い1", bean.getBbb());
         assertEquals("う1", bean.getCcc());
 
-        csvReader.fetch(bean);
+        csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ2", bean.getAaa());
         assertEquals("い2", bean.getBbb());
         assertEquals("う2", bean.getCcc());
 
-        csvReader.fetch(bean);
+        csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ3", bean.getAaa());
         assertEquals("い3", bean.getBbb());
@@ -197,7 +197,7 @@ public class BeanCsvReaderTest {
         private String[] nextLine;
         private BeanColumnDesc<T>[] columnDescs;
 
-        public void fetch(final T bean) {
+        public void read(final T bean) {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
