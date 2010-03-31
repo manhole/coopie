@@ -244,7 +244,6 @@ public class BeanCsvReaderTest {
             final ColumnLayout columnLayout) {
             beanDesc = BeanDescFactory.getBeanDesc(beanClass);
             this.columnLayout = columnLayout;
-            columnLayout.adjust(beanDesc);
         }
 
         public void open(final Reader reader) {
@@ -253,6 +252,11 @@ public class BeanCsvReaderTest {
             closed = false;
 
             setupColumnDescByHeader();
+        }
+
+        private void setupColumnDescByHeader() {
+            final String[] header = readLine();
+            columnLayout.setupColumnDescByHeader(beanDesc, header);
         }
 
         public void read(final T bean) {
@@ -269,11 +273,6 @@ public class BeanCsvReaderTest {
             }
 
             columnLayout.setValues(bean, line);
-        }
-
-        private void setupColumnDescByHeader() {
-            final String[] header = readLine();
-            columnLayout.setupColumnDescByHeader(beanDesc, header);
         }
 
         private String[] readLine() {
