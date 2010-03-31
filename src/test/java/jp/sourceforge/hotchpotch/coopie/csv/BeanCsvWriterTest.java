@@ -109,7 +109,7 @@ public class BeanCsvWriterTest {
         private BeanColumnDesc<T>[] columnDescs;
         private List<ColumnName> columnNames;
 
-        public BeanColumnDesc[] getColumnDescs() {
+        private BeanColumnDesc[] getColumnDescs() {
             if (columnDescs == null) {
                 columnDescs = new BeanColumnDesc[columnNames.size()];
                 int i = 0;
@@ -123,27 +123,22 @@ public class BeanCsvWriterTest {
             return columnDescs;
         }
 
-        public void setColumnDescs(final BeanColumnDesc[] columnDescs) {
-            this.columnDescs = columnDescs;
-        }
-
         public ColumnName[] getNames() {
-            final ColumnName[] names = new ColumnName[columnDescs.length];
-            for (int i = 0; i < columnDescs.length; i++) {
-                final BeanColumnDesc columnDesc = columnDescs[i];
-                names[i] = columnDesc.getName();
+            final BeanColumnDesc[] cds = getColumnDescs();
+            final ColumnName[] names = new ColumnName[cds.length];
+            for (int i = 0; i < cds.length; i++) {
+                final BeanColumnDesc cd = cds[i];
+                names[i] = cd.getName();
             }
 
             return names;
         }
 
         public void setNames(final String[] names) {
-            columnDescs = new BeanColumnDesc[names.length];
             for (int i = 0; i < names.length; i++) {
                 final String name = names[i];
-                final BeanColumnDesc columnDesc = new BeanColumnDesc();
-                columnDesc.setName(new ColumnName(name));
-                columnDescs[i] = columnDesc;
+                final ColumnName columnName = new ColumnName(name);
+                addColumnName(columnName);
             }
         }
 
@@ -161,6 +156,10 @@ public class BeanCsvWriterTest {
             final ColumnName columnName = new ColumnName();
             columnName.setLabel(alias);
             columnName.setName(propertyName);
+            addColumnName(columnName);
+        }
+
+        private void addColumnName(final ColumnName columnName) {
             if (columnNames == null) {
                 columnNames = CollectionsUtil.newArrayList();
             }
@@ -172,6 +171,62 @@ public class BeanCsvWriterTest {
                 final String elem = line[i];
                 final BeanColumnDesc<T> cd = columnDescs[i];
                 cd.setValue(bean, elem);
+            }
+        }
+
+        public void adjust(final BeanDesc<T> beanDesc) {
+            final BeanColumnDesc<T>[] cds = getColumnDescs();
+            for (final BeanColumnDesc<T> cd : cds) {
+                final String propertyName = cd.getName().getName();
+                final PropertyDesc<T> pd = beanDesc
+                    .getPropertyDesc(propertyName);
+                if (pd == null) {
+                    // TODO 例外
+                    throw new RuntimeException();
+                }
+                cd.setPropertyDesc(pd);
+            }
+        }
+
+        public void setupColumnDescByHeader(final BeanDesc<T> beanDesc,
+            final String[] header) {
+
+            if (columnDescs == null) {
+                final BeanColumnDesc<T>[] cds = new BeanColumnDesc[header.length];
+                for (int i = 0; i < header.length; i++) {
+                    final String headerElem = header[i];
+                    final PropertyDesc<T> pd = beanDesc
+                        .getPropertyDesc(headerElem);
+                    final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
+                    final ColumnName columnName = new ColumnName();
+                    columnName.setLabel(pd.getPropertyName());
+                    columnName.setName(pd.getPropertyName());
+                    cd.setName(columnName);
+                    cd.setPropertyDesc(pd);
+                    cds[i] = cd;
+                }
+                columnDescs = cds;
+            } else {
+                /*
+                 * 既にColumnDescが設定されている場合は、
+                 * ヘッダの順序に合わせてソートし直す。
+                 */
+                final BeanColumnDesc<T>[] tmpCds = getColumnDescs();
+                final BeanColumnDesc<T>[] cds = new BeanColumnDesc[tmpCds.length];
+
+                int i = 0;
+                HEADER: for (final String headerElem : header) {
+                    for (final BeanColumnDesc<T> cd : tmpCds) {
+                        if (cd.getName().getLabel().equals(headerElem)) {
+                            cds[i] = cd;
+                            i++;
+                            continue HEADER;
+                        }
+                    }
+                    // TODO
+                    throw new RuntimeException("headerElem=" + headerElem);
+                }
+                columnDescs = cds;
             }
         }
 
