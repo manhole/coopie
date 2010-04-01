@@ -54,10 +54,10 @@ public class ColumnLayout<T> {
     }
 
     public ColumnName[] getNames() {
-        final BeanColumnDesc[] cds = getColumnDescs();
+        final BeanColumnDesc<T>[] cds = getColumnDescs();
         final ColumnName[] names = new ColumnName[cds.length];
         for (int i = 0; i < cds.length; i++) {
-            final BeanColumnDesc cd = cds[i];
+            final BeanColumnDesc<T> cd = cds[i];
             names[i] = cd.getName();
         }
         return names;
@@ -90,7 +90,7 @@ public class ColumnLayout<T> {
         final String[] line = new String[cds.length];
         int i = 0;
         for (int j = 0; j < cds.length; j++) {
-            final BeanColumnDesc cd = cds[j];
+            final BeanColumnDesc<T> cd = cds[j];
             final String v = cd.getValue(bean);
             line[i] = v;
             i++;

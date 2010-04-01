@@ -33,7 +33,7 @@ public class BeanCsvReader<T> implements Closable {
     protected boolean closed = true;
     private final BeanDesc<T> beanDesc;
     private String[] nextLine;
-    private final ColumnLayout columnLayout;
+    private final ColumnLayout<T> columnLayout;
 
     public BeanCsvReader(final Class<T> beanClass) {
         beanDesc = BeanDescFactory.getBeanDesc(beanClass);
@@ -41,7 +41,7 @@ public class BeanCsvReader<T> implements Closable {
     }
 
     public BeanCsvReader(final Class<T> beanClass,
-        final ColumnLayout columnLayout) {
+        final ColumnLayout<T> columnLayout) {
         beanDesc = BeanDescFactory.getBeanDesc(beanClass);
         this.columnLayout = columnLayout;
     }
