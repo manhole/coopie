@@ -178,7 +178,7 @@ public class BeanCsvWriterTest {
                 for (final PropertyDesc<T> pd : pds) {
                     final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
                     cd.setPropertyDesc(pd);
-                    cd.setName(new ColumnName(pd.getPropertyName()));
+                    cd.setName(new SimpleColumnName(pd.getPropertyName()));
                     columnDescs[i] = cd;
                     i++;
                 }
@@ -206,7 +206,7 @@ public class BeanCsvWriterTest {
         public void setNames(final String[] names) {
             for (int i = 0; i < names.length; i++) {
                 final String name = names[i];
-                final ColumnName columnName = new ColumnName(name);
+                final ColumnName columnName = new SimpleColumnName(name);
                 addColumnName(columnName);
             }
         }
@@ -222,7 +222,7 @@ public class BeanCsvWriterTest {
         }
 
         public void addAlias(final String alias, final String propertyName) {
-            final ColumnName columnName = new ColumnName();
+            final SimpleColumnName columnName = new SimpleColumnName();
             columnName.setLabel(alias);
             columnName.setName(propertyName);
             addColumnName(columnName);
@@ -269,9 +269,8 @@ public class BeanCsvWriterTest {
                     final PropertyDesc<T> pd = getPropertyDesc(beanDesc,
                         headerElem);
                     final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
-                    final ColumnName columnName = new ColumnName();
-                    columnName.setLabel(pd.getPropertyName());
-                    columnName.setName(pd.getPropertyName());
+                    final ColumnName columnName = new SimpleColumnName(pd
+                        .getPropertyName());
                     cd.setName(columnName);
                     cd.setPropertyDesc(pd);
                     cds[i] = cd;
@@ -317,44 +316,6 @@ public class BeanCsvWriterTest {
             }
             return pd;
         }
-    }
-
-    public static class ColumnName {
-
-        public ColumnName() {
-        }
-
-        public ColumnName(final String labelAndName) {
-            setLabel(labelAndName);
-            setName(labelAndName);
-        }
-
-        /**
-         * Beanのプロパティ名
-         */
-        private String name;
-
-        /**
-         * CSVの項目名
-         */
-        private String label;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(final String name) {
-            this.name = name;
-        }
-
-        public String getLabel() {
-            return label;
-        }
-
-        public void setLabel(final String label) {
-            this.label = label;
-        }
-
     }
 
     public static class BeanCsvWriter<T> implements Closable {
