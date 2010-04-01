@@ -211,16 +211,6 @@ public class BeanCsvWriterTest {
             }
         }
 
-        public BeanColumnDesc getColumnDescByAlias(final String alias) {
-            for (final BeanColumnDesc cd : columnDescs) {
-                if (cd.getName().equals(alias)) {
-                    return cd;
-                }
-            }
-            // TODO 例外クラスにする
-            throw new RuntimeException();
-        }
-
         public void addAlias(final String alias, final String propertyName) {
             final SimpleColumnName columnName = new SimpleColumnName();
             columnName.setLabel(alias);
