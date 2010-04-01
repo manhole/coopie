@@ -78,7 +78,7 @@ public class BeanCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-2", "tsv");
 
-        final ColumnLayout layout = new ColumnLayout();
+        final BeanColumnLayout layout = new BeanColumnLayout();
         //layout.setNames(new String[] { "あ", "ううう", "いい" });
         layout.addAlias("あ", "aaa");
         layout.addAlias("いい", "bbb");

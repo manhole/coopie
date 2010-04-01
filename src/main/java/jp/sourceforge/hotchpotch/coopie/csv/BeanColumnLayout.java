@@ -6,7 +6,7 @@ import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.PropertyDesc;
 import org.t2framework.commons.util.CollectionsUtil;
 
-public class ColumnLayout<T> {
+public class BeanColumnLayout<T> {
 
     private BeanColumnDesc<T>[] columnDescs;
     // 一時的

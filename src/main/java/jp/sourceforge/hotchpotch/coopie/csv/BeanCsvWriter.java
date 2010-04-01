@@ -29,16 +29,16 @@ public class BeanCsvWriter<T> implements Closable {
      */
     private boolean closeWriter = true;
     private CSVWriter csvWriter;
-    private final ColumnLayout<T> columnLayout;
+    private final BeanColumnLayout<T> columnLayout;
 
     public BeanCsvWriter(final Class<T> beanClass) {
         beanDesc = BeanDescFactory.getBeanDesc(beanClass);
-        columnLayout = new ColumnLayout<T>();
+        columnLayout = new BeanColumnLayout<T>();
         columnLayout.setup(beanDesc);
     }
 
     public BeanCsvWriter(final Class<T> beanClass,
-        final ColumnLayout<T> columnLayout) {
+        final BeanColumnLayout<T> columnLayout) {
         beanDesc = BeanDescFactory.getBeanDesc(beanClass);
         this.columnLayout = columnLayout;
         columnLayout.setup(beanDesc);
