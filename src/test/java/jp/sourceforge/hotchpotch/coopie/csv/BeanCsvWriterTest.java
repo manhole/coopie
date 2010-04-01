@@ -54,7 +54,7 @@ public class BeanCsvWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
 
-        final ColumnLayout layout = new ColumnLayout();
+        final BeanColumnLayout layout = new BeanColumnLayout();
         layout.setNames(new String[] { "aaa", "ccc", "bbb" });
 
         final BeanCsvWriter<AaaBean> csvWriter = new BeanCsvWriter<AaaBean>(
@@ -98,7 +98,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write3() throws Throwable {
         // ## Arrange ##
-        final ColumnLayout layout = new ColumnLayout();
+        final BeanColumnLayout layout = new BeanColumnLayout();
         //layout.setNames(new String[] { "aaa", "ccc", "bbb" });
         layout.addAlias("あ", "aaa");
         layout.addAlias("ううう", "ccc");
