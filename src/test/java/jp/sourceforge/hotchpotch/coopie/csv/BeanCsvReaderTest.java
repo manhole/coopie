@@ -12,7 +12,6 @@ import jp.sourceforge.hotchpotch.coopie.Closable;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.ColumnLayout;
-import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.ColumnName;
 
 import org.junit.Test;
 import org.slf4j.Logger;
