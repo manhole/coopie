@@ -1,5 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
+
 public class SimpleColumnName implements ColumnName {
 
     public SimpleColumnName() {
@@ -34,6 +36,11 @@ public class SimpleColumnName implements ColumnName {
 
     public void setLabel(final String label) {
         this.label = label;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringFormat().format(this);
     }
 
 }
