@@ -1,6 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.t2framework.commons.meta.BeanDesc;
@@ -12,7 +11,7 @@ public class BeanColumnLayout<T> {
 
     private BeanColumnDesc<T>[] columnDescs;
     // 一時的
-    private List<ColumnName> columnNames;
+    private ColumnNames columnNames;
     private final BeanDesc<T> beanDesc;
 
     public BeanColumnLayout(final Class<T> beanClass) {
@@ -28,27 +27,26 @@ public class BeanColumnLayout<T> {
             /*
              * beanの全プロパティを対象に。
              */
-            if (columnNames == null) {
+            if (columnNames == null || columnNames.isEmpty()) {
                 final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
                 columnDescs = newBeanColumnDescs(pds.size());
                 int i = 0;
                 for (final PropertyDesc<T> pd : pds) {
-                    final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
-                    cd.setPropertyDesc(pd);
                     final String propertyName = pd.getPropertyName();
-                    cd.setName(new SimpleColumnName(propertyName));
+                    final ColumnName name = new SimpleColumnName(propertyName);
+                    final BeanColumnDesc<T> cd = newBeanColumnDesc(name, pd);
                     columnDescs[i] = cd;
                     i++;
                 }
             } else {
-                columnDescs = newBeanColumnDescs(columnNames.size());
+                final ColumnName[] names = columnNames.getColumnNames();
+                columnDescs = newBeanColumnDescs(names.length);
                 int i = 0;
-                for (final ColumnName columnName : columnNames) {
-                    final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
-                    cd.setName(columnName);
+                for (final ColumnName columnName : names) {
                     final PropertyDesc<T> pd = getPropertyDesc(beanDesc,
                         columnName.getName());
-                    cd.setPropertyDesc(pd);
+                    final BeanColumnDesc<T> cd = newBeanColumnDesc(columnName,
+                        pd);
                     columnDescs[i] = cd;
                     i++;
                 }
@@ -57,22 +55,30 @@ public class BeanColumnLayout<T> {
         return columnDescs;
     }
 
+    private BeanColumnDesc<T> newBeanColumnDesc(final ColumnName name,
+        final PropertyDesc<T> pd) {
+        final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
+        cd.setPropertyDesc(pd);
+        cd.setName(name);
+        return cd;
+    }
+
     @SuppressWarnings("unchecked")
     private BeanColumnDesc<T>[] newBeanColumnDescs(final int length) {
         return new BeanColumnDesc[length];
     }
 
     public ColumnName[] getNames() {
-        final BeanColumnDesc<T>[] cds = getColumnDescs();
+        final ColumnDesc<T>[] cds = getColumnDescs();
         final ColumnName[] names = new ColumnName[cds.length];
         for (int i = 0; i < cds.length; i++) {
-            final BeanColumnDesc<T> cd = cds[i];
+            final ColumnDesc<T> cd = cds[i];
             names[i] = cd.getName();
         }
         return names;
     }
 
-    public void setColumns(final String... names) {
+    private void setColumns(final String... names) {
         final ColumnName[] columns = new ColumnName[names.length];
         for (int i = 0; i < names.length; i++) {
             final String name = names[i];
@@ -82,17 +88,24 @@ public class BeanColumnLayout<T> {
         setColumns(columns);
     }
 
-    public void setColumns(final ColumnName... columns) {
-        this.columnNames = CollectionsUtil.newArrayList();
-        Collections.addAll(this.columnNames, columns);
+    private void setColumns(final ColumnName... columns) {
+        final ColumnNames csvColumns = new ColumnNames();
+        for (final ColumnName columnName : columns) {
+            csvColumns.add(columnName);
+        }
+        setColumns(csvColumns);
+    }
+
+    public void setColumns(final ColumnNames columns) {
+        columnNames = columns;
         columnDescs = null;
     }
 
     public String[] getValues(final T bean) {
-        final BeanColumnDesc<T>[] cds = getColumnDescs();
+        final ColumnDesc<T>[] cds = getColumnDescs();
         final String[] line = new String[cds.length];
         for (int i = 0; i < cds.length; i++) {
-            final BeanColumnDesc<T> cd = cds[i];
+            final ColumnDesc<T> cd = cds[i];
             final String v = cd.getValue(bean);
             line[i] = v;
         }
@@ -100,10 +113,10 @@ public class BeanColumnLayout<T> {
     }
 
     public void setValues(final T bean, final String[] line) {
-        final BeanColumnDesc<T>[] cds = getColumnDescs();
+        final ColumnDesc<T>[] cds = getColumnDescs();
         for (int i = 0; i < line.length; i++) {
             final String elem = line[i];
-            final BeanColumnDesc<T> cd = cds[i];
+            final ColumnDesc<T> cd = cds[i];
             cd.setValue(bean, elem);
         }
     }
@@ -123,10 +136,6 @@ public class BeanColumnLayout<T> {
             for (final BeanColumnDesc<T> cd : tmpCds) {
                 final ColumnName name = cd.getName();
                 if (name.getLabel().equals(headerElem)) {
-                    final PropertyDesc<T> pd = getPropertyDesc(beanDesc, name
-                        .getName());
-                    cd.setPropertyDesc(pd);
-
                     cds[i] = cd;
                     i++;
                     continue HEADER;
@@ -149,14 +158,9 @@ public class BeanColumnLayout<T> {
     }
 
     public void setupColumns(final ColumnSetup columnSetup) {
-        columnSetup.setup();
-        final List<ColumnName> names = columnSetup.columnNames;
-        final ColumnName[] a = names.toArray(new ColumnName[names.size()]);
-        setColumns(a);
-    }
-
-    public static interface Block<T> {
-        void run(T t);
+        final ColumnNames columns = new ColumnNames();
+        columns.setupColumns(columnSetup);
+        setColumns(columns);
     }
 
     public static abstract class ColumnSetup {
@@ -166,16 +170,47 @@ public class BeanColumnLayout<T> {
         private final List<ColumnName> columnNames = CollectionsUtil
             .newArrayList();
 
+        protected final void column(final ColumnName name) {
+            columnNames.add(name);
+        }
+
         protected final void column(final String name) {
-            columnNames.add(new SimpleColumnName(name));
+            column(new SimpleColumnName(name));
         }
 
         protected final void column(final String propertyName,
             final String label) {
+
             final SimpleColumnName n = new SimpleColumnName();
             n.setName(propertyName);
             n.setLabel(label);
-            columnNames.add(n);
+            column(n);
+        }
+
+    }
+
+    public static class ColumnNames {
+
+        private final List<ColumnName> columnNames = CollectionsUtil
+            .newArrayList();
+
+        public void setupColumns(final ColumnSetup columnSetup) {
+            columnSetup.setup();
+            final List<ColumnName> names = columnSetup.columnNames;
+            columnNames.clear();
+            columnNames.addAll(names);
+        }
+
+        public void add(final ColumnName columnName) {
+            columnNames.add(columnName);
+        }
+
+        public ColumnName[] getColumnNames() {
+            return columnNames.toArray(new ColumnName[columnNames.size()]);
+        }
+
+        public boolean isEmpty() {
+            return columnNames.isEmpty();
         }
 
     }
