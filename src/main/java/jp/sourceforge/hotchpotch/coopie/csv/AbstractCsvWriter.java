@@ -8,7 +8,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 abstract class AbstractCsvWriter<T> implements Closable {
 
-    protected boolean closed = true;
+    private boolean closed = true;
 
     /**
      * CsvWriter close時に、Writerを一緒にcloseする場合はtrue。
@@ -17,15 +17,19 @@ abstract class AbstractCsvWriter<T> implements Closable {
 
     protected CSVWriter csvWriter;
 
+    private boolean writtenHeader;
+
     private CsvSetting csvSetting = new CsvSetting();
 
     public void open(final Writer writer) {
         csvWriter = csvSetting.openWriter(writer);
-        writeHeader();
         closed = false;
     }
 
-    protected void writeHeader() {
+    /*
+     * 1レコード目を出力するときに、このメソッドが呼ばれる。
+     */
+    protected void writeHeader(final T bean) {
         final ColumnName[] names = getColumnNames();
         final String[] line = new String[names.length];
         int i = 0;
@@ -37,6 +41,10 @@ abstract class AbstractCsvWriter<T> implements Closable {
     }
 
     public void write(final T bean) {
+        if (!writtenHeader) {
+            writeHeader(bean);
+            writtenHeader = true;
+        }
         final String[] line = getValues(bean);
         csvWriter.writeNext(line);
     }
