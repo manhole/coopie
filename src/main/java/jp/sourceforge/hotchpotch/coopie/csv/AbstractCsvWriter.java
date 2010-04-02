@@ -20,8 +20,7 @@ abstract class AbstractCsvWriter<T> implements Closable {
     private CsvSetting csvSetting = new CsvSetting();
 
     public void open(final Writer writer) {
-        csvWriter = new CSVWriter(writer, csvSetting.getElementSeparator(),
-            csvSetting.getQuoteMark(), csvSetting.getLineSeparator());
+        csvWriter = csvSetting.openWriter(writer);
         writeHeader();
         closed = false;
     }
