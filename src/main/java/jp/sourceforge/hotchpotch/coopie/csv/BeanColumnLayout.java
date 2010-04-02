@@ -2,7 +2,6 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
@@ -12,8 +11,6 @@ import org.t2framework.commons.util.CollectionsUtil;
 public class BeanColumnLayout<T> {
 
     private BeanColumnDesc<T>[] columnDescs;
-    private final Map<String, BeanColumnDesc<T>> columnDescsMap = CollectionsUtil
-        .newHashMap();
     // 一時的
     private List<ColumnName> columnNames;
     private final BeanDesc<T> beanDesc;
@@ -33,7 +30,7 @@ public class BeanColumnLayout<T> {
              */
             if (columnNames == null) {
                 final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
-                columnDescs = new BeanColumnDesc[pds.size()];
+                columnDescs = newBeanColumnDescs(pds.size());
                 int i = 0;
                 for (final PropertyDesc<T> pd : pds) {
                     final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
@@ -41,14 +38,13 @@ public class BeanColumnLayout<T> {
                     final String propertyName = pd.getPropertyName();
                     cd.setName(new SimpleColumnName(propertyName));
                     columnDescs[i] = cd;
-                    columnDescsMap.put(propertyName, cd);
                     i++;
                 }
             } else {
-                columnDescs = new BeanColumnDesc[columnNames.size()];
+                columnDescs = newBeanColumnDescs(columnNames.size());
                 int i = 0;
                 for (final ColumnName columnName : columnNames) {
-                    final BeanColumnDesc<T> cd = new BeanColumnDesc();
+                    final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
                     cd.setName(columnName);
                     final PropertyDesc<T> pd = getPropertyDesc(beanDesc,
                         columnName.getName());
@@ -59,6 +55,11 @@ public class BeanColumnLayout<T> {
             }
         }
         return columnDescs;
+    }
+
+    @SuppressWarnings("unchecked")
+    private BeanColumnDesc<T>[] newBeanColumnDescs(final int length) {
+        return new BeanColumnDesc[length];
     }
 
     public ColumnName[] getNames() {
@@ -115,7 +116,7 @@ public class BeanColumnLayout<T> {
          * CSVヘッダ名を別名として扱う。
          */
         final BeanColumnDesc<T>[] tmpCds = getColumnDescs();
-        final BeanColumnDesc<T>[] cds = new BeanColumnDesc[tmpCds.length];
+        final BeanColumnDesc<T>[] cds = newBeanColumnDescs(tmpCds.length);
 
         int i = 0;
         HEADER: for (final String headerElem : header) {
