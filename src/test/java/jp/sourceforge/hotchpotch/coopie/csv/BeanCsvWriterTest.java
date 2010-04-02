@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanColumnLayout.ColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 
 import org.junit.Test;
@@ -53,12 +54,20 @@ public class BeanCsvWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-
-        final BeanColumnLayout layout = new BeanColumnLayout();
-        layout.setNames(new String[] { "aaa", "ccc", "bbb" });
+        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+            AaaBean.class);
+        layout.setColumns("aaa", "ccc", "bbb");
+        layout.setupColumns(new ColumnSetup() {
+            @Override
+            public void setup() {
+                column("aaa");
+                column("ccc");
+                column("bbb");
+            }
+        });
 
         final BeanCsvWriter<AaaBean> csvWriter = new BeanCsvWriter<AaaBean>(
-            AaaBean.class, layout);
+            layout);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -98,14 +107,23 @@ public class BeanCsvWriterTest {
     @Test
     public void write3() throws Throwable {
         // ## Arrange ##
-        final BeanColumnLayout layout = new BeanColumnLayout();
-        //layout.setNames(new String[] { "aaa", "ccc", "bbb" });
-        layout.addAlias("あ", "aaa");
-        layout.addAlias("ううう", "ccc");
-        layout.addAlias("いい", "bbb");
+        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+            AaaBean.class);
+
+        layout.setupColumns(new ColumnSetup() {
+            @Override
+            public void setup() {
+                /*
+                 * プロパティ名, CSV項目名 の順
+                 */
+                column("aaa", "あ");
+                column("ccc", "ううう");
+                column("bbb", "いい");
+            }
+        });
 
         final BeanCsvWriter<AaaBean> csvWriter = new BeanCsvWriter<AaaBean>(
-            AaaBean.class, layout);
+            layout);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -133,5 +151,4 @@ public class BeanCsvWriterTest {
             "UTF-8"));
         assertEquals(expected, actual);
     }
-
 }
