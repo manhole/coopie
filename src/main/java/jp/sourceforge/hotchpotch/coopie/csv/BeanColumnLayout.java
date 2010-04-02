@@ -9,7 +9,7 @@ import org.t2framework.commons.util.CollectionsUtil;
 
 public class BeanColumnLayout<T> {
 
-    private BeanColumnDesc<T>[] columnDescs;
+    private ColumnDesc<T>[] columnDescs;
     // 一時的
     private ColumnNames columnNames;
     private final BeanDesc<T> beanDesc;
@@ -22,40 +22,46 @@ public class BeanColumnLayout<T> {
         return beanDesc;
     }
 
-    private BeanColumnDesc<T>[] getColumnDescs() {
+    private ColumnDesc<T>[] getColumnDescs() {
         if (columnDescs == null) {
-            /*
-             * beanの全プロパティを対象に。
-             */
             if (columnNames == null || columnNames.isEmpty()) {
+                /*
+                 * beanの全プロパティを対象に。
+                 */
                 final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
-                columnDescs = newBeanColumnDescs(pds.size());
+                final ColumnDesc<T>[] cds = newColumnDescs(pds.size());
                 int i = 0;
                 for (final PropertyDesc<T> pd : pds) {
                     final String propertyName = pd.getPropertyName();
-                    final ColumnName name = new SimpleColumnName(propertyName);
-                    final BeanColumnDesc<T> cd = newBeanColumnDesc(name, pd);
-                    columnDescs[i] = cd;
+                    final ColumnName columnName = new SimpleColumnName(
+                        propertyName);
+                    final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd);
+                    cds[i] = cd;
                     i++;
                 }
+                columnDescs = cds;
             } else {
+                /*
+                 * 設定されているプロパティ名を対象に。
+                 */
                 final ColumnName[] names = columnNames.getColumnNames();
-                columnDescs = newBeanColumnDescs(names.length);
+                final ColumnDesc<T>[] cds = newColumnDescs(names.length);
                 int i = 0;
                 for (final ColumnName columnName : names) {
+                    final String propertyName = columnName.getName();
                     final PropertyDesc<T> pd = getPropertyDesc(beanDesc,
-                        columnName.getName());
-                    final BeanColumnDesc<T> cd = newBeanColumnDesc(columnName,
-                        pd);
-                    columnDescs[i] = cd;
+                        propertyName);
+                    final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd);
+                    cds[i] = cd;
                     i++;
                 }
+                columnDescs = cds;
             }
         }
         return columnDescs;
     }
 
-    private BeanColumnDesc<T> newBeanColumnDesc(final ColumnName name,
+    private ColumnDesc<T> newBeanColumnDesc(final ColumnName name,
         final PropertyDesc<T> pd) {
         final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
         cd.setPropertyDesc(pd);
@@ -64,8 +70,8 @@ public class BeanColumnLayout<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private BeanColumnDesc<T>[] newBeanColumnDescs(final int length) {
-        return new BeanColumnDesc[length];
+    private ColumnDesc<T>[] newColumnDescs(final int length) {
+        return new ColumnDesc[length];
     }
 
     public ColumnName[] getNames() {
@@ -123,17 +129,14 @@ public class BeanColumnLayout<T> {
 
     public void setupByHeader(final String[] header) {
         /*
-         * 既にColumnDescが設定されている場合は、
-         * ヘッダの順序に合わせてソートし直す。
-         * 
-         * CSVヘッダ名を別名として扱う。
+         * ColumnDescをヘッダの順序に合わせてソートし直す。
          */
-        final BeanColumnDesc<T>[] tmpCds = getColumnDescs();
-        final BeanColumnDesc<T>[] cds = newBeanColumnDescs(tmpCds.length);
+        final ColumnDesc<T>[] tmpCds = getColumnDescs();
+        final ColumnDesc<T>[] cds = newColumnDescs(tmpCds.length);
 
         int i = 0;
         HEADER: for (final String headerElem : header) {
-            for (final BeanColumnDesc<T> cd : tmpCds) {
+            for (final ColumnDesc<T> cd : tmpCds) {
                 final ColumnName name = cd.getName();
                 if (name.getLabel().equals(headerElem)) {
                     cds[i] = cd;
