@@ -6,9 +6,6 @@ public abstract class AbstractColumnLayout<T> {
     // 一時的
     protected ColumnNames columnNames;
 
-    public AbstractColumnLayout() {
-    }
-
     public ColumnName[] getNames() {
         final ColumnDesc<T>[] cds = getColumnDescs();
         if (cds == null) {
