@@ -11,6 +11,9 @@ public abstract class AbstractColumnLayout<T> {
 
     public ColumnName[] getNames() {
         final ColumnDesc<T>[] cds = getColumnDescs();
+        if (cds == null) {
+            return null;
+        }
         final ColumnName[] names = new ColumnName[cds.length];
         for (int i = 0; i < cds.length; i++) {
             final ColumnDesc<T> cd = cds[i];
@@ -21,21 +24,21 @@ public abstract class AbstractColumnLayout<T> {
 
     public String[] getValues(final T bean) {
         final ColumnDesc<T>[] cds = getColumnDescs();
-        final String[] line = new String[cds.length];
+        final String[] values = new String[cds.length];
         for (int i = 0; i < cds.length; i++) {
             final ColumnDesc<T> cd = cds[i];
-            final String v = cd.getValue(bean);
-            line[i] = v;
+            final String value = cd.getValue(bean);
+            values[i] = value;
         }
-        return line;
+        return values;
     }
 
-    public void setValues(final T bean, final String[] line) {
+    public void setValues(final T bean, final String[] values) {
         final ColumnDesc<T>[] cds = getColumnDescs();
-        for (int i = 0; i < line.length; i++) {
-            final String elem = line[i];
+        for (int i = 0; i < values.length; i++) {
+            final String value = values[i];
             final ColumnDesc<T> cd = cds[i];
-            cd.setValue(bean, elem);
+            cd.setValue(bean, value);
         }
     }
 
@@ -70,6 +73,9 @@ public abstract class AbstractColumnLayout<T> {
         columnDescs = null;
     }
 
+    /*
+     * CSVを読むとき
+     */
     public void setupByHeader(final String[] header) {
         /*
          * ColumnDescをヘッダの順序に合わせてソートし直す。
