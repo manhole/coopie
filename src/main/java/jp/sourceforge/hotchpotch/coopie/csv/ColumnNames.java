@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.t2framework.commons.util.CollectionsUtil;
@@ -17,6 +18,10 @@ class ColumnNames {
 
     public void add(final ColumnName columnName) {
         columnNames.add(columnName);
+    }
+
+    public void addAll(final ColumnName... names) {
+        Collections.addAll(columnNames, names);
     }
 
     public ColumnName[] getColumnNames() {
