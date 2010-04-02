@@ -67,34 +67,6 @@ public class BeanColumnLayout<T> extends AbstractColumnLayout<T> {
         return cd;
     }
 
-    @SuppressWarnings("unchecked")
-    private ColumnDesc<T>[] newColumnDescs(final int length) {
-        return new ColumnDesc[length];
-    }
-
-    public void setupByHeader(final String[] header) {
-        /*
-         * ColumnDescをヘッダの順序に合わせてソートし直す。
-         */
-        final ColumnDesc<T>[] tmpCds = getColumnDescs();
-        final ColumnDesc<T>[] cds = newColumnDescs(tmpCds.length);
-
-        int i = 0;
-        HEADER: for (final String headerElem : header) {
-            for (final ColumnDesc<T> cd : tmpCds) {
-                final ColumnName name = cd.getName();
-                if (name.getLabel().equals(headerElem)) {
-                    cds[i] = cd;
-                    i++;
-                    continue HEADER;
-                }
-            }
-            // TODO
-            throw new RuntimeException("headerElem=" + headerElem);
-        }
-        columnDescs = cds;
-    }
-
     private PropertyDesc<T> getPropertyDesc(final BeanDesc<T> beanDesc,
         final String name) {
         final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
