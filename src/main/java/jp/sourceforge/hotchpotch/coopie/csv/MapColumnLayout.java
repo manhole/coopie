@@ -25,15 +25,9 @@ public class MapColumnLayout extends AbstractColumnLayout<Map<String, String>> {
         return columnDescs;
     }
 
-    //    @Override
-    //    public void setValues(final Map<String, String> bean, final String[] line) {
-    //        for (int i = 0; i < header.length; i++) {
-    //            final String key = header[i];
-    //            final String value = line[i];
-    //            bean.put(key, value);
-    //        }
-    //    }
-
+    /*
+     * CSVを読むとき
+     */
     @Override
     public void setupByHeader(final String[] header) {
         final ColumnDesc<Map<String, String>>[] tmpCds = getColumnDescs();
