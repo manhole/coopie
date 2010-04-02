@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
-import jp.sourceforge.hotchpotch.coopie.csv.BeanColumnLayout.ColumnSetup;
 
 import org.junit.Test;
 import org.slf4j.Logger;
