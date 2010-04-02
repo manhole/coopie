@@ -1,6 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-
 import org.t2framework.commons.meta.PropertyDesc;
 
 class BeanColumnDesc<T> implements ColumnDesc<T> {
