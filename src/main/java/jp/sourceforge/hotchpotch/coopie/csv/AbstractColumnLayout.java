@@ -48,20 +48,17 @@ public abstract class AbstractColumnLayout<T> {
     }
 
     protected void setColumns(final String... names) {
-        final ColumnName[] columns = new ColumnName[names.length];
-        for (int i = 0; i < names.length; i++) {
-            final String name = names[i];
+        final ColumnNames columnNames = new ColumnNames();
+        for (final String name : names) {
             final ColumnName columnName = new SimpleColumnName(name);
-            columns[i] = columnName;
+            columnNames.add(columnName);
         }
-        setColumns(columns);
+        setColumns(columnNames);
     }
 
     protected void setColumns(final ColumnName... names) {
         final ColumnNames columnNames = new ColumnNames();
-        for (final ColumnName name : names) {
-            columnNames.add(name);
-        }
+        columnNames.addAll(names);
         setColumns(columnNames);
     }
 
