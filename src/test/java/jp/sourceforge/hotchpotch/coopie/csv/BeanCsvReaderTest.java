@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanColumnLayout.ColumnSetup;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.ResourceUtil;
-
 
 /*
  * CSVの設定としては、
@@ -78,14 +78,19 @@ public class BeanCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-2", "tsv");
 
-        final BeanColumnLayout layout = new BeanColumnLayout();
-        //layout.setNames(new String[] { "あ", "ううう", "いい" });
-        layout.addAlias("あ", "aaa");
-        layout.addAlias("いい", "bbb");
-        layout.addAlias("ううう", "ccc");
+        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+            AaaBean.class);
+        layout.setupColumns(new ColumnSetup() {
+            @Override
+            public void setup() {
+                column("aaa", "あ");
+                column("ccc", "ううう");
+                column("bbb", "いい");
+            }
+        });
 
         final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(
-            AaaBean.class, layout);
+            layout);
 
         // ## Act ##
         csvReader.open(new InputStreamReader(is, "UTF-8"));

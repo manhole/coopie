@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
-
-import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.meta.BeanDescFactory;
-
 import au.com.bytecode.opencsv.CSVWriter;
 
 public class BeanCsvWriter<T> implements Closable {
@@ -22,7 +18,6 @@ public class BeanCsvWriter<T> implements Closable {
         this.csvSetting = csvSetting;
     }
 
-    private final BeanDesc<T> beanDesc;
     protected boolean closed = true;
     /**
      * BeanCsvWriter close時に、Writerを一緒にcloseする場合はtrue。
@@ -32,16 +27,11 @@ public class BeanCsvWriter<T> implements Closable {
     private final BeanColumnLayout<T> columnLayout;
 
     public BeanCsvWriter(final Class<T> beanClass) {
-        beanDesc = BeanDescFactory.getBeanDesc(beanClass);
-        columnLayout = new BeanColumnLayout<T>();
-        columnLayout.setup(beanDesc);
+        columnLayout = new BeanColumnLayout<T>(beanClass);
     }
 
-    public BeanCsvWriter(final Class<T> beanClass,
-        final BeanColumnLayout<T> columnLayout) {
-        beanDesc = BeanDescFactory.getBeanDesc(beanClass);
+    public BeanCsvWriter(final BeanColumnLayout<T> columnLayout) {
         this.columnLayout = columnLayout;
-        columnLayout.setup(beanDesc);
     }
 
     public void open(final Writer writer) {

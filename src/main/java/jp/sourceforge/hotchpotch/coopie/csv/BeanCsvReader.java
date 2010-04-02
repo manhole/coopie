@@ -7,8 +7,6 @@ import java.util.NoSuchElementException;
 import jp.sourceforge.hotchpotch.coopie.Closable;
 
 import org.t2framework.commons.exception.IORuntimeException;
-import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.meta.BeanDescFactory;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -31,18 +29,14 @@ public class BeanCsvReader<T> implements Closable {
     private Boolean hasNext = null;
     private CSVReader csvReader;
     protected boolean closed = true;
-    private final BeanDesc<T> beanDesc;
     private String[] nextLine;
     private final BeanColumnLayout<T> columnLayout;
 
     public BeanCsvReader(final Class<T> beanClass) {
-        beanDesc = BeanDescFactory.getBeanDesc(beanClass);
-        columnLayout = new BeanColumnLayout<T>();
+        columnLayout = new BeanColumnLayout<T>(beanClass);
     }
 
-    public BeanCsvReader(final Class<T> beanClass,
-        final BeanColumnLayout<T> columnLayout) {
-        beanDesc = BeanDescFactory.getBeanDesc(beanClass);
+    public BeanCsvReader(final BeanColumnLayout<T> columnLayout) {
         this.columnLayout = columnLayout;
     }
 
@@ -56,7 +50,7 @@ public class BeanCsvReader<T> implements Closable {
 
     private void setupColumnDescByHeader() {
         final String[] header = readLine();
-        columnLayout.setupColumnDescByHeader(beanDesc, header);
+        columnLayout.setupByHeader(header);
     }
 
     public void read(final T bean) {
