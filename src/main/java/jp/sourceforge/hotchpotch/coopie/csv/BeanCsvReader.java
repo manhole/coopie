@@ -45,10 +45,10 @@ public class BeanCsvReader<T> implements Closable {
             csvSetting.getQuoteMark());
         closed = false;
 
-        setupColumnDescByHeader();
+        setupByHeader();
     }
 
-    private void setupColumnDescByHeader() {
+    private void setupByHeader() {
         final String[] header = readLine();
         columnLayout.setupByHeader(header);
     }
