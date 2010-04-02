@@ -1,5 +1,11 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.io.Writer;
+
+import org.t2framework.commons.util.StringUtil;
+
+import au.com.bytecode.opencsv.CSVWriter;
+
 public class CsvSetting {
 
     public static final char TAB = '\t';
@@ -30,7 +36,15 @@ public class CsvSetting {
      */
     private String lineSeparator = CRLF;
 
+    public CSVWriter openWriter(final Writer writer) {
+        return new CSVWriter(writer, getElementSeparator(), getQuoteMark(),
+            getLineSeparator());
+    }
+
     public String getLineSeparator() {
+        if (StringUtil.isEmpty(lineSeparator)) {
+            lineSeparator = CRLF;
+        }
         return lineSeparator;
     }
 
