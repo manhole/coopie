@@ -70,4 +70,32 @@ public abstract class AbstractColumnLayout<T> {
         columnDescs = null;
     }
 
+    public void setupByHeader(final String[] header) {
+        /*
+         * ColumnDescをヘッダの順序に合わせてソートし直す。
+         */
+        final ColumnDesc<T>[] tmpCds = getColumnDescs();
+        final ColumnDesc<T>[] cds = newColumnDescs(tmpCds.length);
+
+        int i = 0;
+        HEADER: for (final String headerElem : header) {
+            for (final ColumnDesc<T> cd : tmpCds) {
+                final ColumnName name = cd.getName();
+                if (name.getLabel().equals(headerElem)) {
+                    cds[i] = cd;
+                    i++;
+                    continue HEADER;
+                }
+            }
+            // TODO
+            throw new RuntimeException("headerElem=" + headerElem);
+        }
+        columnDescs = cds;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected ColumnDesc<T>[] newColumnDescs(final int length) {
+        return new ColumnDesc[length];
+    }
+
 }
