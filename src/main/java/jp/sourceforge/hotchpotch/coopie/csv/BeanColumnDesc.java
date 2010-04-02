@@ -1,8 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+
 import org.t2framework.commons.meta.PropertyDesc;
 
-class BeanColumnDesc<T> {
+class BeanColumnDesc<T> implements ColumnDesc<T> {
 
     /**
      * CSV列名。
