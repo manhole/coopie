@@ -56,7 +56,6 @@ public class BeanCsvWriterTest {
         // ## Arrange ##
         final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
             AaaBean.class);
-        layout.setColumns("aaa", "ccc", "bbb");
         layout.setupColumns(new ColumnSetup() {
             @Override
             public void setup() {
