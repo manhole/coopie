@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.ResourceUtil;
@@ -165,10 +164,9 @@ public class BeanCsvReaderTest {
 
     /**
      * CSVヘッダがない場合は、必ず列順を設定すること。
-     * 
+     * 設定していない場合は例外とする。
      */
     @Test
-    @Ignore
     public void read_noheader_badsetting() throws Throwable {
         // ## Arrange ##
         final InputStream is = ResourceUtil.getResourceAsStream(
@@ -186,6 +184,7 @@ public class BeanCsvReaderTest {
             csvReader.open(new InputStreamReader(is, "UTF-8"));
             fail();
         } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
         }
 
         csvReader.close();

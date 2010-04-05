@@ -38,6 +38,7 @@ public class BeanColumnLayout<T> extends AbstractColumnLayout<T> {
                 cds[i] = cd;
                 i++;
             }
+            orderSpecified = OrderSpecified.NO;
             columnDescs = cds;
         } else {
             /*
@@ -54,6 +55,7 @@ public class BeanColumnLayout<T> extends AbstractColumnLayout<T> {
                 cds[i] = cd;
                 i++;
             }
+            orderSpecified = OrderSpecified.SPECIFIED;
             columnDescs = cds;
         }
         return columnDescs;

@@ -19,10 +19,12 @@ public class MapColumnLayout extends AbstractColumnLayout<Map<String, String>> {
                 cds[i] = cd;
                 i++;
             }
+            orderSpecified = OrderSpecified.SPECIFIED;
             columnDescs = cds;
+            return columnDescs;
         }
 
-        return columnDescs;
+        return null;
     }
 
     /*
@@ -50,6 +52,7 @@ public class MapColumnLayout extends AbstractColumnLayout<Map<String, String>> {
             cds[i] = cd;
             i++;
         }
+        orderSpecified = OrderSpecified.SPECIFIED;
         columnDescs = cds;
     }
 
