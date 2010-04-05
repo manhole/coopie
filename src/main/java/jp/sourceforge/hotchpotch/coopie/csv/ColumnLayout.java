@@ -10,6 +10,10 @@ public interface ColumnLayout<T> {
 
     ColumnLayout<T> setupByHeader(String[] header);
 
+    ColumnName[] getNames();
+
+    void setupColumns(ColumnSetup columnSetup);
+
     boolean isWithHeader();
 
     public enum OrderSpecified {
