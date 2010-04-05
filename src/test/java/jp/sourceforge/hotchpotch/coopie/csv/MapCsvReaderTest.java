@@ -99,4 +99,50 @@ public class MapCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * CSVヘッダが無い場合。
+     */
+    @Test
+    public void read_noheader() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-3", "tsv");
+
+        final MapColumnLayout layout = new MapColumnLayout();
+        layout.setupColumns(new ColumnSetup() {
+            @Override
+            public void setup() {
+                /*
+                 * CSVの列順
+                 */
+                column("ccc");
+                column("aaa");
+                column("bbb");
+            }
+        });
+        layout.setWithHeader(false);
+
+        final MapCsvReader csvReader = new MapCsvReader(layout);
+
+        // ## Act ##
+        csvReader.open(new InputStreamReader(is, "UTF-8"));
+
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        csvReader.read(bean);
+
+        // ## Assert ##
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.get("aaa"));
+        assertEquals("い1", bean.get("bbb"));
+        assertEquals("う1", bean.get("ccc"));
+
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.get("aaa"));
+        assertEquals("い2", bean.get("bbb"));
+        assertEquals("う2", bean.get("ccc"));
+
+        csvReader.close();
+    }
+
 }
