@@ -51,6 +51,14 @@ public class BeanCsvReader<T> implements Closable {
         if (columnLayout.isWithHeader()) {
             final String[] header = readLine();
             columnLayout.setupByHeader(header);
+        } else {
+            /*
+             * ヘッダなしの場合は、列順が指定されていないとダメ。
+             * JavaBeansのプロパティ情報は順序が不定なため。
+             */
+            if (OrderSpecified.SPECIFIED != columnLayout.getOrderSpecified()) {
+                throw new IllegalStateException("no column order set");
+            }
         }
     }
 

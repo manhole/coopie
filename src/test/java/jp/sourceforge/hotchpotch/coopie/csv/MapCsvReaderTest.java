@@ -1,6 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -141,6 +142,32 @@ public class MapCsvReaderTest {
         assertEquals("あ2", bean.get("aaa"));
         assertEquals("い2", bean.get("bbb"));
         assertEquals("う2", bean.get("ccc"));
+
+        csvReader.close();
+    }
+
+    /**
+     * CSVヘッダがない場合は、必ず列順を設定すること。
+     * 設定していない場合は例外とする。
+     */
+    @Test
+    public void read_noheader_badsetting() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-3", "tsv");
+
+        final MapColumnLayout layout = new MapColumnLayout();
+        layout.setWithHeader(false);
+
+        final MapCsvReader csvReader = new MapCsvReader(layout);
+
+        // ## Act ##
+        try {
+            csvReader.open(new InputStreamReader(is, "UTF-8"));
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
 
         csvReader.close();
     }

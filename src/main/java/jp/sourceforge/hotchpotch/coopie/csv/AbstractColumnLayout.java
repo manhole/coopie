@@ -6,6 +6,14 @@ public abstract class AbstractColumnLayout<T> {
     // 一時的
     protected ColumnNames columnNames;
     private boolean withHeader = true;
+    protected OrderSpecified orderSpecified;
+
+    public OrderSpecified getOrderSpecified() {
+        if (orderSpecified == null) {
+            getColumnDescs();
+        }
+        return orderSpecified;
+    }
 
     public ColumnName[] getNames() {
         final ColumnDesc<T>[] cds = getColumnDescs();
