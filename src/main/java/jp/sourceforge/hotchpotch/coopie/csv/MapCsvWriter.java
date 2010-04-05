@@ -3,12 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.util.Map;
 import java.util.Set;
 
-import jp.sourceforge.hotchpotch.coopie.Closable;
-
-public class MapCsvWriter extends AbstractCsvWriter<Map<String, String>>
-    implements Closable {
-
-    private final MapColumnLayout columnLayout;
+public class MapCsvWriter extends AbstractCsvWriter<Map<String, String>> {
 
     public MapCsvWriter() {
         columnLayout = new MapColumnLayout();
@@ -37,16 +32,6 @@ public class MapCsvWriter extends AbstractCsvWriter<Map<String, String>>
         }
 
         super.writeHeader(bean);
-    }
-
-    @Override
-    protected String[] getValues(final Map<String, String> bean) {
-        return columnLayout.getValues(bean);
-    }
-
-    @Override
-    protected ColumnName[] getColumnNames() {
-        return columnLayout.getNames();
     }
 
 }

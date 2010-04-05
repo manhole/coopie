@@ -21,6 +21,8 @@ abstract class AbstractCsvWriter<T> implements Closable {
 
     private CsvSetting csvSetting = new CsvSetting();
 
+    protected ColumnLayout<T> columnLayout;
+
     public void open(final Writer writer) {
         csvWriter = csvSetting.openWriter(writer);
         closed = false;
@@ -49,9 +51,13 @@ abstract class AbstractCsvWriter<T> implements Closable {
         csvWriter.writeNext(line);
     }
 
-    protected abstract ColumnName[] getColumnNames();
+    protected String[] getValues(final T bean) {
+        return columnLayout.getValues(bean);
+    }
 
-    protected abstract String[] getValues(final T bean);
+    protected ColumnName[] getColumnNames() {
+        return columnLayout.getNames();
+    }
 
     @Override
     public boolean isClosed() {
