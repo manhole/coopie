@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnLayout.OrderSpecified;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -19,7 +20,7 @@ public class MapCsvReader implements Closable {
     private boolean closeReader = true;
     private Boolean hasNext = null;
     private String[] nextLine;
-    private final MapColumnLayout columnLayout;
+    private ColumnLayout<Map<String, String>> columnLayout;
 
     public MapCsvReader() {
         columnLayout = new MapColumnLayout();
@@ -47,7 +48,7 @@ public class MapCsvReader implements Closable {
     private void setupByHeader() {
         if (columnLayout.isWithHeader()) {
             final String[] header = readLine();
-            columnLayout.setupByHeader(header);
+            columnLayout = columnLayout.setupByHeader(header);
         } else {
             /*
              * ヘッダなしの場合は、列順が指定されていないとダメ。
