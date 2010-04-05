@@ -45,8 +45,10 @@ public class MapCsvReader implements Closable {
     }
 
     private void setupByHeader() {
-        final String[] header = readLine();
-        columnLayout.setupByHeader(header);
+        if (columnLayout.isWithHeader()) {
+            final String[] header = readLine();
+            columnLayout.setupByHeader(header);
+        }
     }
 
     public void read(final Map<String, String> bean) {
