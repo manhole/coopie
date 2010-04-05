@@ -5,6 +5,7 @@ public abstract class AbstractColumnLayout<T> {
     protected ColumnDesc<T>[] columnDescs;
     // 一時的
     protected ColumnNames columnNames;
+    private boolean withHeader = true;
 
     public ColumnName[] getNames() {
         final ColumnDesc<T>[] cds = getColumnDescs();
@@ -96,6 +97,14 @@ public abstract class AbstractColumnLayout<T> {
     @SuppressWarnings("unchecked")
     protected ColumnDesc<T>[] newColumnDescs(final int length) {
         return new ColumnDesc[length];
+    }
+
+    public boolean isWithHeader() {
+        return withHeader;
+    }
+
+    public void setWithHeader(final boolean withHeader) {
+        this.withHeader = withHeader;
     }
 
 }

@@ -1,6 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,6 +9,7 @@ import java.io.InputStreamReader;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.ResourceUtil;
@@ -109,6 +111,82 @@ public class BeanCsvReaderTest {
         assertEquals("あ2", bean.getAaa());
         assertEquals("い2", bean.getBbb());
         assertEquals("う2", bean.getCcc());
+
+        csvReader.close();
+    }
+
+    /**
+     * CSVヘッダが無い場合。
+     */
+    @Test
+    public void read_noheader() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-3", "tsv");
+
+        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+            AaaBean.class);
+        layout.setupColumns(new ColumnSetup() {
+            @Override
+            public void setup() {
+                /*
+                 * CSVの列順
+                 */
+                column("ccc", "ううう");
+                column("aaa", "あ");
+                column("bbb", "いい");
+            }
+        });
+        layout.setWithHeader(false);
+
+        final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(
+            layout);
+
+        // ## Act ##
+        csvReader.open(new InputStreamReader(is, "UTF-8"));
+
+        final AaaBean bean = new AaaBean();
+        csvReader.read(bean);
+
+        // ## Assert ##
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.getAaa());
+        assertEquals("い2", bean.getBbb());
+        assertEquals("う2", bean.getCcc());
+
+        csvReader.close();
+    }
+
+    /**
+     * CSVヘッダがない場合は、必ず列順を設定すること。
+     * 
+     */
+    @Test
+    @Ignore
+    public void read_noheader_badsetting() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-3", "tsv");
+
+        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+            AaaBean.class);
+        layout.setWithHeader(false);
+
+        final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(
+            layout);
+
+        // ## Act ##
+        try {
+            csvReader.open(new InputStreamReader(is, "UTF-8"));
+            fail();
+        } catch (final IllegalStateException e) {
+        }
 
         csvReader.close();
     }
