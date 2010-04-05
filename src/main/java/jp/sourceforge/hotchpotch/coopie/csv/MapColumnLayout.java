@@ -31,14 +31,14 @@ public class MapColumnLayout extends AbstractColumnLayout<Map<String, String>> {
      * CSVを読むとき
      */
     @Override
-    public void setupByHeader(final String[] header) {
+    public MapColumnLayout setupByHeader(final String[] header) {
         final ColumnDesc<Map<String, String>>[] tmpCds = getColumnDescs();
         if (tmpCds != null) {
             /*
              * columnNamesが設定されている場合は、ヘッダに合わせてソートし直す
              */
             super.setupByHeader(header);
-            return;
+            return this;
         }
 
         /*
@@ -54,6 +54,7 @@ public class MapColumnLayout extends AbstractColumnLayout<Map<String, String>> {
         }
         orderSpecified = OrderSpecified.SPECIFIED;
         columnDescs = cds;
+        return this;
     }
 
     private ColumnDesc<Map<String, String>> newMapColumnDesc(

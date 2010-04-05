@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnLayout.OrderSpecified;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -30,13 +31,13 @@ public class BeanCsvReader<T> implements Closable {
     private CSVReader csvReader;
     protected boolean closed = true;
     private String[] nextLine;
-    private final BeanColumnLayout<T> columnLayout;
+    private ColumnLayout<T> columnLayout;
 
     public BeanCsvReader(final Class<T> beanClass) {
         columnLayout = new BeanColumnLayout<T>(beanClass);
     }
 
-    public BeanCsvReader(final BeanColumnLayout<T> columnLayout) {
+    public BeanCsvReader(final ColumnLayout<T> columnLayout) {
         this.columnLayout = columnLayout;
     }
 
@@ -50,7 +51,7 @@ public class BeanCsvReader<T> implements Closable {
     private void setupByHeader() {
         if (columnLayout.isWithHeader()) {
             final String[] header = readLine();
-            columnLayout.setupByHeader(header);
+            columnLayout = columnLayout.setupByHeader(header);
         } else {
             /*
              * ヘッダなしの場合は、列順が指定されていないとダメ。
