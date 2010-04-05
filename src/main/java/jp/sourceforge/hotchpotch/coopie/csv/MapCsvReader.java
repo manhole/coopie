@@ -38,8 +38,7 @@ public class MapCsvReader implements Closable {
     }
 
     public void open(final Reader reader) {
-        csvReader = new CSVReader(reader, csvSetting.getElementSeparator(),
-            csvSetting.getQuoteMark());
+        csvReader = csvSetting.openReader(reader);
         closed = false;
 
         setupByHeader();

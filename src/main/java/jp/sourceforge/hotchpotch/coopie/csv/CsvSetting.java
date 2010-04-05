@@ -1,9 +1,11 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.io.Reader;
 import java.io.Writer;
 
 import org.t2framework.commons.util.StringUtil;
 
+import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
 public class CsvSetting {
@@ -39,6 +41,10 @@ public class CsvSetting {
     public CSVWriter openWriter(final Writer writer) {
         return new CSVWriter(writer, getElementSeparator(), getQuoteMark(),
             getLineSeparator());
+    }
+
+    public CSVReader openReader(final Reader reader) {
+        return new CSVReader(reader, getElementSeparator(), getQuoteMark());
     }
 
     public String getLineSeparator() {
