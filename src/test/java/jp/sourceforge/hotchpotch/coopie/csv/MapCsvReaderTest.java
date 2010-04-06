@@ -32,8 +32,8 @@ public class MapCsvReaderTest {
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
-        final MapCsvReader csvReader = layout.openReader(new InputStreamReader(
-            is, "UTF-8"));
+        final CsvReader<Map<String, String>> csvReader = layout
+            .openReader(new InputStreamReader(is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -79,8 +79,8 @@ public class MapCsvReaderTest {
         });
 
         // ## Act ##
-        final MapCsvReader csvReader = layout.openReader(new InputStreamReader(
-            is, "UTF-8"));
+        final CsvReader<Map<String, String>> csvReader = layout
+            .openReader(new InputStreamReader(is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -125,8 +125,8 @@ public class MapCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final MapCsvReader csvReader = layout.openReader(new InputStreamReader(
-            is, "UTF-8"));
+        final CsvReader<Map<String, String>> csvReader = layout
+            .openReader(new InputStreamReader(is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
