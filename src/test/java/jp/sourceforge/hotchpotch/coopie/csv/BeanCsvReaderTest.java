@@ -80,12 +80,12 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
-        layout.setupColumns(new ColumnSetup() {
+        layout.setupColumns(new ColumnSetupBlock() {
             @Override
-            public void setup() {
-                column("aaa", "あ");
-                column("ccc", "ううう");
-                column("bbb", "いい");
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa", "あ");
+                setup.column("ccc", "ううう");
+                setup.column("bbb", "いい");
             }
         });
 
@@ -125,17 +125,18 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
-        layout.setupColumns(new ColumnSetup() {
+        layout.setupColumns(new ColumnSetupBlock() {
             @Override
-            public void setup() {
+            public void setup(final ColumnSetup setup) {
                 /*
                  * CSVの列順
                  */
-                column("ccc", "ううう");
-                column("aaa", "あ");
-                column("bbb", "いい");
+                setup.column("ccc", "ううう");
+                setup.column("aaa", "あ");
+                setup.column("bbb", "いい");
             }
         });
+
         layout.setWithHeader(false);
 
         final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(

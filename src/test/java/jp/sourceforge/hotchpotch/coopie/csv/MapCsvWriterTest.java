@@ -54,12 +54,12 @@ public class MapCsvWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetup() {
+        layout.setupColumns(new ColumnSetupBlock() {
             @Override
-            public void setup() {
-                column("aaa");
-                column("ccc");
-                column("bbb");
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa");
+                setup.column("ccc");
+                setup.column("bbb");
             }
         });
 
@@ -105,15 +105,15 @@ public class MapCsvWriterTest {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
 
-        layout.setupColumns(new ColumnSetup() {
+        layout.setupColumns(new ColumnSetupBlock() {
             @Override
-            public void setup() {
+            public void setup(final ColumnSetup setup) {
                 /*
                  * プロパティ名, CSV項目名 の順
                  */
-                column("aaa", "あ");
-                column("ccc", "ううう");
-                column("bbb", "いい");
+                setup.column("aaa", "あ");
+                setup.column("ccc", "ううう");
+                setup.column("bbb", "いい");
             }
         });
 

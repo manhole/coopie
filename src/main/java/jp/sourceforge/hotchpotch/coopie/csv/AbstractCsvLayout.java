@@ -1,5 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.List;
+
+import org.t2framework.commons.util.CollectionsUtil;
+
 public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
 
     protected ColumnDesc<T>[] columnDescs;
@@ -50,9 +54,10 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
 
     protected abstract ColumnDesc<T>[] getColumnDescs();
 
-    public void setupColumns(final ColumnSetup columnSetup) {
-        final ColumnNames columns = new ColumnNames();
-        columns.setupColumns(columnSetup);
+    public void setupColumns(final ColumnSetupBlock block) {
+        final DefaultColumnSetup columnSetup = new DefaultColumnSetup();
+        block.setup(columnSetup);
+        final ColumnNames columns = columnSetup.toColumnNames();
         setColumns(columns);
     }
 
@@ -114,6 +119,33 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
 
     public void setWithHeader(final boolean withHeader) {
         this.withHeader = withHeader;
+    }
+
+    private static class DefaultColumnSetup implements ColumnSetup {
+
+        final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
+
+        public void column(final ColumnName name) {
+            columnNames.add(name);
+        }
+
+        public void column(final String name) {
+            column(new SimpleColumnName(name));
+        }
+
+        public void column(final String propertyName, final String label) {
+            final SimpleColumnName n = new SimpleColumnName();
+            n.setName(propertyName);
+            n.setLabel(label);
+            column(n);
+        }
+
+        public ColumnNames toColumnNames() {
+            final ColumnNames n = new ColumnNames();
+            n.addAll(columnNames);
+            return n;
+        }
+
     }
 
 }

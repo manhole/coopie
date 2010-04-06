@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,19 +10,16 @@ class ColumnNames {
 
     private final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
 
-    public void setupColumns(final ColumnSetup columnSetup) {
-        columnSetup.setup();
-        final List<ColumnName> names = columnSetup.columnNames;
-        columnNames.clear();
-        columnNames.addAll(names);
-    }
-
     public void add(final ColumnName columnName) {
         columnNames.add(columnName);
     }
 
     public void addAll(final ColumnName... names) {
         Collections.addAll(columnNames, names);
+    }
+
+    public void addAll(final Collection<ColumnName> names) {
+        columnNames.addAll(names);
     }
 
     public ColumnName[] getColumnNames() {
