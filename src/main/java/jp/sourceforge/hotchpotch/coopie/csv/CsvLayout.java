@@ -2,8 +2,14 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 public interface CsvLayout<T> {
 
+    /**
+     * CSV 1レコードぶんの文字列を、オブジェクトから構築します。
+     */
     String[] getValues(T bean);
 
+    /**
+     * CSV 1レコードぶんの文字列を、オブジェクトへセットします。
+     */
     void setValues(T bean, String[] values);
 
     OrderSpecified getOrderSpecified();
