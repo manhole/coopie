@@ -29,10 +29,11 @@ public class MapCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-1", "tsv");
 
-        final MapCsvReader csvReader = new MapCsvReader();
+        final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
-        csvReader.open(new InputStreamReader(is, "UTF-8"));
+        final MapCsvReader csvReader = layout.openReader(new InputStreamReader(
+            is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -77,10 +78,9 @@ public class MapCsvReaderTest {
             }
         });
 
-        final MapCsvReader csvReader = new MapCsvReader(layout);
-
         // ## Act ##
-        csvReader.open(new InputStreamReader(is, "UTF-8"));
+        final MapCsvReader csvReader = layout.openReader(new InputStreamReader(
+            is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -124,10 +124,9 @@ public class MapCsvReaderTest {
 
         layout.setWithHeader(false);
 
-        final MapCsvReader csvReader = new MapCsvReader(layout);
-
         // ## Act ##
-        csvReader.open(new InputStreamReader(is, "UTF-8"));
+        final MapCsvReader csvReader = layout.openReader(new InputStreamReader(
+            is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -160,17 +159,13 @@ public class MapCsvReaderTest {
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setWithHeader(false);
 
-        final MapCsvReader csvReader = new MapCsvReader(layout);
-
         // ## Act ##
         try {
-            csvReader.open(new InputStreamReader(is, "UTF-8"));
+            layout.openReader(new InputStreamReader(is, "UTF-8"));
             fail();
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage());
         }
-
-        csvReader.close();
     }
 
 }

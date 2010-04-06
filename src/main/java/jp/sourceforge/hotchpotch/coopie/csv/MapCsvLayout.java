@@ -1,5 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.io.Reader;
+import java.io.Writer;
 import java.util.Map;
 
 public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
@@ -62,6 +64,22 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
         final MapColumnDesc cd = new MapColumnDesc();
         cd.setName(columnName);
         return cd;
+    }
+
+    @Override
+    public MapCsvReader openReader(final Reader reader) {
+        final MapCsvReader r = new MapCsvReader(this);
+        // TODO openで例外時にcloseすること
+        r.open(reader);
+        return r;
+    }
+
+    @Override
+    public MapCsvWriter openWriter(final Writer writer) {
+        final MapCsvWriter w = new MapCsvWriter(this);
+        // TODO openで例外時にcloseすること
+        w.open(writer);
+        return w;
     }
 
     static class MapColumnDesc implements ColumnDesc<Map<String, String>> {

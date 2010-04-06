@@ -17,12 +17,12 @@ public class BeanCsvWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final BeanCsvWriter<AaaBean> csvWriter = new BeanCsvWriter<AaaBean>(
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        csvWriter.open(writer);
+        final BeanCsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -64,12 +64,9 @@ public class BeanCsvWriterTest {
             }
         });
 
-        final BeanCsvWriter<AaaBean> csvWriter = new BeanCsvWriter<AaaBean>(
-            layout);
-
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        csvWriter.open(writer);
+        final BeanCsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -107,7 +104,6 @@ public class BeanCsvWriterTest {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
-
         layout.setupColumns(new ColumnSetupBlock() {
             @Override
             public void setup(final ColumnSetup setup) {
@@ -120,12 +116,9 @@ public class BeanCsvWriterTest {
             }
         });
 
-        final BeanCsvWriter<AaaBean> csvWriter = new BeanCsvWriter<AaaBean>(
-            layout);
-
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        csvWriter.open(writer);
+        final BeanCsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -149,4 +142,5 @@ public class BeanCsvWriterTest {
             "UTF-8"));
         assertEquals(expected, actual);
     }
+
 }

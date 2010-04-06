@@ -1,5 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.io.Reader;
+import java.io.Writer;
 import java.util.List;
 
 import org.t2framework.commons.meta.BeanDesc;
@@ -77,6 +79,20 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
             throw new RuntimeException(name);
         }
         return pd;
+    }
+
+    public BeanCsvReader<T> openReader(final Reader reader) {
+        final BeanCsvReader<T> r = new BeanCsvReader<T>(this);
+        // TODO openで例外時にcloseすること
+        r.open(reader);
+        return r;
+    }
+
+    public BeanCsvWriter<T> openWriter(final Writer writer) {
+        final BeanCsvWriter<T> w = new BeanCsvWriter<T>(this);
+        // TODO openで例外時にcloseすること
+        w.open(writer);
+        return w;
     }
 
     static class BeanColumnDesc<T> implements ColumnDesc<T> {

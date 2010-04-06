@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.ResourceUtil;
@@ -32,18 +33,23 @@ public class BeanCsvReaderTest {
      * 末端まで達した後のreadでは、例外が発生すること。
      */
 
+    /**
+     * CSVヘッダがBeanのプロパティ名と同じ場合。
+     * 
+     * Layoutを未設定のまま。
+     */
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-1", "tsv");
 
-        final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
 
         // ## Act ##
-        csvReader.open(new InputStreamReader(is, "UTF-8"));
-        //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
+        final BeanCsvReader<AaaBean> csvReader = layout
+            .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
         csvReader.read(bean);
@@ -89,12 +95,9 @@ public class BeanCsvReaderTest {
             }
         });
 
-        final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(
-            layout);
-
         // ## Act ##
-        csvReader.open(new InputStreamReader(is, "UTF-8"));
-        //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
+        final BeanCsvReader<AaaBean> csvReader = layout
+            .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
         csvReader.read(bean);
@@ -139,11 +142,9 @@ public class BeanCsvReaderTest {
 
         layout.setWithHeader(false);
 
-        final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(
-            layout);
-
         // ## Act ##
-        csvReader.open(new InputStreamReader(is, "UTF-8"));
+        final BeanCsvReader<AaaBean> csvReader = layout
+            .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
         csvReader.read(bean);
@@ -177,16 +178,54 @@ public class BeanCsvReaderTest {
             AaaBean.class);
         layout.setWithHeader(false);
 
-        final BeanCsvReader<AaaBean> csvReader = new BeanCsvReader<AaaBean>(
-            layout);
-
         // ## Act ##
         try {
-            csvReader.open(new InputStreamReader(is, "UTF-8"));
+            layout.openReader(new InputStreamReader(is, "UTF-8"));
             fail();
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage());
         }
+    }
+
+    /**
+     * 1つのLayoutインスタンスから複数のCsvReaderをopenしたとき、
+     * それぞれのReaderでの処理が影響しないこと。
+     */
+    @Test
+    @Ignore
+    // FIXME 実装中
+    public void openMultiReader() throws Throwable {
+        // ## Arrange ##
+        final InputStream is1 = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-1", "tsv");
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+            AaaBean.class);
+
+        // ## Act ##
+        final BeanCsvReader<AaaBean> csvReader = layout
+            .openReader(new InputStreamReader(is1, "UTF-8"));
+        //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
+
+        final AaaBean bean = new AaaBean();
+        csvReader.read(bean);
+
+        // ## Assert ##
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.getAaa());
+        assertEquals("い2", bean.getBbb());
+        assertEquals("う2", bean.getCcc());
+
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ3", bean.getAaa());
+        assertEquals("い3", bean.getBbb());
+        assertEquals("う3", bean.getCcc());
 
         csvReader.close();
     }

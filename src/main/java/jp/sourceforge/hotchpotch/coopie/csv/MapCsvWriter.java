@@ -3,11 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.util.Map;
 import java.util.Set;
 
-public class MapCsvWriter extends DefaultCsvWriter<Map<String, String>> {
-
-    public MapCsvWriter() {
-        this(new MapCsvLayout());
-    }
+class MapCsvWriter extends DefaultCsvWriter<Map<String, String>> {
 
     public MapCsvWriter(final MapCsvLayout layout) {
         super(layout);
