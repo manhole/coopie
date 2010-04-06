@@ -2,14 +2,14 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Map;
 
-public class MapCsvReader extends AbstractCsvReader<Map<String, String>> {
+public class MapCsvReader extends DefaultCsvReader<Map<String, String>> {
 
     public MapCsvReader() {
-        csvLayout = new MapCsvLayout();
+        this(new MapCsvLayout());
     }
 
-    public MapCsvReader(final MapCsvLayout columnLayout) {
-        csvLayout = columnLayout;
+    public MapCsvReader(final MapCsvLayout layout) {
+        super(layout);
     }
 
 }

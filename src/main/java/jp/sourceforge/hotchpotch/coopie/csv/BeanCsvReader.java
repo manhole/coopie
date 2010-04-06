@@ -1,14 +1,13 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-
-public class BeanCsvReader<T> extends AbstractCsvReader<T> {
+public class BeanCsvReader<T> extends DefaultCsvReader<T> {
 
     public BeanCsvReader(final Class<T> beanClass) {
-        csvLayout = new BeanCsvLayout<T>(beanClass);
+        this(new BeanCsvLayout<T>(beanClass));
     }
 
-    public BeanCsvReader(final CsvLayout<T> columnLayout) {
-        csvLayout = columnLayout;
+    public BeanCsvReader(final CsvLayout<T> layout) {
+        super(layout);
     }
 
 }

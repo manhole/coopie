@@ -6,7 +6,7 @@ import java.io.Writer;
 import jp.sourceforge.hotchpotch.coopie.Closable;
 import au.com.bytecode.opencsv.CSVWriter;
 
-abstract class AbstractCsvWriter<T> implements Closable {
+class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
 
     private boolean closed = true;
 
@@ -22,6 +22,10 @@ abstract class AbstractCsvWriter<T> implements Closable {
     private CsvSetting csvSetting = new CsvSetting();
 
     protected CsvLayout<T> csvLayout;
+
+    public DefaultCsvWriter(final CsvLayout<T> csvLayout) {
+        this.csvLayout = csvLayout;
+    }
 
     public void open(final Writer writer) {
         csvWriter = csvSetting.openWriter(writer);

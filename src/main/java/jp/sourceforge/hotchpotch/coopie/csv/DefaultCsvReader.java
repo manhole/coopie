@@ -11,10 +11,9 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public abstract class AbstractCsvReader<T> implements Closable {
+class DefaultCsvReader<T> implements Closable, CsvReader<T> {
 
-    // TODO privateに戻す
-    protected CsvSetting csvSetting = new CsvSetting();
+    private CsvSetting csvSetting = new CsvSetting();
 
     /**
      * CsvReader close時に、Readerを一緒にcloseする場合はtrue。
@@ -28,6 +27,10 @@ public abstract class AbstractCsvReader<T> implements Closable {
     private Boolean hasNext;
 
     private String[] nextLine;
+
+    public DefaultCsvReader(final CsvLayout<T> csvLayout) {
+        this.csvLayout = csvLayout;
+    }
 
     public CsvSetting getCsvSetting() {
         return csvSetting;
