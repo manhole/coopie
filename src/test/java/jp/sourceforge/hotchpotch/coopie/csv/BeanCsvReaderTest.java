@@ -78,7 +78,7 @@ public class BeanCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-2", "tsv");
 
-        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
         layout.setupColumns(new ColumnSetup() {
             @Override
@@ -123,7 +123,7 @@ public class BeanCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-3", "tsv");
 
-        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
         layout.setupColumns(new ColumnSetup() {
             @Override
@@ -172,7 +172,7 @@ public class BeanCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-3", "tsv");
 
-        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
         layout.setWithHeader(false);
 

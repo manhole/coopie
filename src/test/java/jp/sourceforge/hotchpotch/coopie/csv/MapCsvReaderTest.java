@@ -67,7 +67,7 @@ public class MapCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-2", "tsv");
 
-        final MapColumnLayout layout = new MapColumnLayout();
+        final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetup() {
             @Override
             public void setup() {
@@ -109,7 +109,7 @@ public class MapCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-3", "tsv");
 
-        final MapColumnLayout layout = new MapColumnLayout();
+        final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetup() {
             @Override
             public void setup() {
@@ -156,7 +156,7 @@ public class MapCsvReaderTest {
         final InputStream is = ResourceUtil.getResourceAsStream(
             BeanCsvReaderTest.class.getName() + "-3", "tsv");
 
-        final MapColumnLayout layout = new MapColumnLayout();
+        final MapCsvLayout layout = new MapCsvLayout();
         layout.setWithHeader(false);
 
         final MapCsvReader csvReader = new MapCsvReader(layout);

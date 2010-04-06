@@ -2,7 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Map;
 
-public class MapColumnLayout extends AbstractColumnLayout<Map<String, String>> {
+public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
 
     @Override
     protected ColumnDesc<Map<String, String>>[] getColumnDescs() {
@@ -31,7 +31,7 @@ public class MapColumnLayout extends AbstractColumnLayout<Map<String, String>> {
      * CSVを読むとき
      */
     @Override
-    public MapColumnLayout setupByHeader(final String[] header) {
+    public MapCsvLayout setupByHeader(final String[] header) {
         final ColumnDesc<Map<String, String>>[] tmpCds = getColumnDescs();
         if (tmpCds != null) {
             /*

@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface ColumnLayout<T> {
+public interface CsvLayout<T> {
 
     String[] getValues(T bean);
 
@@ -8,7 +8,7 @@ public interface ColumnLayout<T> {
 
     OrderSpecified getOrderSpecified();
 
-    ColumnLayout<T> setupByHeader(String[] header);
+    CsvLayout<T> setupByHeader(String[] header);
 
     ColumnName[] getNames();
 

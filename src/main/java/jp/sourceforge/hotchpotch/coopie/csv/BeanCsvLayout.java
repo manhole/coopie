@@ -6,11 +6,11 @@ import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
 
-public class BeanColumnLayout<T> extends AbstractColumnLayout<T> {
+public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private final BeanDesc<T> beanDesc;
 
-    public BeanColumnLayout(final Class<T> beanClass) {
+    public BeanCsvLayout(final Class<T> beanClass) {
         this.beanDesc = BeanDescFactory.getBeanDesc(beanClass);
     }
 

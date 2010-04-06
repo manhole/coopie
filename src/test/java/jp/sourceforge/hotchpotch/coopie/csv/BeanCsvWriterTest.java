@@ -53,7 +53,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
         layout.setupColumns(new ColumnSetup() {
             @Override
@@ -105,7 +105,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write3() throws Throwable {
         // ## Arrange ##
-        final BeanColumnLayout<AaaBean> layout = new BeanColumnLayout<AaaBean>(
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
             AaaBean.class);
 
         layout.setupColumns(new ColumnSetup() {

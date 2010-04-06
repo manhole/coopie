@@ -53,7 +53,7 @@ public class MapCsvWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapColumnLayout layout = new MapColumnLayout();
+        final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetup() {
             @Override
             public void setup() {
@@ -103,7 +103,7 @@ public class MapCsvWriterTest {
     @Test
     public void write3() throws Throwable {
         // ## Arrange ##
-        final MapColumnLayout layout = new MapColumnLayout();
+        final MapCsvLayout layout = new MapCsvLayout();
 
         layout.setupColumns(new ColumnSetup() {
             @Override
