@@ -22,7 +22,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final BeanCsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -66,7 +66,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final BeanCsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -118,7 +118,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final BeanCsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
