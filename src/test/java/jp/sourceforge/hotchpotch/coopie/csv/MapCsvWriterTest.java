@@ -18,11 +18,11 @@ public class MapCsvWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final MapCsvWriter csvWriter = new MapCsvWriter();
+        final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        csvWriter.open(writer);
+        final MapCsvWriter csvWriter = layout.openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<String, String>();
         bean.put("aaa", "あ1");
@@ -63,11 +63,9 @@ public class MapCsvWriterTest {
             }
         });
 
-        final MapCsvWriter csvWriter = new MapCsvWriter(layout);
-
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        csvWriter.open(writer);
+        final MapCsvWriter csvWriter = layout.openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -104,7 +102,6 @@ public class MapCsvWriterTest {
     public void write3() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
-
         layout.setupColumns(new ColumnSetupBlock() {
             @Override
             public void setup(final ColumnSetup setup) {
@@ -117,11 +114,9 @@ public class MapCsvWriterTest {
             }
         });
 
-        final MapCsvWriter csvWriter = new MapCsvWriter(layout);
-
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        csvWriter.open(writer);
+        final MapCsvWriter csvWriter = layout.openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
