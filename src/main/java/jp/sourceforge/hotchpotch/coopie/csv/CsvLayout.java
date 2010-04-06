@@ -12,7 +12,7 @@ public interface CsvLayout<T> {
 
     ColumnName[] getNames();
 
-    void setupColumns(ColumnSetup columnSetup);
+    void setupColumns(ColumnSetupBlock columnSetup);
 
     boolean isWithHeader();
 

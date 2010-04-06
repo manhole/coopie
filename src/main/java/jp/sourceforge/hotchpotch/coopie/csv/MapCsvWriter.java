@@ -10,7 +10,7 @@ public class MapCsvWriter extends AbstractCsvWriter<Map<String, String>> {
     }
 
     public MapCsvWriter(final MapCsvLayout columnLayout) {
-        this.csvLayout = columnLayout;
+        csvLayout = columnLayout;
     }
 
     @Override
@@ -20,12 +20,12 @@ public class MapCsvWriter extends AbstractCsvWriter<Map<String, String>> {
              * 列名が設定されていない場合、
              * 1行目のMapのキーを、CSVのヘッダとする
              */
-            csvLayout.setupColumns(new ColumnSetup() {
+            csvLayout.setupColumns(new ColumnSetupBlock() {
                 @Override
-                public void setup() {
+                public void setup(final ColumnSetup setup) {
                     final Set<String> keys = bean.keySet();
                     for (final String key : keys) {
-                        column(key);
+                        setup.column(key);
                     }
                 }
             });

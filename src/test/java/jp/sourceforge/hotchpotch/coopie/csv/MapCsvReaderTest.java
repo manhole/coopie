@@ -68,12 +68,12 @@ public class MapCsvReaderTest {
             BeanCsvReaderTest.class.getName() + "-2", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetup() {
+        layout.setupColumns(new ColumnSetupBlock() {
             @Override
-            public void setup() {
-                column("aaa", "あ");
-                column("ccc", "ううう");
-                column("bbb", "いい");
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa", "あ");
+                setup.column("ccc", "ううう");
+                setup.column("bbb", "いい");
             }
         });
 
@@ -110,17 +110,18 @@ public class MapCsvReaderTest {
             BeanCsvReaderTest.class.getName() + "-3", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetup() {
+        layout.setupColumns(new ColumnSetupBlock() {
             @Override
-            public void setup() {
+            public void setup(final ColumnSetup setup) {
                 /*
                  * CSVの列順
                  */
-                column("ccc");
-                column("aaa");
-                column("bbb");
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
             }
         });
+
         layout.setWithHeader(false);
 
         final MapCsvReader csvReader = new MapCsvReader(layout);
