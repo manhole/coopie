@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
-import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout.OrderSpecified;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -20,7 +20,7 @@ class DefaultCsvReader<T> implements Closable, CsvReader<T> {
      */
     private boolean closeReader = true;
 
-    protected CsvLayout<T> csvLayout;
+    protected RecordDesc<T> recordDesc;
     protected boolean closed = true;
     protected CSVReader csvReader;
 
@@ -28,8 +28,8 @@ class DefaultCsvReader<T> implements Closable, CsvReader<T> {
 
     private String[] nextLine;
 
-    public DefaultCsvReader(final CsvLayout<T> csvLayout) {
-        this.csvLayout = csvLayout;
+    public DefaultCsvReader(final RecordDesc<T> csvLayout) {
+        this.recordDesc = csvLayout;
     }
 
     public CsvSetting getCsvSetting() {
@@ -53,7 +53,7 @@ class DefaultCsvReader<T> implements Closable, CsvReader<T> {
             throw new AssertionError();
         }
 
-        csvLayout.setValues(bean, line);
+        recordDesc.setValues(bean, line);
     }
 
     protected String[] readLine() {
@@ -86,15 +86,15 @@ class DefaultCsvReader<T> implements Closable, CsvReader<T> {
     }
 
     private void setupByHeader() {
-        if (csvLayout.isWithHeader()) {
+        if (recordDesc.isWithHeader()) {
             final String[] header = readLine();
-            csvLayout = csvLayout.setupByHeader(header);
+            recordDesc = recordDesc.setupByHeader(header);
         } else {
             /*
              * ヘッダなしの場合は、列順が指定されていないとダメ。
              * JavaBeansのプロパティ情報は順序が不定なため。
              */
-            if (OrderSpecified.SPECIFIED != csvLayout.getOrderSpecified()) {
+            if (OrderSpecified.SPECIFIED != recordDesc.getOrderSpecified()) {
                 throw new IllegalStateException("no column order set");
             }
         }

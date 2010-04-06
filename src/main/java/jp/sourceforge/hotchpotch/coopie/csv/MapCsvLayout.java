@@ -3,15 +3,14 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
+import java.util.Set;
+
+import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
 public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
 
     @Override
-    protected ColumnDesc<Map<String, String>>[] getColumnDescs() {
-        if (columnDescs != null) {
-            return columnDescs;
-        }
-
+    protected RecordDesc<Map<String, String>> buildRecordDesc() {
         if (columnNames != null) {
             final ColumnName[] names = columnNames.getColumnNames();
             final ColumnDesc<Map<String, String>>[] cds = newColumnDescs(names.length);
@@ -21,45 +20,20 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
                 cds[i] = cd;
                 i++;
             }
-            orderSpecified = OrderSpecified.SPECIFIED;
-            columnDescs = cds;
-            return columnDescs;
-        }
-
-        return null;
-    }
-
-    /*
-     * CSVを読むとき
-     */
-    @Override
-    public MapCsvLayout setupByHeader(final String[] header) {
-        final ColumnDesc<Map<String, String>>[] tmpCds = getColumnDescs();
-        if (tmpCds != null) {
-            /*
-             * columnNamesが設定されている場合は、ヘッダに合わせてソートし直す
-             */
-            super.setupByHeader(header);
-            return this;
+            return new DefaultRecordDesc<Map<String, String>>(cds,
+                OrderSpecified.SPECIFIED, withHeader);
         }
 
         /*
-         * ヘッダをMapのキーとして扱う。
+         * カラム名が設定されていない場合は、
+         * Readの場合はヘッダから、
+         * Writeの場合は1件目から、
+         * カラム名を構築する。
          */
-        final ColumnDesc<Map<String, String>>[] cds = newColumnDescs(header.length);
-        int i = 0;
-        for (final String headerElem : header) {
-            final ColumnName columnName = new SimpleColumnName(headerElem);
-            final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(columnName);
-            cds[i] = cd;
-            i++;
-        }
-        orderSpecified = OrderSpecified.SPECIFIED;
-        columnDescs = cds;
-        return this;
+        return new LazyMapRecordDesc(this);
     }
 
-    private ColumnDesc<Map<String, String>> newMapColumnDesc(
+    protected static ColumnDesc<Map<String, String>> newMapColumnDesc(
         final ColumnName columnName) {
         final MapColumnDesc cd = new MapColumnDesc();
         cd.setName(columnName);
@@ -68,15 +42,15 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
 
     @Override
     public MapCsvReader openReader(final Reader reader) {
-        final MapCsvReader r = new MapCsvReader(this);
+        final MapCsvReader r = new MapCsvReader(buildRecordDesc());
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
     }
 
     @Override
-    public MapCsvWriter openWriter(final Writer writer) {
-        final MapCsvWriter w = new MapCsvWriter(this);
+    public CsvWriter<Map<String, String>> openWriter(final Writer writer) {
+        final MapCsvWriter w = new MapCsvWriter(buildRecordDesc());
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
@@ -108,6 +82,110 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
         public void setValue(final Map<String, String> bean, final String value) {
             final String propertyName = name.getName();
             bean.put(propertyName, value);
+        }
+
+    }
+
+    static class LazyMapRecordDesc implements RecordDesc<Map<String, String>> {
+
+        private final MapCsvLayout layout;
+
+        public LazyMapRecordDesc(final MapCsvLayout layout) {
+            this.layout = layout;
+        }
+
+        /*
+         * CSVを読むとき
+         */
+        @Override
+        public RecordDesc<Map<String, String>> setupByHeader(
+            final String[] header) {
+
+            /*
+             * ヘッダをMapのキーとして扱う。
+             */
+            /*
+             * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
+             * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
+             */
+            layout.setupColumns(new ColumnSetupBlock() {
+                @Override
+                public void setup(final ColumnSetup setup) {
+                    int i = 0;
+                    for (final String headerElem : header) {
+                        setup.column(headerElem);
+                        i++;
+                    }
+                }
+            });
+
+            final RecordDesc<Map<String, String>> built = layout
+                .buildRecordDesc();
+            if (built instanceof LazyMapRecordDesc) {
+                // 意図しない無限ループを防ぐ
+                throw new AssertionError();
+            }
+            return built;
+        }
+
+        /*
+         * CSVを書くとき
+         */
+        /*
+         * 列名が設定されていない場合、
+         * 1行目のMapのキーを、CSVのヘッダとする
+         * (列名が設定されている場合は、そもそもこのクラスが使われない)
+         */
+        @Override
+        public RecordDesc<Map<String, String>> setupByBean(
+            final Map<String, String> bean) {
+            /*
+             * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
+             * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
+             */
+            layout.setupColumns(new ColumnSetupBlock() {
+                @Override
+                public void setup(final ColumnSetup setup) {
+                    final Set<String> keys = bean.keySet();
+                    for (final String key : keys) {
+                        setup.column(key);
+                    }
+                }
+            });
+
+            final RecordDesc<Map<String, String>> built = layout
+                .buildRecordDesc();
+            if (built instanceof LazyMapRecordDesc) {
+                // 意図しない無限ループを防ぐ
+                throw new AssertionError();
+            }
+            return built;
+        }
+
+        @Override
+        public ColumnName[] getColumnNames() {
+            throw new AssertionError();
+        }
+
+        @Override
+        public OrderSpecified getOrderSpecified() {
+            return null;
+        }
+
+        @Override
+        public String[] getValues(final Map<String, String> bean) {
+            throw new AssertionError();
+        }
+
+        @Override
+        public boolean isWithHeader() {
+            return layout.withHeader;
+        }
+
+        @Override
+        public void setValues(final Map<String, String> bean,
+            final String[] values) {
+            throw new AssertionError();
         }
 
     }

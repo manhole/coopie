@@ -4,7 +4,7 @@ import java.util.Map;
 
 class MapCsvReader extends DefaultCsvReader<Map<String, String>> {
 
-    public MapCsvReader(final MapCsvLayout layout) {
+    public MapCsvReader(final RecordDesc<Map<String, String>> layout) {
         super(layout);
     }
 

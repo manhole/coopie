@@ -15,16 +15,18 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
      */
     private boolean closeWriter = true;
 
+    private boolean firstRecord = true;
+
     protected CSVWriter csvWriter;
 
     private boolean writtenHeader;
 
     private CsvSetting csvSetting = new CsvSetting();
 
-    protected CsvLayout<T> csvLayout;
+    protected RecordDesc<T> recordDesc;
 
-    public DefaultCsvWriter(final CsvLayout<T> csvLayout) {
-        this.csvLayout = csvLayout;
+    public DefaultCsvWriter(final RecordDesc<T> csvLayout) {
+        this.recordDesc = csvLayout;
     }
 
     public void open(final Writer writer) {
@@ -36,7 +38,7 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
      * 1レコード目を出力するときに、このメソッドが呼ばれる。
      */
     protected void writeHeader(final T bean) {
-        final ColumnName[] names = getColumnNames();
+        final ColumnName[] names = recordDesc.getColumnNames();
         final String[] line = new String[names.length];
         int i = 0;
         for (final ColumnName name : names) {
@@ -47,20 +49,16 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
     }
 
     public void write(final T bean) {
+        if (firstRecord) {
+            firstRecord = false;
+            recordDesc = recordDesc.setupByBean(bean);
+        }
         if (!writtenHeader) {
             writeHeader(bean);
             writtenHeader = true;
         }
-        final String[] line = getValues(bean);
+        final String[] line = recordDesc.getValues(bean);
         csvWriter.writeNext(line);
-    }
-
-    protected String[] getValues(final T bean) {
-        return csvLayout.getValues(bean);
-    }
-
-    protected ColumnName[] getColumnNames() {
-        return csvLayout.getNames();
     }
 
     @Override

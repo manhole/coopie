@@ -4,6 +4,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
+
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
@@ -21,11 +23,7 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     @Override
-    protected ColumnDesc<T>[] getColumnDescs() {
-        if (columnDescs != null) {
-            return columnDescs;
-        }
-
+    protected RecordDesc<T> buildRecordDesc() {
         if (columnNames == null || columnNames.isEmpty()) {
             /*
              * beanの全プロパティを対象に。
@@ -40,8 +38,8 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 cds[i] = cd;
                 i++;
             }
-            orderSpecified = OrderSpecified.NO;
-            columnDescs = cds;
+
+            return new DefaultRecordDesc<T>(cds, OrderSpecified.NO, withHeader);
         } else {
             /*
              * 設定されているプロパティ名を対象に。
@@ -57,10 +55,10 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 cds[i] = cd;
                 i++;
             }
-            orderSpecified = OrderSpecified.SPECIFIED;
-            columnDescs = cds;
+
+            return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
+                withHeader);
         }
-        return columnDescs;
     }
 
     private ColumnDesc<T> newBeanColumnDesc(final ColumnName name,
@@ -82,14 +80,14 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     public BeanCsvReader<T> openReader(final Reader reader) {
-        final BeanCsvReader<T> r = new BeanCsvReader<T>(this);
+        final BeanCsvReader<T> r = new BeanCsvReader<T>(buildRecordDesc());
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
     }
 
     public BeanCsvWriter<T> openWriter(final Writer writer) {
-        final BeanCsvWriter<T> w = new BeanCsvWriter<T>(this);
+        final BeanCsvWriter<T> w = new BeanCsvWriter<T>(buildRecordDesc());
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
