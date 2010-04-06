@@ -48,7 +48,7 @@ public class BeanCsvReaderTest {
             AaaBean.class);
 
         // ## Act ##
-        final BeanCsvReader<AaaBean> csvReader = layout
+        final CsvReader<AaaBean> csvReader = layout
             .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
@@ -96,7 +96,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final BeanCsvReader<AaaBean> csvReader = layout
+        final CsvReader<AaaBean> csvReader = layout
             .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
@@ -143,7 +143,7 @@ public class BeanCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final BeanCsvReader<AaaBean> csvReader = layout
+        final CsvReader<AaaBean> csvReader = layout
             .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
@@ -202,7 +202,7 @@ public class BeanCsvReaderTest {
             AaaBean.class);
 
         // ## Act ##
-        final BeanCsvReader<AaaBean> csvReader = layout
+        final CsvReader<AaaBean> csvReader = layout
             .openReader(new InputStreamReader(is1, "UTF-8"));
         //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
 
