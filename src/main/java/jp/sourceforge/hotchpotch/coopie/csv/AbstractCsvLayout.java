@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public abstract class AbstractColumnLayout<T> implements ColumnLayout<T> {
+public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
 
     protected ColumnDesc<T>[] columnDescs;
     // 一時的
@@ -79,7 +79,7 @@ public abstract class AbstractColumnLayout<T> implements ColumnLayout<T> {
     /*
      * CSVを読むとき
      */
-    public ColumnLayout<T> setupByHeader(final String[] header) {
+    public CsvLayout<T> setupByHeader(final String[] header) {
         /*
          * ColumnDescをヘッダの順序に合わせてソートし直す。
          */

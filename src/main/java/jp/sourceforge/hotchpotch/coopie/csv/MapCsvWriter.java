@@ -6,21 +6,21 @@ import java.util.Set;
 public class MapCsvWriter extends AbstractCsvWriter<Map<String, String>> {
 
     public MapCsvWriter() {
-        columnLayout = new MapColumnLayout();
+        csvLayout = new MapCsvLayout();
     }
 
-    public MapCsvWriter(final MapColumnLayout columnLayout) {
-        this.columnLayout = columnLayout;
+    public MapCsvWriter(final MapCsvLayout columnLayout) {
+        this.csvLayout = columnLayout;
     }
 
     @Override
     protected void writeHeader(final Map<String, String> bean) {
-        if (columnLayout.getNames() == null) {
+        if (csvLayout.getNames() == null) {
             /*
              * 列名が設定されていない場合、
              * 1行目のMapのキーを、CSVのヘッダとする
              */
-            columnLayout.setupColumns(new ColumnSetup() {
+            csvLayout.setupColumns(new ColumnSetup() {
                 @Override
                 public void setup() {
                     final Set<String> keys = bean.keySet();

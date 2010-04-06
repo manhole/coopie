@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnLayout.OrderSpecified;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout.OrderSpecified;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -31,14 +31,14 @@ public class BeanCsvReader<T> implements Closable {
     private CSVReader csvReader;
     protected boolean closed = true;
     private String[] nextLine;
-    private ColumnLayout<T> columnLayout;
+    private CsvLayout<T> csvLayout;
 
     public BeanCsvReader(final Class<T> beanClass) {
-        columnLayout = new BeanColumnLayout<T>(beanClass);
+        csvLayout = new BeanCsvLayout<T>(beanClass);
     }
 
-    public BeanCsvReader(final ColumnLayout<T> columnLayout) {
-        this.columnLayout = columnLayout;
+    public BeanCsvReader(final CsvLayout<T> columnLayout) {
+        this.csvLayout = columnLayout;
     }
 
     public void open(final Reader reader) {
@@ -49,15 +49,15 @@ public class BeanCsvReader<T> implements Closable {
     }
 
     private void setupByHeader() {
-        if (columnLayout.isWithHeader()) {
+        if (csvLayout.isWithHeader()) {
             final String[] header = readLine();
-            columnLayout = columnLayout.setupByHeader(header);
+            csvLayout = csvLayout.setupByHeader(header);
         } else {
             /*
              * ヘッダなしの場合は、列順が指定されていないとダメ。
              * JavaBeansのプロパティ情報は順序が不定なため。
              */
-            if (OrderSpecified.SPECIFIED != columnLayout.getOrderSpecified()) {
+            if (OrderSpecified.SPECIFIED != csvLayout.getOrderSpecified()) {
                 throw new IllegalStateException("no column order set");
             }
         }
@@ -76,7 +76,7 @@ public class BeanCsvReader<T> implements Closable {
             throw new AssertionError();
         }
 
-        columnLayout.setValues(bean, line);
+        csvLayout.setValues(bean, line);
     }
 
     private String[] readLine() {

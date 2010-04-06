@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnLayout.OrderSpecified;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout.OrderSpecified;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -20,14 +20,14 @@ public class MapCsvReader implements Closable {
     private boolean closeReader = true;
     private Boolean hasNext = null;
     private String[] nextLine;
-    private ColumnLayout<Map<String, String>> columnLayout;
+    private CsvLayout<Map<String, String>> csvLayout;
 
     public MapCsvReader() {
-        columnLayout = new MapColumnLayout();
+        csvLayout = new MapCsvLayout();
     }
 
-    public MapCsvReader(final MapColumnLayout columnLayout) {
-        this.columnLayout = columnLayout;
+    public MapCsvReader(final MapCsvLayout columnLayout) {
+        this.csvLayout = columnLayout;
     }
 
     public CsvSetting getCsvSetting() {
@@ -46,15 +46,15 @@ public class MapCsvReader implements Closable {
     }
 
     private void setupByHeader() {
-        if (columnLayout.isWithHeader()) {
+        if (csvLayout.isWithHeader()) {
             final String[] header = readLine();
-            columnLayout = columnLayout.setupByHeader(header);
+            csvLayout = csvLayout.setupByHeader(header);
         } else {
             /*
              * ヘッダなしの場合は、列順が指定されていないとダメ。
              * JavaBeansのプロパティ情報は順序が不定なため。
              */
-            if (OrderSpecified.SPECIFIED != columnLayout.getOrderSpecified()) {
+            if (OrderSpecified.SPECIFIED != csvLayout.getOrderSpecified()) {
                 throw new IllegalStateException("no column order set");
             }
         }
@@ -73,7 +73,7 @@ public class MapCsvReader implements Closable {
             throw new AssertionError();
         }
 
-        columnLayout.setValues(bean, line);
+        csvLayout.setValues(bean, line);
     }
 
     private String[] readLine() {
