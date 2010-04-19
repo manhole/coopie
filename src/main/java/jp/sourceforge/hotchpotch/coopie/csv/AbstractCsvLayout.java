@@ -157,7 +157,7 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
          * Map Writerのときに使われる。
          */
         @Override
-        public RecordDesc setupByBean(final T bean) {
+        public RecordDesc<T> setupByBean(final T bean) {
             return this;
         }
 
