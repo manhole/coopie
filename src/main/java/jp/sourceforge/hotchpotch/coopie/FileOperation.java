@@ -19,11 +19,12 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileOperation {
 
+    private static final int DEFAULT_BUFF_SIZE = 1024 * 8;
     // FileOPeration
     private String prefix = "fop";
     private String suffix = ".tmp";
     private String encoding = "UTF-8";
-    private int bufferSize = 8192;
+    private int bufferSize = DEFAULT_BUFF_SIZE;
 
     public File createTempFile() {
         final File f = createTempFile(prefix);
