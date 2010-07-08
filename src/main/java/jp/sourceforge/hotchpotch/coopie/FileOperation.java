@@ -134,6 +134,16 @@ public class FileOperation {
         IOUtil.closeNoException(closeable);
     }
 
+    public String getExtension(final File file) {
+        final String name = file.getName();
+        final int pos = name.lastIndexOf('.');
+        if (-1 < pos) {
+            final String extension = name.substring(pos + 1);
+            return extension;
+        }
+        return null;
+    }
+
     public void setBufferSize(final int bufferSize) {
         this.bufferSize = bufferSize;
     }
