@@ -67,4 +67,20 @@ public class FileOperationTest {
         assertEquals("かきくえば", read);
     }
 
+    @Test
+    public void getExtension() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("txt", files.getExtension(new File("foo.txt")));
+        assertEquals("Txt", files.getExtension(new File("bar.Txt")));
+        assertEquals("txt", files.getExtension(new File("foo.bar.txt")));
+        assertEquals("gz", files.getExtension(new File("foo.bar.tar.gz")));
+        assertEquals("cvsignore", files.getExtension(new File(".cvsignore")));
+        assertEquals("", files.getExtension(new File("foo.bar.tar.")));
+        assertEquals(null, files.getExtension(new File("foo")));
+    }
+
 }
