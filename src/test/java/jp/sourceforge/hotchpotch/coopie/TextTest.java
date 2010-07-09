@@ -50,4 +50,11 @@ public class TextTest {
         assertEquals(false, text.containsLine("お引き立てを賜り誠にありがとうございます"));
     }
 
+    @Test
+    public void toStringReturnsRawString() throws Throwable {
+        final Text text = new Text("　カレーなどの料理に" + "\r\n" + "広く使うスパイスの" + "\r\n"
+            + "対日価格が高騰している。");
+        assertEquals("　カレーなどの料理に\r\n広く使うスパイスの\r\n対日価格が高騰している。", text.toString());
+    }
+
 }
