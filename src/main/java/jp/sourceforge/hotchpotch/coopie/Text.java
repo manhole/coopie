@@ -76,4 +76,9 @@ public class Text {
         return s.substring(begin, end);
     }
 
+    @Override
+    public String toString() {
+        return getRawText();
+    }
+
 }
