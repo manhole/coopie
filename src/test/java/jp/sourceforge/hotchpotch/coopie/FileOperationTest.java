@@ -266,4 +266,112 @@ public class FileOperationTest {
         assertEquals(true, root.exists());
     }
 
+    @Test
+    public void copyFile1() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File to = new File(root, "f2.txt");
+        final File from = files.createFile(root, "f1.txt");
+
+        files.write(from, "ほげ");
+
+        // ## Act ##
+        files.copyFile(from, to);
+
+        // ## Assert ##
+        assertEquals("ほげ", files.read(to));
+    }
+
+    /*
+     * toがあろうと無かろうと同じ挙動をする。
+     * 
+     * "from"→"to"へcopyするとき、
+     * "from/foo"は"to/foo"へcopyされる。
+     * 
+     * "from"をディレクトリとして残したいなら、
+     * "to/from"をcopy先として指定すべき。
+     */
+    @Test
+    public void copyDirectory1() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File from = files.createDirectory(root, "from");
+        final File to = files.createDirectory(root, "to");
+
+        final File c1 = files.createDirectory(from, "l1");
+        final File c2 = files.createDirectory(c1, "l2");
+
+        final File f1 = files.createFile(c2, "f1.txt");
+        files.write(f1, "ほげ");
+
+        assertEquals(true, files.exists(from, "l1"));
+        assertEquals(true, files.exists(from, "l1/l2"));
+        assertEquals(true, files.exists(from, "l1/l2/f1.txt"));
+
+        // ## Act ##
+        files.copy(from, to);
+
+        // ## Assert ##
+
+        assertEquals(true, to.exists());
+        assertEquals(true, files.exists(to, "l1"));
+        assertEquals(true, files.exists(to, "l1/l2"));
+        assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+    }
+
+    /*
+     * "to"ディレクトリがまだ存在しない場合
+     */
+    @Test
+    public void copyDirectory2() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File from = files.createDirectory(root, "from");
+        final File to = new File(root, "to");
+
+        final File c1 = files.createDirectory(from, "l1");
+        final File c2 = files.createDirectory(c1, "l2");
+
+        final File f1 = files.createFile(c2, "f1.txt");
+        files.write(f1, "ほげ");
+
+        // ## Act ##
+        files.copy(from, to);
+
+        // ## Assert ##
+
+        assertEquals(true, to.exists());
+        assertEquals(true, files.exists(to, "l1"));
+        assertEquals(true, files.exists(to, "l1/l2"));
+        assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+    }
+
+    /*
+     * "path/to/child"ディレクトリがまだ存在しない場合
+     */
+    @Test
+    public void copyDirectory3() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File from = files.createDirectory(root, "from");
+        final File to = new File(root, "path/to/child");
+
+        final File c1 = files.createDirectory(from, "l1");
+        final File c2 = files.createDirectory(c1, "l2");
+
+        final File f1 = files.createFile(c2, "f1.txt");
+        files.write(f1, "ほげ");
+
+        // ## Act ##
+        files.copy(from, to);
+
+        // ## Assert ##
+
+        assertEquals(true, to.exists());
+        assertEquals(true, files.exists(to, "l1"));
+        assertEquals(true, files.exists(to, "l1/l2"));
+        assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+    }
+
 }
