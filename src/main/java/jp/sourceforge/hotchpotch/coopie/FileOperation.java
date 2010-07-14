@@ -28,6 +28,7 @@ public class FileOperation {
     private String suffix = ".tmp";
     private String encoding = "UTF-8";
     private int bufferSize = DEFAULT_BUFF_SIZE;
+    private final FileWalker deleteWalker = new DeleteWalker();
 
     public File createTempFile() {
         final File f = createTempFile(prefix);
@@ -73,7 +74,7 @@ public class FileOperation {
     }
 
     public void delete(final File file) {
-        walk(file, new DeleteWalker());
+        walk(file, deleteWalker);
     }
 
     public void write(final File file, final String text) {
