@@ -13,7 +13,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.slf4j.Logger;
 import org.t2framework.commons.exception.FileNotFoundRuntimeException;
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -56,9 +59,21 @@ public class FileOperation {
         return f;
     }
 
-    public void delete(final File file) {
-        // TODO Auto-generated method stub
+    public File createTempDir(final File parent) {
+        final File f = createTempFile(parent);
+        f.delete();
+        f.mkdir();
+        return f;
+    }
 
+    public File createDirectory(final File parent, final String name) {
+        final File file = new File(parent, name);
+        file.mkdir();
+        return file;
+    }
+
+    public void delete(final File file) {
+        walk(file, new DeleteWalker());
     }
 
     public void write(final File file, final String text) {
@@ -158,6 +173,73 @@ public class FileOperation {
 
     public void setPrefix(final String prefix) {
         this.prefix = prefix;
+    }
+
+    /*
+     * ディレクトリを上から順に下層へたどる。
+     */
+    public void walk(final File entrance, final FileWalker walker) {
+        if (entrance.isDirectory()) {
+            walkDirectory(entrance, walker);
+        } else if (entrance.isFile()) {
+            walker.file(entrance);
+        }
+    }
+
+    private void walkDirectory(final File dir, final FileWalker walker) {
+        if (!walker.shouldEnter(dir)) {
+            return;
+        }
+
+        walker.enter(dir);
+        try {
+            final File[] children = dir.listFiles();
+            if (children == null) {
+                return;
+            }
+
+            final List<File> files = new ArrayList<File>();
+            for (final File child : children) {
+                if (child.isDirectory()) {
+                    walkDirectory(child, walker);
+                } else if (child.isFile()) {
+                    files.add(child);
+                }
+            }
+
+            for (final File file : files) {
+                walker.file(file);
+            }
+        } finally {
+            walker.leave(dir);
+        }
+    }
+
+    static class DeleteWalker implements FileWalker {
+
+        private static final Logger logger = LoggerFactory.getLogger();
+
+        @Override
+        public void enter(final File dir) {
+        }
+
+        @Override
+        public void file(final File file) {
+            final boolean delete = file.delete();
+            logger.debug("delete file {} [{}]", delete, file);
+        }
+
+        @Override
+        public void leave(final File dir) {
+            final boolean delete = dir.delete();
+            logger.debug("delete directory {} [{}]", delete, dir);
+        }
+
+        @Override
+        public boolean shouldEnter(final File dir) {
+            return true;
+        }
+
     }
 
 }
