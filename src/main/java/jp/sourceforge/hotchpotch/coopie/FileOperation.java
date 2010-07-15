@@ -278,7 +278,7 @@ public class FileOperation {
         return f.exists();
     }
 
-    static class DeleteWalker implements FileWalker {
+    public static class DeleteWalker implements FileWalker {
 
         private static final Logger logger = LoggerFactory.getLogger();
 
@@ -305,7 +305,7 @@ public class FileOperation {
 
     }
 
-    static class CopyWalker implements FileWalker {
+    public static class CopyWalker implements FileWalker {
 
         private static final Logger logger = LoggerFactory.getLogger();
         private final File toDir;
