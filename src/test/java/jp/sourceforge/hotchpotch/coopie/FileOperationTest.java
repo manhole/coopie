@@ -257,6 +257,9 @@ public class FileOperationTest {
         final File d2 = files.createDirectory(root, "d2");
         final File d3 = files.createDirectory(d2, "d3");
         final File f2 = files.createTempFile(d1);
+        final File f3 = files.createTempFile(d1);
+        files.write(f2, "1234");
+        files.write(f3, "aiueo");
 
         // ## Act ##
         files.delete(d1);
@@ -284,13 +287,18 @@ public class FileOperationTest {
     }
 
     /*
+     * ＜COPYの挙動について＞
+     * 
      * toがあろうと無かろうと同じ挙動をする。
      * 
      * "from"→"to"へcopyするとき、
      * "from/foo"は"to/foo"へcopyされる。
      * 
-     * "from"をディレクトリとして残したいなら、
+     * "from"をディレクトリとしてcopy先へ作りたいなら、
      * "to/from"をcopy先として指定すべき。
+     */
+    /*
+     * "to"だけがある場合
      */
     @Test
     public void copyDirectory1() throws Throwable {
@@ -334,7 +342,7 @@ public class FileOperationTest {
         final File c2 = files.createDirectory(c1, "l2");
 
         final File f1 = files.createFile(c2, "f1.txt");
-        files.write(f1, "ほげ");
+        files.write(f1, "ほげ2");
 
         // ## Act ##
         files.copy(from, to);

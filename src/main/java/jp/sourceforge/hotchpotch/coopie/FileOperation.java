@@ -30,7 +30,6 @@ public class FileOperation {
     private String suffix = ".tmp";
     private String encoding = "UTF-8";
     private int bufferSize = DEFAULT_BUFF_SIZE;
-    private final FileWalker deleteWalker = new DeleteWalker();
 
     public File createTempFile() {
         final File f = createTempFile(prefix);
@@ -86,7 +85,9 @@ public class FileOperation {
     }
 
     public void delete(final File file) {
+        final DeleteWalker deleteWalker = new DeleteWalker();
         walk(file, deleteWalker);
+        deleteWalker.logResult();
     }
 
     public void write(final File file, final String text) {
@@ -215,7 +216,9 @@ public class FileOperation {
     }
 
     public void copy(final File from, final File to) {
-        walk(from, new CopyWalker(to, this));
+        final CopyWalker copyWalker = new CopyWalker(to, this);
+        walk(from, copyWalker);
+        copyWalker.logResult();
     }
 
     /*
@@ -225,7 +228,7 @@ public class FileOperation {
         if (entrance.isDirectory()) {
             walkDirectory(entrance, walker);
         } else if (entrance.isFile()) {
-            walker.file(entrance);
+            walkFile(entrance, walker);
         }
     }
 
@@ -251,11 +254,15 @@ public class FileOperation {
             }
 
             for (final File file : files) {
-                walker.file(file);
+                walkFile(file, walker);
             }
         } finally {
             walker.leave(dir);
         }
+    }
+
+    private void walkFile(final File file, final FileWalker walker) {
+        walker.file(file);
     }
 
     public void copyFile(final File from, final File to) {
@@ -282,6 +289,10 @@ public class FileOperation {
 
         private static final Logger logger = LoggerFactory.getLogger();
 
+        private int deletedFileCount;
+        private int deletedDirCount;
+        private long deletedTotalBytes;
+
         @Override
         public boolean shouldEnter(final File dir) {
             return true;
@@ -294,13 +305,27 @@ public class FileOperation {
         @Override
         public void leave(final File dir) {
             final boolean delete = dir.delete();
+            if (delete) {
+                deletedDirCount++;
+            }
             logger.debug("delete directory {} [{}]", delete, dir);
         }
 
         @Override
         public void file(final File file) {
+            final long len = file.length();
             final boolean delete = file.delete();
+            if (delete) {
+                deletedFileCount++;
+                deletedTotalBytes += len;
+            }
             logger.debug("delete file {} [{}]", delete, file);
+        }
+
+        public void logResult() {
+            logger.debug("DeleteResult: files={}, dirs={}, bytes={}",
+                new Object[] { deletedFileCount, deletedDirCount,
+                    deletedTotalBytes });
         }
 
     }
@@ -311,6 +336,9 @@ public class FileOperation {
         private final File toDir;
         private File currentToDir;
         private final FileOperation files;
+        private int copiedFileCount;
+        private int createdDirCount;
+        private long copiedTotalBytes;
 
         public CopyWalker(final File toDir, final FileOperation files) {
             this.toDir = toDir;
@@ -326,11 +354,16 @@ public class FileOperation {
         @Override
         public void enter(final File dir) {
             if (currentToDir == null) {
+                // いちばん最初
                 currentToDir = toDir;
             } else {
+                // 2度目以降
                 currentToDir = new File(currentToDir, dir.getName());
             }
-            currentToDir.mkdir();
+            if (!currentToDir.exists()) {
+                currentToDir.mkdir();
+                createdDirCount++;
+            }
             logger.debug("enter into [{}]", currentToDir);
         }
 
@@ -343,8 +376,17 @@ public class FileOperation {
         @Override
         public void file(final File file) {
             final File to = new File(currentToDir, file.getName());
+            final long len = file.length();
             files.copyFile(file, to);
+            copiedFileCount++;
+            copiedTotalBytes += len;
             logger.debug("copy file [{}] to [{}]", file, to);
+        }
+
+        public void logResult() {
+            logger.debug("CopyResult: files={}, dirs={}, bytes={}",
+                new Object[] { copiedFileCount, createdDirCount,
+                    copiedTotalBytes });
         }
 
     }
