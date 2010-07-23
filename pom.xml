@@ -84,13 +84,13 @@
       <uniqueVersion>false</uniqueVersion>
       <id>hotchpotch.sourceforge.jp</id>
       <name>hotchpotch.sourceforge.jp</name>
-      <url>scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2</url>
+      <url>scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2/release</url>
     </repository>
     <snapshotRepository>
       <uniqueVersion>true</uniqueVersion>
       <id>hotchpotch.sourceforge.jp</id>
       <name>hotchpotch.sourceforge.jp snapshot</name>
-      <url>scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2-snapshot</url>
+      <url>scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2/snapshot</url>
     </snapshotRepository>
   </distributionManagement>
 
