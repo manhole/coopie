@@ -621,7 +621,10 @@ public class FileOperationTest {
         final File c2 = files.createDirectory(c1, "l2");
 
         final File f1 = files.createFile(c2, "f1.txt");
-        files.write(f1, "ほげ");
+        files.write(f1, "ほげげ");
+
+        final File f2 = files.createFile(c1, "f2.txt");
+        files.write(f2, "ほげほげ");
 
         // ## Act ##
         files.copy(from, to);
@@ -632,6 +635,10 @@ public class FileOperationTest {
         assertEquals(true, files.exists(to, "l1"));
         assertEquals(true, files.exists(to, "l1/l2"));
         assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+        assertEquals(true, files.exists(to, "l1/f2.txt"));
+
+        assertEquals("ほげげ", files.read(new File(to, "l1/l2/f1.txt")));
+        assertEquals("ほげほげ", files.read(new File(to, "l1/f2.txt")));
     }
 
     /*
@@ -648,7 +655,10 @@ public class FileOperationTest {
         final File c2 = files.createDirectory(c1, "l2");
 
         final File f1 = files.createFile(c2, "f1.txt");
-        files.write(f1, "ほげ");
+        files.write(f1, "ほげげ");
+
+        final File f2 = files.createFile(c1, "f2.txt");
+        files.write(f2, "ほげほげ");
 
         // ## Act ##
         files.move(from, to);
@@ -659,6 +669,10 @@ public class FileOperationTest {
         assertEquals(true, files.exists(to, "l1"));
         assertEquals(true, files.exists(to, "l1/l2"));
         assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+        assertEquals(true, files.exists(to, "l1/f2.txt"));
+
+        assertEquals("ほげげ", files.read(new File(to, "l1/l2/f1.txt")));
+        assertEquals("ほげほげ", files.read(new File(to, "l1/f2.txt")));
     }
 
     /*
