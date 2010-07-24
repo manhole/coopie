@@ -116,7 +116,7 @@ public class FileOperation {
         }
     }
 
-    private byte[] readAsBytes(final BufferedInputStream is) throws IOException {
+    private byte[] readAsBytes(final InputStream is) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         pipe(is, baos);
         final byte[] bytes = baos.toByteArray();
