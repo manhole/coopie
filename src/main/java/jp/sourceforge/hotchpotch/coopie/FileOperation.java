@@ -202,13 +202,13 @@ public class FileOperation {
     }
 
     private void deleteDirectory(final File file) {
-        final DeleteWalker deleteWalker = new DeleteWalker();
+        final DeleteWalker deleteWalker = new DeleteWalker(this);
         walk(file, deleteWalker);
         deleteWalker.logResult();
     }
 
-    private void deleteFile(final File file) {
-        file.delete();
+    private boolean deleteFile(final File file) {
+        return file.delete();
     }
 
     public void copy(final File from, final File to) {
@@ -331,9 +331,14 @@ public class FileOperation {
 
         private static final Logger logger = LoggerFactory.getLogger();
 
+        private final FileOperation files;
         private int deletedFileCount;
         private int deletedDirCount;
         private long deletedTotalBytes;
+
+        public DeleteWalker(final FileOperation files) {
+            this.files = files;
+        }
 
         @Override
         public boolean shouldEnter(final File dir) {
@@ -356,7 +361,7 @@ public class FileOperation {
         @Override
         public void file(final File file) {
             final long len = file.length();
-            final boolean delete = file.delete();
+            final boolean delete = files.deleteFile(file);
             if (delete) {
                 deletedFileCount++;
                 deletedTotalBytes += len;
@@ -433,31 +438,42 @@ public class FileOperation {
 
     }
 
-    public static class MoveWalker extends CopyWalker {
+    public static class MoveWalker implements FileWalker {
 
-        private static final Logger logger = LoggerFactory.getLogger();
+        private final CopyWalker copyWalker;
+        private final DeleteWalker deleteWalker;
 
         public MoveWalker(final File toDir, final FileOperation files) {
-            super(toDir, files);
+            copyWalker = new CopyWalker(toDir, files);
+            deleteWalker = new DeleteWalker(files);
         }
 
         @Override
-        public void file(final File file) {
-            super.file(file);
-            file.delete();
+        public boolean shouldEnter(final File dir) {
+            return true;
+        }
+
+        @Override
+        public void enter(final File dir) {
+            copyWalker.enter(dir);
+            deleteWalker.enter(dir);
         }
 
         @Override
         public void leave(final File dir) {
-            super.leave(dir);
-            dir.delete();
+            copyWalker.leave(dir);
+            deleteWalker.leave(dir);
         }
 
         @Override
+        public void file(final File file) {
+            copyWalker.file(file);
+            deleteWalker.file(file);
+        }
+
         public void logResult() {
-            logger.debug("MoveResult: files={}, dirs={}, bytes={}",
-                new Object[] { copiedFileCount, createdDirCount,
-                    copiedTotalBytes });
+            copyWalker.logResult();
+            deleteWalker.logResult();
         }
 
     }
