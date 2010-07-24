@@ -1,6 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,8 +14,12 @@ import junitx.framework.ArrayAssert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileOperationTest {
+
+    private static final Logger logger = LoggerFactory.getLogger();
 
     private File root;
 
@@ -269,13 +274,20 @@ public class FileOperationTest {
         assertEquals(true, root.exists());
     }
 
+    /*
+     * ＜COPY FILEの挙動について＞
+     * 
+     * copy先がディレクトリの場合はエラーになる。
+     * (そのディレクトリ内へcopyはしない。)
+     * ディレクトリ内へcopyしたかったら、copy先として"toDir/toFilename"を指定すべき。
+     */
     @Test
     public void copyFile1() throws Throwable {
         // ## Arrange ##
         final FileOperation files = new FileOperation();
 
-        final File to = new File(root, "f2.txt");
         final File from = files.createFile(root, "f1.txt");
+        final File to = new File(root, "f2.txt");
 
         files.write(from, "ほげ");
 
@@ -284,6 +296,29 @@ public class FileOperationTest {
 
         // ## Assert ##
         assertEquals("ほげ", files.read(to));
+    }
+
+    /*
+     * copy先に、既に同名のディレクトリが存在する場合は、エラーとする。
+     */
+    @Test
+    public void copyFile2() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File from = files.createFile(root, "f1.txt");
+        final File to = files.createDirectory(root, "f2.txt");
+
+        files.write(from, "aaa");
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            files.copyFile(from, to);
+            fail();
+        } catch (final IORuntimeException e) {
+            logger.debug(e.getMessage());
+        }
     }
 
     /*
@@ -297,8 +332,12 @@ public class FileOperationTest {
      * "from"をディレクトリとしてcopy先へ作りたいなら、
      * "to/from"をcopy先として指定すべき。
      */
+
     /*
      * "to"だけがある場合
+     * 
+     * "to"側に"from"という名前のディレクトリは作られない。
+     * "from"の中身が"to"の中にできる。
      */
     @Test
     public void copyDirectory1() throws Throwable {
