@@ -254,7 +254,22 @@ public class FileOperationTest {
     }
 
     @Test
-    public void delete() throws Throwable {
+    public void delete_file() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File f1 = files.createTempFile(root);
+        files.write(f1, "1234");
+
+        // ## Act ##
+        files.delete(f1);
+
+        // ## Assert ##
+        assertEquals(false, f1.exists());
+        assertEquals(true, root.exists());
+    }
+
+    @Test
+    public void delete_directory() throws Throwable {
         // ## Arrange ##
         final FileOperation files = new FileOperation();
         final File f1 = files.createTempFile(root);
@@ -275,11 +290,54 @@ public class FileOperationTest {
     }
 
     /*
-     * ＜COPY FILEの挙動について＞
+     * ＜copyFileの挙動について＞
      * 
-     * copy先がディレクトリの場合はエラーになる。
+     * ファイルをコピーする。
+     * 
+     * copy先がディレクトリの場合(同名のディレクトリがある場合)はエラーになる。
      * (そのディレクトリ内へcopyはしない。)
      * ディレクトリ内へcopyしたかったら、copy先として"toDir/toFilename"を指定すべき。
+     * 
+     * ディレクトリのコピーではない。
+     * fromにディレクトリが指定された場合はエラーになる。
+     * 
+     * 
+     * ＜moveFileの挙動について＞
+     * 
+     * 基本的にcopyFileと同じで、違う点はfrom側が消えること。
+     * 
+     * move先がディレクトリの場合はエラーになる。
+     * (そのディレクトリ内へmoveはしない。)
+     * ディレクトリ内へmoveしたかったら、move先として"toDir/toFilename"を指定すべき。
+     * 
+     * TODO ディレクトリのcopyでは無い、とするか?
+     */
+    /*
+     * ＜copyの挙動について＞
+     * 
+     * 基本的にcopyDirectoryのこと。
+     * 
+     * toがあろうと無かろうと同じ挙動をする。
+     * 
+     * "from"→"to"へcopyするとき、
+     * "from/foo"は"to/foo"へcopyされる。
+     * 
+     * "from"をディレクトリとしてcopy先へ作りたいなら、
+     * "to/from"をcopy先として指定すべき。
+     * 
+     * copy先に既に同名のディレクトリが存在する場合は、エラーとする。
+     */
+    /*
+     * ＜moveの挙動について＞
+     * 
+     * 基本的にcopyと同じで、違う点はfrom側が消えること。
+     * toがあろうと無かろうと同じ挙動をする。
+     * 
+     * renameToと同じ挙動を目指す。
+     */
+
+    /*
+     * fromがあり、toが無い。toの親ディレクトリは存在する。
      */
     @Test
     public void copyFile1() throws Throwable {
@@ -295,14 +353,94 @@ public class FileOperationTest {
         files.copyFile(from, to);
 
         // ## Assert ##
+        assertEquals(true, from.exists());
+        assertEquals("ほげ", files.read(to));
+    }
+
+    @Test
+    public void copy_file1() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File from = files.createFile(root, "f1.txt");
+        final File to = new File(root, "f2.txt");
+
+        files.write(from, "ほげ");
+
+        // ## Act ##
+        files.copy(from, to);
+
+        // ## Assert ##
+        assertEquals(true, from.exists());
+        assertEquals("ほげ", files.read(to));
+    }
+
+    @Test
+    public void moveFile1() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File from = files.createFile(root, "f1.txt");
+        final File to = new File(root, "f2.txt");
+
+        files.write(from, "ほげ");
+
+        // ## Act ##
+        files.moveFile(from, to);
+
+        // ## Assert ##
+        assertEquals(false, from.exists());
         assertEquals("ほげ", files.read(to));
     }
 
     /*
-     * copy先に、既に同名のディレクトリが存在する場合は、エラーとする。
+     * copy先に同名のファイルがあったら、上書きする。
      */
     @Test
     public void copyFile2() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File from = files.createFile(root, "f1.txt");
+        final File to = files.createFile(root, "f2.txt");
+
+        files.write(from, "あいうえお");
+        files.write(to, "あかさたな");
+        assertEquals("あかさたな", files.read(to));
+
+        // ## Act ##
+        files.copyFile(from, to);
+
+        // ## Assert ##
+        assertEquals(true, from.exists());
+        assertEquals("あいうえお", files.read(to));
+    }
+
+    @Test
+    public void moveFile2() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File from = files.createFile(root, "f1.txt");
+        final File to = files.createFile(root, "f2.txt");
+
+        files.write(from, "あいうえお");
+        files.write(to, "あかさたな");
+        assertEquals("あかさたな", files.read(to));
+
+        // ## Act ##
+        files.moveFile(from, to);
+
+        // ## Assert ##
+        assertEquals(false, from.exists());
+        assertEquals("あいうえお", files.read(to));
+    }
+
+    /*
+     * copy先に既に同名のディレクトリが存在する場合は、エラーとする。
+     */
+    @Test
+    public void copyFile3() throws Throwable {
         // ## Arrange ##
         final FileOperation files = new FileOperation();
 
@@ -319,19 +457,29 @@ public class FileOperationTest {
         } catch (final IORuntimeException e) {
             logger.debug(e.getMessage());
         }
+        assertEquals(true, from.exists());
     }
 
-    /*
-     * ＜COPYの挙動について＞
-     * 
-     * toがあろうと無かろうと同じ挙動をする。
-     * 
-     * "from"→"to"へcopyするとき、
-     * "from/foo"は"to/foo"へcopyされる。
-     * 
-     * "from"をディレクトリとしてcopy先へ作りたいなら、
-     * "to/from"をcopy先として指定すべき。
-     */
+    @Test
+    public void moveFile3() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File from = files.createFile(root, "f1.txt");
+        final File to = files.createDirectory(root, "f2.txt");
+
+        files.write(from, "aaa");
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            files.moveFile(from, to);
+            fail();
+        } catch (final IORuntimeException e) {
+            logger.debug(e.getMessage());
+        }
+        assertEquals(true, from.exists());
+    }
 
     /*
      * "to"だけがある場合
@@ -340,7 +488,7 @@ public class FileOperationTest {
      * "from"の中身が"to"の中にできる。
      */
     @Test
-    public void copyDirectory1() throws Throwable {
+    public void copy_directory1() throws Throwable {
         // ## Arrange ##
         final FileOperation files = new FileOperation();
         final File from = files.createDirectory(root, "from");
@@ -360,7 +508,41 @@ public class FileOperationTest {
         files.copy(from, to);
 
         // ## Assert ##
+        assertEquals(true, from.exists());
+        assertEquals(true, to.exists());
+        assertEquals(true, files.exists(to, "l1"));
+        assertEquals(true, files.exists(to, "l1/l2"));
+        assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+    }
 
+    /*
+     * "to"だけがある場合
+     * 
+     * "to"側に"from"という名前のディレクトリは作られない。
+     * "from"の中身が"to"の中にできる。
+     */
+    @Test
+    public void move_directory1() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File from = files.createDirectory(root, "from");
+        final File to = files.createDirectory(root, "to");
+
+        final File c1 = files.createDirectory(from, "l1");
+        final File c2 = files.createDirectory(c1, "l2");
+
+        final File f1 = files.createFile(c2, "f1.txt");
+        files.write(f1, "ほげ");
+
+        assertEquals(true, files.exists(from, "l1"));
+        assertEquals(true, files.exists(from, "l1/l2"));
+        assertEquals(true, files.exists(from, "l1/l2/f1.txt"));
+
+        // ## Act ##
+        files.move(from, to);
+
+        // ## Assert ##
+        assertEquals(false, from.exists());
         assertEquals(true, to.exists());
         assertEquals(true, files.exists(to, "l1"));
         assertEquals(true, files.exists(to, "l1/l2"));
@@ -371,7 +553,7 @@ public class FileOperationTest {
      * "to"ディレクトリがまだ存在しない場合
      */
     @Test
-    public void copyDirectory2() throws Throwable {
+    public void copy_directory2() throws Throwable {
         // ## Arrange ##
         final FileOperation files = new FileOperation();
         final File from = files.createDirectory(root, "from");
@@ -383,11 +565,42 @@ public class FileOperationTest {
         final File f1 = files.createFile(c2, "f1.txt");
         files.write(f1, "ほげ2");
 
+        assertEquals(false, to.exists());
+
         // ## Act ##
         files.copy(from, to);
 
         // ## Assert ##
+        assertEquals(true, from.exists());
+        assertEquals(true, to.exists());
+        assertEquals(true, files.exists(to, "l1"));
+        assertEquals(true, files.exists(to, "l1/l2"));
+        assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+    }
 
+    /*
+     * "to"ディレクトリがまだ存在しない場合
+     */
+    @Test
+    public void move_directory2() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File from = files.createDirectory(root, "from");
+        final File to = new File(root, "to");
+
+        final File c1 = files.createDirectory(from, "l1");
+        final File c2 = files.createDirectory(c1, "l2");
+
+        final File f1 = files.createFile(c2, "f1.txt");
+        files.write(f1, "ほげ2");
+
+        assertEquals(false, to.exists());
+
+        // ## Act ##
+        files.move(from, to);
+
+        // ## Assert ##
+        assertEquals(false, from.exists());
         assertEquals(true, to.exists());
         assertEquals(true, files.exists(to, "l1"));
         assertEquals(true, files.exists(to, "l1/l2"));
@@ -398,7 +611,7 @@ public class FileOperationTest {
      * "path/to/child"ディレクトリがまだ存在しない場合
      */
     @Test
-    public void copyDirectory3() throws Throwable {
+    public void copy_directory3() throws Throwable {
         // ## Arrange ##
         final FileOperation files = new FileOperation();
         final File from = files.createDirectory(root, "from");
@@ -414,11 +627,61 @@ public class FileOperationTest {
         files.copy(from, to);
 
         // ## Assert ##
-
+        assertEquals(true, from.exists());
         assertEquals(true, to.exists());
         assertEquals(true, files.exists(to, "l1"));
         assertEquals(true, files.exists(to, "l1/l2"));
         assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+    }
+
+    /*
+     * "path/to/child"ディレクトリがまだ存在しない場合
+     */
+    @Test
+    public void move_directory3() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File from = files.createDirectory(root, "from");
+        final File to = new File(root, "path/to/child");
+
+        final File c1 = files.createDirectory(from, "l1");
+        final File c2 = files.createDirectory(c1, "l2");
+
+        final File f1 = files.createFile(c2, "f1.txt");
+        files.write(f1, "ほげ");
+
+        // ## Act ##
+        files.move(from, to);
+
+        // ## Assert ##
+        assertEquals(false, from.exists());
+        assertEquals(true, to.exists());
+        assertEquals(true, files.exists(to, "l1"));
+        assertEquals(true, files.exists(to, "l1/l2"));
+        assertEquals(true, files.exists(to, "l1/l2/f1.txt"));
+    }
+
+    /*
+     * copy先に既に同名のディレクトリが存在する場合は、エラーとする。
+     */
+    @Test
+    public void copy_directory4() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File from = files.createFile(root, "f1.txt");
+        final File to = files.createDirectory(root, "to");
+
+        files.write(from, "aaa");
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            files.copy(from, to);
+            fail();
+        } catch (final IORuntimeException e) {
+            logger.debug(e.getMessage());
+        }
     }
 
 }
