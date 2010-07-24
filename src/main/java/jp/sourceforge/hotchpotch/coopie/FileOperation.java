@@ -56,14 +56,14 @@ public class FileOperation {
 
     public File createTempDir() {
         final File f = createTempFile();
-        f.delete();
+        deleteFile(f);
         f.mkdir();
         return f;
     }
 
     public File createTempDir(final File parent) {
         final File f = createTempFile(parent);
-        f.delete();
+        deleteFile(f);
         f.mkdir();
         return f;
     }
@@ -82,12 +82,6 @@ public class FileOperation {
         final File file = new File(parent, name);
         file.mkdir();
         return file;
-    }
-
-    public void delete(final File file) {
-        final DeleteWalker deleteWalker = new DeleteWalker();
-        walk(file, deleteWalker);
-        deleteWalker.logResult();
     }
 
     public void write(final File file, final String text) {
@@ -199,26 +193,73 @@ public class FileOperation {
         return null;
     }
 
-    public void setBufferSize(final int bufferSize) {
-        this.bufferSize = bufferSize;
+    public void delete(final File file) {
+        if (file.isDirectory()) {
+            deleteDirectory(file);
+        } else {
+            deleteFile(file);
+        }
     }
 
-    public void setEncoding(final String encoding) {
-        this.encoding = encoding;
+    private void deleteDirectory(final File file) {
+        final DeleteWalker deleteWalker = new DeleteWalker();
+        walk(file, deleteWalker);
+        deleteWalker.logResult();
     }
 
-    public void setSuffix(final String suffix) {
-        this.suffix = suffix;
-    }
-
-    public void setPrefix(final String prefix) {
-        this.prefix = prefix;
+    private void deleteFile(final File file) {
+        file.delete();
     }
 
     public void copy(final File from, final File to) {
+        if (from.isDirectory()) {
+            copyDirectory(from, to);
+        } else {
+            copyFile(from, to);
+        }
+    }
+
+    private void copyDirectory(final File from, final File to) {
         final CopyWalker copyWalker = new CopyWalker(to, this);
         walk(from, copyWalker);
         copyWalker.logResult();
+    }
+
+    public void copyFile(final File from, final File to) {
+        BufferedInputStream is = null;
+        BufferedOutputStream os = null;
+        try {
+            is = openBufferedInputStream(from);
+            os = openBufferedOutputStream(to);
+            pipe(is, os);
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        } finally {
+            closeNoException(os);
+            closeNoException(is);
+        }
+    }
+
+    public void move(final File from, final File to) {
+        if (from.isDirectory()) {
+            moveDirectory(from, to);
+        } else {
+            moveFile(from, to);
+        }
+    }
+
+    private void moveDirectory(final File from, final File to) {
+        final MoveWalker copyWalker = new MoveWalker(to, this);
+        walk(from, copyWalker);
+        copyWalker.logResult();
+    }
+
+    public void moveFile(final File from, final File to) {
+        if (from.renameTo(to)) {
+        } else {
+            copyFile(from, to);
+            deleteFile(from);
+        }
     }
 
     /*
@@ -265,24 +306,25 @@ public class FileOperation {
         walker.file(file);
     }
 
-    public void copyFile(final File from, final File to) {
-        BufferedInputStream is = null;
-        BufferedOutputStream os = null;
-        try {
-            is = openBufferedInputStream(from);
-            os = openBufferedOutputStream(to);
-            pipe(is, os);
-        } catch (final IOException e) {
-            throw new IORuntimeException(e);
-        } finally {
-            closeNoException(os);
-            closeNoException(is);
-        }
-    }
-
     public boolean exists(final File parent, final String childPath) {
         final File f = new File(parent, childPath);
         return f.exists();
+    }
+
+    public void setBufferSize(final int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
+
+    public void setEncoding(final String encoding) {
+        this.encoding = encoding;
+    }
+
+    public void setSuffix(final String suffix) {
+        this.suffix = suffix;
+    }
+
+    public void setPrefix(final String prefix) {
+        this.prefix = prefix;
     }
 
     public static class DeleteWalker implements FileWalker {
@@ -333,12 +375,12 @@ public class FileOperation {
     public static class CopyWalker implements FileWalker {
 
         private static final Logger logger = LoggerFactory.getLogger();
-        private final File toDir;
-        private File currentToDir;
-        private final FileOperation files;
-        private int copiedFileCount;
-        private int createdDirCount;
-        private long copiedTotalBytes;
+        protected final File toDir;
+        protected File currentToDir;
+        protected final FileOperation files;
+        protected int copiedFileCount;
+        protected int createdDirCount;
+        protected long copiedTotalBytes;
 
         public CopyWalker(final File toDir, final FileOperation files) {
             this.toDir = toDir;
@@ -385,6 +427,35 @@ public class FileOperation {
 
         public void logResult() {
             logger.debug("CopyResult: files={}, dirs={}, bytes={}",
+                new Object[] { copiedFileCount, createdDirCount,
+                    copiedTotalBytes });
+        }
+
+    }
+
+    public static class MoveWalker extends CopyWalker {
+
+        private static final Logger logger = LoggerFactory.getLogger();
+
+        public MoveWalker(final File toDir, final FileOperation files) {
+            super(toDir, files);
+        }
+
+        @Override
+        public void file(final File file) {
+            super.file(file);
+            file.delete();
+        }
+
+        @Override
+        public void leave(final File dir) {
+            super.leave(dir);
+            dir.delete();
+        }
+
+        @Override
+        public void logResult() {
+            logger.debug("MoveResult: files={}, dirs={}, bytes={}",
                 new Object[] { copiedFileCount, createdDirCount,
                     copiedTotalBytes });
         }
