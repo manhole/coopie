@@ -7,8 +7,12 @@
       <pattern>%-5level %d{ISO8601} %9r [%thread] %logger{0} - %msg%n</pattern>
     </layout>
     -->
+    <!-- 
+    %d{ISO8601}         yyyy-MM-dd HH:mm:ss,SS
+    %d{HH:mm:ss,SSS}
+     -->
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>%-5level %d{ISO8601} %9r [%thread] %logger{0} - %msg%n</pattern>
+      <pattern>%-5level %d{HH:mm:ss,SSS} %9r [%thread] %logger{0} - %msg%n</pattern>
     </encoder>
   </appender>
 
