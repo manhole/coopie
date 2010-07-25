@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -695,6 +696,84 @@ public class FileOperationTest {
             fail();
         } catch (final IORuntimeException e) {
             logger.debug(e.getMessage());
+        }
+    }
+
+    @Test
+    public void binaryEquals() throws Exception {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        final File f1 = new File(root, "f1.txt");
+        final File f2 = new File(root, "f2.txt");
+        final File f3 = new File(root, "f3.txt");
+        final File f4 = new File(root, "f4.txt");
+
+        files.write(f1, "abcdf");
+        files.write(f2, "Abcdf");
+        files.write(f3, "abcdf");
+        files.write(f4, "abcdf ");
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals(false, files.binaryEquals(f1, f2));
+        assertEquals(true, files.binaryEquals(f1, f3));
+        assertEquals(false, files.binaryEquals(f1, f4));
+    }
+
+    @Test
+    public void binaryEquals_byte() throws Exception {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals(true, files.binaryEquals("12345".getBytes(), "12345"
+            .getBytes()));
+        assertEquals(false, files.binaryEquals("12345".getBytes(), "123456"
+            .getBytes()));
+        assertEquals(false, files.binaryEquals("1234".getBytes(), "1235"
+            .getBytes()));
+        assertEquals(false, files.binaryEquals("1234".getBytes(), "123 "
+            .getBytes()));
+        assertEquals(false, files.binaryEquals("1234".getBytes(), "123"
+            .getBytes()));
+    }
+
+    @Test
+    public void binaryEquals_inputStream() throws Exception {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        // ## Act ##
+        // ## Assert ##
+        {
+            final ByteArrayInputStream is1 = new ByteArrayInputStream("12345"
+                .getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream("12345"
+                .getBytes());
+            assertEquals(true, files.binaryEquals(is1, is2));
+        }
+        {
+            final ByteArrayInputStream is1 = new ByteArrayInputStream("12345"
+                .getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream("123456"
+                .getBytes());
+            assertEquals(false, files.binaryEquals(is1, is2));
+        }
+        {
+            final ByteArrayInputStream is1 = new ByteArrayInputStream("1234567"
+                .getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream("123456"
+                .getBytes());
+            assertEquals(false, files.binaryEquals(is1, is2));
+        }
+        {
+            final ByteArrayInputStream is1 = new ByteArrayInputStream("1234"
+                .getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream("1235"
+                .getBytes());
+            assertEquals(false, files.binaryEquals(is1, is2));
         }
     }
 
