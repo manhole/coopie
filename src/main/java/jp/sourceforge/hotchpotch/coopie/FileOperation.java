@@ -311,6 +311,57 @@ public class FileOperation {
         return f.exists();
     }
 
+    public boolean binaryEquals(final File f1, final File f2) {
+        BufferedInputStream is1 = null;
+        BufferedInputStream is2 = null;
+        try {
+            is1 = openBufferedInputStream(f1);
+            is2 = openBufferedInputStream(f2);
+            final boolean ret = binaryEquals(is1, is2);
+            return ret;
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        } finally {
+            closeNoException(is1);
+            closeNoException(is2);
+        }
+    }
+
+    protected boolean binaryEquals(final byte[] b1, final byte[] b2) {
+        if (b1.length != b2.length) {
+            return false;
+        }
+        for (int i = 0; i < b1.length; i++) {
+            if (b1[i] != b2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected boolean binaryEquals(final InputStream is1, final InputStream is2)
+        throws IOException {
+        final byte[] bytes1 = new byte[bufferSize];
+        final byte[] bytes2 = new byte[bufferSize];
+        for (;;) {
+            final int read1 = is1.read(bytes1);
+            final int read2 = is2.read(bytes2);
+            // サイズが違う
+            if (read1 != read2) {
+                return false;
+            }
+            // データが違う
+            if (!binaryEquals(bytes1, bytes2)) {
+                return false;
+            }
+            // 最後まで読んだ
+            if ((read1 < 0) || (read2 < 0)) {
+                break;
+            }
+        }
+        return true;
+    }
+
     public void setBufferSize(final int bufferSize) {
         this.bufferSize = bufferSize;
     }
