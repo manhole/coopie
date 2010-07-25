@@ -38,7 +38,7 @@ public class FileOperationTest {
         // ## Arrange ##
         // ## Act ##
         final File f = new FileOperation().createTempDir();
-        System.out.println(f);
+        logger.debug("tempDir={}", f);
 
         // ## Assert ##
         assertEquals(true, f.exists());
