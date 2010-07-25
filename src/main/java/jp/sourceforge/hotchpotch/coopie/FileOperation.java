@@ -87,7 +87,7 @@ public class FileOperation {
     public void write(final File file, final String text) {
         final Writer writer = openBufferedWriter(file);
         try {
-            writer.append(text);
+            writer.write(text);
         } catch (final IOException e) {
             throw new IORuntimeException(e);
         } finally {
