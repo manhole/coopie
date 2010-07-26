@@ -777,4 +777,26 @@ public class FileOperationTest {
         }
     }
 
+    /*
+     * あるファイルのパスに、指定したディレクトリ階層が含まれている場合はtrueを返す。
+     */
+    @Test
+    public void containsPath() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File org = files.createDirectory(root, "org");
+        final File apache = files.createDirectory(org, "apache");
+        final File poi = files.createDirectory(apache, "poi");
+        final File poi2 = files.createDirectory(poi, "poi");
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals(true, files.containsPath(poi2, "org/apache/poi"));
+        assertEquals(true, files.containsPath(poi2, "org/apache/poi/poi"));
+        assertEquals(true, files.containsPath(poi2, "apache/poi"));
+        assertEquals(true, files.containsPath(poi2, "/apache/poi/"));
+        assertEquals(true, files.containsPath(poi2, "/org/apache/"));
+        assertEquals(false, files.containsPath(poi2, "jp/apache/"));
+    }
+
 }
