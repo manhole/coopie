@@ -529,4 +529,29 @@ public class FileOperation {
 
     }
 
+    public boolean containsPath(final File file, final String path) {
+        final String cFilePath = getCanonicalPath(file);
+        final String cPath = toCanonicalPath(path);
+        if (cFilePath.contains(cPath)) {
+            return true;
+        }
+        return false;
+    }
+
+    private String getCanonicalPath(final File file) {
+        try {
+            final String path = file.getCanonicalPath();
+            return toCanonicalPath(path);
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
+
+    private String toCanonicalPath(final String path) {
+        if (path != null) {
+            return path.replace('\\', '/');
+        }
+        return null;
+    }
+
 }
