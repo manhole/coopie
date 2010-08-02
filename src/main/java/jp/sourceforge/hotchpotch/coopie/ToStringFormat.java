@@ -1,6 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -17,22 +19,26 @@ public class ToStringFormat {
         };
     };
 
+    private final PropertyDescComparator comparator = new PropertyDescComparator();
+
     public ToStringFormat() {
     }
 
     @SuppressWarnings("unchecked")
-    public String format(final Object obj) {
+    public <T> String format(final T obj) {
         final StringBuilder sb = new StringBuilder();
-        final Class<? extends Object> clazz = obj.getClass();
-        final BeanDesc<?> beanDesc = BeanDescFactory.getBeanDesc(clazz);
-        final List descs = beanDesc.getAllPropertyDesc();
+        final Class<T> clazz = (Class<T>) obj.getClass();
+        final BeanDesc<T> beanDesc = BeanDescFactory.getBeanDesc(clazz);
+        final List<PropertyDesc<T>> descs = new ArrayList<PropertyDesc<T>>(
+            beanDesc.getAllPropertyDesc());
+        Collections.sort(descs, comparator);
+
         boolean first = true;
         final Set<Object> set = threadLocal.get();
         sb.append(clazz.getSimpleName());
         sb.append("[");
 
-        for (final Iterator<PropertyDesc> it = descs.iterator(); it.hasNext();) {
-            final PropertyDesc pd = it.next();
+        for (final PropertyDesc<T> pd : descs) {
             if (first) {
                 first = false;
             } else {
@@ -67,6 +73,18 @@ public class ToStringFormat {
         } finally {
             set.remove(value);
         }
+    }
+
+    private static class PropertyDescComparator implements
+        Comparator<PropertyDesc<?>> {
+
+        @Override
+        public int compare(final PropertyDesc<?> o1, final PropertyDesc<?> o2) {
+            final String name1 = o1.getPropertyName();
+            final String name2 = o2.getPropertyName();
+            return name1.compareTo(name2);
+        }
+
     }
 
 }

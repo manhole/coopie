@@ -85,6 +85,7 @@ public class ToStringFormatTest {
         public String toString() {
             return new ToStringFormat().format(this);
         }
+
     }
 
 }
