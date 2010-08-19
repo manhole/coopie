@@ -799,4 +799,34 @@ public class FileOperationTest {
         assertEquals(false, files.containsPath(poi2, "jp/apache/"));
     }
 
+    @Test
+    public void learnRegex() throws Throwable {
+        {
+            assertEquals(false, "abcde".matches("a"));
+            assertEquals(true, "abcde".matches("a.+"));
+
+        }
+    }
+
+    @Test
+    public void matchPath() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File org = files.createDirectory(root, "org");
+        final File apache = files.createDirectory(org, "apache");
+        final File poi = files.createDirectory(apache, "poi");
+        final File poi2 = files.createDirectory(poi, "poi");
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals(false, files.matchPath(poi2, "org"));
+        assertEquals(true, files.matchPath(poi2, ".+org.+"));
+        assertEquals(true, files.matchPath(poi2, ".+org\\/apache\\/poi.+"));
+        assertEquals(true, files.matchPath(poi2, ".+org\\/apache\\/poi\\/poi"));
+        assertEquals(true, files.matchPath(poi2, ".+apache\\/poi.+"));
+        assertEquals(true, files.matchPath(poi2, ".+\\/apache\\/poi\\/.+"));
+        assertEquals(true, files.matchPath(poi2, ".+\\/org\\/apache\\/.+"));
+        assertEquals(false, files.matchPath(poi2, ".+jp\\/apache\\/.+"));
+    }
+
 }
