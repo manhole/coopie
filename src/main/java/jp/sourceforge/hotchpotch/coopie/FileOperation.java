@@ -538,6 +538,12 @@ public class FileOperation {
         return false;
     }
 
+    public boolean matchPath(final File file, final String pattern) {
+        final String cFilePath = getCanonicalPath(file);
+        final boolean matches = cFilePath.matches(pattern);
+        return matches;
+    }
+
     private String getCanonicalPath(final File file) {
         try {
             final String path = file.getCanonicalPath();
