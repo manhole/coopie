@@ -12,6 +12,13 @@
   <url>http://hotchpotch.sourceforge.jp/</url>
   <inceptionYear>2010</inceptionYear>
 
+  <scm>
+    <connection>scm:svn:http://svn.sourceforge.jp/svnroot/hotchpotch/dev/trunk/coopie/</connection>
+    <!-- svn+ssh://svn.sourceforge.jp/svnroot/hotchpotch/dev/trunk/coopie -->
+    <developerConnection>scm:svn:https://svn.sourceforge.jp/svnroot/hotchpotch/dev/trunk/coopie/</developerConnection>
+    <url>http://svn.sourceforge.jp/svnroot/hotchpotch/dev/trunk/coopie/</url>
+  </scm>
+
   <build>
     <defaultGoal>validate</defaultGoal>
     <pluginManagement>
@@ -67,6 +74,33 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doCheck>true</doCheck>
+          <doUpdate>true</doUpdate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <SCM-Revision>${buildNumber}</SCM-Revision>
+            </manifestEntries>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>
