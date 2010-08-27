@@ -67,6 +67,10 @@ public class ToStringFormat {
             return;
         }
 
+        /*
+         * value.toStringの中でToStringFormatが使われる場合を想定して、
+         * ThreadLocalにインスタンスを出力したかどうかを保持する。
+         */
         set.add(value);
         try {
             sb.append(value);
