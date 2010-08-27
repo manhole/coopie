@@ -378,6 +378,37 @@ public class FileOperation {
         this.prefix = prefix;
     }
 
+    public boolean containsPath(final File file, final String path) {
+        final String cFilePath = getCanonicalPath(file);
+        final String cPath = toCanonicalPath(path);
+        if (cFilePath.contains(cPath)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean matchPath(final File file, final String pattern) {
+        final String cFilePath = getCanonicalPath(file);
+        final boolean matches = cFilePath.matches(pattern);
+        return matches;
+    }
+
+    private String getCanonicalPath(final File file) {
+        try {
+            final String path = file.getCanonicalPath();
+            return toCanonicalPath(path);
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
+
+    private String toCanonicalPath(final String path) {
+        if (path != null) {
+            return path.replace('\\', '/');
+        }
+        return null;
+    }
+
     public static class DeleteWalker implements FileWalker {
 
         private static final Logger logger = LoggerFactory.getLogger();
@@ -527,37 +558,6 @@ public class FileOperation {
             deleteWalker.logResult();
         }
 
-    }
-
-    public boolean containsPath(final File file, final String path) {
-        final String cFilePath = getCanonicalPath(file);
-        final String cPath = toCanonicalPath(path);
-        if (cFilePath.contains(cPath)) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean matchPath(final File file, final String pattern) {
-        final String cFilePath = getCanonicalPath(file);
-        final boolean matches = cFilePath.matches(pattern);
-        return matches;
-    }
-
-    private String getCanonicalPath(final File file) {
-        try {
-            final String path = file.getCanonicalPath();
-            return toCanonicalPath(path);
-        } catch (final IOException e) {
-            throw new IORuntimeException(e);
-        }
-    }
-
-    private String toCanonicalPath(final String path) {
-        if (path != null) {
-            return path.replace('\\', '/');
-        }
-        return null;
     }
 
 }
