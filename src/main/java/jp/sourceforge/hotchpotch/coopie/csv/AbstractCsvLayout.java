@@ -104,7 +104,7 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
             for (int i = 0; i < cds.length; i++) {
                 final ColumnDesc<T> cd = cds[i];
                 final String value = cd.getValue(bean);
-                values[i] = value;
+                values[i] = value(value);
             }
             return values;
         }
@@ -113,10 +113,20 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
         public void setValues(final T bean, final String[] values) {
             final ColumnDesc<T>[] cds = getColumnDescs();
             for (int i = 0; i < values.length; i++) {
-                final String value = values[i];
+                final String value = value(values[i]);
                 final ColumnDesc<T> cd = cds[i];
                 cd.setValue(bean, value);
             }
+        }
+
+        /*
+         * ""はnullと見なす。
+         */
+        private String value(final String v) {
+            if (v == null || v.isEmpty()) {
+                return null;
+            }
+            return v;
         }
 
         @Override

@@ -118,6 +118,42 @@ public class BeanCsvReaderTest {
     }
 
     /**
+     * 空白項目がある場合。
+     * 
+     * ""はnullとして扱い、" "は" "として扱う。
+     */
+    @Test
+    public void read3() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-4", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+            AaaBean.class);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+            .openReader(new InputStreamReader(is, "UTF-8"));
+
+        final AaaBean bean = new AaaBean();
+        csvReader.read(bean);
+
+        // ## Assert ##
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals(" ", bean.getCcc());
+
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals(null, bean.getAaa());
+        assertEquals("い2", bean.getBbb());
+        assertEquals(null, bean.getCcc());
+
+        csvReader.close();
+    }
+
+    /**
      * CSVヘッダが無い場合。
      */
     @Test

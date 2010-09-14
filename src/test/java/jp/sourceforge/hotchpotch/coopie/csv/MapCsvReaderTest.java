@@ -101,6 +101,41 @@ public class MapCsvReaderTest {
     }
 
     /**
+     * 空白項目がある場合。
+     * 
+     * ""はnullとして扱い、" "は" "として扱う。
+     */
+    @Test
+    public void read3() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-4", "tsv");
+
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+            .openReader(new InputStreamReader(is, "UTF-8"));
+
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        csvReader.read(bean);
+
+        // ## Assert ##
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.get("aaa"));
+        assertEquals("い1", bean.get("bbb"));
+        assertEquals(" ", bean.get("ccc"));
+
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals(null, bean.get("aaa"));
+        assertEquals("い2", bean.get("bbb"));
+        assertEquals(null, bean.get("ccc"));
+
+        csvReader.close();
+    }
+
+    /**
      * CSVヘッダが無い場合。
      */
     @Test

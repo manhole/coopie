@@ -144,4 +144,42 @@ public class MapCsvWriterTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * 空白項目がある場合。
+     * 
+     * ""はnullとして扱い、" "は" "として扱う。
+     */
+    @Test
+    public void write4() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final CsvWriter<Map<String, String>> csvWriter = layout
+            .openWriter(writer);
+
+        final Map<String, String> bean = new TreeMap<String, String>();
+        bean.put("aaa", "あ1");
+        bean.put("bbb", "い1");
+        bean.put("ccc", " ");
+        csvWriter.write(bean);
+
+        bean.put("aaa", null);
+        bean.put("bbb", "い2");
+        bean.put("ccc", null);
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-4", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is,
+            "UTF-8"));
+        assertEquals(expected, actual);
+    }
+
 }
