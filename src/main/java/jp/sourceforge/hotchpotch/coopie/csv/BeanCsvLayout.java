@@ -73,8 +73,7 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
         final String name) {
         final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
         if (pd == null) {
-            // TODO
-            throw new RuntimeException(name);
+            throw new IllegalStateException("property not found:<" + name + ">");
         }
         return pd;
     }
