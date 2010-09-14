@@ -211,6 +211,21 @@ public class FileOperation {
         return file.delete();
     }
 
+    public void deleteChildren(final File dir) {
+        final File[] children = dir.listFiles();
+        if (children == null) {
+            return;
+        }
+
+        final DeleteWalker deleteWalker = new DeleteWalker(this);
+        for (final File child : children) {
+            walk(child, deleteWalker);
+        }
+
+        deleteWalker.logResult();
+
+    }
+
     public void copy(final File from, final File to) {
         if (from.isDirectory()) {
             copyDirectory(from, to);

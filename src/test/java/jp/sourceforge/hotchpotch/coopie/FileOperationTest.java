@@ -290,6 +290,27 @@ public class FileOperationTest {
         assertEquals(true, root.exists());
     }
 
+    @Test
+    public void delete_children() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File f1 = files.createTempFile(root);
+        final File d1 = files.createDirectory(root, "d1");
+        final File d2 = files.createDirectory(root, "d2");
+        final File d3 = files.createDirectory(d2, "d3");
+        final File f2 = files.createTempFile(d1);
+        final File f3 = files.createTempFile(d1);
+        files.write(f2, "1234");
+        files.write(f3, "aiueo");
+
+        // ## Act ##
+        files.deleteChildren(d1);
+
+        // ## Assert ##
+        assertEquals(true, d1.exists());
+        assertEquals(0, d1.list().length);
+    }
+
     /*
      * ＜copyFileの挙動について＞
      * 
