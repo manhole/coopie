@@ -2,6 +2,7 @@ package jp.sourceforge.hotchpotch.coopie;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -11,8 +12,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -96,11 +100,12 @@ public class FileOperation {
     }
 
     public String read(final File file) {
-        final byte[] bytes = readAsBytes(file);
+        final BufferedReader reader = openBufferedReader(file);
+        final StringWriter writer = new StringWriter();
         try {
-            final String s = new String(bytes, encoding);
-            return s;
-        } catch (final UnsupportedEncodingException e) {
+            pipe(reader, writer);
+            return writer.toString();
+        } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -131,10 +136,23 @@ public class FileOperation {
         }
     }
 
+    private void pipe(final Reader in, final Writer out) throws IOException {
+        final char[] buf = new char[bufferSize];
+        for (int len = 0; (len = in.read(buf, 0, buf.length)) != -1;) {
+            out.write(buf, 0, len);
+        }
+    }
+
     private BufferedWriter openBufferedWriter(final File file) {
         final OutputStreamWriter osw = openOutputStreamWriter(file);
         final BufferedWriter writer = new BufferedWriter(osw, bufferSize);
         return writer;
+    }
+
+    private BufferedReader openBufferedReader(final File file) {
+        final InputStreamReader osw = openInputStreamReader(file);
+        final BufferedReader reader = new BufferedReader(osw, bufferSize);
+        return reader;
     }
 
     private OutputStreamWriter openOutputStreamWriter(final File file) {
@@ -148,12 +166,14 @@ public class FileOperation {
         }
     }
 
-    private FileOutputStream openOutputStream(final File file) {
+    private InputStreamReader openInputStreamReader(final File file) {
+        final FileInputStream fis = openInputStream(file);
         try {
-            final FileOutputStream fos = new FileOutputStream(file);
-            return fos;
-        } catch (final FileNotFoundException e) {
-            throw new FileNotFoundRuntimeException(e, file);
+            final InputStreamReader isr = new InputStreamReader(fis, encoding);
+            return isr;
+        } catch (final UnsupportedEncodingException e) {
+            closeNoException(fis);
+            throw new IORuntimeException(e);
         }
     }
 
@@ -168,6 +188,15 @@ public class FileOperation {
         final FileInputStream fis = openInputStream(file);
         final BufferedInputStream bis = new BufferedInputStream(fis, bufferSize);
         return bis;
+    }
+
+    private FileOutputStream openOutputStream(final File file) {
+        try {
+            final FileOutputStream fos = new FileOutputStream(file);
+            return fos;
+        } catch (final FileNotFoundException e) {
+            throw new FileNotFoundRuntimeException(e, file);
+        }
     }
 
     private FileInputStream openInputStream(final File file) {
