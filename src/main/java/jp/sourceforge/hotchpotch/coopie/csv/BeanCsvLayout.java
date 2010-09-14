@@ -121,7 +121,9 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
         @Override
         public String getValue(final T bean) {
             final Object v = propertyDesc.getValue(bean);
-            // TODO null値の場合
+            if (v == null) {
+                return null;
+            }
             return String.valueOf(v);
         }
 

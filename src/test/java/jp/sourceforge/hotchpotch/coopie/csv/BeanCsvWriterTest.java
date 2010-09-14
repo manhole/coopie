@@ -143,4 +143,42 @@ public class BeanCsvWriterTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * 空白項目がある場合。
+     * 
+     * ""はnullとして扱い、" "は" "として扱う。
+     */
+    @Test
+    public void write4() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+            AaaBean.class);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc(" ");
+        csvWriter.write(bean);
+
+        bean.setAaa(null);
+        bean.setBbb("い2");
+        bean.setCcc(null);
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = ResourceUtil.getResourceAsStream(
+            BeanCsvReaderTest.class.getName() + "-4", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is,
+            "UTF-8"));
+        assertEquals(expected, actual);
+    }
+
 }
