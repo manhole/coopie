@@ -143,13 +143,13 @@ public class FileOperation {
         }
     }
 
-    private BufferedWriter openBufferedWriter(final File file) {
+    public BufferedWriter openBufferedWriter(final File file) {
         final OutputStreamWriter osw = openOutputStreamWriter(file);
         final BufferedWriter writer = new BufferedWriter(osw, bufferSize);
         return writer;
     }
 
-    private BufferedReader openBufferedReader(final File file) {
+    public BufferedReader openBufferedReader(final File file) {
         final InputStreamReader osw = openInputStreamReader(file);
         final BufferedReader reader = new BufferedReader(osw, bufferSize);
         return reader;
