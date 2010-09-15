@@ -40,6 +40,7 @@ class DefaultCsvReader<T> implements Closable, CsvReader<T> {
         this.csvSetting = csvSetting;
     }
 
+    @Override
     public void read(final T bean) {
         if (!hasNext()) {
             throw new NoSuchElementException();
@@ -64,7 +65,8 @@ class DefaultCsvReader<T> implements Closable, CsvReader<T> {
         }
     }
 
-    private boolean hasNext() {
+    @Override
+    public boolean hasNext() {
         if (hasNext != null) {
             return hasNext.booleanValue();
         }

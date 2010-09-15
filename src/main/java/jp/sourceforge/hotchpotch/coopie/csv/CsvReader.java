@@ -6,4 +6,6 @@ public interface CsvReader<T> extends Closable {
 
     void read(T bean);
 
+    boolean hasNext();
+
 }

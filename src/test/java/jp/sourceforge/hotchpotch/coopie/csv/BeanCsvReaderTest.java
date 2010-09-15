@@ -52,6 +52,7 @@ public class BeanCsvReaderTest {
             .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
 
         // ## Assert ##
@@ -60,18 +61,21 @@ public class BeanCsvReaderTest {
         assertEquals("い1", bean.getBbb());
         assertEquals("う1", bean.getCcc());
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ2", bean.getAaa());
         assertEquals("い2", bean.getBbb());
         assertEquals("う2", bean.getCcc());
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ3", bean.getAaa());
         assertEquals("い3", bean.getBbb());
         assertEquals("う3", bean.getCcc());
 
+        assertEquals(false, csvReader.hasNext());
         csvReader.close();
     }
 
