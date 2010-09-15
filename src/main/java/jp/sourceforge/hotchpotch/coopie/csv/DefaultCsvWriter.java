@@ -48,6 +48,7 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
         csvWriter.writeNext(line);
     }
 
+    @Override
     public void write(final T bean) {
         if (firstRecord) {
             firstRecord = false;
