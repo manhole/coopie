@@ -238,6 +238,12 @@ public class FileOperationTest {
 
     }
 
+    /**
+     * ファイルの拡張子を返します。
+     * 
+     * "foo.txt" → "txt"
+     * "foo.bar.txt" → "txt"
+     */
     @Test
     public void getExtension() throws Throwable {
         // ## Arrange ##
