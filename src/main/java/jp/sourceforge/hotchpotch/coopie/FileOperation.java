@@ -252,7 +252,6 @@ public class FileOperation {
         }
 
         deleteWalker.logResult();
-
     }
 
     public void copy(final File from, final File to) {
@@ -348,6 +347,47 @@ public class FileOperation {
 
     private void walkFile(final File file, final FileWalker walker) {
         walker.file(file);
+    }
+
+    public void listDescendant(final File parent, final FileCallback callback) {
+        // TODO Auto-generated method stub
+        final File[] children = parent.listFiles();
+        if (children == null) {
+            return;
+        }
+
+        final FileWalker fileWalker = new FileWalker() {
+
+            @Override
+            public void enter(final File dir) {
+                try {
+                    callback.callback(dir);
+                } catch (final IOException e) {
+                    throw new IORuntimeException(e);
+                }
+            }
+
+            @Override
+            public void file(final File file) {
+                try {
+                    callback.callback(file);
+                } catch (final IOException e) {
+                    throw new IORuntimeException(e);
+                }
+            }
+
+            @Override
+            public void leave(final File dir) {
+            }
+
+            @Override
+            public boolean shouldEnter(final File dir) {
+                return true;
+            }
+        };
+        for (final File child : children) {
+            walk(child, fileWalker);
+        }
     }
 
     public boolean exists(final File parent, final String childPath) {
