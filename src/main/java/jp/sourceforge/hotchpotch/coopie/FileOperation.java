@@ -344,36 +344,7 @@ public class FileOperation {
     }
 
     public void listDescendant(final File parent, final FileCallback callback) {
-        final FileWalker fileWalker = new FileWalker() {
-
-            @Override
-            public void enter(final File dir) {
-                try {
-                    callback.callback(dir);
-                } catch (final IOException e) {
-                    throw new IORuntimeException(e);
-                }
-            }
-
-            @Override
-            public void file(final File file) {
-                try {
-                    callback.callback(file);
-                } catch (final IOException e) {
-                    throw new IORuntimeException(e);
-                }
-            }
-
-            @Override
-            public void leave(final File dir) {
-            }
-
-            @Override
-            public boolean shouldEnter(final File dir) {
-                return true;
-            }
-        };
-
+        final FileWalker fileWalker = new FileCallbackAdapter(callback);
         walkDescendant(parent, fileWalker);
     }
 
@@ -489,6 +460,43 @@ public class FileOperation {
             return path.replace('\\', '/');
         }
         return null;
+    }
+
+    private static class FileCallbackAdapter implements FileWalker {
+
+        private final FileCallback callback;
+
+        FileCallbackAdapter(final FileCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void enter(final File dir) {
+            try {
+                callback.callback(dir);
+            } catch (final IOException e) {
+                throw new IORuntimeException(e);
+            }
+        }
+
+        @Override
+        public void file(final File file) {
+            try {
+                callback.callback(file);
+            } catch (final IOException e) {
+                throw new IORuntimeException(e);
+            }
+        }
+
+        @Override
+        public void leave(final File dir) {
+        }
+
+        @Override
+        public boolean shouldEnter(final File dir) {
+            return true;
+        }
+
     }
 
     public static class DeleteWalker implements FileWalker {
