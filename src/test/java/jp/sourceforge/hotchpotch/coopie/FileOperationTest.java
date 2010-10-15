@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -854,6 +855,38 @@ public class FileOperationTest {
         assertEquals(true, files.matchPath(poi2, ".+\\/apache\\/poi\\/.+"));
         assertEquals(true, files.matchPath(poi2, ".+\\/org\\/apache\\/.+"));
         assertEquals(false, files.matchPath(poi2, ".+jp\\/apache\\/.+"));
+    }
+
+    @Test
+    public void listDescendant() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File org = files.createDirectory(root, "org");
+        final File apache = files.createDirectory(org, "apache");
+        final File poi = files.createDirectory(apache, "poi");
+        final File poi2 = files.createDirectory(poi, "poi");
+        final File poijar = files.createFile(poi2, "poi-1.0.0.jar");
+        final File poisha = files.createFile(poi2, "poi-1.0.0.jar.sha1");
+
+        final List<String> paths = new ArrayList<String>();
+
+        // ## Act ##
+        files.listDescendant(root, new FileCallback() {
+            @Override
+            public void callback(final File file) throws IOException {
+                logger.debug("callback {}", file);
+                paths.add(file.getCanonicalPath());
+            }
+        });
+
+        // ## Assert ##
+        assertEquals(6, paths.size());
+        assertEquals(true, paths.remove(org.getCanonicalPath()));
+        assertEquals(true, paths.remove(apache.getCanonicalPath()));
+        assertEquals(true, paths.remove(poi.getCanonicalPath()));
+        assertEquals(true, paths.remove(poi2.getCanonicalPath()));
+        assertEquals(true, paths.remove(poijar.getCanonicalPath()));
+        assertEquals(true, paths.remove(poisha.getCanonicalPath()));
     }
 
 }
