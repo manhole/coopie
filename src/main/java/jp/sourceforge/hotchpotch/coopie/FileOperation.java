@@ -241,15 +241,9 @@ public class FileOperation {
     }
 
     public void deleteChildren(final File dir) {
-        final File[] children = dir.listFiles();
-        if (children == null) {
-            return;
-        }
-
         final DeleteWalker deleteWalker = new DeleteWalker(this);
-        for (final File child : children) {
-            walk(child, deleteWalker);
-        }
+
+        walkDescendant(dir, deleteWalker);
 
         deleteWalker.logResult();
     }
@@ -350,12 +344,6 @@ public class FileOperation {
     }
 
     public void listDescendant(final File parent, final FileCallback callback) {
-        // TODO Auto-generated method stub
-        final File[] children = parent.listFiles();
-        if (children == null) {
-            return;
-        }
-
         final FileWalker fileWalker = new FileWalker() {
 
             @Override
@@ -385,6 +373,16 @@ public class FileOperation {
                 return true;
             }
         };
+
+        walkDescendant(parent, fileWalker);
+    }
+
+    private void walkDescendant(final File parent, final FileWalker fileWalker) {
+        final File[] children = parent.listFiles();
+        if (children == null) {
+            return;
+        }
+
         for (final File child : children) {
             walk(child, fileWalker);
         }
