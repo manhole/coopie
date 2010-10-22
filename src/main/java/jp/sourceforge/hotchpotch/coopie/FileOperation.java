@@ -177,14 +177,14 @@ public class FileOperation {
         }
     }
 
-    private BufferedOutputStream openBufferedOutputStream(final File file) {
+    public BufferedOutputStream openBufferedOutputStream(final File file) {
         final FileOutputStream fos = openOutputStream(file);
         final BufferedOutputStream bos = new BufferedOutputStream(fos,
             bufferSize);
         return bos;
     }
 
-    private BufferedInputStream openBufferedInputStream(final File file) {
+    public BufferedInputStream openBufferedInputStream(final File file) {
         final FileInputStream fis = openInputStream(file);
         final BufferedInputStream bis = new BufferedInputStream(fis, bufferSize);
         return bis;
@@ -413,6 +413,10 @@ public class FileOperation {
             }
         }
         return true;
+    }
+
+    public int getBufferSize() {
+        return bufferSize;
     }
 
     public void setBufferSize(final int bufferSize) {
