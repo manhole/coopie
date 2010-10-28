@@ -5,14 +5,17 @@ import java.io.Reader;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
+import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
+import org.slf4j.Logger;
 import org.t2framework.commons.exception.IORuntimeException;
 
 import au.com.bytecode.opencsv.CSVReader;
 
 abstract class DefaultCsvReader<T> implements Closable, CsvReader<T> {
 
+    private static final Logger logger = LoggerFactory.getLogger();
     private CsvSetting csvSetting = new CsvSetting();
 
     /**
@@ -99,6 +102,10 @@ abstract class DefaultCsvReader<T> implements Closable, CsvReader<T> {
     private void setupByHeader() {
         if (recordDesc.isWithHeader()) {
             final String[] header = readLine();
+            if (header == null) {
+                logger.debug("header is null");
+                return;
+            }
             recordDesc = recordDesc.setupByHeader(header);
         } else {
             /*
@@ -106,6 +113,14 @@ abstract class DefaultCsvReader<T> implements Closable, CsvReader<T> {
              * JavaBeansのプロパティ情報は順序が不定なため。
              */
             if (OrderSpecified.SPECIFIED != recordDesc.getOrderSpecified()) {
+                if (readLine() == null) {
+                    /*
+                     * 本来はエラーだが、空ファイルに限ってはOKとしておく。
+                     * (将来エラーに変更するかも)
+                     */
+                    logger.debug("header is null");
+                    return;
+                }
                 throw new IllegalStateException("no column order set");
             }
         }

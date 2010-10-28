@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
@@ -135,7 +136,7 @@ public class MapCsvReaderTest {
         csvReader.close();
     }
 
-    /*
+    /**
      * recordインスタンスをCsvReaderに生成させる。
      */
     @Test
@@ -238,6 +239,77 @@ public class MapCsvReaderTest {
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage());
         }
+    }
+
+    /**
+     * 空ファイルの場合。
+     * (ヘッダなし)
+     */
+    @Test
+    public void read_empty() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader(""));
+
+        // ## Assert ##
+        assertEquals(false, csvReader.hasNext());
+
+        csvReader.close();
+    }
+
+    /**
+     * 空ファイルの場合。
+     * (ヘッダなし、ヘッダ名指定有り ... この組み合わせが既におかしいが...)
+     */
+    @Test
+    public void read_empty2() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                /*
+                 * CSVの列順
+                 */
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
+            }
+        });
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader(""));
+
+        // ## Assert ##
+        assertEquals(false, csvReader.hasNext());
+
+        csvReader.close();
+    }
+
+    /**
+     * 空ファイルの場合。
+     * (ヘッダあり)
+     */
+    @Test
+    public void read_empty3() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setWithHeader(true);
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader(""));
+
+        // ## Assert ##
+        assertEquals(false, csvReader.hasNext());
+
+        csvReader.close();
     }
 
 }

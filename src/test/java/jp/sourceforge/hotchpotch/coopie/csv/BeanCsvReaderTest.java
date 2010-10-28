@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
@@ -157,7 +158,7 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
-    /*
+    /**
      * recordインスタンスをCsvReaderに生成させる。
      */
     @Test
@@ -263,6 +264,27 @@ public class BeanCsvReaderTest {
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage());
         }
+    }
+
+    /**
+     * 空ファイルの場合。
+     */
+    @Test
+    public void read_empty() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new StringReader(""));
+
+        // ## Assert ##
+        assertEquals(false, csvReader.hasNext());
+
+        csvReader.close();
     }
 
     /**
