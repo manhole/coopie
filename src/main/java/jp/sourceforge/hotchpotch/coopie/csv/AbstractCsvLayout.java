@@ -65,7 +65,7 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
         protected boolean withHeader;
 
         protected DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
-            final OrderSpecified orderSpecified, final boolean withHeader) {
+                final OrderSpecified orderSpecified, final boolean withHeader) {
             this.columnDescs = columnDescs;
             this.orderSpecified = orderSpecified;
             this.withHeader = withHeader;
