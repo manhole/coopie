@@ -129,7 +129,7 @@ public class FileOperation {
     }
 
     private void pipe(final InputStream is, final OutputStream os)
-        throws IOException {
+            throws IOException {
         final byte[] buf = new byte[bufferSize];
         for (int len = 0; (len = is.read(buf, 0, buf.length)) != -1;) {
             os.write(buf, 0, len);
@@ -180,7 +180,7 @@ public class FileOperation {
     public BufferedOutputStream openBufferedOutputStream(final File file) {
         final FileOutputStream fos = openOutputStream(file);
         final BufferedOutputStream bos = new BufferedOutputStream(fos,
-            bufferSize);
+                bufferSize);
         return bos;
     }
 
@@ -220,6 +220,10 @@ public class FileOperation {
             return extension;
         }
         return null;
+    }
+
+    public FileResource getFileResource(final File file) {
+        return new FileResourceImpl(file);
     }
 
     public void delete(final File file) {
@@ -393,7 +397,7 @@ public class FileOperation {
     }
 
     protected boolean binaryEquals(final InputStream is1, final InputStream is2)
-        throws IOException {
+            throws IOException {
         final byte[] bytes1 = new byte[bufferSize];
         final byte[] bytes2 = new byte[bufferSize];
         for (;;) {
@@ -547,8 +551,8 @@ public class FileOperation {
 
         public void logResult() {
             logger.debug("DeleteResult: files={}, dirs={}, bytes={}",
-                new Object[] { deletedFileCount, deletedDirCount,
-                    deletedTotalBytes });
+                    new Object[] { deletedFileCount, deletedDirCount,
+                            deletedTotalBytes });
         }
 
     }
@@ -608,8 +612,8 @@ public class FileOperation {
 
         public void logResult() {
             logger.debug("CopyResult: files={}, dirs={}, bytes={}",
-                new Object[] { copiedFileCount, createdDirCount,
-                    copiedTotalBytes });
+                    new Object[] { copiedFileCount, createdDirCount,
+                            copiedTotalBytes });
         }
 
     }
@@ -650,6 +654,44 @@ public class FileOperation {
         public void logResult() {
             copyWalker.logResult();
             deleteWalker.logResult();
+        }
+
+    }
+
+    static class FileResourceImpl implements FileResource {
+
+        private final File file;
+        private String extensionPrefix;
+        private String extension;
+
+        public FileResourceImpl(final File file) {
+            this.file = file;
+
+            final String name = file.getName();
+            final int pos = name.lastIndexOf('.');
+            if (0 == pos) {
+                /*
+                 * 先頭が"."
+                 */
+                extensionPrefix = null;
+                extension = name.substring(1);
+            } else if (1 <= pos) {
+                extensionPrefix = name.substring(0, pos);
+                extension = name.substring(pos + 1);
+            } else {
+                extensionPrefix = name;
+                extension = null;
+            }
+        }
+
+        @Override
+        public String getPrefix() {
+            return extensionPrefix;
+        }
+
+        @Override
+        public String getExtension() {
+            return extension;
         }
 
     }

@@ -262,6 +262,56 @@ public class FileOperationTest {
     }
 
     @Test
+    public void fileResource() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        {
+            final File file = new File(root, "foo1.txt");
+            files.write(file, "aaa");
+
+            // ## Act ##
+            final FileResource r = files.getFileResource(file);
+
+            // ## Assert ##
+            assertEquals("foo1", r.getPrefix());
+            assertEquals("txt", r.getExtension());
+        }
+        {
+            final File file = new File(root, "foo.bar.txt");
+            files.write(file, "aaa");
+
+            // ## Act ##
+            final FileResource r = files.getFileResource(file);
+
+            // ## Assert ##
+            assertEquals("foo.bar", r.getPrefix());
+            assertEquals("txt", r.getExtension());
+        }
+        {
+            final File file = new File(root, ".cvsignore");
+            files.write(file, "aaa");
+
+            // ## Act ##
+            final FileResource r = files.getFileResource(file);
+
+            // ## Assert ##
+            assertEquals(null, r.getPrefix());
+            assertEquals("cvsignore", r.getExtension());
+        }
+        {
+            final File file = new File(root, "hosts");
+            files.write(file, "aaa");
+
+            // ## Act ##
+            final FileResource r = files.getFileResource(file);
+
+            // ## Assert ##
+            assertEquals("hosts", r.getPrefix());
+            assertEquals(null, r.getExtension());
+        }
+    }
+
+    @Test
     public void delete_file() throws Throwable {
         // ## Arrange ##
         final FileOperation files = new FileOperation();
@@ -756,16 +806,16 @@ public class FileOperationTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(true, files.binaryEquals("12345".getBytes(), "12345"
-            .getBytes()));
-        assertEquals(false, files.binaryEquals("12345".getBytes(), "123456"
-            .getBytes()));
-        assertEquals(false, files.binaryEquals("1234".getBytes(), "1235"
-            .getBytes()));
-        assertEquals(false, files.binaryEquals("1234".getBytes(), "123 "
-            .getBytes()));
-        assertEquals(false, files.binaryEquals("1234".getBytes(), "123"
-            .getBytes()));
+        assertEquals(true,
+                files.binaryEquals("12345".getBytes(), "12345".getBytes()));
+        assertEquals(false,
+                files.binaryEquals("12345".getBytes(), "123456".getBytes()));
+        assertEquals(false,
+                files.binaryEquals("1234".getBytes(), "1235".getBytes()));
+        assertEquals(false,
+                files.binaryEquals("1234".getBytes(), "123 ".getBytes()));
+        assertEquals(false,
+                files.binaryEquals("1234".getBytes(), "123".getBytes()));
     }
 
     @Test
@@ -776,31 +826,31 @@ public class FileOperationTest {
         // ## Act ##
         // ## Assert ##
         {
-            final ByteArrayInputStream is1 = new ByteArrayInputStream("12345"
-                .getBytes());
-            final ByteArrayInputStream is2 = new ByteArrayInputStream("12345"
-                .getBytes());
+            final ByteArrayInputStream is1 = new ByteArrayInputStream(
+                    "12345".getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream(
+                    "12345".getBytes());
             assertEquals(true, files.binaryEquals(is1, is2));
         }
         {
-            final ByteArrayInputStream is1 = new ByteArrayInputStream("12345"
-                .getBytes());
-            final ByteArrayInputStream is2 = new ByteArrayInputStream("123456"
-                .getBytes());
+            final ByteArrayInputStream is1 = new ByteArrayInputStream(
+                    "12345".getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream(
+                    "123456".getBytes());
             assertEquals(false, files.binaryEquals(is1, is2));
         }
         {
-            final ByteArrayInputStream is1 = new ByteArrayInputStream("1234567"
-                .getBytes());
-            final ByteArrayInputStream is2 = new ByteArrayInputStream("123456"
-                .getBytes());
+            final ByteArrayInputStream is1 = new ByteArrayInputStream(
+                    "1234567".getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream(
+                    "123456".getBytes());
             assertEquals(false, files.binaryEquals(is1, is2));
         }
         {
-            final ByteArrayInputStream is1 = new ByteArrayInputStream("1234"
-                .getBytes());
-            final ByteArrayInputStream is2 = new ByteArrayInputStream("1235"
-                .getBytes());
+            final ByteArrayInputStream is1 = new ByteArrayInputStream(
+                    "1234".getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream(
+                    "1235".getBytes());
             assertEquals(false, files.binaryEquals(is1, is2));
         }
     }

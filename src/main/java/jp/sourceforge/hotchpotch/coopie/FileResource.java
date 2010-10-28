@@ -8,6 +8,14 @@ public interface FileResource {
      * "foo.txt" → "txt"
      * "foo.bar.txt" → "txt"
      */
+    String getPrefix();
+
+    /**
+     * ファイルの拡張子を返します。
+     * 
+     * "foo.txt" → "txt"
+     * "foo.bar.txt" → "txt"
+     */
     String getExtension();
 
 }
