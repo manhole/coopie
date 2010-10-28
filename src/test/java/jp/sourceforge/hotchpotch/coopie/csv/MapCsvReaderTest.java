@@ -27,13 +27,13 @@ public class MapCsvReaderTest {
     public void read1() throws Throwable {
         // ## Arrange ##
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-1", "tsv");
+                BeanCsvReaderTest.class.getName() + "-1", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final CsvReader<Map<String, String>> csvReader = layout
-            .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(new InputStreamReader(is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -66,7 +66,7 @@ public class MapCsvReaderTest {
     public void read2() throws Throwable {
         // ## Arrange ##
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-2", "tsv");
+                BeanCsvReaderTest.class.getName() + "-2", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetupBlock() {
@@ -80,7 +80,7 @@ public class MapCsvReaderTest {
 
         // ## Act ##
         final CsvReader<Map<String, String>> csvReader = layout
-            .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(new InputStreamReader(is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -109,13 +109,13 @@ public class MapCsvReaderTest {
     public void read3() throws Throwable {
         // ## Arrange ##
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-4", "tsv");
+                BeanCsvReaderTest.class.getName() + "-4", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final CsvReader<Map<String, String>> csvReader = layout
-            .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(new InputStreamReader(is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -135,6 +135,43 @@ public class MapCsvReaderTest {
         csvReader.close();
     }
 
+    /*
+     * recordインスタンスをCsvReaderに生成させる。
+     */
+    @Test
+    public void read3_2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-4", "tsv");
+
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        {
+            assertEquals(true, csvReader.hasNext());
+            final Map<String, String> bean = csvReader.read();
+            logger.debug(bean.toString());
+            assertEquals("あ1", bean.get("aaa"));
+            assertEquals("い1", bean.get("bbb"));
+            assertEquals(" ", bean.get("ccc"));
+        }
+        {
+            assertEquals(true, csvReader.hasNext());
+            final Map<String, String> bean = csvReader.read();
+            logger.debug(bean.toString());
+            assertEquals(null, bean.get("aaa"));
+            assertEquals("い2", bean.get("bbb"));
+            assertEquals(null, bean.get("ccc"));
+        }
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
     /**
      * CSVヘッダが無い場合。
      */
@@ -142,7 +179,7 @@ public class MapCsvReaderTest {
     public void read_noheader() throws Throwable {
         // ## Arrange ##
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-3", "tsv");
+                BeanCsvReaderTest.class.getName() + "-3", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetupBlock() {
@@ -161,7 +198,7 @@ public class MapCsvReaderTest {
 
         // ## Act ##
         final CsvReader<Map<String, String>> csvReader = layout
-            .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(new InputStreamReader(is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         csvReader.read(bean);
@@ -189,7 +226,7 @@ public class MapCsvReaderTest {
     public void read_noheader_badsetting() throws Throwable {
         // ## Arrange ##
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-3", "tsv");
+                BeanCsvReaderTest.class.getName() + "-3", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setWithHeader(false);
