@@ -11,7 +11,7 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-class DefaultCsvReader<T> implements Closable, CsvReader<T> {
+abstract class DefaultCsvReader<T> implements Closable, CsvReader<T> {
 
     private CsvSetting csvSetting = new CsvSetting();
 
@@ -28,8 +28,8 @@ class DefaultCsvReader<T> implements Closable, CsvReader<T> {
 
     private String[] nextLine;
 
-    public DefaultCsvReader(final RecordDesc<T> csvLayout) {
-        this.recordDesc = csvLayout;
+    public DefaultCsvReader(final RecordDesc<T> recordDesc) {
+        this.recordDesc = recordDesc;
     }
 
     public CsvSetting getCsvSetting() {
@@ -56,6 +56,15 @@ class DefaultCsvReader<T> implements Closable, CsvReader<T> {
 
         recordDesc.setValues(bean, line);
     }
+
+    @Override
+    public T read() {
+        final T bean = newInstance();
+        read(bean);
+        return bean;
+    }
+
+    protected abstract T newInstance();
 
     protected String[] readLine() {
         try {

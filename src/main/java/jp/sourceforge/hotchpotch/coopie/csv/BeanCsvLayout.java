@@ -50,19 +50,19 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
             for (final ColumnName columnName : names) {
                 final String propertyName = columnName.getName();
                 final PropertyDesc<T> pd = getPropertyDesc(beanDesc,
-                    propertyName);
+                        propertyName);
                 final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd);
                 cds[i] = cd;
                 i++;
             }
 
             return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
-                withHeader);
+                    withHeader);
         }
     }
 
     private ColumnDesc<T> newBeanColumnDesc(final ColumnName name,
-        final PropertyDesc<T> pd) {
+            final PropertyDesc<T> pd) {
         final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
         cd.setPropertyDesc(pd);
         cd.setName(name);
@@ -70,7 +70,7 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private PropertyDesc<T> getPropertyDesc(final BeanDesc<T> beanDesc,
-        final String name) {
+            final String name) {
         final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
         if (pd == null) {
             throw new IllegalStateException("property not found:<" + name + ">");
@@ -79,7 +79,8 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     public BeanCsvReader<T> openReader(final Reader reader) {
-        final BeanCsvReader<T> r = new BeanCsvReader<T>(buildRecordDesc());
+        final BeanCsvReader<T> r = new BeanCsvReader<T>(buildRecordDesc(),
+                beanDesc);
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
