@@ -213,13 +213,8 @@ public class FileOperation {
     }
 
     public String getExtension(final File file) {
-        final String name = file.getName();
-        final int pos = name.lastIndexOf('.');
-        if (-1 < pos) {
-            final String extension = name.substring(pos + 1);
-            return extension;
-        }
-        return null;
+        final FileResource r = getFileResource(file);
+        return r.getExtension();
     }
 
     public FileResource getFileResource(final File file) {
