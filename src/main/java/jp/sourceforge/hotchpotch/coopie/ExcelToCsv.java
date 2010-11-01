@@ -44,7 +44,7 @@ public class ExcelToCsv {
             final HSSFRow row = sheet.getRow(rowNo);
             final short lastCellNum = row.getLastCellNum();
             final String[] line = new String[lastCellNum];
-            for (int colNo = 0; colNo < lastCellNum; colNo++) {
+            for (short colNo = 0; colNo < lastCellNum; colNo++) {
                 final HSSFCell cell = row.getCell(colNo);
                 final String v = getValueAsString(cell);
                 line[colNo] = v;
