@@ -37,26 +37,30 @@ public class MapCsvReaderTest {
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
-        csvReader.read(bean);
 
         // ## Assert ##
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ1", bean.get("aaa"));
         assertEquals("い1", bean.get("bbb"));
         assertEquals("う1", bean.get("ccc"));
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ2", bean.get("aaa"));
         assertEquals("い2", bean.get("bbb"));
         assertEquals("う2", bean.get("ccc"));
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ3", bean.get("aaa"));
         assertEquals("い3", bean.get("bbb"));
         assertEquals("う3", bean.get("ccc"));
 
+        assertEquals(false, csvReader.hasNext());
         csvReader.close();
     }
 
