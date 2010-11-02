@@ -18,10 +18,6 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
         this.beanDesc = BeanDescFactory.getBeanDesc(beanClass);
     }
 
-    public BeanDesc<T> getBeanDesc() {
-        return beanDesc;
-    }
-
     @Override
     protected RecordDesc<T> buildRecordDesc() {
         if (columnNames == null || columnNames.isEmpty()) {
