@@ -24,8 +24,8 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
 
     protected RecordDesc<T> recordDesc;
 
-    public DefaultCsvWriter(final RecordDesc<T> csvLayout) {
-        this.recordDesc = csvLayout;
+    public DefaultCsvWriter(final RecordDesc<T> recordDesc) {
+        this.recordDesc = recordDesc;
     }
 
     public void open(final Writer writer) {
