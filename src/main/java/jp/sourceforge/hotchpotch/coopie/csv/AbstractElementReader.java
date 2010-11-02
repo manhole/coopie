@@ -9,7 +9,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
 import org.slf4j.Logger;
 
-abstract public class AbstractElementReader<T> implements Closable,
+public abstract class AbstractElementReader<T> implements Closable,
         CsvReader<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
