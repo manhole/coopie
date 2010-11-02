@@ -24,6 +24,11 @@ public class MapCsvReaderTest {
      * 末端まで達した後のreadでは、例外が発生すること。
      */
 
+    /**
+     * CSVヘッダがBeanのプロパティ名と同じ場合。
+     * 
+     * Layoutを未設定のまま。
+     */
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
