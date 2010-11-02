@@ -118,18 +118,21 @@ public class BeanCsvReaderTest {
     public static void assertRead2(final CsvReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ1", bean.getAaa());
         assertEquals("い1", bean.getBbb());
         assertEquals("う1", bean.getCcc());
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ2", bean.getAaa());
         assertEquals("い2", bean.getBbb());
         assertEquals("う2", bean.getCcc());
 
+        assertEquals(false, csvReader.hasNext());
         csvReader.close();
     }
 
@@ -158,18 +161,22 @@ public class BeanCsvReaderTest {
 
     public static void assertRead3(final CsvReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ1", bean.getAaa());
         assertEquals("い1", bean.getBbb());
         assertEquals(" ", bean.getCcc());
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals(null, bean.getAaa());
         assertEquals("い2", bean.getBbb());
         assertEquals(null, bean.getCcc());
 
+        assertEquals(false, csvReader.hasNext());
         csvReader.close();
     }
 
@@ -247,6 +254,9 @@ public class BeanCsvReaderTest {
 
     static void assertReadNoheader(final CsvReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
+        /*
+         * データはread2のテストと同じなので。
+         */
         assertRead2(csvReader, bean);
     }
 
