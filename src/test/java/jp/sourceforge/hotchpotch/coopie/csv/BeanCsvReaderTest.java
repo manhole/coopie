@@ -112,9 +112,15 @@ public class BeanCsvReaderTest {
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
-        csvReader.read(bean);
 
         // ## Assert ##
+        assertRead2(csvReader, bean);
+    }
+
+    public static void assertRead2(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ1", bean.getAaa());
         assertEquals("い1", bean.getBbb());
@@ -148,9 +154,14 @@ public class BeanCsvReaderTest {
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
-        csvReader.read(bean);
 
         // ## Assert ##
+        assertRead3(csvReader, bean);
+    }
+
+    public static void assertRead3(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+        csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ1", bean.getAaa());
         assertEquals("い1", bean.getBbb());
@@ -233,21 +244,7 @@ public class BeanCsvReaderTest {
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
-        csvReader.read(bean);
-
-        // ## Assert ##
-        logger.debug(bean.toString());
-        assertEquals("あ1", bean.getAaa());
-        assertEquals("い1", bean.getBbb());
-        assertEquals("う1", bean.getCcc());
-
-        csvReader.read(bean);
-        logger.debug(bean.toString());
-        assertEquals("あ2", bean.getAaa());
-        assertEquals("い2", bean.getBbb());
-        assertEquals("う2", bean.getCcc());
-
-        csvReader.close();
+        assertRead2(csvReader, bean);
     }
 
     /**
