@@ -52,7 +52,8 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
 
     @Override
     public CsvWriter<Map<String, String>> openWriter(final Writer writer) {
-        final MapCsvWriter w = new MapCsvWriter(buildRecordDesc());
+        final DefaultCsvWriter<Map<String, String>> w = new DefaultCsvWriter<Map<String, String>>(
+                buildRecordDesc());
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
