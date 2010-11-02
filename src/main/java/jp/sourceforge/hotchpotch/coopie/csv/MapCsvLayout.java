@@ -193,8 +193,8 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
 
         @Override
         public Map<String, String> newInstance() {
-            // TODO Auto-generated method stub
-            return null;
+            // これで良いのだっけ?
+            throw new AssertionError();
         }
 
     }
