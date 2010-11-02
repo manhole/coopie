@@ -9,8 +9,6 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
     protected ColumnNames columnNames;
     protected boolean withHeader = true;
 
-    protected abstract RecordDesc<T> buildRecordDesc();
-
     public void setupColumns(final ColumnSetupBlock block) {
         final DefaultColumnSetup columnSetup = new DefaultColumnSetup();
         block.setup(columnSetup);
