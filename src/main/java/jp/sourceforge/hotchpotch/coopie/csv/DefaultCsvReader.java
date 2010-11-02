@@ -9,9 +9,6 @@ import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
 import org.slf4j.Logger;
-import org.t2framework.commons.exception.IORuntimeException;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 abstract class DefaultCsvReader<T> implements Closable, CsvReader<T> {
 
@@ -25,7 +22,7 @@ abstract class DefaultCsvReader<T> implements Closable, CsvReader<T> {
 
     protected RecordDesc<T> recordDesc;
     protected boolean closed = true;
-    protected CSVReader csvReader;
+    protected CsvElementReader csvReader;
 
     private Boolean hasNext;
 
@@ -70,11 +67,7 @@ abstract class DefaultCsvReader<T> implements Closable, CsvReader<T> {
     protected abstract T newInstance();
 
     protected String[] readLine() {
-        try {
-            return csvReader.readNext();
-        } catch (final IOException e) {
-            throw new IORuntimeException(e);
-        }
+        return csvReader.readLine();
     }
 
     @Override

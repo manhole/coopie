@@ -38,13 +38,16 @@ public class CsvSetting {
      */
     private String lineSeparator = CRLF;
 
-    public CSVWriter openWriter(final Writer writer) {
-        return new CSVWriter(writer, getElementSeparator(), getQuoteMark(),
-            getLineSeparator());
+    public CsvElementWriter openWriter(final Writer writer) {
+        final CSVWriter csvWriter = new CSVWriter(writer,
+                getElementSeparator(), getQuoteMark(), getLineSeparator());
+        return new OpenCsvWriterAdapter(csvWriter);
     }
 
-    public CSVReader openReader(final Reader reader) {
-        return new CSVReader(reader, getElementSeparator(), getQuoteMark());
+    public CsvElementReader openReader(final Reader reader) {
+        final CSVReader csvReader = new CSVReader(reader,
+                getElementSeparator(), getQuoteMark());
+        return new OpenCsvReaderAdapter(csvReader);
     }
 
     public String getLineSeparator() {
