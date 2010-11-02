@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.t2framework.commons.util.CollectionsUtil;
 
-public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
+public abstract class AbstractCsvLayout<T> {
 
     protected ColumnNames columnNames;
     protected boolean withHeader = true;
