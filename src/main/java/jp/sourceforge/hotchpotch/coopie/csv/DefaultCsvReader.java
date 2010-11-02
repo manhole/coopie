@@ -2,7 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.Reader;
 
-class DefaultCsvReader<T> extends AbstractElementReader<T> {
+class DefaultCsvReader<T> extends AbstractCsvReader<T> {
 
     private CsvSetting csvSetting = new CsvSetting();
 
