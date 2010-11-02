@@ -4,6 +4,6 @@ import jp.sourceforge.hotchpotch.coopie.Closable;
 
 public interface CsvElementWriter extends Closable {
 
-    void writeLine(String[] line);
+    void writeRecord(String[] line);
 
 }

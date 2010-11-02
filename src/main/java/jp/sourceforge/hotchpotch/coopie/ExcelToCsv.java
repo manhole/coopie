@@ -49,7 +49,7 @@ public class ExcelToCsv {
                 line[colNo] = v;
             }
             logger.debug("row: " + Arrays.asList(line));
-            csvWriter.writeLine(line);
+            csvWriter.writeRecord(line);
         }
 
         csvWriter.close();

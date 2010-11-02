@@ -44,7 +44,7 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
             line[i] = name.getLabel();
             i++;
         }
-        csvWriter.writeLine(line);
+        csvWriter.writeRecord(line);
     }
 
     @Override
@@ -58,7 +58,7 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
             writtenHeader = true;
         }
         final String[] line = recordDesc.getValues(bean);
-        csvWriter.writeLine(line);
+        csvWriter.writeRecord(line);
     }
 
     @Override
