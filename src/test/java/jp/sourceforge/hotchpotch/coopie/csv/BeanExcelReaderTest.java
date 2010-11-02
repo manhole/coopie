@@ -14,7 +14,7 @@ public class BeanExcelReaderTest {
     private static final Logger logger = LoggerFactory.getLogger();
 
     /**
-     * CSVヘッダがBeanのプロパティ名と同じ場合。
+     * ヘッダがBeanのプロパティ名と同じ場合。
      * 
      * Layoutを未設定のまま。
      */
@@ -35,4 +35,57 @@ public class BeanExcelReaderTest {
         // ## Assert ##
         BeanCsvReaderTest.assertRead1(csvReader, bean);
     }
+
+    /**
+     * ヘッダがBeanのプロパティ名と異なる場合。
+     */
+    @Test
+    public void read2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-2", "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa", "あ");
+                setup.column("ccc", "ううう");
+                setup.column("bbb", "いい");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
+
+        final AaaBean bean = new AaaBean();
+
+        // ## Assert ##
+        BeanCsvReaderTest.assertRead2(csvReader, bean);
+    }
+
+    /**
+     * 空白項目がある場合。
+     * 
+     * ""はnullとして扱い、" "は" "として扱う。
+     */
+    @Test
+    public void read3() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-4", "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
+
+        final AaaBean bean = new AaaBean();
+
+        // ## Assert ##
+        BeanCsvReaderTest.assertRead3(csvReader, bean);
+    }
+
 }
