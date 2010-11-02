@@ -2,12 +2,16 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.Reader;
 
-abstract class DefaultCsvReader<T> extends AbstractElementReader<T> {
+class DefaultCsvReader<T> extends AbstractElementReader<T> {
 
     private CsvSetting csvSetting = new CsvSetting();
 
-    public DefaultCsvReader(final RecordDesc<T> recordDesc) {
+    private final RecordBeanType<T> recordBeanType;
+
+    public DefaultCsvReader(final RecordDesc<T> recordDesc,
+            final RecordBeanType<T> recordBeanType) {
         super(recordDesc);
+        this.recordBeanType = recordBeanType;
     }
 
     public CsvSetting getCsvSetting() {
@@ -23,6 +27,11 @@ abstract class DefaultCsvReader<T> extends AbstractElementReader<T> {
         closed = false;
 
         setupByHeader();
+    }
+
+    @Override
+    protected T newInstance() {
+        return recordBeanType.newInstance();
     }
 
 }

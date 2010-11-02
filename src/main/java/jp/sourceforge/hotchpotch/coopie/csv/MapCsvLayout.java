@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
@@ -21,7 +22,7 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
                 i++;
             }
             return new DefaultRecordDesc<Map<String, String>>(cds,
-                OrderSpecified.SPECIFIED, withHeader);
+                    OrderSpecified.SPECIFIED, withHeader);
         }
 
         /*
@@ -34,15 +35,16 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
     }
 
     protected static ColumnDesc<Map<String, String>> newMapColumnDesc(
-        final ColumnName columnName) {
+            final ColumnName columnName) {
         final MapColumnDesc cd = new MapColumnDesc();
         cd.setName(columnName);
         return cd;
     }
 
     @Override
-    public MapCsvReader openReader(final Reader reader) {
-        final MapCsvReader r = new MapCsvReader(buildRecordDesc());
+    public CsvReader<Map<String, String>> openReader(final Reader reader) {
+        final DefaultCsvReader<Map<String, String>> r = new DefaultCsvReader<Map<String, String>>(
+                buildRecordDesc(), new MapRecordType());
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
@@ -99,7 +101,7 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
          */
         @Override
         public RecordDesc<Map<String, String>> setupByHeader(
-            final String[] header) {
+                final String[] header) {
 
             /*
              * ヘッダをMapのキーとして扱う。
@@ -120,7 +122,7 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
             });
 
             final RecordDesc<Map<String, String>> built = layout
-                .buildRecordDesc();
+                    .buildRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();
@@ -138,7 +140,7 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
          */
         @Override
         public RecordDesc<Map<String, String>> setupByBean(
-            final Map<String, String> bean) {
+                final Map<String, String> bean) {
             /*
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
@@ -154,7 +156,7 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
             });
 
             final RecordDesc<Map<String, String>> built = layout
-                .buildRecordDesc();
+                    .buildRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();
@@ -184,8 +186,20 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
 
         @Override
         public void setValues(final Map<String, String> bean,
-            final String[] values) {
+                final String[] values) {
             throw new AssertionError();
+        }
+
+    }
+
+    static class MapRecordType implements RecordBeanType<Map<String, String>> {
+
+        public MapRecordType() {
+        }
+
+        @Override
+        public Map<String, String> newInstance() {
+            return new TreeMap<String, String>();
         }
 
     }
