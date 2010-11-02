@@ -12,7 +12,15 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
 
     @Override
     protected RecordDesc<Map<String, String>> buildRecordDesc() {
-        if (columnNames != null) {
+        if (columnNames == null || columnNames.isEmpty()) {
+            /*
+             * カラム名が設定されていない場合は、
+             * Readの場合はヘッダから、
+             * Writeの場合は1件目から、
+             * カラム名を構築する。
+             */
+            return new LazyMapRecordDesc(this);
+        } else {
             final ColumnName[] names = columnNames.getColumnNames();
             final ColumnDesc<Map<String, String>>[] cds = newColumnDescs(names.length);
             int i = 0;
@@ -24,14 +32,6 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
             return new DefaultRecordDesc<Map<String, String>>(cds,
                     OrderSpecified.SPECIFIED, withHeader, new MapRecordType());
         }
-
-        /*
-         * カラム名が設定されていない場合は、
-         * Readの場合はヘッダから、
-         * Writeの場合は1件目から、
-         * カラム名を構築する。
-         */
-        return new LazyMapRecordDesc(this);
     }
 
     protected static ColumnDesc<Map<String, String>> newMapColumnDesc(
