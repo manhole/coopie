@@ -78,9 +78,9 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return pd;
     }
 
-    public BeanCsvReader<T> openReader(final Reader reader) {
-        final BeanCsvReader<T> r = new BeanCsvReader<T>(buildRecordDesc(),
-                beanDesc);
+    public CsvReader<T> openReader(final Reader reader) {
+        final DefaultCsvReader<T> r = new DefaultCsvReader<T>(
+                buildRecordDesc(), new BeanRecordType<T>(beanDesc));
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
@@ -131,6 +131,21 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
         @Override
         public void setValue(final T bean, final String value) {
             propertyDesc.setValue(bean, value);
+        }
+
+    }
+
+    static class BeanRecordType<T> implements RecordBeanType<T> {
+
+        private final BeanDesc<T> beanDesc;
+
+        public BeanRecordType(final BeanDesc<T> beanDesc) {
+            this.beanDesc = beanDesc;
+        }
+
+        @Override
+        public T newInstance() {
+            return beanDesc.newInstance();
         }
 
     }
