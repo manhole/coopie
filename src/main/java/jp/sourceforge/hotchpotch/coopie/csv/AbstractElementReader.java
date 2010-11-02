@@ -55,7 +55,9 @@ public abstract class AbstractElementReader<T> implements Closable,
         return bean;
     }
 
-    protected abstract T newInstance();
+    protected T newInstance() {
+        return recordDesc.newInstance();
+    }
 
     protected String[] readLine() {
         return elementReader.readRecord();

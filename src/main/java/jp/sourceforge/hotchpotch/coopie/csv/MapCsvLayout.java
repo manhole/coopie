@@ -22,7 +22,7 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
                 i++;
             }
             return new DefaultRecordDesc<Map<String, String>>(cds,
-                    OrderSpecified.SPECIFIED, withHeader);
+                    OrderSpecified.SPECIFIED, withHeader, new MapRecordType());
         }
 
         /*
@@ -44,7 +44,7 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
     @Override
     public CsvReader<Map<String, String>> openReader(final Reader reader) {
         final DefaultCsvReader<Map<String, String>> r = new DefaultCsvReader<Map<String, String>>(
-                buildRecordDesc(), new MapRecordType());
+                buildRecordDesc());
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
@@ -191,12 +191,15 @@ public class MapCsvLayout extends AbstractCsvLayout<Map<String, String>> {
             throw new AssertionError();
         }
 
+        @Override
+        public Map<String, String> newInstance() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     }
 
-    static class MapRecordType implements RecordBeanType<Map<String, String>> {
-
-        public MapRecordType() {
-        }
+    static class MapRecordType implements RecordType<Map<String, String>> {
 
         @Override
         public Map<String, String> newInstance() {
