@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import jp.sourceforge.hotchpotch.coopie.csv.CsvElementWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -12,8 +13,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 public class ExcelToCsv {
 
@@ -36,7 +35,7 @@ public class ExcelToCsv {
                 files.openBufferedInputStream(file));
         final HSSFSheet sheet = workbook.getSheetAt(0);
 
-        final CSVWriter csvWriter = new CsvSetting().openWriter(files
+        final CsvElementWriter csvWriter = new CsvSetting().openWriter(files
                 .openBufferedWriter(tsvFile));
 
         final int lastRowNum = sheet.getLastRowNum();
@@ -50,7 +49,7 @@ public class ExcelToCsv {
                 line[colNo] = v;
             }
             logger.debug("row: " + Arrays.asList(line));
-            csvWriter.writeNext(line);
+            csvWriter.writeLine(line);
         }
 
         csvWriter.close();

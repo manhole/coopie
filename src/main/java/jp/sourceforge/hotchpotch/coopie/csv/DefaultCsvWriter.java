@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
-import au.com.bytecode.opencsv.CSVWriter;
 
 class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
 
@@ -17,7 +16,7 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
 
     private boolean firstRecord = true;
 
-    protected CSVWriter csvWriter;
+    protected CsvElementWriter csvWriter;
 
     private boolean writtenHeader;
 
@@ -45,7 +44,7 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
             line[i] = name.getLabel();
             i++;
         }
-        csvWriter.writeNext(line);
+        csvWriter.writeLine(line);
     }
 
     @Override
@@ -59,7 +58,7 @@ class DefaultCsvWriter<T> implements Closable, CsvWriter<T> {
             writtenHeader = true;
         }
         final String[] line = recordDesc.getValues(bean);
-        csvWriter.writeNext(line);
+        csvWriter.writeLine(line);
     }
 
     @Override
