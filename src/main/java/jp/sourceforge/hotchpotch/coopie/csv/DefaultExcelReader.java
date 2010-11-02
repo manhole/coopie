@@ -14,7 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.t2framework.commons.exception.IORuntimeException;
 
-class DefaultExcelReader<T> extends AbstractElementReader<T> {
+class DefaultExcelReader<T> extends AbstractCsvReader<T> {
 
     public DefaultExcelReader(final RecordDesc<T> recordDesc) {
         super(recordDesc);
