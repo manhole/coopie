@@ -86,8 +86,8 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return r;
     }
 
-    public BeanCsvWriter<T> openWriter(final Writer writer) {
-        final BeanCsvWriter<T> w = new BeanCsvWriter<T>(buildRecordDesc());
+    public CsvWriter<T> openWriter(final Writer writer) {
+        final DefaultCsvWriter<T> w = new DefaultCsvWriter<T>(buildRecordDesc());
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
