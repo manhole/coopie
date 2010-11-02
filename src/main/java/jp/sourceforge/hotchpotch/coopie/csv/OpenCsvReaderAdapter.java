@@ -19,7 +19,7 @@ public class OpenCsvReaderAdapter implements CsvElementReader {
     }
 
     @Override
-    public String[] readLine() {
+    public String[] readRecord() {
         try {
             return csvReader.readNext();
         } catch (final IOException e) {

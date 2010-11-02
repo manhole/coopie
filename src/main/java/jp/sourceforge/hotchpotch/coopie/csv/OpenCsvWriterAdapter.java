@@ -16,7 +16,7 @@ public class OpenCsvWriterAdapter implements CsvElementWriter {
     }
 
     @Override
-    public void writeLine(final String[] line) {
+    public void writeRecord(final String[] line) {
         csvWriter.writeNext(line);
     }
 

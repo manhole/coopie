@@ -67,7 +67,7 @@ abstract class DefaultCsvReader<T> implements Closable, CsvReader<T> {
     protected abstract T newInstance();
 
     protected String[] readLine() {
-        return csvReader.readLine();
+        return csvReader.readRecord();
     }
 
     @Override
