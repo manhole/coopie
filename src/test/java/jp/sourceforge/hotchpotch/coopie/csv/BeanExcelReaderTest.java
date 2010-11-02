@@ -30,9 +30,8 @@ public class BeanExcelReaderTest {
         // ## Act ##
         final CsvReader<AaaBean> csvReader = layout.openReader(is);
 
-        final AaaBean bean = new AaaBean();
-
         // ## Assert ##
+        final AaaBean bean = new AaaBean();
         BeanCsvReaderTest.assertRead1(csvReader, bean);
     }
 
@@ -59,9 +58,8 @@ public class BeanExcelReaderTest {
         // ## Act ##
         final CsvReader<AaaBean> csvReader = layout.openReader(is);
 
-        final AaaBean bean = new AaaBean();
-
         // ## Assert ##
+        final AaaBean bean = new AaaBean();
         BeanCsvReaderTest.assertRead2(csvReader, bean);
     }
 
@@ -82,10 +80,42 @@ public class BeanExcelReaderTest {
         // ## Act ##
         final CsvReader<AaaBean> csvReader = layout.openReader(is);
 
+        // ## Assert ##
         final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertRead3(csvReader, bean);
+    }
+
+    /**
+     * ヘッダが無い場合。
+     */
+    @Test
+    public void read_noheader() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-3", "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                /*
+                 * CSVの列順
+                 */
+                setup.column("ccc", "ううう");
+                setup.column("aaa", "あ");
+                setup.column("bbb", "いい");
+            }
+        });
+
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
 
         // ## Assert ##
-        BeanCsvReaderTest.assertRead3(csvReader, bean);
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertReadNoheader(csvReader, bean);
     }
 
 }

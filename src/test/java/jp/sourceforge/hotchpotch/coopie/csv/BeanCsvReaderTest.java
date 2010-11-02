@@ -53,9 +53,8 @@ public class BeanCsvReaderTest {
         final CsvReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
-        final AaaBean bean = new AaaBean();
-
         // ## Assert ##
+        final AaaBean bean = new AaaBean();
         assertRead1(csvReader, bean);
     }
 
@@ -111,9 +110,8 @@ public class BeanCsvReaderTest {
         final CsvReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
-        final AaaBean bean = new AaaBean();
-
         // ## Assert ##
+        final AaaBean bean = new AaaBean();
         assertRead2(csvReader, bean);
     }
 
@@ -153,9 +151,8 @@ public class BeanCsvReaderTest {
         final CsvReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
-        final AaaBean bean = new AaaBean();
-
         // ## Assert ##
+        final AaaBean bean = new AaaBean();
         assertRead3(csvReader, bean);
     }
 
@@ -243,7 +240,13 @@ public class BeanCsvReaderTest {
         final CsvReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
+        // ## Assert ##
         final AaaBean bean = new AaaBean();
+        assertReadNoheader(csvReader, bean);
+    }
+
+    static void assertReadNoheader(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
         assertRead2(csvReader, bean);
     }
 
