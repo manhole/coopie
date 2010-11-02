@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -53,10 +54,16 @@ public class BeanCsvReaderTest {
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         final AaaBean bean = new AaaBean();
-        assertEquals(true, csvReader.hasNext());
-        csvReader.read(bean);
 
         // ## Assert ##
+        assertRead1(csvReader, bean);
+    }
+
+    public static void assertRead1(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ1", bean.getAaa());
         assertEquals("い1", bean.getBbb());
