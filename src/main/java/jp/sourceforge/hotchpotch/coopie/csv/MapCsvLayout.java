@@ -4,7 +4,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
 
-public class MapCsvLayout extends AbstractMapCsvLayout {
+public class MapCsvLayout extends AbstractMapCsvLayout implements
+        CsvLayout<Map<String, String>> {
 
     @Override
     public CsvReader<Map<String, String>> openReader(final Reader reader) {
