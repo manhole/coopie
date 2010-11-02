@@ -28,6 +28,8 @@ public interface RecordDesc<T> {
      */
     RecordDesc<T> setupByBean(T bean);
 
+    T newInstance();
+
     public enum OrderSpecified {
 
         /**

@@ -35,7 +35,8 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 i++;
             }
 
-            return new DefaultRecordDesc<T>(cds, OrderSpecified.NO, withHeader);
+            return new DefaultRecordDesc<T>(cds, OrderSpecified.NO, withHeader,
+                    new BeanRecordType<T>(beanDesc));
         } else {
             /*
              * 設定されているプロパティ名を対象に。
@@ -53,7 +54,7 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
             }
 
             return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
-                    withHeader);
+                    withHeader, new BeanRecordType<T>(beanDesc));
         }
     }
 
@@ -75,8 +76,7 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     public CsvReader<T> openReader(final Reader reader) {
-        final DefaultCsvReader<T> r = new DefaultCsvReader<T>(
-                buildRecordDesc(), new BeanRecordType<T>(beanDesc));
+        final DefaultCsvReader<T> r = new DefaultCsvReader<T>(buildRecordDesc());
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
@@ -131,7 +131,7 @@ public class BeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     }
 
-    static class BeanRecordType<T> implements RecordBeanType<T> {
+    static class BeanRecordType<T> implements RecordType<T> {
 
         private final BeanDesc<T> beanDesc;
 

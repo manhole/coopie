@@ -58,17 +58,24 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
 
     }
 
+    static interface RecordType<T> {
+        T newInstance();
+    }
+
     protected static class DefaultRecordDesc<T> implements RecordDesc<T> {
 
         protected ColumnDesc<T>[] columnDescs;
         protected OrderSpecified orderSpecified;
         protected boolean withHeader;
+        private final RecordType<T> recordType;
 
         protected DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
-                final OrderSpecified orderSpecified, final boolean withHeader) {
+                final OrderSpecified orderSpecified, final boolean withHeader,
+                final RecordType<T> recordType) {
             this.columnDescs = columnDescs;
             this.orderSpecified = orderSpecified;
             this.withHeader = withHeader;
+            this.recordType = recordType;
         }
 
         protected ColumnDesc<T>[] getColumnDescs() {
@@ -169,6 +176,11 @@ public abstract class AbstractCsvLayout<T> implements CsvLayout<T> {
         @Override
         public RecordDesc<T> setupByBean(final T bean) {
             return this;
+        }
+
+        @Override
+        public T newInstance() {
+            return recordType.newInstance();
         }
 
     }
