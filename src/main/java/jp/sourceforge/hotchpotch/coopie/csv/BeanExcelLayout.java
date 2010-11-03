@@ -20,8 +20,11 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     @Override
     public CsvWriter<T> openWriter(final OutputStream os) {
-        // TODO Auto-generated method stub
-        return null;
+        final DefaultExcelWriter<T> w = new DefaultExcelWriter<T>(
+                buildRecordDesc());
+        // TODO openで例外時にcloseすること
+        w.open(os);
+        return w;
     }
 
 }
