@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -41,9 +42,14 @@ public class MapCsvReaderTest {
         final CsvReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
-        final Map<String, String> bean = CollectionsUtil.newHashMap();
-
         // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertRead1(csvReader, bean);
+    }
+
+    static void assertRead1(final CsvReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
+
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
