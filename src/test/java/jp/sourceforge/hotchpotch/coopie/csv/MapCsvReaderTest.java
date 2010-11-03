@@ -92,21 +92,24 @@ public class MapCsvReaderTest {
         final CsvReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
-        final Map<String, String> bean = CollectionsUtil.newHashMap();
-        csvReader.read(bean);
-
         // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ1", bean.get("aaa"));
         assertEquals("い1", bean.get("bbb"));
         assertEquals("う1", bean.get("ccc"));
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ2", bean.get("aaa"));
         assertEquals("い2", bean.get("bbb"));
         assertEquals("う2", bean.get("ccc"));
 
+        assertEquals(false, csvReader.hasNext());
         csvReader.close();
     }
 
@@ -127,21 +130,24 @@ public class MapCsvReaderTest {
         final CsvReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
-        final Map<String, String> bean = CollectionsUtil.newHashMap();
-        csvReader.read(bean);
-
         // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals("あ1", bean.get("aaa"));
         assertEquals("い1", bean.get("bbb"));
         assertEquals(" ", bean.get("ccc"));
 
+        assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals(null, bean.get("aaa"));
         assertEquals("い2", bean.get("bbb"));
         assertEquals(null, bean.get("ccc"));
 
+        assertEquals(false, csvReader.hasNext());
         csvReader.close();
     }
 
