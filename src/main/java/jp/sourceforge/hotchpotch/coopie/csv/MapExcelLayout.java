@@ -18,8 +18,11 @@ public class MapExcelLayout extends AbstractMapCsvLayout implements
 
     @Override
     public CsvWriter<Map<String, String>> openWriter(final OutputStream os) {
-        // TODO Auto-generated method stub
-        return null;
+        final DefaultExcelWriter<Map<String, String>> w = new DefaultExcelWriter<Map<String, String>>(
+                buildRecordDesc());
+        // TODO openで例外時にcloseすること
+        w.open(os);
+        return w;
     }
 
 }
