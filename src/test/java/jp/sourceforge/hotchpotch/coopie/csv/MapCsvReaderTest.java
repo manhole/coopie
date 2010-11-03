@@ -101,6 +101,11 @@ public class MapCsvReaderTest {
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
 
+        assertRead2(csvReader, bean);
+    }
+
+    static void assertRead2(final CsvReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
@@ -138,7 +143,11 @@ public class MapCsvReaderTest {
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertRead3(csvReader, bean);
+    }
 
+    static void assertRead3(final CsvReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
@@ -173,6 +182,11 @@ public class MapCsvReaderTest {
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
+        assertRead3_2(csvReader);
+    }
+
+    static void assertRead3_2(final CsvReader<Map<String, String>> csvReader)
+            throws IOException {
         {
             assertEquals(true, csvReader.hasNext());
             final Map<String, String> bean = csvReader.read();
@@ -222,22 +236,18 @@ public class MapCsvReaderTest {
         final CsvReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
-        final Map<String, String> bean = CollectionsUtil.newHashMap();
-        csvReader.read(bean);
-
         // ## Assert ##
-        logger.debug(bean.toString());
-        assertEquals("あ1", bean.get("aaa"));
-        assertEquals("い1", bean.get("bbb"));
-        assertEquals("う1", bean.get("ccc"));
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertReadNoheader(csvReader, bean);
+    }
 
-        csvReader.read(bean);
-        logger.debug(bean.toString());
-        assertEquals("あ2", bean.get("aaa"));
-        assertEquals("い2", bean.get("bbb"));
-        assertEquals("う2", bean.get("ccc"));
-
-        csvReader.close();
+    static void assertReadNoheader(
+            final CsvReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
+        /*
+         * データはread2のテストと同じなので。
+         */
+        assertRead2(csvReader, bean);
     }
 
     /**
