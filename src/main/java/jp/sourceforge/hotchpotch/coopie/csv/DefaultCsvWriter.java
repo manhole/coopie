@@ -19,7 +19,7 @@ class DefaultCsvWriter<T> extends AbstractCsvWriter<T> {
     }
 
     public void open(final Writer writer) {
-        csvWriter = csvSetting.openWriter(writer);
+        elementWriter = csvSetting.openWriter(writer);
         closed = false;
     }
 
