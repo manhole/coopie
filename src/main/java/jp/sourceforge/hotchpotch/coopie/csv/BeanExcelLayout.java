@@ -10,6 +10,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
         super(beanClass);
     }
 
+    @Override
     public CsvReader<T> openReader(final InputStream is) {
         final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
                 buildRecordDesc());

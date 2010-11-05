@@ -15,8 +15,8 @@ public class ToStringFormatTest {
         // ## Act ##
         // ## Assert ##
 
-        assertEquals("Foo[aaa=a1, bbbBbb=<null>]", new ToStringFormat()
-            .format(foo));
+        assertEquals("Foo[aaa=a1, bbbBbb=<null>]",
+                new ToStringFormat().format(foo));
     }
 
     @Test
@@ -29,8 +29,8 @@ public class ToStringFormatTest {
 
         // ## Assert ##
         assertEquals(
-            "Composit[composit=Composit[composit=<..>, name=c1], name=c1]",
-            new ToStringFormat().format(c1));
+                "Composit[composit=Composit[composit=<..>, name=c1], name=c1]",
+                new ToStringFormat().format(c1));
     }
 
     public static class Foo {

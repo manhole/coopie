@@ -30,7 +30,7 @@ public class ToStringFormat {
         final Class<T> clazz = (Class<T>) obj.getClass();
         final BeanDesc<T> beanDesc = BeanDescFactory.getBeanDesc(clazz);
         final List<PropertyDesc<T>> descs = new ArrayList<PropertyDesc<T>>(
-            beanDesc.getAllPropertyDesc());
+                beanDesc.getAllPropertyDesc());
         Collections.sort(descs, comparator);
 
         boolean first = true;
@@ -55,7 +55,7 @@ public class ToStringFormat {
     }
 
     private void append(final StringBuilder sb, final Object value,
-        final Set<Object> set) {
+            final Set<Object> set) {
         if (value == null) {
             sb.append("<null>");
             return;
@@ -80,7 +80,7 @@ public class ToStringFormat {
     }
 
     private static class PropertyDescComparator implements
-        Comparator<PropertyDesc<?>> {
+            Comparator<PropertyDesc<?>> {
 
         @Override
         public int compare(final PropertyDesc<?> o1, final PropertyDesc<?> o2) {
