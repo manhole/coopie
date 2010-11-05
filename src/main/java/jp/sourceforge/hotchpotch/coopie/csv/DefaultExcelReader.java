@@ -58,16 +58,21 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
                 return null;
             }
             final HSSFRow row = sheet.getRow(rowNum);
-            /*
-             * C列まである場合は3が返る
-             */
-            final short lastCellNum = row.getLastCellNum();
-            //logger.debug("lastCellNum={}", lastCellNum);
-            final String[] line = new String[lastCellNum];
-            for (short colNo = 0; colNo < lastCellNum; colNo++) {
-                final HSSFCell cell = row.getCell(colNo);
-                final String v = getValueAsString(cell);
-                line[colNo] = v;
+            final String[] line;
+            if (row != null) {
+                /*
+                 * C列まである場合は3が返る
+                 */
+                final short lastCellNum = row.getLastCellNum();
+                //logger.debug("lastCellNum={}", lastCellNum);
+                line = new String[lastCellNum];
+                for (short colNo = 0; colNo < lastCellNum; colNo++) {
+                    final HSSFCell cell = row.getCell(colNo);
+                    final String v = getValueAsString(cell);
+                    line[colNo] = v;
+                }
+            } else {
+                line = new String[0];
             }
             logger.debug("row({}): {}", rowNum, Arrays.asList(line));
 
