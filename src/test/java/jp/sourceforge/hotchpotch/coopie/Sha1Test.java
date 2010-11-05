@@ -13,8 +13,8 @@ public class Sha1Test {
     public void test1() throws Throwable {
         // ## Arrange ##
         final File file = ResourceUtil.getResourceAsFile(Sha1Test.class
-            .getPackage().getName().replace('.', '/')
-            + "/coopie-0.1.0-20100708.043157-1.pom");
+                .getPackage().getName().replace('.', '/')
+                + "/coopie-0.1.0-20100708.043157-1.pom");
 
         // ## Act ##
         final String actual = new Sha1().digest(file);

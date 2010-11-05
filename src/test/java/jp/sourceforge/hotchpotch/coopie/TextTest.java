@@ -23,7 +23,7 @@ public class TextTest {
     public void containsIgnoreLine() throws Throwable {
         // ## Arrange ##
         final Text text = new Text("　いつも格別のお引き立てを" + "\r\n" + "賜り誠にありがとう"
-            + "\r\n" + "ございます。");
+                + "\r\n" + "ございます。");
 
         // ## Act ##
         // ## Assert ##
@@ -38,7 +38,7 @@ public class TextTest {
     public void containsLine() throws Throwable {
         // ## Arrange ##
         final Text text = new Text("　いつも格別のお引き立てを" + "\r\n" + "賜り誠にありがとう"
-            + "\r\n" + "ございます。");
+                + "\r\n" + "ございます。");
 
         // ## Act ##
         // ## Assert ##
@@ -53,7 +53,7 @@ public class TextTest {
     @Test
     public void toStringReturnsRawString() throws Throwable {
         final Text text = new Text("　カレーなどの料理に" + "\r\n" + "広く使うスパイスの" + "\r\n"
-            + "対日価格が高騰している。");
+                + "対日価格が高騰している。");
         assertEquals("　カレーなどの料理に\r\n広く使うスパイスの\r\n対日価格が高騰している。", text.toString());
     }
 

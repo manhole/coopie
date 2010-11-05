@@ -18,7 +18,7 @@ public class BeanCsvWriterTest {
     public void write1() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-            AaaBean.class);
+                AaaBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -41,9 +41,9 @@ public class BeanCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvWriterTest.class.getName() + "-1", "tsv");
+                BeanCsvWriterTest.class.getName() + "-1", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
-            "UTF-8"));
+                "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -54,7 +54,7 @@ public class BeanCsvWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-            AaaBean.class);
+                AaaBean.class);
         layout.setupColumns(new ColumnSetupBlock() {
             @Override
             public void setup(final ColumnSetup setup) {
@@ -90,9 +90,9 @@ public class BeanCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-1", "tsv");
+                BeanCsvReaderTest.class.getName() + "-1", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
-            "UTF-8"));
+                "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -103,7 +103,7 @@ public class BeanCsvWriterTest {
     public void write3() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-            AaaBean.class);
+                AaaBean.class);
         layout.setupColumns(new ColumnSetupBlock() {
             @Override
             public void setup(final ColumnSetup setup) {
@@ -137,9 +137,9 @@ public class BeanCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-2", "tsv");
+                BeanCsvReaderTest.class.getName() + "-2", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
-            "UTF-8"));
+                "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -152,7 +152,7 @@ public class BeanCsvWriterTest {
     public void write4() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-            AaaBean.class);
+                AaaBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -175,9 +175,9 @@ public class BeanCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-4", "tsv");
+                BeanCsvReaderTest.class.getName() + "-4", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
-            "UTF-8"));
+                "UTF-8"));
         assertEquals(expected, actual);
     }
 

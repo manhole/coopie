@@ -51,8 +51,8 @@ public class CharSequenceWriterTest {
         writer.write("ccc");
 
         // ## Assert ##
-        assertEquals("abb" + writer.getLineSeparator() + "ccc", writer
-            .toString());
+        assertEquals("abb" + writer.getLineSeparator() + "ccc",
+                writer.toString());
         assertEquals(false, "abbccc".equals(writer.toString()));
     }
 

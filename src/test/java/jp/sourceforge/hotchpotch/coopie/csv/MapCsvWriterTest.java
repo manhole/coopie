@@ -23,7 +23,7 @@ public class MapCsvWriterTest {
         // ## Act ##
         final StringWriter writer = new StringWriter();
         final CsvWriter<Map<String, String>> csvWriter = layout
-            .openWriter(writer);
+                .openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<String, String>();
         bean.put("aaa", "あ1");
@@ -42,9 +42,9 @@ public class MapCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvWriterTest.class.getName() + "-1", "tsv");
+                BeanCsvWriterTest.class.getName() + "-1", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
-            "UTF-8"));
+                "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -67,7 +67,7 @@ public class MapCsvWriterTest {
         // ## Act ##
         final StringWriter writer = new StringWriter();
         final CsvWriter<Map<String, String>> csvWriter = layout
-            .openWriter(writer);
+                .openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -91,9 +91,9 @@ public class MapCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-1", "tsv");
+                BeanCsvReaderTest.class.getName() + "-1", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
-            "UTF-8"));
+                "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -119,7 +119,7 @@ public class MapCsvWriterTest {
         // ## Act ##
         final StringWriter writer = new StringWriter();
         final CsvWriter<Map<String, String>> csvWriter = layout
-            .openWriter(writer);
+                .openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -138,9 +138,9 @@ public class MapCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-2", "tsv");
+                BeanCsvReaderTest.class.getName() + "-2", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
-            "UTF-8"));
+                "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -157,7 +157,7 @@ public class MapCsvWriterTest {
         // ## Act ##
         final StringWriter writer = new StringWriter();
         final CsvWriter<Map<String, String>> csvWriter = layout
-            .openWriter(writer);
+                .openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<String, String>();
         bean.put("aaa", "あ1");
@@ -176,9 +176,9 @@ public class MapCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-            BeanCsvReaderTest.class.getName() + "-4", "tsv");
+                BeanCsvReaderTest.class.getName() + "-4", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
-            "UTF-8"));
+                "UTF-8"));
         assertEquals(expected, actual);
     }
 

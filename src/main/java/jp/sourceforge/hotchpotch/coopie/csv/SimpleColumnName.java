@@ -22,6 +22,7 @@ public class SimpleColumnName implements ColumnName {
      */
     private String label;
 
+    @Override
     public String getName() {
         return name;
     }
@@ -30,6 +31,7 @@ public class SimpleColumnName implements ColumnName {
         this.name = name;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
