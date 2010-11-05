@@ -117,8 +117,14 @@ public abstract class AbstractCsvLayout<T> {
         @Override
         public void setValues(final T bean, final String[] values) {
             final ColumnDesc<T>[] cds = getColumnDescs();
-            for (int i = 0; i < values.length; i++) {
+            int i = 0;
+            for (; i < values.length; i++) {
                 final String value = value(values[i]);
+                final ColumnDesc<T> cd = cds[i];
+                cd.setValue(bean, value);
+            }
+            for (; i < cds.length; i++) {
+                final String value = null;
                 final ColumnDesc<T> cd = cds[i];
                 cd.setValue(bean, value);
             }
