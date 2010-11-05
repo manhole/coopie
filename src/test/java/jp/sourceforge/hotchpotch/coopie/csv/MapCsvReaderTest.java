@@ -100,7 +100,6 @@ public class MapCsvReaderTest {
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
-
         assertRead2(csvReader, bean);
     }
 
@@ -340,6 +339,115 @@ public class MapCsvReaderTest {
         // ## Assert ##
         assertEquals(false, csvReader.hasNext());
 
+        csvReader.close();
+    }
+
+    /**
+     * 空行がある場合。
+     * 
+     * 各要素を"" (null)として扱う。
+     */
+    @Test
+    public void read_empty_row() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-5", "tsv");
+
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertReadEmptyRow(csvReader, bean);
+    }
+
+    static void assertReadEmptyRow(
+            final CsvReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.get("aaa"));
+        assertEquals("い1", bean.get("bbb"));
+        assertEquals("う1", bean.get("ccc"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals(null, bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+        assertEquals(null, bean.get("ccc"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ3", bean.get("aaa"));
+        assertEquals("い3", bean.get("bbb"));
+        assertEquals("う3", bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 空行がある場合。
+     * 
+     * 各要素を"" (null)として扱う。
+     * 
+     * recordインスタンスをCsvReaderに生成させる。
+     */
+    @Test
+    public void read_empty_row_2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-5", "tsv");
+
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        assertReadEmptyRow2(csvReader);
+    }
+
+    static void assertReadEmptyRow2(
+            final CsvReader<Map<String, String>> csvReader) throws IOException {
+
+        {
+            assertEquals(true, csvReader.hasNext());
+            final Map<String, String> bean = csvReader.read();
+            logger.debug(bean.toString());
+            assertEquals("あ1", bean.get("aaa"));
+            assertEquals("い1", bean.get("bbb"));
+            assertEquals("う1", bean.get("ccc"));
+
+        }
+
+        {
+            assertEquals(true, csvReader.hasNext());
+            final Map<String, String> bean = csvReader.read();
+            logger.debug(bean.toString());
+            assertEquals(null, bean.get("aaa"));
+            assertEquals(null, bean.get("bbb"));
+            assertEquals(null, bean.get("ccc"));
+        }
+
+        {
+            assertEquals(true, csvReader.hasNext());
+            final Map<String, String> bean = csvReader.read();
+            logger.debug(bean.toString());
+            assertEquals("あ3", bean.get("aaa"));
+            assertEquals("い3", bean.get("bbb"));
+            assertEquals("う3", bean.get("ccc"));
+        }
+
+        assertEquals(false, csvReader.hasNext());
         csvReader.close();
     }
 
