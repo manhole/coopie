@@ -29,12 +29,8 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
 
     static class PoiReader implements CsvElementReader {
 
-        private static final Logger logger = LoggerFactory.getLogger();
-        protected boolean closed = true;
         private HSSFWorkbook workbook;
-        private final HSSFSheet sheet;
-        private int rowNum = 0;
-        private final int lastRowNum;
+        private final PoiSheetReader sheetReader;
 
         public PoiReader(final InputStream is) {
             try {
@@ -42,7 +38,38 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             }
-            sheet = workbook.getSheetAt(0);
+            final HSSFSheet sheet = workbook.getSheetAt(0);
+            sheetReader = new PoiSheetReader(sheet);
+        }
+
+        @Override
+        public String[] readRecord() {
+            return sheetReader.readRecord();
+        }
+
+        @Override
+        public boolean isClosed() {
+            return sheetReader.isClosed();
+        }
+
+        @Override
+        public void close() throws IOException {
+            sheetReader.close();
+            workbook = null;
+        }
+
+    }
+
+    static class PoiSheetReader implements CsvElementReader {
+
+        private static final Logger logger = LoggerFactory.getLogger();
+        protected boolean closed = true;
+        private HSSFSheet sheet;
+        private int rowNum = 0;
+        private final int lastRowNum;
+
+        public PoiSheetReader(final HSSFSheet sheet) {
+            this.sheet = sheet;
             /*
              * 0オリジン。
              * 4行目まである場合は3になる。
@@ -88,7 +115,7 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
         @Override
         public void close() throws IOException {
             closed = true;
-            workbook = null;
+            sheet = null;
         }
 
         private String getValueAsString(final HSSFCell cell) {
