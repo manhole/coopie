@@ -305,6 +305,115 @@ public class BeanCsvReaderTest {
     }
 
     /**
+     * 空行がある場合。
+     * 
+     * 各要素を"" (null)として扱う。
+     */
+    @Test
+    public void read_empty_row() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-5", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertReadEmptyRow(csvReader, bean);
+    }
+
+    static void assertReadEmptyRow(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals(null, bean.getAaa());
+        assertEquals(null, bean.getBbb());
+        assertEquals(null, bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ3", bean.getAaa());
+        assertEquals("い3", bean.getBbb());
+        assertEquals("う3", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 空行がある場合。
+     * 
+     * 各要素を"" (null)として扱う。
+     * 
+     * recordインスタンスをCsvReaderに生成させる。
+     */
+    @Test
+    public void read_empty_row_2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-5", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        assertReadEmptyRow2(csvReader);
+    }
+
+    static void assertReadEmptyRow2(final CsvReader<AaaBean> csvReader)
+            throws IOException {
+
+        {
+            assertEquals(true, csvReader.hasNext());
+            final AaaBean bean = csvReader.read();
+            logger.debug(bean.toString());
+            assertEquals("あ1", bean.getAaa());
+            assertEquals("い1", bean.getBbb());
+            assertEquals("う1", bean.getCcc());
+        }
+
+        {
+            assertEquals(true, csvReader.hasNext());
+            final AaaBean bean = csvReader.read();
+            logger.debug(bean.toString());
+            assertEquals(null, bean.getAaa());
+            assertEquals(null, bean.getBbb());
+            assertEquals(null, bean.getCcc());
+        }
+
+        {
+            assertEquals(true, csvReader.hasNext());
+            final AaaBean bean = csvReader.read();
+            logger.debug(bean.toString());
+            assertEquals("あ3", bean.getAaa());
+            assertEquals("い3", bean.getBbb());
+            assertEquals("う3", bean.getCcc());
+        }
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
      * 1つのLayoutインスタンスから複数のCsvReaderをopenしたとき、
      * それぞれのReaderでの処理が影響しないこと。
      */
