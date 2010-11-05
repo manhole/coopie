@@ -118,4 +118,26 @@ public class BeanExcelReaderTest {
         BeanCsvReaderTest.assertReadNoheader(csvReader, bean);
     }
 
+    /**
+     * 空行がある場合。
+     * 
+     * 各要素を"" (null)として扱う。
+     */
+    @Test
+    public void read_empty_row() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-5", "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertReadEmptyRow(csvReader, bean);
+    }
+
 }
