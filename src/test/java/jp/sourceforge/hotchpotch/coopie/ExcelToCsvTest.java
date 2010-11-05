@@ -39,12 +39,20 @@ public class ExcelToCsvTest {
         // ## Assert ##
         assertEquals(true, outFile.exists());
 
+        final File expectedFile = ResourceUtil.getResourceAsFile(Sha1Test.class
+                .getPackage().getName().replace('.', '/')
+                + "/" + "ExcelToCsvTest-1-expected.xls.tsv");
+
+        assertCsvEquals(expectedFile, outFile);
+    }
+
+    private void assertCsvEquals(final File expectedFile, final File actualFile) {
         final List<Map<String, String>> actList;
         {
             final MapCsvLayout layout = new MapCsvLayout();
             layout.setWithHeader(true);
             final CsvReader<Map<String, String>> actualCsvReader = layout
-                    .openReader(files.openBufferedReader(outFile));
+                    .openReader(files.openBufferedReader(actualFile));
             actList = readAll(actualCsvReader);
         }
 
@@ -53,10 +61,6 @@ public class ExcelToCsvTest {
             final MapCsvLayout layout = new MapCsvLayout();
             layout.setWithHeader(true);
 
-            final File expectedFile = ResourceUtil
-                    .getResourceAsFile(Sha1Test.class.getPackage().getName()
-                            .replace('.', '/')
-                            + "/ExcelToCsvTest-1-expected.xls.tsv");
             final CsvReader<Map<String, String>> expectedCsvReader = layout
                     .openReader(files.openBufferedReader(expectedFile));
             exList = readAll(expectedCsvReader);
