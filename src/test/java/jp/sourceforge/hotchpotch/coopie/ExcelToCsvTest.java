@@ -41,7 +41,7 @@ public class ExcelToCsvTest {
 
         final File expectedFile = ResourceUtil.getResourceAsFile(Sha1Test.class
                 .getPackage().getName().replace('.', '/')
-                + "/" + "ExcelToCsvTest-1-expected.xls.tsv");
+                + "/" + "ExcelToCsvTest-1-expected.tsv");
 
         assertCsvEquals(expectedFile, outFile);
     }
