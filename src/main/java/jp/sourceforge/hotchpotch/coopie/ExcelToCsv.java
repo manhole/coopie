@@ -39,16 +39,22 @@ public class ExcelToCsv {
                 .openBufferedWriter(tsvFile));
 
         final int lastRowNum = sheet.getLastRowNum();
-        for (int rowNo = 0; rowNo <= lastRowNum; rowNo++) {
-            final HSSFRow row = sheet.getRow(rowNo);
-            final short lastCellNum = row.getLastCellNum();
-            final String[] line = new String[lastCellNum];
-            for (short colNo = 0; colNo < lastCellNum; colNo++) {
-                final HSSFCell cell = row.getCell(colNo);
-                final String v = getValueAsString(cell);
-                line[colNo] = v;
+        for (int rowNum = 0; rowNum <= lastRowNum; rowNum++) {
+            final HSSFRow row = sheet.getRow(rowNum);
+            final String[] line;
+            if (row != null) {
+                final short lastCellNum = row.getLastCellNum();
+                line = new String[lastCellNum];
+                for (short colNo = 0; colNo < lastCellNum; colNo++) {
+                    final HSSFCell cell = row.getCell(colNo);
+                    final String v = getValueAsString(cell);
+                    line[colNo] = v;
+                }
+            } else {
+                // 空行だとrowがnullになる。
+                line = new String[0];
             }
-            logger.debug("row: " + Arrays.asList(line));
+            logger.debug("row({}): {}", rowNum, Arrays.asList(line));
             csvWriter.writeRecord(line);
         }
 

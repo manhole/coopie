@@ -46,6 +46,35 @@ public class ExcelToCsvTest {
         assertCsvEquals(expectedFile, outFile);
     }
 
+    /**
+     * 空行を含む場合
+     */
+    @Test
+    public void test2() throws Exception {
+        // ## Arrange ##
+        final File inFile = ResourceUtil.getResourceAsFile(Sha1Test.class
+                .getPackage().getName().replace('.', '/')
+                + "/ExcelToCsvTest-2.xls");
+        final File outFile = new File(inFile.getParentFile(),
+                "ExcelToCsvTest-2.tsv");
+        logger.debug("outFile={}", outFile);
+
+        files.delete(outFile);
+
+        // ## Act ##
+        final ExcelToCsv excelToCsv = new ExcelToCsv();
+        excelToCsv.writeTsv(inFile);
+
+        // ## Assert ##
+        assertEquals(true, outFile.exists());
+
+        final File expectedFile = ResourceUtil.getResourceAsFile(Sha1Test.class
+                .getPackage().getName().replace('.', '/')
+                + "/" + "ExcelToCsvTest-2-expected.tsv");
+
+        assertCsvEquals(expectedFile, outFile);
+    }
+
     private void assertCsvEquals(final File expectedFile, final File actualFile) {
         final List<Map<String, String>> actList;
         {
