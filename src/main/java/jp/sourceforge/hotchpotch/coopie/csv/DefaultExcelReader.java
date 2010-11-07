@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import jp.sourceforge.hotchpotch.coopie.IOUtil;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -37,6 +38,8 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
                 workbook = new HSSFWorkbook(is);
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
+            } finally {
+                IOUtil.closeNoException(is);
             }
             final HSSFSheet sheet = workbook.getSheetAt(0);
             sheetReader = new PoiSheetReader(sheet);
