@@ -1,4 +1,4 @@
-package jp.sourceforge.hotchpotch.coopie;
+package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,8 +6,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import jp.sourceforge.hotchpotch.coopie.csv.CsvReader;
-import jp.sourceforge.hotchpotch.coopie.csv.MapCsvLayout;
+import jp.sourceforge.hotchpotch.coopie.FileOperation;
+import jp.sourceforge.hotchpotch.coopie.IOUtil;
+import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import junitx.framework.ListAssert;
 
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class ExcelToCsvTest {
     @Test
     public void test1() throws Exception {
         // ## Arrange ##
-        final File inFile = ResourceUtil.getResourceAsFile(Sha1Test.class
+        final File inFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class
                 .getPackage().getName().replace('.', '/')
                 + "/ExcelToCsvTest-1.xls");
         final File outFile = new File(inFile.getParentFile(),
@@ -39,9 +40,10 @@ public class ExcelToCsvTest {
         // ## Assert ##
         assertEquals(true, outFile.exists());
 
-        final File expectedFile = ResourceUtil.getResourceAsFile(Sha1Test.class
-                .getPackage().getName().replace('.', '/')
-                + "/" + "ExcelToCsvTest-1-expected.tsv");
+        final File expectedFile = ResourceUtil
+                .getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
+                        .replace('.', '/')
+                        + "/" + "ExcelToCsvTest-1-expected.tsv");
 
         assertCsvEquals(expectedFile, outFile);
     }
@@ -52,7 +54,7 @@ public class ExcelToCsvTest {
     @Test
     public void test2() throws Exception {
         // ## Arrange ##
-        final File inFile = ResourceUtil.getResourceAsFile(Sha1Test.class
+        final File inFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class
                 .getPackage().getName().replace('.', '/')
                 + "/ExcelToCsvTest-2.xls");
         final File outFile = new File(inFile.getParentFile(),
@@ -68,9 +70,10 @@ public class ExcelToCsvTest {
         // ## Assert ##
         assertEquals(true, outFile.exists());
 
-        final File expectedFile = ResourceUtil.getResourceAsFile(Sha1Test.class
-                .getPackage().getName().replace('.', '/')
-                + "/" + "ExcelToCsvTest-2-expected.tsv");
+        final File expectedFile = ResourceUtil
+                .getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
+                        .replace('.', '/')
+                        + "/" + "ExcelToCsvTest-2-expected.tsv");
 
         assertCsvEquals(expectedFile, outFile);
     }
