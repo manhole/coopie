@@ -52,7 +52,7 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
         @Override
         public void close() throws IOException {
             closed = true;
-            sheetWriter.close();
+            IOUtil.closeNoException(sheetWriter);
             if (workbook != null) {
                 workbook.write(os);
                 workbook = null;
