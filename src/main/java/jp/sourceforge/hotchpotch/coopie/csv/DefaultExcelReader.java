@@ -104,6 +104,7 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
                     line[colNo] = v;
                 }
             } else {
+                // 空行だとrowがnullになる。
                 line = new String[0];
             }
             logger.debug("row({}): {}", rowNum, Arrays.asList(line));
