@@ -2,17 +2,11 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import jp.sourceforge.hotchpotch.coopie.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.FileResource;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 
 public class ExcelToCsv {
@@ -32,61 +26,21 @@ public class ExcelToCsv {
         final File tsvFile = files.createFile(file.getParentFile(),
                 fr.getPrefix() + TSV_EXTENSION);
 
-        final HSSFWorkbook workbook = new HSSFWorkbook(
+        final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(
                 files.openBufferedInputStream(file));
-        final HSSFSheet sheet = workbook.getSheetAt(0);
 
         final CsvElementWriter csvWriter = new CsvSetting().openWriter(files
                 .openBufferedWriter(tsvFile));
 
-        final int lastRowNum = sheet.getLastRowNum();
-        for (int rowNum = 0; rowNum <= lastRowNum; rowNum++) {
-            final HSSFRow row = sheet.getRow(rowNum);
-            final String[] line;
-            if (row != null) {
-                final short lastCellNum = row.getLastCellNum();
-                line = new String[lastCellNum];
-                for (short colNo = 0; colNo < lastCellNum; colNo++) {
-                    final HSSFCell cell = row.getCell(colNo);
-                    final String v = getValueAsString(cell);
-                    line[colNo] = v;
-                }
-            } else {
-                // 空行だとrowがnullになる。
-                line = new String[0];
+        while (true) {
+            final String[] line = poiReader.readRecord();
+            if (line == null) {
+                break;
             }
-            logger.debug("row({}): {}", rowNum, Arrays.asList(line));
             csvWriter.writeRecord(line);
         }
 
         csvWriter.close();
-    }
-
-    private String getValueAsString(final HSSFCell cell) {
-        if (cell == null) {
-            return null;
-        }
-        switch (cell.getCellType()) {
-        case HSSFCell.CELL_TYPE_NUMERIC:
-            final double v = cell.getNumericCellValue();
-            if (isInt(v)) {
-                return Integer.toString((int) v);
-            }
-            return Double.toString(v);
-        case HSSFCell.CELL_TYPE_BOOLEAN:
-            final boolean b = cell.getBooleanCellValue();
-            return Boolean.toString(b);
-        case HSSFCell.CELL_TYPE_STRING:
-        default:
-            final HSSFRichTextString richStringCellValue = cell
-                    .getRichStringCellValue();
-            final String value = richStringCellValue.getString();
-            return value;
-        }
-    }
-
-    private boolean isInt(final double numericValue) {
-        return ((int) numericValue) == numericValue;
     }
 
 }
