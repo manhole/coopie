@@ -27,15 +27,49 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
         private final OutputStream os;
         private boolean closed = true;
         private HSSFWorkbook workbook;
-        private final HSSFSheet sheet;
-        private int rowNum;
+        private final PoiSheetWriter sheetWriter;
 
         public PoiWriter(final OutputStream os) {
             this.os = os;
 
             workbook = new HSSFWorkbook();
-            sheet = workbook.createSheet();
+            final HSSFSheet sheet = workbook.createSheet();
+            sheetWriter = new PoiSheetWriter(sheet);
 
+            closed = false;
+        }
+
+        @Override
+        public void writeRecord(final String[] line) {
+            sheetWriter.writeRecord(line);
+        }
+
+        @Override
+        public boolean isClosed() {
+            return closed;
+        }
+
+        @Override
+        public void close() throws IOException {
+            closed = true;
+            sheetWriter.close();
+            if (workbook != null) {
+                workbook.write(os);
+                workbook = null;
+                IOUtil.closeNoException(os);
+            }
+        }
+
+    }
+
+    static class PoiSheetWriter implements CsvElementWriter {
+
+        private boolean closed = true;
+        private HSSFSheet sheet;
+        private int rowNum;
+
+        public PoiSheetWriter(final HSSFSheet sheet) {
+            this.sheet = sheet;
             closed = false;
         }
 
@@ -59,11 +93,7 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
         @Override
         public void close() throws IOException {
             closed = true;
-            if (workbook != null) {
-                workbook.write(os);
-                workbook = null;
-                IOUtil.closeNoException(os);
-            }
+            sheet = null;
         }
 
     }
