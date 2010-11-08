@@ -32,6 +32,7 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
 
         private HSSFWorkbook workbook;
         private final PoiSheetReader sheetReader;
+        private boolean closed = true;
 
         public PoiReader(final InputStream is) {
             try {
@@ -52,12 +53,13 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
 
         @Override
         public boolean isClosed() {
-            return sheetReader.isClosed();
+            return closed;
         }
 
         @Override
         public void close() throws IOException {
-            sheetReader.close();
+            closed = true;
+            IOUtil.closeNoException(sheetReader);
             workbook = null;
         }
 
