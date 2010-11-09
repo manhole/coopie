@@ -129,13 +129,13 @@
       <uniqueVersion>false</uniqueVersion>
       <id>hotchpotch.sourceforge.jp</id>
       <name>hotchpotch.sourceforge.jp</name>
-      <url>scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2/release</url>
+      <url>${distribution.release.url}</url>
     </repository>
     <snapshotRepository>
       <uniqueVersion>true</uniqueVersion>
       <id>hotchpotch.sourceforge.jp</id>
       <name>hotchpotch.sourceforge.jp snapshot</name>
-      <url>scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2/snapshot</url>
+      <url>${distribution.snapshot.url}</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -154,7 +154,6 @@
           <artifactId>logback-classic</artifactId>
         </exclusion>
       </exclusions>
-
     </dependency>
     <dependency>
       <groupId>net.sf.opencsv</groupId>
@@ -233,6 +232,8 @@
     <slf4j.version>1.6.1</slf4j.version>
     <logback.version>0.9.24</logback.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <distribution.release.url>file://C:/project/coopie/maven2/release</distribution.release.url>
+    <distribution.snapshot.url>scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2/snapshot</distribution.snapshot.url>
   </properties>
 
 </project>

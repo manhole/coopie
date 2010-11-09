@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profilesXml>
+
+	<!--
+		file://C:/project/coopie/maven2/release
+		file://C:/project/coopie/maven2/snapshot
+		scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2/snapshot
+		scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2/release
+	-->
+
+	<profiles>
+		<profile>
+			<id>change_on_copy</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<distribution.release.url>file://C:/project/coopie/maven2/release</distribution.release.url>
+				<distribution.snapshot.url>file://C:/project/coopie/maven2/snapshot</distribution.snapshot.url>
+			</properties>
+		</profile>
+	</profiles>
+
+</profilesXml>
