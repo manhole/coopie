@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
@@ -14,6 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.t2framework.commons.exception.IORuntimeException;
+import org.t2framework.commons.util.CollectionsUtil;
 
 class DefaultExcelReader<T> extends AbstractCsvReader<T> {
 
@@ -22,7 +24,9 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
     }
 
     public void open(final InputStream is) {
-        elementReader = new PoiReader(is);
+        final PoiReader poiReader = new PoiReader(is);
+        poiReader.focusSheet(0);
+        elementReader = poiReader;
         closed = false;
 
         setupByHeader();
@@ -31,8 +35,10 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
     static class PoiReader implements CsvElementReader {
 
         private HSSFWorkbook workbook;
-        private final PoiSheetReader sheetReader;
+        private PoiSheetReader sheetReader;
         private boolean closed = true;
+        private final List<PoiSheetReader> sheets = CollectionsUtil
+                .newArrayList();
 
         public PoiReader(final InputStream is) {
             try {
@@ -42,8 +48,6 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
             } finally {
                 IOUtil.closeNoException(is);
             }
-            final HSSFSheet sheet = workbook.getSheetAt(0);
-            sheetReader = new PoiSheetReader(sheet);
         }
 
         @Override
@@ -63,17 +67,47 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
             workbook = null;
         }
 
+        public int getSheetSize() {
+            return workbook.getNumberOfSheets();
+        }
+
+        void focusSheet(final int sheetNo) {
+            sheetReader = getSheet(sheetNo);
+        }
+
+        public PoiSheetReader getSheet(final int sheetNo) {
+            if (sheetNo < sheets.size()) {
+                final PoiSheetReader r = sheets.get(sheetNo);
+                if (r != null) {
+                    return r;
+                }
+            } else {
+                final int need = (sheetNo + 1) - sheets.size();
+                for (int i = 0; i < need; i++) {
+                    sheets.add(null);
+                }
+            }
+
+            final HSSFSheet sheet = workbook.getSheetAt(sheetNo);
+            final PoiSheetReader reader = new PoiSheetReader(workbook, sheet);
+            sheets.set(sheetNo, reader);
+
+            return reader;
+        }
+
     }
 
     static class PoiSheetReader implements CsvElementReader {
 
         private static final Logger logger = LoggerFactory.getLogger();
         protected boolean closed = true;
+        private final HSSFWorkbook workbook;
         private HSSFSheet sheet;
         private int rowNum = 0;
         private final int lastRowNum;
 
-        public PoiSheetReader(final HSSFSheet sheet) {
+        public PoiSheetReader(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+            this.workbook = workbook;
             this.sheet = sheet;
             /*
              * 0オリジン。
@@ -82,6 +116,11 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
             lastRowNum = sheet.getLastRowNum();
             logger.debug("lastRowNum={}", lastRowNum);
             closed = false;
+        }
+
+        public String getSheetName() {
+            final int sheetIndex = workbook.getSheetIndex(sheet);
+            return workbook.getSheetName(sheetIndex);
         }
 
         @Override
@@ -122,6 +161,23 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
         public void close() throws IOException {
             closed = true;
             sheet = null;
+        }
+
+        /**
+         * @return このsheetが空の場合はtrue
+         */
+        public boolean isEmpty() {
+            if (lastRowNum != 0) {
+                return false;
+            }
+
+            // シートが空の場合はrowがnull
+            final HSSFRow row = sheet.getRow(0);
+            if (row != null) {
+                return false;
+            }
+
+            return true;
         }
 
         private String getValueAsString(final HSSFCell cell) {
