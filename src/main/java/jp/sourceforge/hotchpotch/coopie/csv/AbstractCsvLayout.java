@@ -2,10 +2,14 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
+
+import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 
 public abstract class AbstractCsvLayout<T> {
 
+    private static final Logger logger = LoggerFactory.getLogger();
     protected ColumnNames columnNames;
     protected boolean withHeader = true;
 
@@ -157,7 +161,7 @@ public abstract class AbstractCsvLayout<T> {
              * ColumnDescをヘッダの順序に合わせてソートし直す。
              */
             final ColumnDesc<T>[] tmpCds = getColumnDescs();
-            final ColumnDesc<T>[] cds = newColumnDescs(tmpCds.length);
+            final ColumnDesc<T>[] cds = newColumnDescs(header.length);
 
             int i = 0;
             HEADER: for (final String headerElem : header) {
@@ -169,8 +173,9 @@ public abstract class AbstractCsvLayout<T> {
                         continue HEADER;
                     }
                 }
-                // TODO
-                throw new RuntimeException("headerElem=" + headerElem);
+                //throw new RuntimeException("headerElem=" + headerElem);
+                logger.debug("ignore column=[{}]", headerElem);
+                cds[i] = new IgnoreColumnDesc<T>();
             }
             columnDescs = cds;
             return this;
@@ -188,6 +193,24 @@ public abstract class AbstractCsvLayout<T> {
         @Override
         public T newInstance() {
             return recordType.newInstance();
+        }
+
+    }
+
+    private static class IgnoreColumnDesc<T> implements ColumnDesc<T> {
+
+        @Override
+        public ColumnName getName() {
+            return null;
+        }
+
+        @Override
+        public String getValue(final T bean) {
+            return null;
+        }
+
+        @Override
+        public void setValue(final T bean, final String value) {
         }
 
     }
