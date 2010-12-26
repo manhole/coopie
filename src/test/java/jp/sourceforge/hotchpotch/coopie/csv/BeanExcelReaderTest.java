@@ -167,4 +167,31 @@ public class BeanExcelReaderTest {
         BeanCsvReaderTest.assertRead4(csvReader, bean);
     }
 
+    /**
+     * setupしない列が入力ファイルに存在する場合は無視する。
+     */
+    @Test
+    public void read5() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-6", "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa");
+                setup.column("ccc", "ddd");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertRead5(csvReader, bean);
+    }
+
 }

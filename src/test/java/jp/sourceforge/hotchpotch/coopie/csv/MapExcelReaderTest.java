@@ -156,4 +156,27 @@ public class MapExcelReaderTest {
         MapCsvReaderTest.assertRead4(csvReader, bean);
     }
 
+    @Test
+    public void read5() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-6", "xls");
+
+        final MapExcelLayout layout = new MapExcelLayout();
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa");
+                setup.column("ccc", "ddd");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout.openReader(is);
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        MapCsvReaderTest.assertRead5(csvReader, bean);
+    }
+
 }
