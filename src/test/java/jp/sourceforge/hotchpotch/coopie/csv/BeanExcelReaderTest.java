@@ -140,4 +140,31 @@ public class BeanExcelReaderTest {
         BeanCsvReaderTest.assertReadEmptyRow(csvReader, bean);
     }
 
+    /**
+     * setupしない列が入力ファイルに存在する場合は無視する。
+     */
+    @Test
+    public void read4() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-2", "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa", "あ");
+                setup.column("ccc", "ううう");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertRead4(csvReader, bean);
+    }
+
 }

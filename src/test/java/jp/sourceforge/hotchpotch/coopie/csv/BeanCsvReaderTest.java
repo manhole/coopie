@@ -414,6 +414,55 @@ public class BeanCsvReaderTest {
     }
 
     /**
+     * setupしない列が入力ファイルに存在する場合は無視する。
+     */
+    @Test
+    public void read4() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-2", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa", "あ");
+                setup.column("ccc", "ううう");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertRead4(csvReader, bean);
+    }
+
+    public static void assertRead4(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+        assertEquals("う2", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
      * 1つのLayoutインスタンスから複数のCsvReaderをopenしたとき、
      * それぞれのReaderでの処理が影響しないこと。
      */
