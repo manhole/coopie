@@ -498,4 +498,53 @@ public class MapCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * setupしない列が入力ファイルに存在する場合は無視する。
+     */
+    @Test
+    public void read5() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + "-6", "tsv");
+
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                setup.column("aaa");
+                setup.column("ccc", "ddd");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertRead5(csvReader, bean);
+    }
+
+    static void assertRead5(final CsvReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+        assertEquals("え1", bean.get("ccc"));
+        assertEquals(null, bean.get("ddd"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+        assertEquals("え2", bean.get("ccc"));
+        assertEquals(null, bean.get("ddd"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
 }

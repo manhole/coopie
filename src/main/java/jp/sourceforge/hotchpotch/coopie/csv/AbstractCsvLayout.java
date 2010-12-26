@@ -176,6 +176,7 @@ public abstract class AbstractCsvLayout<T> {
                 //throw new RuntimeException("headerElem=" + headerElem);
                 logger.debug("ignore column=[{}]", headerElem);
                 cds[i] = new IgnoreColumnDesc<T>();
+                i++;
             }
             columnDescs = cds;
             return this;
