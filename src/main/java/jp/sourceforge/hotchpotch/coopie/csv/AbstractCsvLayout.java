@@ -103,9 +103,6 @@ public abstract class AbstractCsvLayout<T> {
 
         @Override
         public OrderSpecified getOrderSpecified() {
-            if (orderSpecified == null) {
-                getColumnDescs();
-            }
             return orderSpecified;
         }
 
