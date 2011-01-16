@@ -77,6 +77,9 @@
         </executions>
         <configuration>
           <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
             <manifestEntries>
               <SCM-Revision>${buildNumber}</SCM-Revision>
               <Built-Timestamp>${timestamp}</Built-Timestamp>
@@ -99,6 +102,11 @@
           <doCheck>true</doCheck>
           <doUpdate>true</doUpdate>
           <timestampFormat>{0,date,yyyy/MM/dd HH:mm:ss.SSS Z (z)}</timestampFormat>
+          <!--
+          <providerImplementations>
+            <svn>javasvn</svn>
+          </providerImplementations>
+          -->
         </configuration>
       </plugin>
       <plugin>
@@ -106,6 +114,9 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
             <manifestEntries>
               <SCM-Revision>${buildNumber}</SCM-Revision>
               <Built-Timestamp>${timestamp}</Built-Timestamp>
