@@ -17,8 +17,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +29,16 @@ import org.t2framework.commons.exception.IORuntimeException;
 public class FileOperation {
 
     private static final int DEFAULT_BUFF_SIZE = 1024 * 8;
+    private static final String UTF8 = "UTF-8";
     // FileOPeration
     private String prefix = "fop";
     private String suffix = ".tmp";
-    private String encoding = "UTF-8";
     private int bufferSize = DEFAULT_BUFF_SIZE;
+    private Charset charset;
+
+    public FileOperation() {
+        setEncoding(UTF8);
+    }
 
     public File createTempFile() {
         final File f = createTempFile(prefix);
@@ -157,24 +162,14 @@ public class FileOperation {
 
     private OutputStreamWriter openOutputStreamWriter(final File file) {
         final FileOutputStream fos = openOutputStream(file);
-        try {
-            final OutputStreamWriter osw = new OutputStreamWriter(fos, encoding);
-            return osw;
-        } catch (final UnsupportedEncodingException e) {
-            closeNoException(fos);
-            throw new IORuntimeException(e);
-        }
+        final OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
+        return osw;
     }
 
     private InputStreamReader openInputStreamReader(final File file) {
         final FileInputStream fis = openInputStream(file);
-        try {
-            final InputStreamReader isr = new InputStreamReader(fis, encoding);
-            return isr;
-        } catch (final UnsupportedEncodingException e) {
-            closeNoException(fis);
-            throw new IORuntimeException(e);
-        }
+        final InputStreamReader isr = new InputStreamReader(fis, charset);
+        return isr;
     }
 
     public BufferedOutputStream openBufferedOutputStream(final File file) {
@@ -423,7 +418,12 @@ public class FileOperation {
     }
 
     public void setEncoding(final String encoding) {
-        this.encoding = encoding;
+        final Charset found = Charset.forName(encoding);
+        setCharset(found);
+    }
+
+    public void setCharset(final Charset charset) {
+        this.charset = charset;
     }
 
     public void setSuffix(final String suffix) {
