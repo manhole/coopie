@@ -28,7 +28,9 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileOperation {
 
-    private static final int DEFAULT_BUFF_SIZE = 1024 * 8;
+    public static final int K = 1024;
+    public static final int M = K * 1024;
+    private static final int DEFAULT_BUFF_SIZE = K * 8;
     private static final String UTF8 = "UTF-8";
     // FileOPeration
     private String prefix = "fop";
