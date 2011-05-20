@@ -103,6 +103,9 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
         protected boolean closed = true;
         private final HSSFWorkbook workbook;
         private HSSFSheet sheet;
+        /*
+         * Excelの行番号は0オリジン。(見た目は1からだが)
+         */
         private int rowNum = 0;
         private final int lastRowNum;
 
@@ -110,6 +113,7 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
             this.workbook = workbook;
             this.sheet = sheet;
             /*
+             * 行番号。
              * 0オリジン。
              * 4行目まである場合は3になる。
              */
@@ -132,21 +136,36 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
             final String[] line;
             if (row != null) {
                 /*
+                 * 列番号。0オリジン。
                  * C列まである場合は3が返る
                  */
                 final short lastCellNum = row.getLastCellNum();
-                //logger.debug("lastCellNum={}", lastCellNum);
-                line = new String[lastCellNum];
-                for (short colNo = 0; colNo < lastCellNum; colNo++) {
-                    final HSSFCell cell = row.getCell(colNo);
-                    final String v = getValueAsString(cell);
-                    line[colNo] = v;
+                if (lastCellNum < 0) {
+                    /*
+                     * rowがあるのにlastCellNumが-1を返すことがある。
+                     * (どうやって作るのかはわからないが)
+                     * ここでは空行と同じ扱いにする。
+                     */
+                    logger.warn("lastCellNum={}, rowNum={}", lastCellNum,
+                            rowNum);
+                    line = new String[0];
+                } else {
+                    //logger.debug("lastCellNum={}", lastCellNum);
+                    line = new String[lastCellNum];
+                    for (short colNo = 0; colNo < lastCellNum; colNo++) {
+                        final HSSFCell cell = row.getCell(colNo);
+                        final String v = getValueAsString(cell);
+                        line[colNo] = v;
+                    }
                 }
             } else {
                 // 空行だとrowがnullになる。
                 line = new String[0];
             }
-            logger.debug("row({}): {}", rowNum, Arrays.asList(line));
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("row({}): {}", rowNum, Arrays.asList(line));
+            }
 
             rowNum++;
             return line;
