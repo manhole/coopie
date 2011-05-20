@@ -1,5 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.InputStream;
 import java.util.Map;
 
@@ -177,6 +179,43 @@ public class MapExcelReaderTest {
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         MapCsvReaderTest.assertRead5(csvReader, bean);
+    }
+
+    /**
+     * rowが存在するのにlastCellが-1を返すExcelファイルを、エラー無く読めること。
+     */
+    @Test
+    public void read_strange1() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getPackage().getName()
+                        + "/strange-excel-1", "xls");
+
+        final MapExcelLayout layout = new MapExcelLayout();
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout.openReader(is);
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("この下の行でlastCellNumが-1", bean.get("a"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals(null, bean.get("a"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("ここまで", bean.get("a"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
 }
