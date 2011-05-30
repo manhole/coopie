@@ -10,9 +10,12 @@
 
 	<profiles>
 		<profile>
-			<id>change_on_copy</id>
+			<id>coopie</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
+				<file>
+					<exists>src/main/java/jp/sourceforge/hotchpotch/coopie</exists>
+				</file>
 			</activation>
 			<properties>
 				<distribution.release.url>file:///C:/project/coopie/maven2/release</distribution.release.url>
