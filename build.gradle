@@ -2,7 +2,7 @@ apply plugin: "java"
 apply plugin: 'eclipse'
 
 group = "jp.sourceforge.hotchpotch"
-version = "0.1.3-SNAPSHOT"
+version = "0.1.4-SNAPSHOT"
 sourceCompatibility = "1.6"
 
 def sourceEncoding = "UTF-8"
