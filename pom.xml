@@ -7,7 +7,7 @@
   <artifactId>coopie</artifactId>
   <packaging>jar</packaging>
   <name>coopie</name>
-  <version>0.1.3-SNAPSHOT</version>
+  <version>0.1.3</version>
   <description />
   <url>http://hotchpotch.sourceforge.jp/</url>
   <inceptionYear>2010</inceptionYear>
@@ -243,7 +243,7 @@
     <slf4j.version>1.6.1</slf4j.version>
     <logback.version>0.9.24</logback.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <distribution.release.url>file://C:/project/coopie/maven2/release</distribution.release.url>
+    <distribution.release.url>file:///C:/project/coopie/maven2/release</distribution.release.url>
     <distribution.snapshot.url>scp://shell.sourceforge.jp/home/groups/h/ho/hotchpotch/htdocs/maven2/snapshot</distribution.snapshot.url>
   </properties>
 
