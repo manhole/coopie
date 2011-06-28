@@ -14,9 +14,17 @@ public class ToStringFormatTest {
 
         // ## Act ##
         // ## Assert ##
-
         assertEquals("Foo[aaa=a1, bbbBbb=<null>]",
                 new ToStringFormat().format(foo));
+    }
+
+    @Test
+    public void formatNull() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+
+        assertEquals("<null>", new ToStringFormat().format(null));
     }
 
     @Test
