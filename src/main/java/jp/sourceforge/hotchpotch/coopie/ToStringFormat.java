@@ -12,6 +12,8 @@ import org.t2framework.commons.meta.PropertyDesc;
 
 public class ToStringFormat {
 
+    private static final String NULL = "<null>";
+
     private static final ThreadLocal<Set<Object>> threadLocal = new ThreadLocal<Set<Object>>() {
         @Override
         protected Set<Object> initialValue() {
@@ -26,6 +28,9 @@ public class ToStringFormat {
 
     @SuppressWarnings("unchecked")
     public <T> String format(final T obj) {
+        if (obj == null) {
+            return NULL;
+        }
         final StringBuilder sb = new StringBuilder();
         final Class<T> clazz = (Class<T>) obj.getClass();
         final BeanDesc<T> beanDesc = BeanDescFactory.getBeanDesc(clazz);
@@ -57,7 +62,7 @@ public class ToStringFormat {
     private void append(final StringBuilder sb, final Object value,
             final Set<Object> set) {
         if (value == null) {
-            sb.append("<null>");
+            sb.append(NULL);
             return;
         }
 
