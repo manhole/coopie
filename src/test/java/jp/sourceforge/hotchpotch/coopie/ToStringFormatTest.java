@@ -7,7 +7,23 @@ import org.junit.Test;
 public class ToStringFormatTest {
 
     @Test
-    public void format() throws Throwable {
+    public void formatString() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("abc", new ToStringFormat().format("abc"));
+    }
+
+    @Test
+    public void formatInteger() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("4321", new ToStringFormat().format(4321));
+    }
+
+    @Test
+    public void formatObject() throws Throwable {
         // ## Arrange ##
         final Foo foo = new Foo();
         foo.setAaa("a1");
@@ -36,8 +52,23 @@ public class ToStringFormatTest {
         // ## Act ##
 
         // ## Assert ##
+        assertEquals("Composit[composit=<..>, name=c1]",
+                new ToStringFormat().format(c1));
+    }
+
+    @Test
+    public void composit2() throws Throwable {
+        // ## Arrange ##
+        final Composit c1 = new Composit("c1");
+        final Composit c2 = new Composit("c2");
+        c1.setComposit(c2);
+        c2.setComposit(c1);
+
+        // ## Act ##
+
+        // ## Assert ##
         assertEquals(
-                "Composit[composit=Composit[composit=<..>, name=c1], name=c1]",
+                "Composit[composit=Composit[composit=<..>, name=c2], name=c1]",
                 new ToStringFormat().format(c1));
     }
 

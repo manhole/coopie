@@ -28,10 +28,47 @@ public class ToStringFormat {
 
     @SuppressWarnings("unchecked")
     public <T> String format(final T obj) {
-        if (obj == null) {
-            return NULL;
-        }
         final StringBuilder sb = new StringBuilder();
+        final Set<Object> set = threadLocal.get();
+        append(sb, obj, set);
+        return new String(sb);
+    }
+
+    private <T> void append(final StringBuilder sb, final T obj,
+            final Set<Object> set) {
+        if (obj == null) {
+            sb.append(NULL);
+            return;
+        }
+
+        // 入れ子になっている
+        if (set.contains(obj)) {
+            sb.append("<..>");
+            return;
+        }
+
+        /*
+         * value.toStringの中でToStringFormatが使われる場合を想定して、
+         * ThreadLocalにインスタンスを出力したかどうかを保持する。
+         */
+        set.add(obj);
+        try {
+            if (obj instanceof String) {
+                sb.append((String) obj);
+            } else if (obj instanceof Integer) {
+                sb.append(obj);
+            } else {
+                appendObject(sb, obj, set);
+            }
+        } finally {
+            set.remove(obj);
+        }
+    }
+
+    private <T> void appendObject(final StringBuilder sb, final T obj,
+            final Set<Object> set) {
+
+        @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
         final BeanDesc<T> beanDesc = BeanDescFactory.getBeanDesc(clazz);
         final List<PropertyDesc<T>> descs = new ArrayList<PropertyDesc<T>>(
@@ -39,10 +76,8 @@ public class ToStringFormat {
         Collections.sort(descs, comparator);
 
         boolean first = true;
-        final Set<Object> set = threadLocal.get();
         sb.append(clazz.getSimpleName());
         sb.append("[");
-
         for (final PropertyDesc<T> pd : descs) {
             if (first) {
                 first = false;
@@ -54,34 +89,7 @@ public class ToStringFormat {
             final Object value = pd.getValue(obj);
             append(sb, value, set);
         }
-
         sb.append("]");
-        return new String(sb);
-    }
-
-    private void append(final StringBuilder sb, final Object value,
-            final Set<Object> set) {
-        if (value == null) {
-            sb.append(NULL);
-            return;
-        }
-
-        // 入れ子になっている
-        if (set.contains(value)) {
-            sb.append("<..>");
-            return;
-        }
-
-        /*
-         * value.toStringの中でToStringFormatが使われる場合を想定して、
-         * ThreadLocalにインスタンスを出力したかどうかを保持する。
-         */
-        set.add(value);
-        try {
-            sb.append(value);
-        } finally {
-            set.remove(value);
-        }
     }
 
     private static class PropertyDescComparator implements
