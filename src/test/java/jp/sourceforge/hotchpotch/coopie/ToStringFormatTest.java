@@ -75,7 +75,7 @@ public class ToStringFormatTest {
     }
 
     @Test
-    public void formatObject() throws Throwable {
+    public void formatObject1() throws Throwable {
         // ## Arrange ##
         final Foo foo = new Foo();
         foo.setAaa("a1");
@@ -98,6 +98,42 @@ public class ToStringFormatTest {
         // ## Act ##
         // ## Assert ##
         assertEquals("Bar[aaa=a1]", new ToStringFormat().format(foo));
+    }
+
+    /*
+     * クラスのアクセス修飾子が狭い(private static class)ために
+     * アクセスできないgetterは、強引に実行する。
+     * 
+     * メソッドのアクセス修飾子がpublicでない場合は、対象外とする。
+     */
+    @Test
+    public void formatObject3() throws Throwable {
+        // ## Arrange ##
+        final Buzz2 foo = new Buzz2();
+        foo.setAaa("a1");
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("Buzz2[aaa=a1]", new ToStringFormat().format(foo));
+    }
+
+    /*
+     * アクセス修飾子が狭いために
+     * アクセスできないクラスは対象外。
+     * toStringの結果とする。
+     */
+    @Test
+    public void formatObject4() throws Throwable {
+        // ## Arrange ##
+        final Buzz1 foo1 = new Buzz1();
+        final Buzz2 foo2 = new Buzz2();
+        foo2.setAaa("a1");
+        foo1.setAaa(foo2);
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("Buzz1[aaa=Buzz2[aaa=a1]]",
+                new ToStringFormat().format(foo1));
     }
 
     @Test
@@ -175,6 +211,52 @@ public class ToStringFormatTest {
 
         public void setAaaAsInteger(final Integer aaa) {
             this.aaa = String.valueOf(aaa);
+        }
+
+    }
+
+    public static class Buzz1 {
+
+        private Buzz2 aaa;
+        private String bbb;
+
+        public Buzz2 getAaa() {
+            return aaa;
+        }
+
+        public void setAaa(final Buzz2 aaa) {
+            this.aaa = aaa;
+        }
+
+        protected String getBbb() {
+            return bbb;
+        }
+
+        protected void setBbb(final String bbb) {
+            this.bbb = bbb;
+        }
+
+    }
+
+    private static class Buzz2 {
+
+        private String aaa;
+        private String bbb;
+
+        public String getAaa() {
+            return aaa;
+        }
+
+        public void setAaa(final String aaa) {
+            this.aaa = aaa;
+        }
+
+        protected String getBbb() {
+            return bbb;
+        }
+
+        protected void setBbb(final String bbb) {
+            this.bbb = bbb;
         }
 
     }

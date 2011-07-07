@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
+import org.t2framework.commons.meta.MethodDesc;
 import org.t2framework.commons.meta.PropertyDesc;
 
 public class ToStringFormat {
@@ -79,11 +81,23 @@ public class ToStringFormat {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
         final BeanDesc<T> beanDesc = BeanDescFactory.getBeanDesc(clazz);
+
+        // classがpublic classでなくても続行
+
         final List<PropertyDesc<T>> allPropertyDesc = beanDesc
                 .getAllPropertyDesc();
         final List<PropertyDesc<T>> descs = new ArrayList<PropertyDesc<T>>();
         for (final PropertyDesc<T> pd : allPropertyDesc) {
             if (pd.isReadable()) {
+                final MethodDesc methodDesc = pd.getReadMethodDesc();
+                if (!methodDesc.isPublic()) {
+                    throw new IllegalStateException("method [" + methodDesc
+                            + "] is not public");
+                }
+                final Method method = methodDesc.getMethod();
+                if (!method.isAccessible()) {
+                    method.setAccessible(true);
+                }
                 descs.add(pd);
             }
         }
