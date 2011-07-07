@@ -86,6 +86,20 @@ public class ToStringFormatTest {
                 new ToStringFormat().format(foo));
     }
 
+    /*
+     * setterだけのプロパティは対象外
+     */
+    @Test
+    public void formatObject2() throws Throwable {
+        // ## Arrange ##
+        final Bar foo = new Bar();
+        foo.setAaa("a1");
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("Bar[aaa=a1]", new ToStringFormat().format(foo));
+    }
+
     @Test
     public void formatNull() throws Throwable {
         // ## Arrange ##
@@ -143,6 +157,24 @@ public class ToStringFormatTest {
 
         public void setBbbBbb(final String bbbBbb) {
             this.bbbBbb = bbbBbb;
+        }
+
+    }
+
+    public static class Bar {
+
+        private String aaa;
+
+        public String getAaa() {
+            return aaa;
+        }
+
+        public void setAaa(final String aaa) {
+            this.aaa = aaa;
+        }
+
+        public void setAaaAsInteger(final Integer aaa) {
+            this.aaa = String.valueOf(aaa);
         }
 
     }

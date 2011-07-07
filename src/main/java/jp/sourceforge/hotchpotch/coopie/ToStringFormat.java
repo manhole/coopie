@@ -79,8 +79,14 @@ public class ToStringFormat {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
         final BeanDesc<T> beanDesc = BeanDescFactory.getBeanDesc(clazz);
-        final List<PropertyDesc<T>> descs = new ArrayList<PropertyDesc<T>>(
-                beanDesc.getAllPropertyDesc());
+        final List<PropertyDesc<T>> allPropertyDesc = beanDesc
+                .getAllPropertyDesc();
+        final List<PropertyDesc<T>> descs = new ArrayList<PropertyDesc<T>>();
+        for (final PropertyDesc<T> pd : allPropertyDesc) {
+            if (pd.isReadable()) {
+                descs.add(pd);
+            }
+        }
         Collections.sort(descs, comparator);
 
         boolean first = true;
