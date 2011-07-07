@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,7 +27,6 @@ public class ToStringFormat {
     public ToStringFormat() {
     }
 
-    @SuppressWarnings("unchecked")
     public <T> String format(final T obj) {
         final StringBuilder sb = new StringBuilder();
         final Set<Object> set = threadLocal.get();
@@ -57,6 +57,14 @@ public class ToStringFormat {
                 sb.append((String) obj);
             } else if (obj instanceof Integer) {
                 sb.append(obj);
+            } else if (obj instanceof java.sql.Date) {
+                sb.append(obj);
+            } else if (obj instanceof java.sql.Time) {
+                sb.append(obj);
+            } else if (obj instanceof java.util.Date) {
+                final String s = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS")
+                        .format(obj);
+                sb.append(s);
             } else {
                 appendObject(sb, obj, set);
             }

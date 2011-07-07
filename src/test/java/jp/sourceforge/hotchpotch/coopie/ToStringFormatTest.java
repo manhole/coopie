@@ -2,6 +2,9 @@ package jp.sourceforge.hotchpotch.coopie;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.Test;
 
 public class ToStringFormatTest {
@@ -20,6 +23,55 @@ public class ToStringFormatTest {
         // ## Act ##
         // ## Assert ##
         assertEquals("4321", new ToStringFormat().format(4321));
+    }
+
+    @Test
+    public void formatUtilDate() throws Throwable {
+        // ## Arrange ##
+        final Calendar c = Calendar.getInstance();
+        c.clear();
+        c.set(2123, 2, 9, 14, 1, 2);
+        c.set(Calendar.MILLISECOND, 65);
+        final Date date = c.getTime();
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("2123/03/09 14:01:02.065",
+                new ToStringFormat().format(date));
+    }
+
+    /*
+     * SQL Dateは年月日のみ。
+     */
+    @Test
+    public void formatSqlDate() throws Throwable {
+        // ## Arrange ##
+        final Calendar c = Calendar.getInstance();
+        c.clear();
+        c.set(2123, 2, 9, 14, 1, 2);
+        c.set(Calendar.MILLISECOND, 65);
+        final Date date = new java.sql.Date(c.getTimeInMillis());
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("2123-03-09", new ToStringFormat().format(date));
+    }
+
+    /*
+     * SQL Timeは時分秒のみ。
+     * ミリ秒は持たない。
+     */
+    @Test
+    public void formatSqlTime() throws Throwable {
+        // ## Arrange ##
+        final Calendar c = Calendar.getInstance();
+        c.clear();
+        c.set(2123, 2, 9, 14, 1, 2);
+        c.set(Calendar.MILLISECOND, 65);
+        final Date date = new java.sql.Time(c.getTimeInMillis());
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("14:01:02", new ToStringFormat().format(date));
     }
 
     @Test
