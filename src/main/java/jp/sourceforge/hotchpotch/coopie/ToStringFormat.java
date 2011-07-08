@@ -17,10 +17,10 @@ public class ToStringFormat {
 
     private static final String NULL = "<null>";
 
-    private static final ThreadLocal<Set<Object>> threadLocal = new ThreadLocal<Set<Object>>() {
+    private static final ThreadLocal<Context> threadLocal = new ThreadLocal<Context>() {
         @Override
-        protected Set<Object> initialValue() {
-            return new IdentityHashSet<Object>();
+        protected Context initialValue() {
+            return new Context();
         };
     };
 
@@ -29,22 +29,24 @@ public class ToStringFormat {
     public ToStringFormat() {
     }
 
+    private int maxDepth = 1;
+
     public <T> String format(final T obj) {
         final StringBuilder sb = new StringBuilder();
-        final Set<Object> set = threadLocal.get();
-        append(sb, obj, set);
+        final Context context = threadLocal.get();
+        append(sb, obj, context);
         return new String(sb);
     }
 
     private <T> void append(final StringBuilder sb, final T obj,
-            final Set<Object> set) {
+            final Context context) {
         if (obj == null) {
             sb.append(NULL);
             return;
         }
 
         // 入れ子になっている
-        if (set.contains(obj)) {
+        if (context.contains(obj)) {
             sb.append("<..>");
             return;
         }
@@ -53,7 +55,7 @@ public class ToStringFormat {
          * value.toStringの中でToStringFormatが使われる場合を想定して、
          * ThreadLocalにインスタンスを出力したかどうかを保持する。
          */
-        set.add(obj);
+        context.add(obj);
         try {
             @SuppressWarnings("unchecked")
             final Class<T> clazz = (Class<T>) obj.getClass();
@@ -81,20 +83,22 @@ public class ToStringFormat {
                         .format(obj);
                 sb.append(s);
             } else if (clazz.isArray()) {
-                appendObjectArray(sb, (Object[]) obj, set);
+                appendObjectArray(sb, (Object[]) obj, context);
             } else {
-                appendObject(sb, obj, set);
+                appendObject(sb, obj, context);
             }
         } finally {
-            set.remove(obj);
+            context.remove(obj);
         }
     }
 
     private <T> void appendObject(final StringBuilder sb, final T obj,
-            final Set<Object> set) {
+            final Context context) {
 
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
+        final String simpleName = clazz.getSimpleName();
+
         final BeanDesc<T> beanDesc = BeanDescFactory.getBeanDesc(clazz);
         final List<FieldDesc<?>> descs = getFieldDescs(clazz);
 
@@ -103,7 +107,6 @@ public class ToStringFormat {
         Collections.sort(descs, comparator);
 
         boolean first = true;
-        final String simpleName = clazz.getSimpleName();
         sb.append(simpleName);
         sb.append("[");
         for (final FieldDesc<?> fd : descs) {
@@ -115,13 +118,13 @@ public class ToStringFormat {
             sb.append(fd.getName());
             sb.append("=");
             final Object value = fd.getValue(obj);
-            append(sb, value, set);
+            append(sb, value, context);
         }
         sb.append("]");
     }
 
     private void appendObjectArray(final StringBuilder sb,
-            final Object[] array, final Set<Object> set) {
+            final Object[] array, final Context context) {
         boolean first = true;
         sb.append("[");
         for (final Object obj : array) {
@@ -130,7 +133,7 @@ public class ToStringFormat {
             } else {
                 sb.append(", ");
             }
-            append(sb, obj, set);
+            append(sb, obj, context);
         }
         sb.append("]");
     }
@@ -150,6 +153,10 @@ public class ToStringFormat {
         final int code = System.identityHashCode(obj);
         final String s = Integer.toHexString(code);
         return s;
+    }
+
+    public void setMaxDepth(final int depth) {
+        maxDepth = depth;
     }
 
     private static class FieldDescComparator implements
@@ -191,6 +198,24 @@ public class ToStringFormat {
         @Override
         public String toString() {
             return getName();
+        }
+
+    }
+
+    private static class Context {
+
+        private final Set<Object> set = new IdentityHashSet<Object>();
+
+        public boolean contains(final Object obj) {
+            return set.contains(obj);
+        }
+
+        public void add(final Object obj) {
+            set.add(obj);
+        }
+
+        public void remove(final Object obj) {
+            set.remove(obj);
         }
 
     }
