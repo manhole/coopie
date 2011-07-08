@@ -101,6 +101,19 @@ public class ToStringFormatTest {
     }
 
     @Test
+    public void formatClass() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(Foo.class);
+
+        // ## Assert ##
+        assertEquals(
+                "Class[jp.sourceforge.hotchpotch.coopie.ToStringFormatTest$Foo]",
+                actual);
+    }
+
+    @Test
     public void formatObject1() throws Throwable {
         // ## Arrange ##
         final Foo foo = new Foo();

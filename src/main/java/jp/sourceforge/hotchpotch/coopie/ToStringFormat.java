@@ -2,7 +2,6 @@ package jp.sourceforge.hotchpotch.coopie;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,8 +12,6 @@ import java.util.Set;
 import org.t2framework.commons.exception.IllegalAccessRuntimeException;
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
-import org.t2framework.commons.meta.MethodDesc;
-import org.t2framework.commons.meta.PropertyDesc;
 
 public class ToStringFormat {
 
@@ -74,6 +71,11 @@ public class ToStringFormat {
                 sb.append(obj);
             } else if (obj instanceof java.sql.Time) {
                 sb.append(obj);
+            } else if (obj instanceof Class) {
+                final String s = Class.class.cast(obj).getName();
+                sb.append("Class[");
+                sb.append(s);
+                sb.append("]");
             } else if (obj instanceof java.util.Date) {
                 final String s = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS")
                         .format(obj);
