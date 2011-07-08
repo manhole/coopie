@@ -107,9 +107,11 @@ public class ToStringFormatTest {
         foo.setAaa("a1");
 
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(foo);
+
         // ## Assert ##
-        assertEquals("Foo[aaa=a1, bbbBbb=<null>]",
-                new ToStringFormat().format(foo));
+        assertEquals("Foo[aaa=a1, bbbBbb=<null>]", actual);
     }
 
     /*
@@ -139,8 +141,11 @@ public class ToStringFormatTest {
         foo.setAaa("a1");
 
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(foo);
+
         // ## Assert ##
-        assertEquals("Buzz2[aaa=a1]", new ToStringFormat().format(foo));
+        assertEquals("Buzz2[aaa=a1, bbb=<null>]", actual);
     }
 
     /*
@@ -157,9 +162,11 @@ public class ToStringFormatTest {
         foo1.setAaa(foo2);
 
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(foo1);
+
         // ## Assert ##
-        assertEquals("Buzz1[aaa=Buzz2[aaa=a1]]",
-                new ToStringFormat().format(foo1));
+        assertEquals("Buzz1[aaa=Buzz2[aaa=a1, bbb=<null>], bbb=<null>]", actual);
     }
 
     @Test
@@ -238,6 +245,25 @@ public class ToStringFormatTest {
         assertEquals(
                 "Composit[composit=Composit[composit=<..>, name=c2], name=c1]",
                 new ToStringFormat().format(c1));
+    }
+
+    /*
+     * getterで新たなinstanceを返し続けるオブジェクトへは相性が悪い。
+     * StackOverflowErrorになってしまう。
+     * 
+     * そのため、
+     * 今まではgetterでpropertyを取得していたが、直接fieldを見に行くようにする。
+     */
+    @Test
+    public void loopGetter() throws Throwable {
+        // ## Arrange ##
+
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(new LoopGetter());
+
+        // ## Assert ##
+        assertEquals("LoopGetter[instanceNo=1, totalNo=1]", actual);
     }
 
     public static class Foo {
@@ -362,6 +388,25 @@ public class ToStringFormatTest {
         @Override
         public String toString() {
             return new ToStringFormat().format(this);
+        }
+
+    }
+
+    public static class LoopGetter {
+
+        private final int instanceNo;
+        private static volatile int totalNo;
+
+        public LoopGetter() {
+            instanceNo = ++totalNo;
+        }
+
+        public LoopGetter getLoopGetter() {
+            return new LoopGetter();
+        }
+
+        public int getNo() {
+            return instanceNo;
         }
 
     }
