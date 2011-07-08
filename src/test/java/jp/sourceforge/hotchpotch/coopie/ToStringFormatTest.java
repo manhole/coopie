@@ -26,6 +26,24 @@ public class ToStringFormatTest {
     }
 
     @Test
+    public void formatLong() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("4321", new ToStringFormat().format(4321L));
+    }
+
+    @Test
+    public void formatFload() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("4321.98", new ToStringFormat().format(4321.98F));
+        // 丸まってしまうようだ
+        assertEquals("4321.988", new ToStringFormat().format(4321.9876F));
+    }
+
+    @Test
     public void formatBoolean() throws Throwable {
         // ## Arrange ##
         // ## Act ##

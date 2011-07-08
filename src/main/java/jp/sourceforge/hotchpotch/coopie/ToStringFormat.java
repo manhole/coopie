@@ -57,7 +57,11 @@ public class ToStringFormat {
         try {
             if (obj instanceof String) {
                 sb.append((String) obj);
+            } else if (obj instanceof Float) {
+                sb.append(obj);
             } else if (obj instanceof Integer) {
+                sb.append(obj);
+            } else if (obj instanceof Long) {
                 sb.append(obj);
             } else if (obj instanceof Boolean) {
                 sb.append(obj);
