@@ -59,6 +59,8 @@ public class ToStringFormat {
                 sb.append((String) obj);
             } else if (obj instanceof Integer) {
                 sb.append(obj);
+            } else if (obj instanceof Boolean) {
+                sb.append(obj);
             } else if (obj instanceof java.sql.Date) {
                 sb.append(obj);
             } else if (obj instanceof java.sql.Time) {
