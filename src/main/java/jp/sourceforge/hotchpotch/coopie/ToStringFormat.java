@@ -55,6 +55,8 @@ public class ToStringFormat {
          */
         set.add(obj);
         try {
+            @SuppressWarnings("unchecked")
+            final Class<T> clazz = (Class<T>) obj.getClass();
             if (obj instanceof String) {
                 sb.append((String) obj);
             } else if (obj instanceof Float) {
@@ -73,6 +75,8 @@ public class ToStringFormat {
                 final String s = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS")
                         .format(obj);
                 sb.append(s);
+            } else if (clazz.isArray()) {
+                appendObjectArray(sb, (Object[]) obj, set);
             } else {
                 appendObject(sb, obj, set);
             }
@@ -122,6 +126,21 @@ public class ToStringFormat {
             sb.append("=");
             final Object value = pd.getValue(obj);
             append(sb, value, set);
+        }
+        sb.append("]");
+    }
+
+    private void appendObjectArray(final StringBuilder sb,
+            final Object[] array, final Set<Object> set) {
+        boolean first = true;
+        sb.append("[");
+        for (final Object obj : array) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(", ");
+            }
+            append(sb, obj, set);
         }
         sb.append("]");
     }

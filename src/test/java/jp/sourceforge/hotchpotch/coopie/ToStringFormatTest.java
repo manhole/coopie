@@ -163,6 +163,46 @@ public class ToStringFormatTest {
     }
 
     @Test
+    public void formatObjectArray1() throws Throwable {
+        // ## Arrange ##
+        final Object[] o = new Object[] { new Bar("bar1") };
+
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(o);
+
+        // ## Assert ##
+        assertEquals("[Bar[aaa=bar1]]", actual);
+    }
+
+    @Test
+    public void formatObjectArray2() throws Throwable {
+        // ## Arrange ##
+        final Object[] o = new Object[] { new Bar("b1"), new Bar("b2") };
+
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(o);
+
+        // ## Assert ##
+        assertEquals("[Bar[aaa=b1], Bar[aaa=b2]]", actual);
+    }
+
+    @Test
+    public void formatObjectArray3() throws Throwable {
+        // ## Arrange ##
+        final Integer[] o = new Integer[] { new Integer("5"),
+                new Integer("-12") };
+
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(o);
+
+        // ## Assert ##
+        assertEquals("[5, -12]", actual);
+    }
+
+    @Test
     public void formatNull() throws Throwable {
         // ## Arrange ##
         // ## Act ##
@@ -226,6 +266,13 @@ public class ToStringFormatTest {
     public static class Bar {
 
         private String aaa;
+
+        public Bar() {
+        }
+
+        public Bar(final String aaa) {
+            setAaa(aaa);
+        }
 
         public String getAaa() {
             return aaa;
