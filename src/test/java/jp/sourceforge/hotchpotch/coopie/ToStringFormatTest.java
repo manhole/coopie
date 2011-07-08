@@ -1,6 +1,10 @@
 package jp.sourceforge.hotchpotch.coopie;
 
+import static jp.sourceforge.hotchpotch.coopie.CoopieMatchers.endsWithString;
+import static jp.sourceforge.hotchpotch.coopie.CoopieMatchers.startsWithString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.containsString;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -289,6 +293,26 @@ public class ToStringFormatTest {
 
     @Test
     public void composit2() throws Throwable {
+        // ## Arrange ##
+        final Composit c1 = new Composit("c1");
+        final Composit c2 = new Composit("c2");
+        c1.setComposit(c2);
+        c2.setComposit(c1);
+
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(c1);
+
+        // ## Assert ##
+        assertThat(actual, containsString("Composit[composit=Composit@"));
+        assertThat(actual, containsString(", name=c1]"));
+        assertThat(actual, startsWithString("Composit[composit=Composit@"));
+        assertThat(actual, endsWithString(", name=c1]"));
+        //assertEquals("Composit[composit=Composit@xxxxxx, name=c1]", actual);
+    }
+
+    @Test
+    public void composit3() throws Throwable {
         // ## Arrange ##
         final Composit c1 = new Composit("c1");
         final Composit c2 = new Composit("c2");
