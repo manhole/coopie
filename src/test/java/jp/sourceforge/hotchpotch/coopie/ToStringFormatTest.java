@@ -213,6 +213,7 @@ public class ToStringFormatTest {
 
         // ## Act ##
         final ToStringFormat format = new ToStringFormat();
+        format.setMaxDepth(2);
         final String actual = format.format(foo1);
 
         // ## Assert ##
@@ -226,6 +227,7 @@ public class ToStringFormatTest {
 
         // ## Act ##
         final ToStringFormat format = new ToStringFormat();
+        format.setMaxDepth(2);
         final String actual = format.format(o);
 
         // ## Assert ##
@@ -239,6 +241,7 @@ public class ToStringFormatTest {
 
         // ## Act ##
         final ToStringFormat format = new ToStringFormat();
+        format.setMaxDepth(2);
         final String actual = format.format(o);
 
         // ## Assert ##
@@ -294,6 +297,7 @@ public class ToStringFormatTest {
 
         // ## Act ##
         final ToStringFormat format = new ToStringFormat();
+        format.setMaxDepth(2);
         final String actual = format.format(c1);
 
         // ## Assert ##

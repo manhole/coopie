@@ -55,7 +55,7 @@ public class ToStringFormat {
          * value.toStringの中でToStringFormatが使われる場合を想定して、
          * ThreadLocalにインスタンスを出力したかどうかを保持する。
          */
-        context.add(obj);
+        context.enter(obj);
         try {
             @SuppressWarnings("unchecked")
             final Class<T> clazz = (Class<T>) obj.getClass();
@@ -88,7 +88,7 @@ public class ToStringFormat {
                 appendObject(sb, obj, context);
             }
         } finally {
-            context.remove(obj);
+            context.leave(obj);
         }
     }
 
@@ -98,6 +98,14 @@ public class ToStringFormat {
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
         final String simpleName = clazz.getSimpleName();
+
+        if (context.isDepthOver(maxDepth)) {
+            final String s = identityHashCode(obj);
+            sb.append(simpleName);
+            sb.append("@");
+            sb.append(s);
+            return;
+        }
 
         final BeanDesc<T> beanDesc = BeanDescFactory.getBeanDesc(clazz);
         final List<FieldDesc<?>> descs = getFieldDescs(clazz);
@@ -205,17 +213,27 @@ public class ToStringFormat {
     private static class Context {
 
         private final Set<Object> set = new IdentityHashSet<Object>();
+        private int depth;
 
         public boolean contains(final Object obj) {
             return set.contains(obj);
         }
 
-        public void add(final Object obj) {
+        public boolean isDepthOver(final int maxDepth) {
+            if (maxDepth < depth) {
+                return true;
+            }
+            return false;
+        }
+
+        public void enter(final Object obj) {
+            depth++;
             set.add(obj);
         }
 
-        public void remove(final Object obj) {
+        public void leave(final Object obj) {
             set.remove(obj);
+            depth--;
         }
 
     }
