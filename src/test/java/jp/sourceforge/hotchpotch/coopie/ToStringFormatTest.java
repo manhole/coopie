@@ -13,42 +13,67 @@ public class ToStringFormatTest {
     public void formatString() throws Throwable {
         // ## Arrange ##
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format("abc");
+
         // ## Assert ##
-        assertEquals("abc", new ToStringFormat().format("abc"));
+        assertEquals("abc", actual);
     }
 
     @Test
     public void formatInteger() throws Throwable {
         // ## Arrange ##
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(4321);
+
         // ## Assert ##
-        assertEquals("4321", new ToStringFormat().format(4321));
+        assertEquals("4321", actual);
     }
 
     @Test
     public void formatLong() throws Throwable {
         // ## Arrange ##
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(4321L);
+
         // ## Assert ##
-        assertEquals("4321", new ToStringFormat().format(4321L));
+        assertEquals("4321", actual);
     }
 
     @Test
-    public void formatFload() throws Throwable {
+    public void formatFloat1() throws Throwable {
         // ## Arrange ##
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(4321.98F);
+
         // ## Assert ##
-        assertEquals("4321.98", new ToStringFormat().format(4321.98F));
+        assertEquals("4321.98", actual);
+    }
+
+    @Test
+    public void formatFloat2() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(4321.9876F);
+
+        // ## Assert ##
         // 丸まってしまうようだ
-        assertEquals("4321.988", new ToStringFormat().format(4321.9876F));
+        assertEquals("4321.988", actual);
     }
 
     @Test
     public void formatBoolean() throws Throwable {
         // ## Arrange ##
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(false);
+
         // ## Assert ##
-        assertEquals("false", new ToStringFormat().format(false));
+        assertEquals("false", actual);
     }
 
     @Test
@@ -61,9 +86,11 @@ public class ToStringFormatTest {
         final Date date = c.getTime();
 
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(date);
+
         // ## Assert ##
-        assertEquals("2123/03/09 14:01:02.065",
-                new ToStringFormat().format(date));
+        assertEquals("2123/03/09 14:01:02.065", actual);
     }
 
     /*
@@ -79,8 +106,11 @@ public class ToStringFormatTest {
         final Date date = new java.sql.Date(c.getTimeInMillis());
 
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(date);
+
         // ## Assert ##
-        assertEquals("2123-03-09", new ToStringFormat().format(date));
+        assertEquals("2123-03-09", actual);
     }
 
     /*
@@ -95,9 +125,13 @@ public class ToStringFormatTest {
         c.set(2123, 2, 9, 14, 1, 2);
         c.set(Calendar.MILLISECOND, 65);
         final Date date = new java.sql.Time(c.getTimeInMillis());
+
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(date);
+
         // ## Assert ##
-        assertEquals("14:01:02", new ToStringFormat().format(date));
+        assertEquals("14:01:02", actual);
     }
 
     @Test
@@ -137,8 +171,11 @@ public class ToStringFormatTest {
         foo.setAaa("a1");
 
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(foo);
+
         // ## Assert ##
-        assertEquals("Bar[aaa=a1]", new ToStringFormat().format(foo));
+        assertEquals("Bar[aaa=a1]", actual);
     }
 
     /*
@@ -226,9 +263,11 @@ public class ToStringFormatTest {
     public void formatNull() throws Throwable {
         // ## Arrange ##
         // ## Act ##
-        // ## Assert ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(null);
 
-        assertEquals("<null>", new ToStringFormat().format(null));
+        // ## Assert ##
+        assertEquals("<null>", actual);
     }
 
     @Test
@@ -238,10 +277,11 @@ public class ToStringFormatTest {
         c1.setComposit(c1);
 
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(c1);
 
         // ## Assert ##
-        assertEquals("Composit[composit=<..>, name=c1]",
-                new ToStringFormat().format(c1));
+        assertEquals("Composit[composit=<..>, name=c1]", actual);
     }
 
     @Test
@@ -253,11 +293,13 @@ public class ToStringFormatTest {
         c2.setComposit(c1);
 
         // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format(c1);
 
         // ## Assert ##
         assertEquals(
                 "Composit[composit=Composit[composit=<..>, name=c2], name=c1]",
-                new ToStringFormat().format(c1));
+                actual);
     }
 
     /*
