@@ -21,6 +21,7 @@ public class MapExcelLayout extends AbstractMapCsvLayout implements
     public CsvWriter<Map<String, String>> openWriter(final OutputStream os) {
         final DefaultExcelWriter<Map<String, String>> w = new DefaultExcelWriter<Map<String, String>>(
                 buildRecordDesc());
+        w.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         w.open(os);
         return w;

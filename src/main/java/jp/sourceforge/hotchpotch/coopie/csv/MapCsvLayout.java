@@ -21,6 +21,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
     public CsvWriter<Map<String, String>> openWriter(final Writer writer) {
         final DefaultCsvWriter<Map<String, String>> w = new DefaultCsvWriter<Map<String, String>>(
                 buildRecordDesc());
+        w.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;

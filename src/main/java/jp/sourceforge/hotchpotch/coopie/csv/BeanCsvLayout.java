@@ -22,6 +22,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
     @Override
     public CsvWriter<T> openWriter(final Writer writer) {
         final DefaultCsvWriter<T> w = new DefaultCsvWriter<T>(buildRecordDesc());
+        w.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;

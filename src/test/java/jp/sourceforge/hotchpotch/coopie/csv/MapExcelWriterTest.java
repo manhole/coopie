@@ -29,7 +29,6 @@ public class MapExcelWriterTest {
         // ## Act ##
         final CsvWriter<Map<String, String>> csvWriter = layout
                 .openWriter(baos);
-        System.out.println(csvWriter);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -51,6 +50,49 @@ public class MapExcelWriterTest {
 
         // ## Assert ##
         BeanExcelWriterTest.assertWrite2(baos);
+    }
+
+    /**
+     * CSVヘッダが無い場合。
+     */
+    @Test
+    public void write_noheader() throws Throwable {
+        // ## Arrange ##
+        final MapExcelLayout layout = new MapExcelLayout();
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                /*
+                 * プロパティ名, CSV項目名 の順
+                 */
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
+            }
+        });
+        layout.setWithHeader(false);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // ## Act ##
+        final CsvWriter<Map<String, String>> csvWriter = layout
+                .openWriter(baos);
+
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        bean.put("aaa", "あ1");
+        bean.put("bbb", "い1");
+        bean.put("ccc", "う1");
+        csvWriter.write(bean);
+
+        bean.put("aaa", "あ2");
+        bean.put("bbb", "い2");
+        bean.put("ccc", "う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        BeanExcelWriterTest.assertWriteNoheader(baos);
     }
 
 }

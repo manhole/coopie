@@ -180,6 +180,54 @@ public class BeanCsvWriterTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * CSVヘッダが無い場合。
+     */
+    @Test
+    public void write_noheader() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                /*
+                 * プロパティ名, CSV項目名 の順
+                 */
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
+            }
+        });
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う1");
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb("い2");
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
+                "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is,
+                "UTF-8"));
+        assertEquals(expected, actual);
+    }
+
     static InputStream getResourceAsStream(final String suffix, final String ext) {
         return ResourceUtil.getResourceAsStream(
                 BeanCsvWriterTest.class.getName() + suffix, ext);
