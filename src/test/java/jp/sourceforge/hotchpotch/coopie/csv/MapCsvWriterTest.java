@@ -181,4 +181,52 @@ public class MapCsvWriterTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * CSVヘッダが無い場合。
+     */
+    @Test
+    public void write_noheader() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                /*
+                 * プロパティ名, CSV項目名 の順
+                 */
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
+            }
+        });
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final CsvWriter<Map<String, String>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, String> bean = new TreeMap<String, String>();
+        bean.put("aaa", "あ1");
+        bean.put("bbb", "い1");
+        bean.put("ccc", "う1");
+        csvWriter.write(bean);
+
+        bean.put("aaa", "あ2");
+        bean.put("bbb", "い2");
+        bean.put("ccc", "う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
+                "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is,
+                "UTF-8"));
+        assertEquals(expected, actual);
+    }
+
 }

@@ -24,6 +24,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
     public CsvWriter<T> openWriter(final OutputStream os) {
         final DefaultExcelWriter<T> w = new DefaultExcelWriter<T>(
                 buildRecordDesc());
+        w.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         w.open(os);
         return w;

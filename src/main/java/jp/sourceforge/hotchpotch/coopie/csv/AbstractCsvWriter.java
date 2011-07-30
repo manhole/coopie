@@ -16,7 +16,7 @@ public class AbstractCsvWriter<T> implements Closable, CsvWriter<T> {
     private boolean firstRecord = true;
 
     protected CsvElementWriter elementWriter;
-
+    private boolean withHeader;
     private boolean writtenHeader;
 
     protected RecordDesc<T> recordDesc;
@@ -45,7 +45,7 @@ public class AbstractCsvWriter<T> implements Closable, CsvWriter<T> {
             firstRecord = false;
             recordDesc = recordDesc.setupByBean(bean);
         }
-        if (!writtenHeader) {
+        if (withHeader && !writtenHeader) {
             writeHeader(bean);
             writtenHeader = true;
         }
@@ -69,6 +69,10 @@ public class AbstractCsvWriter<T> implements Closable, CsvWriter<T> {
 
     public void setCloseWriter(final boolean closeWriter) {
         this.closeWriter = closeWriter;
+    }
+
+    public void setWithHeader(final boolean withHeader) {
+        this.withHeader = withHeader;
     }
 
 }

@@ -77,4 +77,62 @@ public class BeanExcelWriterTest {
         reader.close();
     }
 
+    /**
+     * CSVヘッダが無い場合。
+     */
+    @Test
+    public void write_noheader() throws Throwable {
+        // ## Arrange ##
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new ColumnSetupBlock() {
+            @Override
+            public void setup(final ColumnSetup setup) {
+                /*
+                 * プロパティ名, CSV項目名 の順
+                 */
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
+            }
+        });
+        layout.setWithHeader(false);
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // ## Act ##
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(baos);
+
+        final AaaBean bean = new AaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う1");
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb("い2");
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        assertWriteNoheader(baos);
+    }
+
+    public static void assertWriteNoheader(final ByteArrayOutputStream baos)
+            throws IOException {
+
+        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertEquals(1, book.getNumberOfSheets());
+
+        final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(
+                book, book.getSheetAt(0));
+        assertArrayEquals(a("う1", "あ1", "い1"), reader.readRecord());
+        assertArrayEquals(a("う2", "あ2", "い2"), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
 }
