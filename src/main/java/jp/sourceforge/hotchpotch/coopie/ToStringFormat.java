@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie;
 
+import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.exception.IllegalAccessRuntimeException;
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
@@ -34,20 +36,24 @@ public class ToStringFormat {
     public <T> String format(final T obj) {
         final StringBuilder sb = new StringBuilder();
         final Context context = threadLocal.get();
-        append(sb, obj, context);
-        return new String(sb);
+        try {
+            append(sb, obj, context);
+            return new String(sb);
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        }
     }
 
-    private <T> void append(final StringBuilder sb, final T obj,
-            final Context context) {
+    private <T> void append(final Appendable out, final T obj,
+            final Context context) throws IOException {
         if (obj == null) {
-            sb.append(NULL);
+            out.append(NULL);
             return;
         }
 
         // 入れ子になっている
         if (context.contains(obj)) {
-            sb.append("<..>");
+            out.append("<..>");
             return;
         }
 
@@ -60,40 +66,40 @@ public class ToStringFormat {
             @SuppressWarnings("unchecked")
             final Class<T> clazz = (Class<T>) obj.getClass();
             if (obj instanceof String) {
-                sb.append((String) obj);
+                out.append((String) obj);
             } else if (obj instanceof Float) {
-                sb.append(obj);
+                out.append(obj.toString());
             } else if (obj instanceof Integer) {
-                sb.append(obj);
+                out.append(obj.toString());
             } else if (obj instanceof Long) {
-                sb.append(obj);
+                out.append(obj.toString());
             } else if (obj instanceof Boolean) {
-                sb.append(obj);
+                out.append(obj.toString());
             } else if (obj instanceof java.sql.Date) {
-                sb.append(obj);
+                out.append(obj.toString());
             } else if (obj instanceof java.sql.Time) {
-                sb.append(obj);
+                out.append(obj.toString());
             } else if (obj instanceof Class) {
                 final String s = Class.class.cast(obj).getName();
-                sb.append("Class[");
-                sb.append(s);
-                sb.append("]");
+                out.append("Class[");
+                out.append(s);
+                out.append("]");
             } else if (obj instanceof java.util.Date) {
                 final String s = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS")
                         .format(obj);
-                sb.append(s);
+                out.append(s);
             } else if (clazz.isArray()) {
-                appendObjectArray(sb, (Object[]) obj, context);
+                appendObjectArray(out, (Object[]) obj, context);
             } else {
-                appendObject(sb, obj, context);
+                appendObject(out, obj, context);
             }
         } finally {
             context.leave(obj);
         }
     }
 
-    private <T> void appendObject(final StringBuilder sb, final T obj,
-            final Context context) {
+    private <T> void appendObject(final Appendable out, final T obj,
+            final Context context) throws IOException {
 
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
@@ -101,9 +107,9 @@ public class ToStringFormat {
 
         if (context.isDepthOver(maxDepth)) {
             final String s = identityHashCode(obj);
-            sb.append(simpleName);
-            sb.append("@");
-            sb.append(s);
+            out.append(simpleName);
+            out.append("@");
+            out.append(s);
             return;
         }
 
@@ -115,35 +121,35 @@ public class ToStringFormat {
         Collections.sort(descs, comparator);
 
         boolean first = true;
-        sb.append(simpleName);
-        sb.append("[");
+        out.append(simpleName);
+        out.append("[");
         for (final FieldDesc<?> fd : descs) {
             if (first) {
                 first = false;
             } else {
-                sb.append(", ");
+                out.append(", ");
             }
-            sb.append(fd.getName());
-            sb.append("=");
+            out.append(fd.getName());
+            out.append("=");
             final Object value = fd.getValue(obj);
-            append(sb, value, context);
+            append(out, value, context);
         }
-        sb.append("]");
+        out.append("]");
     }
 
-    private void appendObjectArray(final StringBuilder sb,
-            final Object[] array, final Context context) {
+    private void appendObjectArray(final Appendable out, final Object[] array,
+            final Context context) throws IOException {
         boolean first = true;
-        sb.append("[");
+        out.append("[");
         for (final Object obj : array) {
             if (first) {
                 first = false;
             } else {
-                sb.append(", ");
+                out.append(", ");
             }
-            append(sb, obj, context);
+            append(out, obj, context);
         }
-        sb.append("]");
+        out.append("]");
     }
 
     private List<FieldDesc<?>> getFieldDescs(final Class<?> clazz) {
