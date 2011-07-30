@@ -161,11 +161,6 @@ public abstract class AbstractMapCsvLayout extends
         }
 
         @Override
-        public boolean isWithHeader() {
-            return layout.withHeader;
-        }
-
-        @Override
         public void setValues(final Map<String, String> bean,
                 final String[] values) {
             throw new AssertionError();

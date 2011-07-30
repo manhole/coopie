@@ -11,6 +11,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
     public CsvReader<Map<String, String>> openReader(final Reader reader) {
         final DefaultCsvReader<Map<String, String>> r = new DefaultCsvReader<Map<String, String>>(
                 buildRecordDesc());
+        r.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;

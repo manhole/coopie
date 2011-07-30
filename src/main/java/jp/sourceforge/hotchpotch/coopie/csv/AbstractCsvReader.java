@@ -21,6 +21,7 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
     protected RecordDesc<T> recordDesc;
     protected boolean closed = true;
     protected CsvElementReader elementReader;
+    private boolean withHeader;
 
     private Boolean hasNext;
 
@@ -78,7 +79,7 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
     }
 
     protected void setupByHeader() {
-        if (recordDesc.isWithHeader()) {
+        if (withHeader) {
             final String[] header = readLine();
             if (header == null) {
                 logger.debug("header is null");
@@ -120,6 +121,10 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
 
     public void setCloseReader(final boolean closeReader) {
         this.closeReader = closeReader;
+    }
+
+    public void setWithHeader(final boolean withHeader) {
+        this.withHeader = withHeader;
     }
 
 }
