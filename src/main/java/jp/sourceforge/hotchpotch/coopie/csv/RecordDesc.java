@@ -37,7 +37,7 @@ public interface RecordDesc<T> {
         NO,
 
         /**
-         * 説順が明示的に指定されている場合。
+         * 列順が明示的に指定されている場合。
          */
         SPECIFIED
 
