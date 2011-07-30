@@ -32,7 +32,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 i++;
             }
 
-            return new DefaultRecordDesc<T>(cds, OrderSpecified.NO, withHeader,
+            return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                     new BeanRecordType<T>(beanDesc));
         } else {
             /*
@@ -51,7 +51,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             }
 
             return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
-                    withHeader, new BeanRecordType<T>(beanDesc));
+                    new BeanRecordType<T>(beanDesc));
         }
     }
 

@@ -74,7 +74,7 @@ public abstract class AbstractCsvLayout<T> {
         private final RecordType<T> recordType;
 
         protected DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
-                final OrderSpecified orderSpecified, final boolean withHeader,
+                final OrderSpecified orderSpecified,
                 final RecordType<T> recordType) {
             this.columnDescs = columnDescs;
             this.orderSpecified = orderSpecified;

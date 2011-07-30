@@ -28,7 +28,7 @@ public abstract class AbstractMapCsvLayout extends
                 i++;
             }
             return new DefaultRecordDesc<Map<String, String>>(cds,
-                    OrderSpecified.SPECIFIED, withHeader, new MapRecordType());
+                    OrderSpecified.SPECIFIED, new MapRecordType());
         }
     }
 
