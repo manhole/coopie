@@ -12,7 +12,10 @@ public interface RecordDesc<T> {
      */
     void setValues(T bean, String[] values);
 
-    ColumnName[] getColumnNames();
+    /**
+     * ヘッダ行の文字列を返します。
+     */
+    String[] getHeaderValues();
 
     OrderSpecified getOrderSpecified();
 
