@@ -43,8 +43,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-1", "tsv");
+        final InputStream is = getResourceAsStream("-1", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -92,8 +91,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "tsv");
+        final InputStream is = getResourceAsStream("-2", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -144,8 +142,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-4", "tsv");
+        final InputStream is = getResourceAsStream("-4", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -186,8 +183,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read3_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-4", "tsv");
+        final InputStream is = getResourceAsStream("-4", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -224,8 +220,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-3", "tsv");
+        final InputStream is = getResourceAsStream("-3", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -267,8 +262,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_noheader_badsetting() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-3", "tsv");
+        final InputStream is = getResourceAsStream("-3", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -312,8 +306,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_empty_row() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-5", "tsv");
+        final InputStream is = getResourceAsStream("-5", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -365,8 +358,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_empty_row_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-5", "tsv");
+        final InputStream is = getResourceAsStream("-5", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -419,8 +411,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "tsv");
+        final InputStream is = getResourceAsStream("-2", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -468,8 +459,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-6", "tsv");
+        final InputStream is = getResourceAsStream("-6", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -520,8 +510,7 @@ public class BeanCsvReaderTest {
     // FIXME 実装中
     public void openMultiReader() throws Throwable {
         // ## Arrange ##
-        final InputStream is1 = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-1", "tsv");
+        final InputStream is1 = getResourceAsStream("-1", "tsv");
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
 
@@ -552,6 +541,11 @@ public class BeanCsvReaderTest {
         assertEquals("う3", bean.getCcc());
 
         csvReader.close();
+    }
+
+    static InputStream getResourceAsStream(final String suffix, final String ext) {
+        return ResourceUtil.getResourceAsStream(
+                BeanCsvReaderTest.class.getName() + suffix, ext);
     }
 
     public static class AaaBean {

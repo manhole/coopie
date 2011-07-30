@@ -14,7 +14,6 @@ import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class MapCsvReaderTest {
 
@@ -33,8 +32,8 @@ public class MapCsvReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-1", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
@@ -81,8 +80,8 @@ public class MapCsvReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetupBlock() {
@@ -131,8 +130,8 @@ public class MapCsvReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-4", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
@@ -171,8 +170,8 @@ public class MapCsvReaderTest {
     @Test
     public void read3_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-4", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
@@ -213,8 +212,8 @@ public class MapCsvReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-3", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetupBlock() {
@@ -256,8 +255,8 @@ public class MapCsvReaderTest {
     @Test
     public void read_noheader_badsetting() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-3", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setWithHeader(false);
@@ -350,8 +349,8 @@ public class MapCsvReaderTest {
     @Test
     public void read_empty_row() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-5", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-5",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
@@ -403,8 +402,8 @@ public class MapCsvReaderTest {
     @Test
     public void read_empty_row_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-5", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-5",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
@@ -457,8 +456,8 @@ public class MapCsvReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetupBlock() {
@@ -504,8 +503,8 @@ public class MapCsvReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-6", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6",
+                "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new ColumnSetupBlock() {
