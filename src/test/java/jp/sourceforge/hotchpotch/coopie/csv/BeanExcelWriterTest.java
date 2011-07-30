@@ -1,6 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static jp.sourceforge.hotchpotch.coopie.VarArgs.a;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -58,39 +61,14 @@ public class BeanExcelWriterTest {
                 baos.toByteArray()));
         assertEquals(1, book.getNumberOfSheets());
 
-        {
-            final BeanExcelLayout<AaaBean> layout2 = new BeanExcelLayout<AaaBean>(
-                    AaaBean.class);
-
-            final CsvReader<AaaBean> csvReader = layout2
-                    .openReader(new ByteArrayInputStream(baos.toByteArray()));
-            {
-                assertEquals(true, csvReader.hasNext());
-                final AaaBean record = csvReader.read();
-                assertEquals("あ1", record.getAaa());
-                assertEquals("い1", record.getBbb());
-                assertEquals("う1", record.getCcc());
-            }
-            {
-                assertEquals(true, csvReader.hasNext());
-                final AaaBean record = csvReader.read();
-                assertEquals("あ2", record.getAaa());
-                assertEquals("い2", record.getBbb());
-                assertEquals("う2", record.getCcc());
-            }
-            {
-                assertEquals(true, csvReader.hasNext());
-                final AaaBean record = csvReader.read();
-                assertEquals("あ3", record.getAaa());
-                assertEquals("い3", record.getBbb());
-                assertEquals("う3", record.getCcc());
-            }
-
-            assertEquals(false, csvReader.hasNext());
-
-            csvReader.close();
-        }
-
+        final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(
+                book, book.getSheetAt(0));
+        assertArrayEquals(a("aaa", "ccc", "bbb"), reader.readRecord());
+        assertArrayEquals(a("あ1", "う1", "い1"), reader.readRecord());
+        assertArrayEquals(a("あ2", "う2", "い2"), reader.readRecord());
+        assertArrayEquals(a("あ3", "う3", "い3"), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
     }
 
 }
