@@ -24,8 +24,8 @@ public class MapExcelReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-1", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
+                "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
 
@@ -43,8 +43,8 @@ public class MapExcelReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
+                "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
         layout.setupColumns(new ColumnSetupBlock() {
@@ -72,8 +72,8 @@ public class MapExcelReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-4", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
+                "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
 
@@ -91,8 +91,8 @@ public class MapExcelReaderTest {
     @Test
     public void read3_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-4", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
+                "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
 
@@ -109,8 +109,8 @@ public class MapExcelReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-3", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
+                "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
         layout.setupColumns(new ColumnSetupBlock() {
@@ -138,8 +138,8 @@ public class MapExcelReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
+                "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
         layout.setupColumns(new ColumnSetupBlock() {
@@ -161,8 +161,8 @@ public class MapExcelReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-6", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6",
+                "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
         layout.setupColumns(new ColumnSetupBlock() {

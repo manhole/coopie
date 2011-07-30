@@ -40,8 +40,7 @@ public class BeanCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvWriterTest.class.getName() + "-1", "tsv");
+        final InputStream is = getResourceAsStream("-1", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
                 "UTF-8"));
         assertEquals(expected, actual);
@@ -89,8 +88,8 @@ public class BeanCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-1", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
+                "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
                 "UTF-8"));
         assertEquals(expected, actual);
@@ -136,8 +135,8 @@ public class BeanCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
+                "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
                 "UTF-8"));
         assertEquals(expected, actual);
@@ -174,11 +173,16 @@ public class BeanCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-4", "tsv");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
+                "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
                 "UTF-8"));
         assertEquals(expected, actual);
+    }
+
+    static InputStream getResourceAsStream(final String suffix, final String ext) {
+        return ResourceUtil.getResourceAsStream(
+                BeanCsvWriterTest.class.getName() + suffix, ext);
     }
 
 }

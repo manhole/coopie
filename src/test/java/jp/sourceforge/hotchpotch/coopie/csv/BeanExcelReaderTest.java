@@ -7,7 +7,6 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class BeanExcelReaderTest {
 
@@ -21,8 +20,8 @@ public class BeanExcelReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-1", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
+                "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
@@ -41,8 +40,8 @@ public class BeanExcelReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
+                "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
@@ -71,8 +70,8 @@ public class BeanExcelReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-4", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
+                "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
@@ -91,8 +90,8 @@ public class BeanExcelReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-3", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
+                "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
@@ -126,8 +125,8 @@ public class BeanExcelReaderTest {
     @Test
     public void read_empty_row() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-5", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-5",
+                "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
@@ -146,8 +145,8 @@ public class BeanExcelReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-2", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
+                "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
@@ -173,8 +172,8 @@ public class BeanExcelReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getName() + "-6", "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6",
+                "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
