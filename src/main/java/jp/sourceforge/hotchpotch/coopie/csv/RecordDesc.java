@@ -3,29 +3,30 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 public interface RecordDesc<T> {
 
     /**
-     * CSV 1レコードぶんの文字列を、オブジェクトから構築します。
+     * ファイル 1レコードぶんの文字列を、オブジェクトから構築します。
      */
     String[] getValues(T bean);
 
     /**
-     * CSV 1レコードぶんの文字列を、オブジェクトへセットします。
+     * ファイル 1レコードぶんの文字列を、オブジェクトへセットします。
      */
     void setValues(T bean, String[] values);
 
     /**
      * ヘッダ行の文字列を返します。
+     * ファイルを出力する際に使用します。
      */
     String[] getHeaderValues();
 
     OrderSpecified getOrderSpecified();
 
     /**
-     * CSVを読む際に、ヘッダ行からrecord定義を修正します。
+     * ファイルを読む際に、ヘッダ行からrecord定義を修正します。
      */
     RecordDesc<T> setupByHeader(String[] header);
 
     /**
-     * CSVを書く際に、1行目のオブジェクトからrecord定義を修正します。
+     * ファイルへ書く際に、1行目のオブジェクトからrecord定義を修正します。
      */
     RecordDesc<T> setupByBean(T bean);
 
