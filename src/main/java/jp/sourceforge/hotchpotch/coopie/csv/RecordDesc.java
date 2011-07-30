@@ -19,13 +19,13 @@ public interface RecordDesc<T> {
 
     OrderSpecified getOrderSpecified();
 
-    /*
-     * CSVを読むとき
+    /**
+     * CSVを読む際に、ヘッダ行からrecord定義を修正します。
      */
     RecordDesc<T> setupByHeader(String[] header);
 
-    /*
-     * CSVを書くとき
+    /**
+     * CSVを書く際に、1行目のオブジェクトからrecord定義を修正します。
      */
     RecordDesc<T> setupByBean(T bean);
 
