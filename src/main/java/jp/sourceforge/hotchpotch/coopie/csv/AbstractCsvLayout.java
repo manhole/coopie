@@ -86,17 +86,19 @@ public abstract class AbstractCsvLayout<T> {
         }
 
         @Override
-        public ColumnName[] getColumnNames() {
+        public String[] getHeaderValues() {
             final ColumnDesc<T>[] cds = getColumnDescs();
             if (cds == null) {
                 return null;
             }
-            final ColumnName[] names = new ColumnName[cds.length];
+            final String[] line = new String[cds.length];
             for (int i = 0; i < cds.length; i++) {
                 final ColumnDesc<T> cd = cds[i];
-                names[i] = cd.getName();
+                final ColumnName cn = cd.getName();
+                final String label = cn.getLabel();
+                line[i] = label;
             }
-            return names;
+            return line;
         }
 
         @Override

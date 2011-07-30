@@ -29,13 +29,7 @@ public class AbstractCsvWriter<T> implements Closable, CsvWriter<T> {
      * 1レコード目を出力するときに、このメソッドが呼ばれる。
      */
     protected void writeHeader(final T bean) {
-        final ColumnName[] names = recordDesc.getColumnNames();
-        final String[] line = new String[names.length];
-        int i = 0;
-        for (final ColumnName name : names) {
-            line[i] = name.getLabel();
-            i++;
-        }
+        final String[] line = recordDesc.getHeaderValues();
         elementWriter.writeRecord(line);
     }
 

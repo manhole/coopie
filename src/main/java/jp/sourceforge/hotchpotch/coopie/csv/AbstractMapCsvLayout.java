@@ -146,7 +146,7 @@ public abstract class AbstractMapCsvLayout extends
         }
 
         @Override
-        public ColumnName[] getColumnNames() {
+        public String[] getHeaderValues() {
             throw new AssertionError();
         }
 
