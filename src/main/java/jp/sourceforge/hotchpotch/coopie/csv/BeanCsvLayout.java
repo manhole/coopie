@@ -13,6 +13,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
     @Override
     public CsvReader<T> openReader(final Reader reader) {
         final DefaultCsvReader<T> r = new DefaultCsvReader<T>(buildRecordDesc());
+        r.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;

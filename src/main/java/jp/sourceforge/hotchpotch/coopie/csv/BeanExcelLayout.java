@@ -14,6 +14,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
     public CsvReader<T> openReader(final InputStream is) {
         final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
                 buildRecordDesc());
+        r.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         r.open(is);
         return r;

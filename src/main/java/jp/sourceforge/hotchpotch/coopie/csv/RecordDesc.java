@@ -14,8 +14,6 @@ public interface RecordDesc<T> {
 
     ColumnName[] getColumnNames();
 
-    boolean isWithHeader();
-
     OrderSpecified getOrderSpecified();
 
     /*

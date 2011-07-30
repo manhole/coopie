@@ -71,7 +71,6 @@ public abstract class AbstractCsvLayout<T> {
 
         protected ColumnDesc<T>[] columnDescs;
         protected OrderSpecified orderSpecified;
-        protected boolean withHeader;
         private final RecordType<T> recordType;
 
         protected DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
@@ -79,7 +78,6 @@ public abstract class AbstractCsvLayout<T> {
                 final RecordType<T> recordType) {
             this.columnDescs = columnDescs;
             this.orderSpecified = orderSpecified;
-            this.withHeader = withHeader;
             this.recordType = recordType;
         }
 
@@ -142,11 +140,6 @@ public abstract class AbstractCsvLayout<T> {
                 return null;
             }
             return v;
-        }
-
-        @Override
-        public boolean isWithHeader() {
-            return withHeader;
         }
 
         /*
