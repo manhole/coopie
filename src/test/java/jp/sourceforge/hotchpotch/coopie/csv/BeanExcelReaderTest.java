@@ -36,6 +36,7 @@ public class BeanExcelReaderTest {
 
     /**
      * ヘッダがBeanのプロパティ名と異なる場合。
+     * ヘッダ名とbeanのプロパティ名をマッピングすること。
      */
     @Test
     public void read2() throws Throwable {
@@ -48,9 +49,9 @@ public class BeanExcelReaderTest {
         layout.setupColumns(new ColumnSetupBlock() {
             @Override
             public void setup(final ColumnSetup setup) {
+                setup.column("bbb", "いい");
                 setup.column("aaa", "あ");
                 setup.column("ccc", "ううう");
-                setup.column("bbb", "いい");
             }
         });
 
