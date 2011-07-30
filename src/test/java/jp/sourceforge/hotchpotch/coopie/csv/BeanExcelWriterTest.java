@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 
@@ -36,7 +37,6 @@ public class BeanExcelWriterTest {
 
         // ## Act ##
         final CsvWriter<AaaBean> csvWriter = layout.openWriter(baos);
-        System.out.println(csvWriter);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -57,6 +57,12 @@ public class BeanExcelWriterTest {
         csvWriter.close();
 
         // ## Assert ##
+        assertWrite2(baos);
+    }
+
+    public static void assertWrite2(final ByteArrayOutputStream baos)
+            throws IOException {
+
         final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
                 baos.toByteArray()));
         assertEquals(1, book.getNumberOfSheets());
