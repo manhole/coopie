@@ -1,14 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
-import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
 import org.t2framework.commons.util.CollectionsUtil;
 
@@ -56,43 +50,7 @@ public class MapExcelWriterTest {
         csvWriter.close();
 
         // ## Assert ##
-        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
-                baos.toByteArray()));
-        assertEquals(1, book.getNumberOfSheets());
-
-        {
-            final BeanExcelLayout<AaaBean> layout2 = new BeanExcelLayout<AaaBean>(
-                    AaaBean.class);
-
-            final CsvReader<AaaBean> csvReader = layout2
-                    .openReader(new ByteArrayInputStream(baos.toByteArray()));
-            {
-                assertEquals(true, csvReader.hasNext());
-                final AaaBean record = csvReader.read();
-                assertEquals("あ1", record.getAaa());
-                assertEquals("い1", record.getBbb());
-                assertEquals("う1", record.getCcc());
-            }
-            {
-                assertEquals(true, csvReader.hasNext());
-                final AaaBean record = csvReader.read();
-                assertEquals("あ2", record.getAaa());
-                assertEquals("い2", record.getBbb());
-                assertEquals("う2", record.getCcc());
-            }
-            {
-                assertEquals(true, csvReader.hasNext());
-                final AaaBean record = csvReader.read();
-                assertEquals("あ3", record.getAaa());
-                assertEquals("い3", record.getBbb());
-                assertEquals("う3", record.getCcc());
-            }
-
-            assertEquals(false, csvReader.hasNext());
-
-            csvReader.close();
-        }
-
+        BeanExcelWriterTest.assertWrite2(baos);
     }
 
 }
