@@ -10,8 +10,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
+import org.slf4j.Logger;
 
 public class ToStringFormatTest {
+
+    private static final Logger logger = LoggerFactory.getLogger();
 
     @Test
     public void formatString() throws Throwable {
@@ -312,6 +315,9 @@ public class ToStringFormatTest {
         final String actual = format.format(c1);
 
         // ## Assert ##
+        // 実際はこのような値
+        // Composit[composit=Composit@f2a55aa, name=c1]
+        logger.debug(actual);
         assertThat(actual, containsString("Composit[composit=Composit@"));
         assertThat(actual, containsString(", name=c1]"));
         assertThat(actual, startsWithString("Composit[composit=Composit@"));
