@@ -81,6 +81,14 @@ public class ToStringFormatTest {
     }
 
     @Test
+    public void formatBoolean() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("false", new ToStringFormat().format(false));
+    }
+
+    @Test
     public void formatUtilDate() throws Throwable {
         // ## Arrange ##
         final Calendar c = Calendar.getInstance();
