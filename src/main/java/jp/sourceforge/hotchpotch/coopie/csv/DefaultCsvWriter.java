@@ -4,22 +4,18 @@ import java.io.Writer;
 
 class DefaultCsvWriter<T> extends AbstractCsvWriter<T> {
 
-    private CsvSetting csvSetting = new CsvSetting();
+    private ElementSetting elementSetting;
 
     public DefaultCsvWriter(final RecordDesc<T> recordDesc) {
         super(recordDesc);
     }
 
-    public CsvSetting getCsvSetting() {
-        return csvSetting;
-    }
-
-    public void setCsvSetting(final CsvSetting csvSetting) {
-        this.csvSetting = csvSetting;
+    public void setElementSetting(final ElementSetting elementSetting) {
+        this.elementSetting = elementSetting;
     }
 
     public void open(final Writer writer) {
-        elementWriter = csvSetting.openWriter(writer);
+        elementWriter = elementSetting.openWriter(writer);
         closed = false;
     }
 

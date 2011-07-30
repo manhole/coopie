@@ -6,6 +6,8 @@ import java.io.Writer;
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {
 
+    private final CsvSetting csvSetting = new CsvSetting();
+
     public BeanCsvLayout(final Class<T> beanClass) {
         super(beanClass);
     }
@@ -14,6 +16,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
     public CsvReader<T> openReader(final Reader reader) {
         final DefaultCsvReader<T> r = new DefaultCsvReader<T>(buildRecordDesc());
         r.setWithHeader(withHeader);
+        r.setElementSetting(csvSetting);
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
@@ -23,6 +26,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
     public CsvWriter<T> openWriter(final Writer writer) {
         final DefaultCsvWriter<T> w = new DefaultCsvWriter<T>(buildRecordDesc());
         w.setWithHeader(withHeader);
+        w.setElementSetting(csvSetting);
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;

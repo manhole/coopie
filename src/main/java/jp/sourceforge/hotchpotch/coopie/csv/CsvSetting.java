@@ -8,7 +8,7 @@ import org.t2framework.commons.util.StringUtil;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class CsvSetting {
+public class CsvSetting implements ElementSetting {
 
     public static final char TAB = '\t';
     public static final char COMMA = ',';
@@ -38,12 +38,14 @@ public class CsvSetting {
      */
     private String lineSeparator = CRLF;
 
+    @Override
     public CsvElementWriter openWriter(final Writer writer) {
         final CSVWriter csvWriter = new CSVWriter(writer,
                 getElementSeparator(), getQuoteMark(), getLineSeparator());
         return new OpenCsvWriterAdapter(csvWriter);
     }
 
+    @Override
     public CsvElementReader openReader(final Reader reader) {
         final CSVReader csvReader = new CSVReader(reader,
                 getElementSeparator(), getQuoteMark());
