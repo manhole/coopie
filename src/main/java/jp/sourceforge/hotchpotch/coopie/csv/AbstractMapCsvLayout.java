@@ -152,7 +152,7 @@ public abstract class AbstractMapCsvLayout extends
 
         @Override
         public OrderSpecified getOrderSpecified() {
-            return null;
+            return OrderSpecified.NO;
         }
 
         @Override
