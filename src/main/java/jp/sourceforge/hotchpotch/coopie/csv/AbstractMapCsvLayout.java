@@ -14,7 +14,7 @@ public abstract class AbstractMapCsvLayout extends
         return new MapColumnSetup();
     }
 
-    protected RecordDesc<Map<String, String>> buildRecordDesc() {
+    protected RecordDesc<Map<String, String>> getRecordDesc() {
         if (recordDesc == null) {
             /*
              * カラム名が設定されていない場合は、
@@ -114,7 +114,7 @@ public abstract class AbstractMapCsvLayout extends
             });
 
             final RecordDesc<Map<String, String>> built = layout
-                    .buildRecordDesc();
+                    .getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();
@@ -148,7 +148,7 @@ public abstract class AbstractMapCsvLayout extends
             });
 
             final RecordDesc<Map<String, String>> built = layout
-                    .buildRecordDesc();
+                    .getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();

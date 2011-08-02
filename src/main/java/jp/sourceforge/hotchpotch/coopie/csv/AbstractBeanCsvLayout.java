@@ -21,7 +21,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return new BeanColumnSetup<T>(beanDesc);
     }
 
-    protected RecordDesc<T> buildRecordDesc() {
+    protected RecordDesc<T> getRecordDesc() {
         if (recordDesc == null) {
             /*
              * beanの全プロパティを対象に。

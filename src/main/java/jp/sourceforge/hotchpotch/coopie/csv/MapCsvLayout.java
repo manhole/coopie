@@ -12,7 +12,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
     @Override
     public CsvReader<Map<String, String>> openReader(final Reader reader) {
         final DefaultCsvReader<Map<String, String>> r = new DefaultCsvReader<Map<String, String>>(
-                buildRecordDesc());
+                getRecordDesc());
         r.setWithHeader(withHeader);
         r.setElementSetting(csvSetting);
         // TODO openで例外時にcloseすること
@@ -23,7 +23,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
     @Override
     public CsvWriter<Map<String, String>> openWriter(final Writer writer) {
         final DefaultCsvWriter<Map<String, String>> w = new DefaultCsvWriter<Map<String, String>>(
-                buildRecordDesc());
+                getRecordDesc());
         w.setWithHeader(withHeader);
         w.setElementSetting(csvSetting);
         // TODO openで例外時にcloseすること

@@ -10,7 +10,7 @@ public class MapExcelLayout extends AbstractMapCsvLayout implements
     @Override
     public CsvReader<Map<String, String>> openReader(final InputStream is) {
         final DefaultExcelReader<Map<String, String>> r = new DefaultExcelReader<Map<String, String>>(
-                buildRecordDesc());
+                getRecordDesc());
         r.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         r.open(is);
@@ -20,7 +20,7 @@ public class MapExcelLayout extends AbstractMapCsvLayout implements
     @Override
     public CsvWriter<Map<String, String>> openWriter(final OutputStream os) {
         final DefaultExcelWriter<Map<String, String>> w = new DefaultExcelWriter<Map<String, String>>(
-                buildRecordDesc());
+                getRecordDesc());
         w.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         w.open(os);

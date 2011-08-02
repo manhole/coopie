@@ -13,7 +13,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
     @Override
     public CsvReader<T> openReader(final InputStream is) {
         final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
-                buildRecordDesc());
+                getRecordDesc());
         r.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         r.open(is);
@@ -23,7 +23,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
     @Override
     public CsvWriter<T> openWriter(final OutputStream os) {
         final DefaultExcelWriter<T> w = new DefaultExcelWriter<T>(
-                buildRecordDesc());
+                getRecordDesc());
         w.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         w.open(os);
