@@ -10,19 +10,16 @@ import org.t2framework.commons.util.CollectionsUtil;
 public abstract class AbstractCsvLayout<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
-    protected ColumnNames columnNames;
+    protected RecordDesc<T> recordDesc;
     protected boolean withHeader = true;
 
     public void setupColumns(final ColumnSetupBlock block) {
-        final DefaultColumnSetup columnSetup = new DefaultColumnSetup();
+        final RecordDescSetup<T> columnSetup = getRecordDescSetup();
         block.setup(columnSetup);
-        final ColumnNames columns = columnSetup.toColumnNames();
-        setColumns(columns);
+        recordDesc = columnSetup.getRecordDesc();
     }
 
-    public void setColumns(final ColumnNames columnNames) {
-        this.columnNames = columnNames;
-    }
+    protected abstract RecordDescSetup<T> getRecordDescSetup();
 
     @SuppressWarnings("unchecked")
     protected static <U> ColumnDesc<U>[] newColumnDescs(final int length) {
@@ -33,9 +30,17 @@ public abstract class AbstractCsvLayout<T> {
         this.withHeader = withHeader;
     }
 
-    private static class DefaultColumnSetup implements ColumnSetup {
+    protected static interface RecordDescSetup<T> extends ColumnSetup {
 
-        final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
+        RecordDesc<T> getRecordDesc();
+
+    }
+
+    protected static abstract class AbstractColumnSetup<T> implements
+            RecordDescSetup<T> {
+
+        protected final List<ColumnName> columnNames = CollectionsUtil
+                .newArrayList();
 
         @Override
         public void column(final ColumnName name) {
@@ -53,12 +58,6 @@ public abstract class AbstractCsvLayout<T> {
             n.setName(propertyName);
             n.setLabel(label);
             column(n);
-        }
-
-        public ColumnNames toColumnNames() {
-            final ColumnNames n = new ColumnNames();
-            n.addAll(columnNames);
-            return n;
         }
 
     }
@@ -206,6 +205,9 @@ public abstract class AbstractCsvLayout<T> {
         public void setValue(final T bean, final String value) {
         }
 
+    }
+
+    protected static class ColumnDescSetup {
     }
 
 }
