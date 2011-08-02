@@ -9,8 +9,13 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 public abstract class AbstractMapCsvLayout extends
         AbstractCsvLayout<Map<String, String>> {
 
+    @Override
+    protected AbstractColumnSetup<Map<String, String>> getRecordDescSetup() {
+        return new MapColumnSetup();
+    }
+
     protected RecordDesc<Map<String, String>> buildRecordDesc() {
-        if (columnNames == null || columnNames.isEmpty()) {
+        if (recordDesc == null) {
             /*
              * カラム名が設定されていない場合は、
              * Readの場合はヘッダから、
@@ -18,18 +23,8 @@ public abstract class AbstractMapCsvLayout extends
              * カラム名を構築する。
              */
             return new LazyMapRecordDesc(this);
-        } else {
-            final ColumnName[] names = columnNames.getColumnNames();
-            final ColumnDesc<Map<String, String>>[] cds = newColumnDescs(names.length);
-            int i = 0;
-            for (final ColumnName columnName : names) {
-                final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(columnName);
-                cds[i] = cd;
-                i++;
-            }
-            return new DefaultRecordDesc<Map<String, String>>(cds,
-                    OrderSpecified.SPECIFIED, new MapRecordType());
         }
+        return recordDesc;
     }
 
     protected static ColumnDesc<Map<String, String>> newMapColumnDesc(
@@ -37,6 +32,24 @@ public abstract class AbstractMapCsvLayout extends
         final MapColumnDesc cd = new MapColumnDesc();
         cd.setName(columnName);
         return cd;
+    }
+
+    static class MapColumnSetup extends AbstractColumnSetup<Map<String, String>> {
+
+        @Override
+        public RecordDesc<Map<String, String>> getRecordDesc() {
+            final ColumnDesc<Map<String, String>>[] cds = newColumnDescs(columnNames
+                    .size());
+            int i = 0;
+            for (final ColumnName columnName : columnNames) {
+                final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(columnName);
+                cds[i] = cd;
+                i++;
+            }
+            return new DefaultRecordDesc<Map<String, String>>(cds,
+                    OrderSpecified.SPECIFIED, new MapRecordType());
+        }
+
     }
 
     static class MapColumnDesc implements ColumnDesc<Map<String, String>> {
@@ -94,10 +107,8 @@ public abstract class AbstractMapCsvLayout extends
             layout.setupColumns(new ColumnSetupBlock() {
                 @Override
                 public void setup(final ColumnSetup setup) {
-                    int i = 0;
                     for (final String headerElem : header) {
                         setup.column(headerElem);
-                        i++;
                     }
                 }
             });

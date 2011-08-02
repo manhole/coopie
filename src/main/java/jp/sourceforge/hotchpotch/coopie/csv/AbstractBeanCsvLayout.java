@@ -16,8 +16,13 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         beanDesc = BeanDescFactory.getBeanDesc(beanClass);
     }
 
+    @Override
+    protected AbstractColumnSetup<T> getRecordDescSetup() {
+        return new BeanColumnSetup<T>(beanDesc);
+    }
+
     protected RecordDesc<T> buildRecordDesc() {
-        if (columnNames == null || columnNames.isEmpty()) {
+        if (recordDesc == null) {
             /*
              * beanの全プロパティを対象に。
              */
@@ -34,14 +39,34 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
             return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                     new BeanRecordType<T>(beanDesc));
-        } else {
+        }
+        return recordDesc;
+    }
+
+    private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
+            final PropertyDesc<U> pd) {
+        final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
+        cd.setPropertyDesc(pd);
+        cd.setName(name);
+        return cd;
+    }
+
+    static class BeanColumnSetup<T> extends AbstractColumnSetup<T> {
+
+        private final BeanDesc<T> beanDesc;
+
+        BeanColumnSetup(final BeanDesc<T> beanDesc) {
+            this.beanDesc = beanDesc;
+        }
+
+        @Override
+        public RecordDesc<T> getRecordDesc() {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnName[] names = columnNames.getColumnNames();
-            final ColumnDesc<T>[] cds = newColumnDescs(names.length);
+            final ColumnDesc<T>[] cds = newColumnDescs(columnNames.size());
             int i = 0;
-            for (final ColumnName columnName : names) {
+            for (final ColumnName columnName : columnNames) {
                 final String propertyName = columnName.getName();
                 final PropertyDesc<T> pd = getPropertyDesc(beanDesc,
                         propertyName);
@@ -53,23 +78,17 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
                     new BeanRecordType<T>(beanDesc));
         }
-    }
 
-    private ColumnDesc<T> newBeanColumnDesc(final ColumnName name,
-            final PropertyDesc<T> pd) {
-        final BeanColumnDesc<T> cd = new BeanColumnDesc<T>();
-        cd.setPropertyDesc(pd);
-        cd.setName(name);
-        return cd;
-    }
-
-    private PropertyDesc<T> getPropertyDesc(final BeanDesc<T> beanDesc,
-            final String name) {
-        final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
-        if (pd == null) {
-            throw new IllegalStateException("property not found:<" + name + ">");
+        private PropertyDesc<T> getPropertyDesc(final BeanDesc<T> beanDesc,
+                final String name) {
+            final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
+            if (pd == null) {
+                throw new IllegalStateException("property not found:<" + name
+                        + ">");
+            }
+            return pd;
         }
-        return pd;
+
     }
 
     static class BeanColumnDesc<T> implements ColumnDesc<T> {
