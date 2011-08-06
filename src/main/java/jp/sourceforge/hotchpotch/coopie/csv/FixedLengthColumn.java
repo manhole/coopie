@@ -7,4 +7,9 @@ public interface FixedLengthColumn extends ColumnName {
      */
     String read(String line);
 
+    /**
+     * 1カラムぶんのデータから、固定長ファイルへ記述するだけの文字数とし、出力します。
+     */
+    void write(String s, Appendable appendable);
+
 }
