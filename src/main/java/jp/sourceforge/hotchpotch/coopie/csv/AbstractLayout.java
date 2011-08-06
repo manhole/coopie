@@ -1,12 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.util.List;
-
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.util.CollectionsUtil;
 
 abstract class AbstractLayout<T> {
 
@@ -143,32 +140,6 @@ abstract class AbstractLayout<T> {
     protected static interface RecordDescSetup<T> extends ColumnSetup {
 
         RecordDesc<T> getRecordDesc();
-
-    }
-
-    protected static abstract class AbstractColumnSetup<T> implements
-            RecordDescSetup<T> {
-
-        protected final List<ColumnName> columnNames = CollectionsUtil
-                .newArrayList();
-
-        @Override
-        public void column(final ColumnName name) {
-            columnNames.add(name);
-        }
-
-        @Override
-        public void column(final String name) {
-            column(new SimpleColumnName(name));
-        }
-
-        @Override
-        public void column(final String propertyName, final String label) {
-            final SimpleColumnName n = new SimpleColumnName();
-            n.setName(propertyName);
-            n.setLabel(label);
-            column(n);
-        }
 
     }
 
