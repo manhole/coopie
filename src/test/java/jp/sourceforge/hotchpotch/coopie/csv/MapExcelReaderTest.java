@@ -47,9 +47,9 @@ public class MapExcelReaderTest {
                 "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa", "あ");
                 setup.column("ccc", "ううう");
                 setup.column("bbb", "いい");
@@ -113,9 +113,9 @@ public class MapExcelReaderTest {
                 "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 /*
                  * CSVの列順
                  */
@@ -142,9 +142,9 @@ public class MapExcelReaderTest {
                 "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa", "あ");
                 setup.column("ccc", "ううう");
             }
@@ -165,9 +165,9 @@ public class MapExcelReaderTest {
                 "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
                 setup.column("ccc", "ddd");
             }
