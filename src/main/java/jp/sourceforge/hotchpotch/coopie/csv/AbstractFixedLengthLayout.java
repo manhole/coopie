@@ -4,8 +4,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 
-import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.meta.PropertyDesc;
 import org.t2framework.commons.util.CollectionsUtil;
 
 abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
@@ -88,17 +86,11 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
     }
 
-    protected static class DefaultFixedLengthColumnSetup<T> implements
+    protected abstract static class AbstractFixedLengthColumnSetup<T> implements
             FixedLengthRecordDescSetup {
 
-        private final BeanDesc<T> beanDesc;
-        private final List<FixedLengthColumn> columns = CollectionsUtil
+        protected final List<FixedLengthColumn> columns = CollectionsUtil
                 .newArrayList();
-        private FixedLengthRecordDesc<T> fixedLengthRecordDesc;
-
-        DefaultFixedLengthColumnSetup(final BeanDesc<T> beanDesc) {
-            this.beanDesc = beanDesc;
-        }
 
         public FixedLengthColumn[] toColumns() {
             return columns.toArray(new FixedLengthColumn[columns.size()]);
@@ -110,44 +102,6 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
             final SimpleFixedLengthColumn c = new SimpleFixedLengthColumn(
                     propertyName, beginIndex, endIndex);
             columns.add(c);
-        }
-
-        @Override
-        public RecordDesc<T> getRecordDesc() {
-            buildIfNeed();
-            return fixedLengthRecordDesc;
-        }
-
-        @Override
-        public ElementSetting getElementSetting() {
-            buildIfNeed();
-            return fixedLengthRecordDesc;
-        }
-
-        private void buildIfNeed() {
-            if (fixedLengthRecordDesc != null) {
-                return;
-            }
-
-            /*
-             * 設定されているプロパティ名を対象に。
-             */
-            final ColumnDesc<T>[] cds = newColumnDescs(columns.size());
-            int i = 0;
-            for (final FixedLengthColumn column : columns) {
-                final String propertyName = column.getName();
-                final PropertyDesc<T> pd = AbstractBeanCsvLayout
-                        .getPropertyDesc(beanDesc, propertyName);
-                final ColumnDesc<T> cd = AbstractBeanCsvLayout
-                        .newBeanColumnDesc(column, pd);
-                cds[i] = cd;
-                i++;
-            }
-
-            final FixedLengthColumn[] a = columns
-                    .toArray(new FixedLengthColumn[columns.size()]);
-            fixedLengthRecordDesc = new FixedLengthRecordDesc<T>(cds,
-                    new BeanRecordType<T>(beanDesc), a);
         }
 
     }
