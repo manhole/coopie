@@ -80,7 +80,7 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
         @Override
         public String read(final String line) {
-            final int len = line.length();
+            final int len = length(line);
             final int begin = Math.min(len, beginIndex);
             final int end = Math.min(len, endIndex);
             final String s = line.substring(begin, end);
@@ -100,12 +100,21 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
         private String lpad(final String str, final int len, final char pad) {
             final StringBuilder sb = new StringBuilder();
-            final int padlen = len - str.length();
+            final int padlen = len - length(str);
             for (int i = 0; i < padlen; i++) {
                 sb.append(pad);
             }
-            sb.append(str);
+            if (str != null) {
+                sb.append(str);
+            }
             return sb.toString();
+        }
+
+        private int length(final String str) {
+            if (str == null) {
+                return 0;
+            }
+            return str.length();
         }
 
     }

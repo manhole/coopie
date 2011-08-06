@@ -111,6 +111,53 @@ public class BeanFixedLengthWriterTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * 空白項目がある場合。
+     * 
+     * CSVでは""はnullとして扱い、" "は" "として扱うが、
+     * 固定長では""も" "もnullとし、スペースで埋める。
+     */
+    @Test
+    public void write4() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 7);
+                setup.column("bbb", 7, 14);
+                setup.column("ccc", 14, 20);
+            }
+        });
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc(" ");
+        csvWriter.write(bean);
+
+        bean.setAaa(null);
+        bean.setBbb("い2");
+        bean.setCcc(null);
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
+                "-4-2", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is,
+                "UTF-8"));
+        assertEquals(expected, actual);
+    }
+
     /*
      * TODO 定義した長さよりも実際のデータが長い場合
      */
