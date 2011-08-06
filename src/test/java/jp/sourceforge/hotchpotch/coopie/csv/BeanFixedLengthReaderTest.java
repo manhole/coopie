@@ -128,7 +128,7 @@ public class BeanFixedLengthReaderTest {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("aaa", 0, 7);
-                setup.column("bbb", 7, 12);
+                setup.column("bbb", 7, 14);
                 setup.column("ccc", 14, 20);
             }
         });
@@ -177,7 +177,7 @@ public class BeanFixedLengthReaderTest {
             public void setup(final FixedLengthColumnSetup setup) {
                 // 空ファイルなので、ここは何でも良い
                 setup.column("aaa", 0, 7);
-                setup.column("bbb", 7, 12);
+                setup.column("bbb", 7, 14);
                 setup.column("ccc", 14, 20);
             }
         });
@@ -192,6 +192,36 @@ public class BeanFixedLengthReaderTest {
         assertEquals(false, csvReader.hasNext());
 
         csvReader.close();
+    }
+
+    /**
+     * 空行がある場合。
+     * 
+     * 各要素を"" (null)として扱う。
+     */
+    @Test
+    public void read_empty_row() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-5", "tsv");
+
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 7);
+                setup.column("ccc", 7, 14);
+                setup.column("bbb", 14, 20);
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertReadEmptyRow(csvReader, bean);
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
