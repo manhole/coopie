@@ -158,6 +158,53 @@ public class BeanFixedLengthWriterTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * ファイルヘッダが無い場合。
+     * 
+     * ※これが通常の固定長ファイル
+     */
+    @Test
+    public void write_noheader() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("ccc", 0, 6);
+                setup.column("aaa", 6, 12);
+                setup.column("bbb", 12, 20);
+            }
+        });
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う1");
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb("い2");
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
+                "-3", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is,
+                "UTF-8"));
+        assertEquals(expected, actual);
+    }
+
     /*
      * TODO 定義した長さよりも実際のデータが長い場合
      */
