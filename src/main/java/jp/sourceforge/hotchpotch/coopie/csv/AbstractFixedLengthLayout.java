@@ -23,7 +23,7 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
         recordDesc = columnSetup.getRecordDesc();
     }
 
-    protected FixedLengthRecordDesc<T> buildRecordDesc() {
+    protected FixedLengthRecordDesc<T> getRecordDesc() {
         return recordDesc;
     }
 
