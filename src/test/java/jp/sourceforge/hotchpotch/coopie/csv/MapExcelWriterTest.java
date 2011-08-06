@@ -15,7 +15,7 @@ public class MapExcelWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa");
@@ -59,7 +59,7 @@ public class MapExcelWriterTest {
     public void write_noheader() throws Throwable {
         // ## Arrange ##
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*

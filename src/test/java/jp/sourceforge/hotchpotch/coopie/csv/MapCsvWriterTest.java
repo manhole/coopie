@@ -54,7 +54,7 @@ public class MapCsvWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa");
@@ -103,7 +103,7 @@ public class MapCsvWriterTest {
     public void write3() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*
@@ -188,7 +188,7 @@ public class MapCsvWriterTest {
     public void write_noheader() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*

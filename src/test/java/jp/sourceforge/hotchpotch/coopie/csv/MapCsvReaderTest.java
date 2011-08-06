@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 
+
 public class MapCsvReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
@@ -84,7 +85,7 @@ public class MapCsvReaderTest {
                 "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa", "あ");
@@ -216,7 +217,7 @@ public class MapCsvReaderTest {
                 "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*
@@ -298,7 +299,7 @@ public class MapCsvReaderTest {
     public void read_empty2() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*
@@ -460,7 +461,7 @@ public class MapCsvReaderTest {
                 "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa", "あ");
@@ -507,7 +508,7 @@ public class MapCsvReaderTest {
                 "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa");

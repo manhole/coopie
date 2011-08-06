@@ -34,7 +34,8 @@ public abstract class AbstractMapCsvLayout extends
         return cd;
     }
 
-    static class MapColumnSetup extends AbstractColumnSetup<Map<String, String>> {
+    static class MapColumnSetup extends
+            AbstractColumnSetup<Map<String, String>> {
 
         @Override
         public RecordDesc<Map<String, String>> getRecordDesc() {
@@ -104,7 +105,7 @@ public abstract class AbstractMapCsvLayout extends
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
              */
-            layout.setupColumns(new ColumnSetupBlock() {
+            layout.setupColumns(new SetupBlock<ColumnSetup>() {
                 @Override
                 public void setup(final ColumnSetup setup) {
                     for (final String headerElem : header) {
@@ -137,7 +138,7 @@ public abstract class AbstractMapCsvLayout extends
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
              */
-            layout.setupColumns(new ColumnSetupBlock() {
+            layout.setupColumns(new SetupBlock<ColumnSetup>() {
                 @Override
                 public void setup(final ColumnSetup setup) {
                     final Set<String> keys = bean.keySet();
