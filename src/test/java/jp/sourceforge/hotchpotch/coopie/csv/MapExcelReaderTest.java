@@ -47,7 +47,7 @@ public class MapExcelReaderTest {
                 "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa", "あ");
@@ -113,7 +113,7 @@ public class MapExcelReaderTest {
                 "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*
@@ -142,7 +142,7 @@ public class MapExcelReaderTest {
                 "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa", "あ");
@@ -165,7 +165,7 @@ public class MapExcelReaderTest {
                 "xls");
 
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa");

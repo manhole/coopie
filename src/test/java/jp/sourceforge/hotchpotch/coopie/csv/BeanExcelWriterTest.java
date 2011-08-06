@@ -24,7 +24,7 @@ public class BeanExcelWriterTest {
         // ## Arrange ##
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa");
@@ -85,7 +85,7 @@ public class BeanExcelWriterTest {
         // ## Arrange ##
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*

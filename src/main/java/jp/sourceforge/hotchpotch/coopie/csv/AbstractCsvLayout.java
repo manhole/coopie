@@ -13,7 +13,7 @@ public abstract class AbstractCsvLayout<T> {
     protected RecordDesc<T> recordDesc;
     protected boolean withHeader = true;
 
-    public void setupColumns(final ColumnSetupBlock block) {
+    public void setupColumns(final SetupBlock<ColumnSetup> block) {
         final RecordDescSetup<T> columnSetup = getRecordDescSetup();
         block.setup(columnSetup);
         recordDesc = columnSetup.getRecordDesc();

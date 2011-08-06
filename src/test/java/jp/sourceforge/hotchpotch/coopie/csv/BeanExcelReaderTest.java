@@ -46,7 +46,7 @@ public class BeanExcelReaderTest {
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("bbb", "いい");
@@ -96,7 +96,7 @@ public class BeanExcelReaderTest {
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*
@@ -151,7 +151,7 @@ public class BeanExcelReaderTest {
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa", "あ");
@@ -178,7 +178,7 @@ public class BeanExcelReaderTest {
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa");

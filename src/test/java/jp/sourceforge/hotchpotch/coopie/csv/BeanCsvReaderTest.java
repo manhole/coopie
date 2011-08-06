@@ -96,7 +96,7 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("bbb", "いい");
@@ -225,7 +225,7 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 /*
@@ -416,7 +416,7 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa", "あ");
@@ -464,7 +464,7 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new ColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<ColumnSetup>() {
             @Override
             public void setup(final ColumnSetup setup) {
                 setup.column("aaa");
