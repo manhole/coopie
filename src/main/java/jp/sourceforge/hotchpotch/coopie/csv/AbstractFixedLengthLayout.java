@@ -1,9 +1,11 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 
+import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
 
 abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
@@ -47,12 +49,14 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
         private final String propertyName;
         private final int beginIndex;
         private final int endIndex;
+        private final int length;
 
         SimpleFixedLengthColumn(final String propertyName,
                 final int beginIndex, final int endIndex) {
             this.propertyName = propertyName;
             this.beginIndex = beginIndex;
             this.endIndex = endIndex;
+            length = endIndex - beginIndex;
         }
 
         @Override
@@ -84,10 +88,30 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
             return trimmed;
         }
 
+        @Override
+        public void write(final String s, final Appendable appendable) {
+            final String elem = lpad(s, length, ' ');
+            try {
+                appendable.append(elem);
+            } catch (final IOException e) {
+                throw new IORuntimeException(e);
+            }
+        }
+
+        private String lpad(final String str, final int len, final char pad) {
+            final StringBuilder sb = new StringBuilder();
+            final int padlen = len - str.length();
+            for (int i = 0; i < padlen; i++) {
+                sb.append(pad);
+            }
+            sb.append(str);
+            return sb.toString();
+        }
+
     }
 
-    protected abstract static class AbstractFixedLengthColumnSetup<T> implements
-            FixedLengthRecordDescSetup {
+    protected abstract static class AbstractFixedLengthColumnSetup<T>
+            implements FixedLengthRecordDescSetup {
 
         protected final List<FixedLengthColumn> columns = CollectionsUtil
                 .newArrayList();
@@ -161,8 +185,7 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
         @Override
         public CsvElementWriter openWriter(final Writer writer) {
-            // TODO Auto-generated method stub
-            return null;
+            return new FixedLengthWriter(writer, columns);
         }
 
         @Override
