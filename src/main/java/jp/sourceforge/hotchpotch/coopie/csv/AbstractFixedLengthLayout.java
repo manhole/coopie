@@ -11,24 +11,36 @@ import org.t2framework.commons.util.CollectionsUtil;
 abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
     protected boolean withHeader = true;
-    // TODO 抽象型にする
-    protected FixedLengthRecordDesc<T> recordDesc;
+    protected RecordDesc<T> recordDesc;
+    protected ElementSetting elementSetting;
 
-    // TODO 抽象型にする
-    protected abstract DefaultFixedLengthColumnSetup<T> getRecordDescSetup();
+    protected abstract FixedLengthColumnSetup<T> getRecordDescSetup();
 
     public void setupColumns(final FixedLengthColumnSetupBlock block) {
-        final DefaultFixedLengthColumnSetup<T> columnSetup = getRecordDescSetup();
+        final FixedLengthColumnSetup<T> columnSetup = getRecordDescSetup();
         block.setup(columnSetup);
         recordDesc = columnSetup.getRecordDesc();
+        elementSetting = columnSetup.getElementSetting();
     }
 
-    protected FixedLengthRecordDesc<T> getRecordDesc() {
+    protected RecordDesc<T> getRecordDesc() {
         return recordDesc;
+    }
+
+    protected ElementSetting getElementSetting() {
+        return elementSetting;
     }
 
     public void setWithHeader(final boolean withHeader) {
         this.withHeader = withHeader;
+    }
+
+    protected static interface FixedLengthRecordDescSetup<T> {
+
+        RecordDesc<T> getRecordDesc();
+
+        ElementSetting getElementSetting();
+
     }
 
     protected static class SimpleFixedLengthColumn implements FixedLengthColumn {
@@ -85,6 +97,7 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
         }
 
         final List<FixedLengthColumn> columns = CollectionsUtil.newArrayList();
+        private FixedLengthRecordDesc<T> fixedLengthRecordDesc;
 
         public FixedLengthColumn[] toColumns() {
             return columns.toArray(new FixedLengthColumn[columns.size()]);
@@ -99,7 +112,22 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
         }
 
         @Override
-        public FixedLengthRecordDesc<T> getRecordDesc() {
+        public RecordDesc<T> getRecordDesc() {
+            buildIfNeed();
+            return fixedLengthRecordDesc;
+        }
+
+        @Override
+        public ElementSetting getElementSetting() {
+            buildIfNeed();
+            return fixedLengthRecordDesc;
+        }
+
+        private void buildIfNeed() {
+            if (fixedLengthRecordDesc != null) {
+                return;
+            }
+
             /*
              * 設定されているプロパティ名を対象に。
              */
@@ -115,27 +143,10 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
                 i++;
             }
 
-            return new FixedLengthRecordDesc<T>(cds, new BeanRecordType<T>(
-                    beanDesc), columns.toArray(new FixedLengthColumn[columns
-                    .size()]));
-        }
-
-        @Override
-        public void column(final ColumnName name) {
-            // FIXME
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void column(final String name) {
-            // FIXME
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void column(final String propertyName, final String label) {
-            // FIXME
-            throw new UnsupportedOperationException();
+            final FixedLengthColumn[] a = columns
+                    .toArray(new FixedLengthColumn[columns.size()]);
+            fixedLengthRecordDesc = new FixedLengthRecordDesc<T>(cds,
+                    new BeanRecordType<T>(beanDesc), a);
         }
 
     }

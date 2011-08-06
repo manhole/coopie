@@ -17,10 +17,11 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
     @Override
     public CsvReader<T> openReader(final Reader reader) {
-        final FixedLengthRecordDesc<T> rd = getRecordDesc();
+        final RecordDesc<T> rd = getRecordDesc();
+        final ElementSetting es = getElementSetting();
         final DefaultCsvReader<T> r = new DefaultCsvReader<T>(rd);
         r.setWithHeader(withHeader);
-        r.setElementSetting(rd);
+        r.setElementSetting(es);
         // TODO openで例外時にcloseすること
         r.open(reader);
         return r;
@@ -28,17 +29,18 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
     @Override
     public CsvWriter<T> openWriter(final Writer writer) {
-        final FixedLengthRecordDesc<T> rd = getRecordDesc();
+        final RecordDesc<T> rd = getRecordDesc();
+        final ElementSetting es = getElementSetting();
         final DefaultCsvWriter<T> w = new DefaultCsvWriter<T>(rd);
         w.setWithHeader(withHeader);
-        w.setElementSetting(rd);
+        w.setElementSetting(es);
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
     }
 
     @Override
-    protected DefaultFixedLengthColumnSetup<T> getRecordDescSetup() {
+    protected FixedLengthColumnSetup<T> getRecordDescSetup() {
         return new DefaultFixedLengthColumnSetup<T>(beanDesc);
     }
 

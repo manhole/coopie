@@ -137,12 +137,6 @@ abstract class AbstractLayout<T> {
 
     }
 
-    protected static interface RecordDescSetup<T> extends ColumnSetup {
-
-        RecordDesc<T> getRecordDesc();
-
-    }
-
     protected static interface RecordType<T> {
         T newInstance();
     }
