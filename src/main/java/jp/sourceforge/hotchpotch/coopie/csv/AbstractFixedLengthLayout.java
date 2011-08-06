@@ -16,7 +16,7 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
     protected abstract FixedLengthRecordDescSetup getRecordDescSetup();
 
-    public void setupColumns(final FixedLengthColumnSetupBlock block) {
+    public void setupColumns(final SetupBlock<FixedLengthColumnSetup> block) {
         final FixedLengthRecordDescSetup setup = getRecordDescSetup();
         block.setup(setup);
         recordDesc = setup.getRecordDesc();
