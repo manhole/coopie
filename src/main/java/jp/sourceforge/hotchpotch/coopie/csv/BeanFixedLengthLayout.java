@@ -3,11 +3,16 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.t2framework.commons.meta.BeanDesc;
+import org.t2framework.commons.meta.BeanDescFactory;
+
 public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         implements CsvLayout<T> {
 
+    private final BeanDesc<T> beanDesc;
+
     public BeanFixedLengthLayout(final Class<T> beanClass) {
-        super(beanClass);
+        beanDesc = BeanDescFactory.getBeanDesc(beanClass);
     }
 
     @Override
@@ -30,6 +35,11 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
+    }
+
+    @Override
+    protected DefaultFixedLengthColumnSetup<T> getRecordDescSetup() {
+        return new DefaultFixedLengthColumnSetup<T>(beanDesc);
     }
 
 }
