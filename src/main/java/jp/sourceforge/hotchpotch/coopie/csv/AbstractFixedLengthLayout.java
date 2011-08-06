@@ -125,10 +125,6 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
         protected final List<FixedLengthColumn> columns = CollectionsUtil
                 .newArrayList();
 
-        public FixedLengthColumn[] toColumns() {
-            return columns.toArray(new FixedLengthColumn[columns.size()]);
-        }
-
         @Override
         public void column(final String propertyName, final int beginIndex,
                 final int endIndex) {
