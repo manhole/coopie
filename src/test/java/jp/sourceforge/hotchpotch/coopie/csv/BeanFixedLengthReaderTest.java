@@ -224,6 +224,33 @@ public class BeanFixedLengthReaderTest {
         BeanCsvReaderTest.assertReadEmptyRow(csvReader, bean);
     }
 
+    /**
+     * setupしない列が入力ファイルに存在する場合は無視する。
+     */
+    @Test
+    public void read4() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-2", "tsv");
+
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                setup.column("ccc", 5, 12);
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertRead4(csvReader, bean);
+    }
+
     static InputStream getResourceAsStream(final String suffix, final String ext) {
         return ResourceUtil.getResourceAsStream(
                 BeanFixedLengthReaderTest.class.getName() + suffix, ext);
