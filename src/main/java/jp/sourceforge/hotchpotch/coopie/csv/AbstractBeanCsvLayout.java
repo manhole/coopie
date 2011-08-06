@@ -43,14 +43,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return recordDesc;
     }
 
-    private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
-            final PropertyDesc<U> pd) {
-        final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
-        cd.setPropertyDesc(pd);
-        cd.setName(name);
-        return cd;
-    }
-
     static class BeanColumnSetup<T> extends AbstractColumnSetup<T> {
 
         private final BeanDesc<T> beanDesc;
@@ -79,16 +71,25 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                     new BeanRecordType<T>(beanDesc));
         }
 
-        private PropertyDesc<T> getPropertyDesc(final BeanDesc<T> beanDesc,
-                final String name) {
-            final PropertyDesc<T> pd = beanDesc.getPropertyDesc(name);
-            if (pd == null) {
-                throw new IllegalStateException("property not found:<" + name
-                        + ">");
-            }
-            return pd;
-        }
+    }
 
+    // TODO
+    static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
+            final PropertyDesc<U> pd) {
+        final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
+        cd.setPropertyDesc(pd);
+        cd.setName(name);
+        return cd;
+    }
+
+    // TODO
+    static <U> PropertyDesc<U> getPropertyDesc(final BeanDesc<U> beanDesc,
+            final String name) {
+        final PropertyDesc<U> pd = beanDesc.getPropertyDesc(name);
+        if (pd == null) {
+            throw new IllegalStateException("property not found:<" + name + ">");
+        }
+        return pd;
     }
 
     static class BeanColumnDesc<T> implements ColumnDesc<T> {
@@ -129,21 +130,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         @Override
         public void setValue(final T bean, final String value) {
             propertyDesc.setValue(bean, value);
-        }
-
-    }
-
-    static class BeanRecordType<T> implements RecordType<T> {
-
-        private final BeanDesc<T> beanDesc;
-
-        public BeanRecordType(final BeanDesc<T> beanDesc) {
-            this.beanDesc = beanDesc;
-        }
-
-        @Override
-        public T newInstance() {
-            return beanDesc.newInstance();
         }
 
     }
