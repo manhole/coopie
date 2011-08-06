@@ -27,7 +27,7 @@ public class BeanFixedLengthWriterTest {
         // ## Arrange ##
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("aaa", 0, 5);
@@ -70,7 +70,7 @@ public class BeanFixedLengthWriterTest {
         // ## Arrange ##
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("aaa", 0, 5);
@@ -122,7 +122,7 @@ public class BeanFixedLengthWriterTest {
         // ## Arrange ##
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("aaa", 0, 7);
@@ -168,7 +168,7 @@ public class BeanFixedLengthWriterTest {
         // ## Arrange ##
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("ccc", 0, 6);
