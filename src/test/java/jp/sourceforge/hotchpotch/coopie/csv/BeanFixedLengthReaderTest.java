@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
@@ -160,6 +161,36 @@ public class BeanFixedLengthReaderTest {
         assertEquals(null, bean.getCcc());
 
         assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 空ファイルの場合。
+     */
+    @Test
+    public void read_empty() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                // 空ファイルなので、ここは何でも良い
+                setup.column("aaa", 0, 7);
+                setup.column("bbb", 7, 12);
+                setup.column("ccc", 14, 20);
+            }
+        });
+
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new StringReader(""));
+
+        // ## Assert ##
+        assertEquals(false, csvReader.hasNext());
+
         csvReader.close();
     }
 
