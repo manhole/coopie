@@ -5,45 +5,26 @@ import java.io.Writer;
 import java.util.List;
 
 import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
 import org.t2framework.commons.util.CollectionsUtil;
 
 abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
-    private final BeanDesc<T> beanDesc;
     protected boolean withHeader = true;
-    protected FixedLengthColumn[] columns;
+    // TODO 抽象型にする
+    protected FixedLengthRecordDesc<T> recordDesc;
 
-    public AbstractFixedLengthLayout(final Class<T> beanClass) {
-        beanDesc = BeanDescFactory.getBeanDesc(beanClass);
-    }
+    // TODO 抽象型にする
+    protected abstract DefaultFixedLengthColumnSetup<T> getRecordDescSetup();
 
     public void setupColumns(final FixedLengthColumnSetupBlock block) {
-        final DefaultFixedLengthColumnSetup columnSetup = new DefaultFixedLengthColumnSetup();
+        final DefaultFixedLengthColumnSetup<T> columnSetup = getRecordDescSetup();
         block.setup(columnSetup);
-        final FixedLengthColumn[] columns = columnSetup.toColumns();
-        this.columns = columns;
+        recordDesc = columnSetup.getRecordDesc();
     }
 
     protected FixedLengthRecordDesc<T> buildRecordDesc() {
-        /*
-         * 設定されているプロパティ名を対象に。
-         */
-        final ColumnDesc<T>[] cds = newColumnDescs(columns.length);
-        int i = 0;
-        for (final FixedLengthColumn column : columns) {
-            final String propertyName = column.getName();
-            final PropertyDesc<T> pd = AbstractBeanCsvLayout.getPropertyDesc(
-                    beanDesc, propertyName);
-            final ColumnDesc<T> cd = AbstractBeanCsvLayout.newBeanColumnDesc(
-                    column, pd);
-            cds[i] = cd;
-            i++;
-        }
-
-        return new FixedLengthRecordDesc<T>(cds,
-                new BeanRecordType<T>(beanDesc), columns);
+        return recordDesc;
     }
 
     public void setWithHeader(final boolean withHeader) {
@@ -94,8 +75,14 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
     }
 
-    private static class DefaultFixedLengthColumnSetup implements
-            FixedLengthColumnSetup {
+    protected static class DefaultFixedLengthColumnSetup<T> implements
+            FixedLengthColumnSetup<T> {
+
+        private final BeanDesc<T> beanDesc;
+
+        DefaultFixedLengthColumnSetup(final BeanDesc<T> beanDesc) {
+            this.beanDesc = beanDesc;
+        }
 
         final List<FixedLengthColumn> columns = CollectionsUtil.newArrayList();
 
@@ -109,6 +96,46 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
             final SimpleFixedLengthColumn c = new SimpleFixedLengthColumn(
                     propertyName, beginIndex, endIndex);
             columns.add(c);
+        }
+
+        @Override
+        public FixedLengthRecordDesc<T> getRecordDesc() {
+            /*
+             * 設定されているプロパティ名を対象に。
+             */
+            final ColumnDesc<T>[] cds = newColumnDescs(columns.size());
+            int i = 0;
+            for (final FixedLengthColumn column : columns) {
+                final String propertyName = column.getName();
+                final PropertyDesc<T> pd = AbstractBeanCsvLayout
+                        .getPropertyDesc(beanDesc, propertyName);
+                final ColumnDesc<T> cd = AbstractBeanCsvLayout
+                        .newBeanColumnDesc(column, pd);
+                cds[i] = cd;
+                i++;
+            }
+
+            return new FixedLengthRecordDesc<T>(cds, new BeanRecordType<T>(
+                    beanDesc), columns.toArray(new FixedLengthColumn[columns
+                    .size()]));
+        }
+
+        @Override
+        public void column(final ColumnName name) {
+            // FIXME
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void column(final String name) {
+            // FIXME
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void column(final String propertyName, final String label) {
+            // FIXME
+            throw new UnsupportedOperationException();
         }
 
     }
