@@ -1,5 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -105,6 +108,59 @@ public class BeanFixedLengthReaderTest {
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         BeanCsvReaderTest.assertReadNoheader(csvReader, bean);
+    }
+
+    /**
+     * 空白項目がある場合。
+     * 
+     * CSVでは""はnullとして扱い、" "は" "として扱うが、
+     * 固定長では""も" "もnullとする。
+     */
+    @Test
+    public void read3() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-4", "tsv");
+
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 7);
+                setup.column("bbb", 7, 12);
+                setup.column("ccc", 14, 20);
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertRead3(csvReader, bean);
+    }
+
+    private static void assertRead3(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        //assertEquals(" ", bean.getCcc());
+        assertEquals(null, bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals(null, bean.getAaa());
+        assertEquals("い2", bean.getBbb());
+        assertEquals(null, bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
