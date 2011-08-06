@@ -17,7 +17,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     @Override
-    protected AbstractColumnSetup<T> getRecordDescSetup() {
+    protected CsvRecordDescSetup<T> getRecordDescSetup() {
         return new BeanColumnSetup<T>(beanDesc);
     }
 
