@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.Collection;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
@@ -56,16 +57,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<T>[] cds = newColumnDescs(columnNames.size());
-            int i = 0;
-            for (final ColumnName columnName : columnNames) {
-                final String propertyName = columnName.getName();
-                final PropertyDesc<T> pd = getPropertyDesc(beanDesc,
-                        propertyName);
-                final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd);
-                cds[i] = cd;
-                i++;
-            }
+            final ColumnDesc<T>[] cds = toColumnDescs(columnNames, beanDesc);
 
             return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
                     new BeanRecordType<T>(beanDesc));
@@ -74,7 +66,21 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     // TODO
-    static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
+    static <U> ColumnDesc<U>[] toColumnDescs(
+            final Collection<? extends ColumnName> columns, final BeanDesc<U> bd) {
+        final ColumnDesc<U>[] cds = newColumnDescs(columns.size());
+        int i = 0;
+        for (final ColumnName columnName : columns) {
+            final String propertyName = columnName.getName();
+            final PropertyDesc<U> pd = getPropertyDesc(bd, propertyName);
+            final ColumnDesc<U> cd = newBeanColumnDesc(columnName, pd);
+            cds[i] = cd;
+            i++;
+        }
+        return cds;
+    }
+
+    private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
             final PropertyDesc<U> pd) {
         final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
         cd.setPropertyDesc(pd);
@@ -82,9 +88,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return cd;
     }
 
-    // TODO
-    static <U> PropertyDesc<U> getPropertyDesc(final BeanDesc<U> beanDesc,
-            final String name) {
+    private static <U> PropertyDesc<U> getPropertyDesc(
+            final BeanDesc<U> beanDesc, final String name) {
         final PropertyDesc<U> pd = beanDesc.getPropertyDesc(name);
         if (pd == null) {
             throw new IllegalStateException("property not found:<" + name + ">");
