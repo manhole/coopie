@@ -28,10 +28,10 @@ public class BeanFixedLengthReaderTest {
                 AaaBean.class);
         layout.setupColumns(new FixedLengthColumnSetupBlock() {
             @Override
-            public void setup(final FixedLengthColumnSetup columnSetup) {
-                columnSetup.column("aaa", 0, 5);
-                columnSetup.column("ccc", 5, 12);
-                columnSetup.column("bbb", 12, 20);
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                setup.column("ccc", 5, 12);
+                setup.column("bbb", 12, 20);
             }
         });
 
@@ -59,10 +59,10 @@ public class BeanFixedLengthReaderTest {
                 AaaBean.class);
         layout.setupColumns(new FixedLengthColumnSetupBlock() {
             @Override
-            public void setup(final FixedLengthColumnSetup columnSetup) {
-                columnSetup.column("aaa", 0, 5);
-                columnSetup.column("ccc", 5, 12);
-                columnSetup.column("bbb", 12, 30);
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                setup.column("ccc", 5, 12);
+                setup.column("bbb", 12, 30);
             }
         });
 
@@ -73,6 +73,38 @@ public class BeanFixedLengthReaderTest {
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         BeanCsvReaderTest.assertRead2(csvReader, bean);
+    }
+
+    /**
+     * ファイルヘッダが無い場合。
+     * 
+     * ※これが通常の固定長ファイル
+     */
+    @Test
+    public void read_noheader() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-3", "tsv");
+
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("ccc", 0, 6);
+                setup.column("aaa", 6, 12);
+                setup.column("bbb", 12, 20);
+            }
+        });
+
+        layout.setWithHeader(false);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertReadNoheader(csvReader, bean);
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
