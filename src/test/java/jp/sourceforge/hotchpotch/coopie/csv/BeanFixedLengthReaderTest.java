@@ -14,6 +14,11 @@ public class BeanFixedLengthReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
+    /**
+     * ファイルヘッダがBeanのプロパティ名と同じ場合。
+     * 
+     * ※固定長ファイルでは、ヘッダがあっても大事に扱わない。
+     */
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
@@ -37,6 +42,37 @@ public class BeanFixedLengthReaderTest {
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         BeanCsvReaderTest.assertRead1(csvReader, bean);
+    }
+
+    /**
+     * ファイルヘッダがBeanのプロパティ名と異なる場合。
+     * ヘッダに何と書いてあろうとも、指定した文字数順に取り扱うこと。
+     * (CSVのときのように、ヘッダの順序に合わせて指定した順を変更しないこと)
+     * ※固定長ファイルでは、ヘッダがあっても大事に扱わない。
+     */
+    @Test
+    public void read2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-2", "tsv");
+
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new FixedLengthColumnSetupBlock() {
+            @Override
+            public void setup(final FixedLengthColumnSetup columnSetup) {
+                columnSetup.column("aaa", 0, 5);
+                columnSetup.column("ccc", 5, 12);
+                columnSetup.column("bbb", 12, 30);
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertRead2(csvReader, bean);
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {

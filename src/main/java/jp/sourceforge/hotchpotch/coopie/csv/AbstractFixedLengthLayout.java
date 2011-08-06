@@ -162,7 +162,8 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
         @Override
         public RecordDesc<T> setupByHeader(final String[] header) {
-            return delegate.setupByHeader(header);
+            // 固定長では、ヘッダがあっても見ない
+            return this;
         }
 
         @Override
