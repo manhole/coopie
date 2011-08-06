@@ -40,7 +40,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     }
 
     @Override
-    protected FixedLengthColumnSetup<T> getRecordDescSetup() {
+    protected FixedLengthRecordDescSetup getRecordDescSetup() {
         return new DefaultFixedLengthColumnSetup<T>(beanDesc);
     }
 

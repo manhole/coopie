@@ -14,13 +14,13 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
     protected RecordDesc<T> recordDesc;
     protected ElementSetting elementSetting;
 
-    protected abstract FixedLengthColumnSetup<T> getRecordDescSetup();
+    protected abstract FixedLengthRecordDescSetup getRecordDescSetup();
 
     public void setupColumns(final FixedLengthColumnSetupBlock block) {
-        final FixedLengthColumnSetup<T> columnSetup = getRecordDescSetup();
-        block.setup(columnSetup);
-        recordDesc = columnSetup.getRecordDesc();
-        elementSetting = columnSetup.getElementSetting();
+        final FixedLengthRecordDescSetup setup = getRecordDescSetup();
+        block.setup(setup);
+        recordDesc = setup.getRecordDesc();
+        elementSetting = setup.getElementSetting();
     }
 
     protected RecordDesc<T> getRecordDesc() {
@@ -35,9 +35,10 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
         this.withHeader = withHeader;
     }
 
-    protected static interface FixedLengthRecordDescSetup<T> {
+    protected static interface FixedLengthRecordDescSetup extends
+            FixedLengthColumnSetup {
 
-        RecordDesc<T> getRecordDesc();
+        <T> RecordDesc<T> getRecordDesc();
 
         ElementSetting getElementSetting();
 
@@ -88,16 +89,16 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
     }
 
     protected static class DefaultFixedLengthColumnSetup<T> implements
-            FixedLengthColumnSetup<T> {
+            FixedLengthRecordDescSetup {
 
         private final BeanDesc<T> beanDesc;
+        private final List<FixedLengthColumn> columns = CollectionsUtil
+                .newArrayList();
+        private FixedLengthRecordDesc<T> fixedLengthRecordDesc;
 
         DefaultFixedLengthColumnSetup(final BeanDesc<T> beanDesc) {
             this.beanDesc = beanDesc;
         }
-
-        final List<FixedLengthColumn> columns = CollectionsUtil.newArrayList();
-        private FixedLengthRecordDesc<T> fixedLengthRecordDesc;
 
         public FixedLengthColumn[] toColumns() {
             return columns.toArray(new FixedLengthColumn[columns.size()]);
