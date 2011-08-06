@@ -14,9 +14,9 @@ abstract class AbstractCsvLayout<T> extends AbstractLayout<T> {
     protected boolean withHeader = true;
 
     public void setupColumns(final SetupBlock<ColumnSetup> block) {
-        final CsvRecordDescSetup<T> columnSetup = getRecordDescSetup();
-        block.setup(columnSetup);
-        recordDesc = columnSetup.getRecordDesc();
+        final CsvRecordDescSetup<T> setup = getRecordDescSetup();
+        block.setup(setup);
+        recordDesc = setup.getRecordDesc();
     }
 
     protected abstract CsvRecordDescSetup<T> getRecordDescSetup();
