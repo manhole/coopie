@@ -13,7 +13,7 @@ abstract class AbstractCsvLayout<T> extends AbstractLayout<T> {
     protected RecordDesc<T> recordDesc;
     protected boolean withHeader = true;
 
-    public void setupColumns(final SetupBlock<ColumnSetup> block) {
+    public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
         final CsvRecordDescSetup<T> setup = getRecordDescSetup();
         block.setup(setup);
         recordDesc = setup.getRecordDesc();
@@ -25,13 +25,13 @@ abstract class AbstractCsvLayout<T> extends AbstractLayout<T> {
         this.withHeader = withHeader;
     }
 
-    protected static interface CsvRecordDescSetup<T> extends ColumnSetup {
+    protected static interface CsvRecordDescSetup<T> extends CsvColumnSetup {
 
         RecordDesc<T> getRecordDesc();
 
     }
 
-    protected static abstract class AbstractColumnSetup<T> implements
+    protected static abstract class AbstractCsvRecordDescSetup<T> implements
             CsvRecordDescSetup<T> {
 
         protected final List<ColumnName> columnNames = CollectionsUtil

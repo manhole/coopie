@@ -44,7 +44,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return recordDesc;
     }
 
-    static class BeanColumnSetup<T> extends AbstractColumnSetup<T> {
+    static class BeanColumnSetup<T> extends AbstractCsvRecordDescSetup<T> {
 
         private final BeanDesc<T> beanDesc;
 

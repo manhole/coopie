@@ -15,9 +15,9 @@ public class MapExcelWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
                 setup.column("ccc");
                 setup.column("bbb");
@@ -59,9 +59,9 @@ public class MapExcelWriterTest {
     public void write_noheader() throws Throwable {
         // ## Arrange ##
         final MapExcelLayout layout = new MapExcelLayout();
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 /*
                  * プロパティ名, CSV項目名 の順
                  */

@@ -54,9 +54,9 @@ public class BeanCsvWriterTest {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
                 setup.column("ccc");
                 setup.column("bbb");
@@ -103,9 +103,9 @@ public class BeanCsvWriterTest {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 /*
                  * プロパティ名, CSV項目名 の順
                  */
@@ -188,9 +188,9 @@ public class BeanCsvWriterTest {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
-        layout.setupColumns(new SetupBlock<ColumnSetup>() {
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
-            public void setup(final ColumnSetup setup) {
+            public void setup(final CsvColumnSetup setup) {
                 /*
                  * プロパティ名, CSV項目名 の順
                  */

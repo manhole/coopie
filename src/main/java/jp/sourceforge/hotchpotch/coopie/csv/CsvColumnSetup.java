@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface ColumnSetup {
+public interface CsvColumnSetup {
 
     void column(final ColumnName name);
 
