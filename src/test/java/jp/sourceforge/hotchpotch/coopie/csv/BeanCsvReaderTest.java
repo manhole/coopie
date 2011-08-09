@@ -10,6 +10,7 @@ import java.io.StringReader;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.CustomLayout;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -500,6 +501,79 @@ public class BeanCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    /**
+     * 独自レイアウトのtsvファイルを入力する。
+     * 
+     * - header部が3行
+     * - footer部が2行
+     * - データ部は2列目から
+     * という想定。
+     */
+    @Test
+    public void read_customLayout() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-7", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setCustomLayout(new TestLayout());
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertReadCustomLayout(csvReader, bean);
+    }
+
+    public static void assertReadCustomLayout(
+            final CsvReader<AaaBean> csvReader, final AaaBean bean)
+            throws IOException {
+        // tsvデータ部分は1と同じ
+        assertRead1(csvReader, bean);
+    }
+
+    private static class TestLayout implements CustomLayout {
+
+        // 1オリジン
+        private int lineNo;
+
+        @Override
+        public String[] readRecord(final CsvElementReader elementReader) {
+            if (lineNo == 0) {
+                // 3行あるheader部をskip
+                read0(elementReader);
+                read0(elementReader);
+                read0(elementReader);
+            }
+
+            final String[] rawRecord = read0(elementReader);
+            // EOFまで進んでいたらnull
+            if (null == rawRecord) {
+                return null;
+            }
+
+            // footerエリアはskip
+            if (rawRecord.length == 0 || rawRecord.length == 1) {
+                return readRecord(elementReader);
+            }
+
+            // データ部は、2列目以降
+            final String[] customRecord = new String[rawRecord.length - 1];
+            System.arraycopy(rawRecord, 1, customRecord, 0,
+                    rawRecord.length - 1);
+
+            return customRecord;
+        }
+
+        private String[] read0(final CsvElementReader elementReader) {
+            lineNo++;
+            return elementReader.readRecord();
+        }
+
     }
 
     /**
