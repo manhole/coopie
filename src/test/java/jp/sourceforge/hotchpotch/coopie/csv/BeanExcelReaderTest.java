@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.LazyColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestLayout;
 
 import org.junit.Test;
@@ -53,6 +54,52 @@ public class BeanExcelReaderTest {
                 setup.column("bbb", "いい");
                 setup.column("aaa", "あ");
                 setup.column("ccc", "ううう");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertRead2(csvReader, bean);
+    }
+
+    /**
+     * ヘッダがBeanのプロパティ名と異なる場合。
+     * ヘッダ名とbeanのプロパティ名をマッピングすること。
+     * 
+     * ヘッダ名が事前に決まらない(ロケールにより決定するなどで何パターンか有り得る)場合。
+     */
+    @Test
+    public void read2_2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
+                "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column(new LazyColumnName("bbb") {
+                    @Override
+                    public boolean labelEquals(final String label) {
+                        return label.contains("い");
+                    }
+                });
+                setup.column(new LazyColumnName("aaa") {
+                    @Override
+                    public boolean labelEquals(final String label) {
+                        return label.contains("あ");
+                    }
+                });
+                setup.column(new LazyColumnName("ccc") {
+                    @Override
+                    public boolean labelEquals(final String label) {
+                        return label.contains("う");
+                    }
+                });
             }
         });
 

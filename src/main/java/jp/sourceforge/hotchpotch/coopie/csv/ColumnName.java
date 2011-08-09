@@ -12,4 +12,6 @@ public interface ColumnName {
      */
     String getLabel();
 
+    boolean labelEquals(String label);
+
 }

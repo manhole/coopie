@@ -79,6 +79,11 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
         }
 
         @Override
+        public boolean labelEquals(final String label) {
+            return getLabel().equals(label);
+        }
+
+        @Override
         public String read(final String line) {
             final int len = length(line);
             final int begin = Math.min(len, beginIndex);

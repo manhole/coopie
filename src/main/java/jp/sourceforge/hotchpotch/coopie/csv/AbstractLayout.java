@@ -106,7 +106,7 @@ abstract class AbstractLayout<T> {
             HEADER: for (final String headerElem : header) {
                 for (final ColumnDesc<T> cd : tmpCds) {
                     final ColumnName name = cd.getName();
-                    if (name.getLabel().equals(headerElem)) {
+                    if (name.labelEquals(headerElem)) {
                         cds[i] = cd;
                         i++;
                         continue HEADER;

@@ -115,6 +115,66 @@ public class BeanCsvReaderTest {
         assertRead2(csvReader, bean);
     }
 
+    /**
+     * ヘッダがBeanのプロパティ名と異なる場合。
+     * ヘッダ名とbeanのプロパティ名をマッピングすること。
+     * 
+     * ヘッダ名が事前に決まらない(ロケールにより決定するなどで何パターンか有り得る)場合。
+     */
+    @Test
+    public void read2_2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-2", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column(new LazyColumnName("bbb") {
+                    @Override
+                    public boolean labelEquals(final String label) {
+                        return label.contains("い");
+                    }
+                });
+                setup.column(new LazyColumnName("aaa") {
+                    @Override
+                    public boolean labelEquals(final String label) {
+                        return label.contains("あ");
+                    }
+                });
+                setup.column(new LazyColumnName("ccc") {
+                    @Override
+                    public boolean labelEquals(final String label) {
+                        return label.contains("う");
+                    }
+                });
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertRead2(csvReader, bean);
+    }
+
+    static class LazyColumnName extends SimpleColumnName {
+
+        public LazyColumnName(final String labelAndName) {
+            setLabel(labelAndName);
+            setName(labelAndName);
+        }
+
+        @Override
+        public boolean labelEquals(final String label) {
+            throw new AssertionError("should override");
+        }
+
+    }
+
     public static void assertRead2(final CsvReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
