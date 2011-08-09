@@ -41,6 +41,11 @@ public class SimpleColumnName implements ColumnName {
     }
 
     @Override
+    public boolean labelEquals(final String label) {
+        return this.label.equals(label);
+    }
+
+    @Override
     public String toString() {
         return new ToStringFormat().format(this);
     }
