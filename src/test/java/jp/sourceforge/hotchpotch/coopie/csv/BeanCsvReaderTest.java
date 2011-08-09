@@ -536,7 +536,7 @@ public class BeanCsvReaderTest {
         assertRead1(csvReader, bean);
     }
 
-    private static class TestLayout implements CustomLayout {
+    static class TestLayout implements CustomLayout {
 
         // 1オリジン
         private int lineNo;
@@ -557,7 +557,8 @@ public class BeanCsvReaderTest {
             }
 
             // footerエリアはskip
-            if (rawRecord.length == 0 || rawRecord.length == 1) {
+            final int validLength = validLength(rawRecord);
+            if (validLength == 0 || validLength == 1) {
                 return readRecord(elementReader);
             }
 
@@ -567,6 +568,24 @@ public class BeanCsvReaderTest {
                     rawRecord.length - 1);
 
             return customRecord;
+        }
+
+        /*
+         * 配列末尾のnullを除いた長さを返します。
+         * [10, 20, 30, null, null] => 3
+         * [null, null] => 0
+         */
+        private int validLength(final Object[] arr) {
+            int nullCount = 0;
+            final int len = arr.length;
+            for (int i = len - 1; 0 <= i; i--) {
+                final Object obj = arr[i];
+                if (obj != null) {
+                    break;
+                }
+                nullCount++;
+            }
+            return len - nullCount;
         }
 
         private String[] read0(final CsvElementReader elementReader) {
