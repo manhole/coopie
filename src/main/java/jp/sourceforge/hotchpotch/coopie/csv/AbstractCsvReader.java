@@ -21,6 +21,7 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
     protected RecordDesc<T> recordDesc;
     protected boolean closed = true;
     protected CsvElementReader elementReader;
+    private CustomLayout customLayout = DefaultLayout.getInstance();
     private boolean withHeader;
 
     private Boolean hasNext;
@@ -60,7 +61,8 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
     }
 
     protected String[] readLine() {
-        return elementReader.readRecord();
+        final String[] line = customLayout.readRecord(elementReader);
+        return line;
     }
 
     @Override
@@ -125,6 +127,34 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
 
     public void setWithHeader(final boolean withHeader) {
         this.withHeader = withHeader;
+    }
+
+    public void setCustomLayout(final CustomLayout customLayout) {
+        if (customLayout == null) {
+            throw new NullPointerException("customLayout");
+        }
+        this.customLayout = customLayout;
+    }
+
+    public static interface CustomLayout {
+
+        String[] readRecord(CsvElementReader elementReader);
+
+    }
+
+    private static class DefaultLayout implements CustomLayout {
+
+        static final DefaultLayout INSTANCE = new DefaultLayout();
+
+        static CustomLayout getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public String[] readRecord(final CsvElementReader elementReader) {
+            return elementReader.readRecord();
+        }
+
     }
 
 }
