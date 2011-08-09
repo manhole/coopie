@@ -3,13 +3,10 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.Reader;
 import java.io.Writer;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.CustomLayout;
-
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {
 
     private final CsvSetting csvSetting = new CsvSetting();
-    private CustomLayout customLayout;
 
     public BeanCsvLayout(final Class<T> beanClass) {
         super(beanClass);
@@ -36,10 +33,6 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
-    }
-
-    public void setCustomLayout(final CustomLayout customLayout) {
-        this.customLayout = customLayout;
     }
 
 }

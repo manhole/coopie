@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestLayout;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -192,6 +193,24 @@ public class BeanExcelReaderTest {
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         BeanCsvReaderTest.assertRead5(csvReader, bean);
+    }
+
+    @Test
+    public void read_customLayout() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-7",
+                "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        layout.setCustomLayout(new TestLayout());
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertReadCustomLayout(csvReader, bean);
     }
 
 }
