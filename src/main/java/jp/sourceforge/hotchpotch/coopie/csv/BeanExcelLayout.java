@@ -3,6 +3,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+
 public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
         ExcelLayout<T> {
 
@@ -30,6 +32,15 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
         w.setWithHeader(withHeader);
         // TODO openで例外時にcloseすること
         w.open(os);
+        return w;
+    }
+
+    public CsvWriter<T> openSheetWriter(final HSSFSheet sheet) {
+        final DefaultExcelWriter<T> w = new DefaultExcelWriter<T>(
+                getRecordDesc());
+        w.setWithHeader(withHeader);
+        // TODO openで例外時にcloseすること
+        w.openSheetWriter(sheet);
         return w;
     }
 
