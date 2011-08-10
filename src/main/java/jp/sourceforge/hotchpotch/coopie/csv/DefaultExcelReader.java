@@ -32,6 +32,14 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
         setupByHeader();
     }
 
+    public void openSheetReader(final HSSFSheet sheet) {
+        final PoiSheetReader poiReader = new PoiSheetReader(null, sheet);
+        elementReader = poiReader;
+        closed = false;
+
+        setupByHeader();
+    }
+
     static class PoiReader implements CsvElementReader {
 
         private HSSFWorkbook workbook;
@@ -82,7 +90,7 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
                     return r;
                 }
             } else {
-                final int need = (sheetNo + 1) - sheets.size();
+                final int need = sheetNo + 1 - sheets.size();
                 for (int i = 0; i < need; i++) {
                     sheets.add(null);
                 }
@@ -223,7 +231,7 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
         }
 
         private boolean isInt(final double numericValue) {
-            return ((int) numericValue) == numericValue;
+            return (int) numericValue == numericValue;
         }
 
     }
