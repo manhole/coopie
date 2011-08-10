@@ -22,6 +22,11 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
         closed = false;
     }
 
+    public void openSheetWriter(final HSSFSheet sheet) {
+        elementWriter = new PoiSheetWriter(sheet);
+        closed = false;
+    }
+
     static class PoiWriter implements CsvElementWriter {
 
         private final OutputStream os;

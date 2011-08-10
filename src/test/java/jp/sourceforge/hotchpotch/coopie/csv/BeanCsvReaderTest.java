@@ -741,4 +741,33 @@ public class BeanCsvReaderTest {
 
     }
 
+    public static class BbbBean {
+
+        private String aa;
+        private String bb;
+        public String getAa() {
+            return aa;
+        }
+
+        public void setAa(final String aaa) {
+            this.aa = aaa;
+        }
+
+        public String getBb() {
+            return bb;
+        }
+
+        public void setBb(final String bbb) {
+            this.bb = bbb;
+        }
+
+        private final ToStringFormat toStringFormat = new ToStringFormat();
+
+        @Override
+        public String toString() {
+            return toStringFormat.format(this);
+        }
+
+    }
+
 }
