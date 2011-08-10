@@ -30,6 +30,11 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileOperation {
 
+    /*
+     * Windows XPでファイル名に使用できない文字
+     * \/:*?"<>|
+     */
+
     private static final int K = 1024;
     private static final int M = K * 1024;
     private static final int DEFAULT_BUFF_SIZE = K * 8;

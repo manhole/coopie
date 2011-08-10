@@ -954,4 +954,17 @@ public class FileOperationTest {
         assertEquals(true, paths.remove(poisha.getCanonicalPath()));
     }
 
+    @Test
+    public void invalidFilenameChar() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+
+        // ## Act ##
+        // windowsでは、文字"<>"はファイルシステムに使用できない
+        files.createFile(root, "<a>");
+
+        // ## Assert ##
+
+    }
+
 }
