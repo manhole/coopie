@@ -1,12 +1,20 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static jp.sourceforge.hotchpotch.coopie.VarArgs.a;
+import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.LazyColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestLayout;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
 import org.slf4j.Logger;
 
@@ -258,6 +266,80 @@ public class BeanExcelReaderTest {
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         BeanCsvReaderTest.assertReadCustomLayout(csvReader, bean);
+    }
+
+    /**
+     * 1シートだけでなく、レイアウトの異なる2シートを持つ1ブックから入力できること。
+     */
+    @Test
+    public void readTwoSheets() throws Throwable {
+        // ## Arrange ##
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        {
+            final HSSFWorkbook workbook = new HSSFWorkbook();
+
+            {
+                final DefaultExcelWriter.PoiSheetWriter writer = new DefaultExcelWriter.PoiSheetWriter(
+                        workbook.createSheet("S1"));
+                writer.writeRecord(a("aaa", "bbb", "ccc"));
+                writer.writeRecord(a("a1", "b1", "c1"));
+                writer.close();
+            }
+            {
+                final DefaultExcelWriter.PoiSheetWriter writer = new DefaultExcelWriter.PoiSheetWriter(
+                        workbook.createSheet("S2"));
+                writer.writeRecord(a("aa", "bb"));
+                writer.writeRecord(a("aa1", "bb1"));
+                writer.writeRecord(a("aa2", "bb2"));
+                writer.close();
+            }
+
+            workbook.write(baos);
+        }
+
+        final BeanExcelLayout<AaaBean> layout1 = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        final BeanExcelLayout<BbbBean> layout2 = new BeanExcelLayout<BbbBean>(
+                BbbBean.class);
+
+        final HSSFWorkbook workbook = new HSSFWorkbook(
+                new ByteArrayInputStream(baos.toByteArray()));
+
+        // ## Act ##
+        // ## Assert ##
+        {
+            final HSSFSheet sheet = workbook.getSheet("S1");
+            final CsvReader<AaaBean> csvReader = layout1.openSheetReader(sheet);
+
+            final AaaBean bean = new AaaBean();
+            assertEquals(true, csvReader.hasNext());
+
+            csvReader.read(bean);
+            assertEquals("a1", bean.getAaa());
+            assertEquals("b1", bean.getBbb());
+            assertEquals("c1", bean.getCcc());
+
+            assertEquals(false, csvReader.hasNext());
+            csvReader.close();
+        }
+        {
+            final HSSFSheet sheet = workbook.getSheet("S2");
+            final CsvReader<BbbBean> csvReader = layout2.openSheetReader(sheet);
+
+            final BbbBean bean = new BbbBean();
+            assertEquals(true, csvReader.hasNext());
+            csvReader.read(bean);
+            assertEquals("aa1", bean.getAa());
+            assertEquals("bb1", bean.getBb());
+
+            assertEquals(true, csvReader.hasNext());
+            csvReader.read(bean);
+            assertEquals("aa2", bean.getAa());
+            assertEquals("bb2", bean.getBb());
+
+            assertEquals(false, csvReader.hasNext());
+            csvReader.close();
+        }
     }
 
 }

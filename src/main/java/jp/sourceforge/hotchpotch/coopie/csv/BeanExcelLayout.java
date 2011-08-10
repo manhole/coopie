@@ -35,6 +35,18 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
         return w;
     }
 
+    public CsvReader<T> openSheetReader(final HSSFSheet sheet) {
+        final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
+                getRecordDesc());
+        r.setWithHeader(withHeader);
+        if (customLayout != null) {
+            r.setCustomLayout(customLayout);
+        }
+        // TODO openで例外時にcloseすること
+        r.openSheetReader(sheet);
+        return r;
+    }
+
     public CsvWriter<T> openSheetWriter(final HSSFSheet sheet) {
         final DefaultExcelWriter<T> w = new DefaultExcelWriter<T>(
                 getRecordDesc());
