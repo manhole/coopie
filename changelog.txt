@@ -6,6 +6,7 @@
 - add: ContextClassLoaderBlock
 - add: StdOutBlock
 - add: TaskExecutable
+- add: VarArgs (test -> main)
 
 0.1.5 2011/08/10
 
