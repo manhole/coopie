@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 
@@ -45,6 +46,9 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
         private HSSFWorkbook workbook;
         private PoiSheetReader sheetReader;
         private boolean closed = true;
+        @SuppressWarnings("unused")
+        private final Object finalizerGuardian = new ClosingGuardian(this);
+
         private final List<PoiSheetReader> sheets = CollectionsUtil
                 .newArrayList();
 
@@ -109,6 +113,9 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
 
         private static final Logger logger = LoggerFactory.getLogger();
         protected boolean closed = true;
+        @SuppressWarnings("unused")
+        private final Object finalizerGuardian = new ClosingGuardian(this);
+
         private final HSSFWorkbook workbook;
         private HSSFSheet sheet;
         /*

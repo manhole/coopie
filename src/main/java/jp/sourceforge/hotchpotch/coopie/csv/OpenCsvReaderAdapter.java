@@ -2,6 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
 
+import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
@@ -11,6 +12,9 @@ import au.com.bytecode.opencsv.CSVReader;
 public class OpenCsvReaderAdapter implements CsvElementReader {
 
     protected boolean closed = true;
+    @SuppressWarnings("unused")
+    private final Object finalizerGuardian = new ClosingGuardian(this);
+
     private final CSVReader csvReader;
 
     public OpenCsvReaderAdapter(final CSVReader csvReader) {

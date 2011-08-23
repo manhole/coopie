@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
@@ -12,6 +13,9 @@ import org.t2framework.commons.util.StringUtil;
 public class FixedLengthWriter implements CsvElementWriter {
 
     protected boolean closed = true;
+    @SuppressWarnings("unused")
+    private final Object finalizerGuardian = new ClosingGuardian(this);
+
     private final BufferedWriter writer;
     private final FixedLengthColumn[] columns;
     private String lineSeparator = CsvSetting.CRLF;
