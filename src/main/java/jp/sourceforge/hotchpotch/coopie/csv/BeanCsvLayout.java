@@ -3,6 +3,9 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.Reader;
 import java.io.Writer;
 
+import jp.sourceforge.hotchpotch.coopie.FailureProtection;
+import jp.sourceforge.hotchpotch.coopie.IOUtil;
+
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {
 
@@ -20,8 +23,20 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         if (customLayout != null) {
             r.setCustomLayout(customLayout);
         }
-        // TODO openで例外時にcloseすること
-        r.open(reader);
+
+        new FailureProtection<RuntimeException>() {
+
+            @Override
+            protected void protect() {
+                r.open(reader);
+            }
+
+            @Override
+            protected void rescue() {
+                IOUtil.closeNoException(r);
+            }
+
+        }.execute();
         return r;
     }
 

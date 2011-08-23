@@ -4,6 +4,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.FailureProtection;
+import jp.sourceforge.hotchpotch.coopie.IOUtil;
+
 public class MapCsvLayout extends AbstractMapCsvLayout implements
         CsvLayout<Map<String, String>> {
 
@@ -15,8 +18,19 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
                 getRecordDesc());
         r.setWithHeader(withHeader);
         r.setElementSetting(csvSetting);
-        // TODO openで例外時にcloseすること
-        r.open(reader);
+        new FailureProtection<RuntimeException>() {
+
+            @Override
+            protected void protect() {
+                r.open(reader);
+            }
+
+            @Override
+            protected void rescue() {
+                IOUtil.closeNoException(r);
+            }
+
+        }.execute();
         return r;
     }
 
