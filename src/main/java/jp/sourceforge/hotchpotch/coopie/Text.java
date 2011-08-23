@@ -81,4 +81,16 @@ public class Text {
         return getRawText();
     }
 
+    public Text deleteChar(final char del) {
+        final char[] chars = rawText.toCharArray();
+        final StringBuilder sb = new StringBuilder();
+        for (final char c : chars) {
+            if (c == del) {
+            } else {
+                sb.append(c);
+            }
+        }
+        return new Text(sb.toString());
+    }
+
 }
