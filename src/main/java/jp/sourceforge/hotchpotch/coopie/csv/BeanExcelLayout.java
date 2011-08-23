@@ -20,8 +20,8 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
         final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
                 getRecordDesc());
         r.setWithHeader(withHeader);
-        if (customLayout != null) {
-            r.setCustomLayout(customLayout);
+        if (readEditor != null) {
+            r.setReadEditor(readEditor);
         }
         // TODO openで例外時にcloseすること
         r.open(is);
@@ -45,8 +45,8 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
         final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
                 getRecordDesc());
         r.setWithHeader(withHeader);
-        if (customLayout != null) {
-            r.setCustomLayout(customLayout);
+        if (readEditor != null) {
+            r.setReadEditor(readEditor);
         }
         // TODO openで例外時にcloseすること
         r.openSheetReader(sheet);

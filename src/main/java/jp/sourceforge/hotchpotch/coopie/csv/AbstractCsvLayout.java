@@ -3,7 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.CustomLayout;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.ReadEditor;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
@@ -13,7 +13,7 @@ abstract class AbstractCsvLayout<T> extends AbstractLayout<T> {
     private static final Logger logger = LoggerFactory.getLogger();
     protected RecordDesc<T> recordDesc;
     protected boolean withHeader = true;
-    protected CustomLayout customLayout;
+    protected ReadEditor readEditor;
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
         final CsvRecordDescSetup<T> setup = getRecordDescSetup();
@@ -27,8 +27,8 @@ abstract class AbstractCsvLayout<T> extends AbstractLayout<T> {
         this.withHeader = withHeader;
     }
 
-    public void setCustomLayout(final CustomLayout customLayout) {
-        this.customLayout = customLayout;
+    public void setReadEditor(final ReadEditor readEditor) {
+        this.readEditor = readEditor;
     }
 
     protected static interface CsvRecordDescSetup<T> extends CsvColumnSetup {

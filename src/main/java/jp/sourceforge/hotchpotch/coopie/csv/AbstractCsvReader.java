@@ -25,7 +25,7 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
     private final Object finalizerGuardian = new ClosingGuardian(this);
 
     protected CsvElementReader elementReader;
-    private CustomLayout customLayout = DefaultLayout.getInstance();
+    private ReadEditor readEditor = DefaultReadEditor.getInstance();
     private boolean withHeader;
 
     private Boolean hasNext;
@@ -65,7 +65,7 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
     }
 
     protected String[] readLine() {
-        final String[] line = customLayout.readRecord(elementReader);
+        final String[] line = readEditor.readRecord(elementReader);
         return line;
     }
 
@@ -133,24 +133,24 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
         this.withHeader = withHeader;
     }
 
-    public void setCustomLayout(final CustomLayout customLayout) {
-        if (customLayout == null) {
-            throw new NullPointerException("customLayout");
+    public void setReadEditor(final ReadEditor readEditor) {
+        if (readEditor == null) {
+            throw new NullPointerException("readEditor");
         }
-        this.customLayout = customLayout;
+        this.readEditor = readEditor;
     }
 
-    public static interface CustomLayout {
+    public static interface ReadEditor {
 
         String[] readRecord(CsvElementReader elementReader);
 
     }
 
-    private static class DefaultLayout implements CustomLayout {
+    private static class DefaultReadEditor implements ReadEditor {
 
-        static final DefaultLayout INSTANCE = new DefaultLayout();
+        static final DefaultReadEditor INSTANCE = new DefaultReadEditor();
 
-        static CustomLayout getInstance() {
+        static ReadEditor getInstance() {
             return INSTANCE;
         }
 
