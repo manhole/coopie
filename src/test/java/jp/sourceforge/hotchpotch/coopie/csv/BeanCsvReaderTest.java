@@ -650,19 +650,16 @@ public class BeanCsvReaderTest {
 
     static class TestReadEditor implements ReadEditor {
 
-        // 1オリジン
-        private int lineNo;
-
         @Override
         public String[] readRecord(final CsvElementReader elementReader) {
-            if (lineNo == 0) {
+            if (elementReader.getRecordNo() == -1) {
                 // 3行あるheader部をskip
-                read0(elementReader);
-                read0(elementReader);
-                read0(elementReader);
+                elementReader.readRecord();
+                elementReader.readRecord();
+                elementReader.readRecord();
             }
 
-            final String[] rawRecord = read0(elementReader);
+            final String[] rawRecord = elementReader.readRecord();
             // EOFまで進んでいたらnull
             if (null == rawRecord) {
                 return null;
@@ -698,11 +695,6 @@ public class BeanCsvReaderTest {
                 nullCount++;
             }
             return len - nullCount;
-        }
-
-        private String[] read0(final CsvElementReader elementReader) {
-            lineNo++;
-            return elementReader.readRecord();
         }
 
     }
