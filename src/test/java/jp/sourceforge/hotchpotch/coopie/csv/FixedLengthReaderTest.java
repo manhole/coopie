@@ -1,21 +1,15 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import static jp.sourceforge.hotchpotch.coopie.VarArgs.a;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractFixedLengthLayout.SimpleFixedLengthColumn;
 
-import org.junit.Test;
+public class FixedLengthReaderTest extends CsvElementReaderTest {
 
-public class FixedLengthReaderTest {
-
-    @Test
-    public void test1() throws Throwable {
+    @Override
+    protected CsvElementReader constructTest1Reader() {
         // ## Arrange ##
         final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
                 "-1", "tsv");
@@ -25,15 +19,7 @@ public class FixedLengthReaderTest {
         // ## Act ##
         final FixedLengthReader reader = new FixedLengthReader(
                 new InputStreamReader(is, Charset.forName("UTF-8")), columns);
-
-        // ## Assert ##
-        assertArrayEquals(a("aaa", "ccc", "bbb"), reader.readRecord());
-        assertArrayEquals(a("あ1", "う1", "い1"), reader.readRecord());
-        assertArrayEquals(a("あ2", "う2", "い2"), reader.readRecord());
-        assertArrayEquals(a("あ3", "う3", "い3"), reader.readRecord());
-        assertNull(reader.readRecord());
-
-        reader.close();
+        return reader;
     }
 
     private SimpleFixedLengthColumn col(final String name, final int begin,
