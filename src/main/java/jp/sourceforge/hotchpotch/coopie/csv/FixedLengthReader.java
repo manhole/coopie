@@ -17,6 +17,7 @@ public class FixedLengthReader implements CsvElementReader {
 
     private final BufferedReader reader;
     private final FixedLengthColumn[] columns;
+    private int lineNo = -1;
 
     public FixedLengthReader(final Reader reader,
             final FixedLengthColumn[] columns) {
@@ -33,6 +34,11 @@ public class FixedLengthReader implements CsvElementReader {
     }
 
     @Override
+    public int getRecordNo() {
+        return lineNo;
+    }
+
+    @Override
     public String[] readRecord() {
         try {
             final String line = reader.readLine();
@@ -45,6 +51,7 @@ public class FixedLengthReader implements CsvElementReader {
                 final String elem = column.read(line);
                 record[i] = elem;
             }
+            lineNo++;
             return record;
         } catch (final IOException e) {
             throw new IORuntimeException(e);

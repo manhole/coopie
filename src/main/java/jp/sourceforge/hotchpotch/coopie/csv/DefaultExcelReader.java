@@ -63,6 +63,11 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
         }
 
         @Override
+        public int getRecordNo() {
+            return sheetReader.getRecordNo();
+        }
+
+        @Override
         public String[] readRecord() {
             return sheetReader.readRecord();
         }
@@ -140,6 +145,11 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
         public String getSheetName() {
             final int sheetIndex = workbook.getSheetIndex(sheet);
             return workbook.getSheetName(sheetIndex);
+        }
+
+        @Override
+        public int getRecordNo() {
+            return rowNum - 1;
         }
 
         @Override

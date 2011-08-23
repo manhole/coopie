@@ -16,6 +16,7 @@ public class OpenCsvReaderAdapter implements CsvElementReader {
     private final Object finalizerGuardian = new ClosingGuardian(this);
 
     private final CSVReader csvReader;
+    private int lineNo = -1;
 
     public OpenCsvReaderAdapter(final CSVReader csvReader) {
         this.csvReader = csvReader;
@@ -23,9 +24,19 @@ public class OpenCsvReaderAdapter implements CsvElementReader {
     }
 
     @Override
+    public int getRecordNo() {
+        return lineNo;
+    }
+
+    @Override
     public String[] readRecord() {
         try {
-            return csvReader.readNext();
+            final String[] read = csvReader.readNext();
+            if (read == null) {
+                return null;
+            }
+            lineNo++;
+            return read;
         } catch (final IOException e) {
             throw new IORuntimeException(e);
         }

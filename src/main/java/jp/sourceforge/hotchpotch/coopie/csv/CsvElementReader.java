@@ -4,6 +4,8 @@ import jp.sourceforge.hotchpotch.coopie.Closable;
 
 public interface CsvElementReader extends Closable {
 
+    int getRecordNo();
+
     String[] readRecord();
 
 }
