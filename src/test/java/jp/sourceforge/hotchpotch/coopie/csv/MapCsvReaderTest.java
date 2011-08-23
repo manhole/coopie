@@ -544,6 +544,60 @@ public class MapCsvReaderTest {
     }
 
     /**
+     * CSV側の列がsetupした列より少ない場合、
+     * CSV側に無い項目はnullセットされること。
+     */
+    @Test
+    public void read_smallColumns() throws Throwable {
+        // ## Arrange ##
+        final Reader r = BeanCsvReaderTest.getResourceAsReader("-9", "tsv",
+                Charset.forName("UTF-8"));
+
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                setup.column("bbb");
+                setup.column("ccc");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout.openReader(r);
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertReadSmallColumns(csvReader, bean);
+    }
+
+    static void assertReadSmallColumns(
+            final CsvReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+        assertEquals("う1", bean.get("ccc"));
+
+        assertEquals(true, csvReader.hasNext());
+        // ファイルにbbbは無いため、nullで上書きされること
+        bean.put("aaa", "zz1");
+        bean.put("bbb", "zz2");
+        bean.put("ccc", "zz3");
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+        assertEquals("う2", bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
      * 末端まで達した後のreadでは、例外が発生すること。
      */
     @Test

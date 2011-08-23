@@ -1,9 +1,15 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.meta.BeanDesc;
+import org.t2framework.commons.util.CollectionsUtil;
 
 abstract class AbstractLayout<T> {
 
@@ -16,9 +22,12 @@ abstract class AbstractLayout<T> {
 
     protected static class DefaultRecordDesc<T> implements RecordDesc<T> {
 
+        private static final Logger logger = LoggerFactory.getLogger();
+
         protected ColumnDesc<T>[] columnDescs;
         protected OrderSpecified orderSpecified;
         private final RecordType<T> recordType;
+        private ColumnDesc<T>[] ignoredColumnDescs = newColumnDescs(0);
 
         protected DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
                 final OrderSpecified orderSpecified,
@@ -79,6 +88,9 @@ abstract class AbstractLayout<T> {
                 final ColumnDesc<T> cd = cds[i];
                 cd.setValue(bean, value);
             }
+            for (final ColumnDesc<T> cd : ignoredColumnDescs) {
+                cd.setValue(bean, null);
+            }
         }
 
         /*
@@ -96,19 +108,24 @@ abstract class AbstractLayout<T> {
          */
         @Override
         public RecordDesc<T> setupByHeader(final String[] header) {
+            logger.debug("setupByHeader: {}", Arrays.toString(header));
             /*
              * ColumnDescをヘッダの順序に合わせてソートし直す。
              */
-            final ColumnDesc<T>[] tmpCds = getColumnDescs();
+            final List<ColumnDesc<T>> tmpCds = CollectionsUtil.newArrayList();
+            Collections.addAll(tmpCds, getColumnDescs());
             final ColumnDesc<T>[] cds = newColumnDescs(header.length);
 
             int i = 0;
             HEADER: for (final String headerElem : header) {
-                for (final ColumnDesc<T> cd : tmpCds) {
+                for (final Iterator<ColumnDesc<T>> it = tmpCds.iterator(); it
+                        .hasNext();) {
+                    final ColumnDesc<T> cd = it.next();
                     final ColumnName name = cd.getName();
                     if (name.labelEquals(headerElem)) {
                         cds[i] = cd;
                         i++;
+                        it.remove();
                         continue HEADER;
                     }
                 }
@@ -117,7 +134,17 @@ abstract class AbstractLayout<T> {
                 cds[i] = new IgnoreColumnDesc<T>();
                 i++;
             }
+
             columnDescs = cds;
+
+            if (!tmpCds.isEmpty()) {
+                logger.debug("remain ColumnDescs: {}", tmpCds.size());
+                final ColumnDesc<T>[] newColumnDescs = newColumnDescs(tmpCds
+                        .size());
+                tmpCds.toArray(newColumnDescs);
+                ignoredColumnDescs = newColumnDescs;
+            }
+
             return this;
         }
 

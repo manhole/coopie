@@ -1,12 +1,16 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
+
+import org.slf4j.Logger;
 
 public abstract class AbstractMapCsvLayout extends
         AbstractCsvLayout<Map<String, String>> {
@@ -98,6 +102,7 @@ public abstract class AbstractMapCsvLayout extends
 
     static class LazyMapRecordDesc implements RecordDesc<Map<String, String>> {
 
+        private static final Logger logger = LoggerFactory.getLogger();
         private final AbstractMapCsvLayout layout;
 
         public LazyMapRecordDesc(final AbstractMapCsvLayout layout) {
@@ -110,6 +115,8 @@ public abstract class AbstractMapCsvLayout extends
         @Override
         public RecordDesc<Map<String, String>> setupByHeader(
                 final String[] header) {
+
+            logger.debug("setupByHeader: {}", Arrays.toString(header));
 
             /*
              * ヘッダをMapのキーとして扱う。

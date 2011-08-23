@@ -562,6 +562,60 @@ public class BeanCsvReaderTest {
     }
 
     /**
+     * CSV側の列がsetupした列より少ない場合、
+     * CSV側に無い項目はnullセットされること。
+     */
+    @Test
+    public void read_smallColumns() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-9", "tsv",
+                Charset.forName("UTF-8"));
+
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                setup.column("bbb");
+                setup.column("ccc");
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(r);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertReadSmallColumns(csvReader, bean);
+    }
+
+    static void assertReadSmallColumns(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        // ファイルにbbbは無いため、nullで上書きされること
+        bean.setAaa("zz1");
+        bean.setBbb("zz2");
+        bean.setCcc("zz3");
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+        assertEquals("う2", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
      * 独自レイアウトのtsvファイルを入力する。
      * 
      * - header部が3行
