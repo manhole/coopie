@@ -50,4 +50,8 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         return w;
     }
 
+    public void setElementSeparator(final char elementSeparator) {
+        csvSetting.setElementSeparator(elementSeparator);
+    }
+
 }
