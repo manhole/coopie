@@ -57,4 +57,15 @@ public class TextTest {
         assertEquals("　カレーなどの料理に\r\n広く使うスパイスの\r\n対日価格が高騰している。", text.toString());
     }
 
+    @Test
+    public void deleteChar() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("", new Text("").deleteChar(',').toString());
+        assertEquals("ab ", new Text("ab ").deleteChar(',').toString());
+        assertEquals("ab ", new Text("a,b ").deleteChar(',').toString());
+        assertEquals("abc", new Text(",ab,,c,").deleteChar(',').toString());
+    }
+
 }
