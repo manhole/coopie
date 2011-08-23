@@ -269,6 +269,26 @@ public class BeanExcelReaderTest {
     }
 
     /**
+     * 末端まで達した後のreadでは、例外が発生すること。
+     */
+    @Test
+    public void read_afterLast() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
+                "xls");
+
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(is);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        BeanCsvReaderTest.assertReadAfterLast(csvReader, bean);
+    }
+
+    /**
      * 1シートだけでなく、レイアウトの異なる2シートを持つ1ブックから入力できること。
      */
     @Test
