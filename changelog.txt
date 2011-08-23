@@ -3,6 +3,9 @@
 - ClosingGuardianを導入しました。
 - カンマ区切りを読み書きできるようにしました。
   (CsvReaderと言いながら、今まではTAB区切りのみだった)
+- add: ContextClassLoaderBlock
+- add: StdOutBlock
+- add: TaskExecutable
 
 0.1.5 2011/08/10
 
