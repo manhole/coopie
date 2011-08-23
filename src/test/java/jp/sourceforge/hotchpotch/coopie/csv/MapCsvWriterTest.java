@@ -229,4 +229,43 @@ public class MapCsvWriterTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void writeCsv() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
+            }
+        });
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final CsvWriter<Map<String, String>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, String> bean = new TreeMap<String, String>();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+        setTo(bean, "a2", "b2", "c2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        BeanCsvWriterTest.assertWriteCsv(lines);
+    }
+
+    private void setTo(final Map<String, String> bean, final String a,
+            final String b, final String c) {
+        bean.put("aaa", a);
+        bean.put("bbb", b);
+        bean.put("ccc", c);
+    }
+
 }
