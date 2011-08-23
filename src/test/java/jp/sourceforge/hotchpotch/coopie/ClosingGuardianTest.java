@@ -2,6 +2,7 @@ package jp.sourceforge.hotchpotch.coopie;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
 import java.io.ByteArrayOutputStream;
@@ -18,6 +19,7 @@ public class ClosingGuardianTest {
     @Test
     public void unclosed() throws Throwable {
         // ## Arrange ##
+        runGC();
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
@@ -49,6 +51,7 @@ public class ClosingGuardianTest {
     @Test
     public void closed() throws Throwable {
         // ## Arrange ##
+        runGC();
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
@@ -73,6 +76,9 @@ public class ClosingGuardianTest {
         logger.debug("[[{}]]", ret);
 
         // ## Assert ##
+        if (ret.contains("closed at finalize")) {
+            fail(ret);
+        }
         assertThat(ret, not(containsString("closed at finalize")));
         assertThat(ret, not(containsString(ClosingGuardian.STACKTRACE_TEXT)));
         assertThat(ret, containsString(ClosingGuardian.SUCCESS_TEXT));
