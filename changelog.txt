@@ -1,12 +1,18 @@
-0.1.6 2011/XX/XX
+0.1.6 2011/08/23
 
 - ClosingGuardianを導入しました。
 - カンマ区切りを読み書きできるようにしました。
   (CsvReaderと言いながら、今まではTAB区切りのみだった)
+- 作成したExcelのスタイルを変更しやすいAPI(DefaultExcelWriter.WriteEditor)を導入しました。
+- 1つのLayoutインスタンスから何度もCsvReaderをopenしたとき、
+  それぞれのReaderで正しく読める(前の状態が干渉しないこと)ようにしました。
+- 入力するCSV側の列がsetupした列より少ない場合に、CSV側に無い項目はbeanにnullをsetするようにしました。
 - add: ContextClassLoaderBlock
 - add: StdOutBlock
 - add: TaskExecutable
 - add: VarArgs (test -> main)
+- rename: AbstractCsvReader.CustomLayout -> AbstractCsvReader.ReadEditor
+- add: CsvElementReader#getRecordNo()
 
 0.1.5 2011/08/10
 
