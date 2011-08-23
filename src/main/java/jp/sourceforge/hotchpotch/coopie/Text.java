@@ -2,6 +2,9 @@ package jp.sourceforge.hotchpotch.coopie;
 
 import org.t2framework.commons.util.StringUtil;
 
+/*
+ * immutable
+ */
 public class Text {
 
     private final String rawText;
@@ -16,7 +19,7 @@ public class Text {
         return rawText;
     }
 
-    public String[] getLines() {
+    private String[] getLines() {
         if (lines == null) {
             lines = StringUtil.split(rawText, "\r\n");
         }
@@ -32,7 +35,7 @@ public class Text {
             final StringBuilder sb = new StringBuilder();
             final String[] lines = getLines();
             for (final String line : lines) {
-                final String trimWhitespace = Text.trimWhitespace(line);
+                final String trimWhitespace = trimWhitespace0(line);
                 sb.append(trimWhitespace);
             }
             concated = sb.toString();
@@ -51,7 +54,12 @@ public class Text {
         return false;
     }
 
-    public static String trimWhitespace(final String s) {
+    public Text trimWhitespace() {
+        final String trim = trimWhitespace0(rawText);
+        return instantiate(trim);
+    }
+
+    private String trimWhitespace0(final String s) {
         final int len = s.length();
         int begin = 0;
         for (int i = 0; i < len; i++) {
@@ -73,7 +81,8 @@ public class Text {
             }
         }
 
-        return s.substring(begin, end);
+        final String substring = s.substring(begin, end);
+        return substring;
     }
 
     @Override
@@ -90,7 +99,11 @@ public class Text {
                 sb.append(c);
             }
         }
-        return new Text(sb.toString());
+        return instantiate(sb.toString());
+    }
+
+    protected Text instantiate(final String s) {
+        return new Text(s);
     }
 
 }
