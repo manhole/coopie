@@ -6,6 +6,7 @@ import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.FileResource;
+import jp.sourceforge.hotchpotch.coopie.IOUtil;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultExcelReader.PoiSheetReader;
 
@@ -29,47 +30,55 @@ public class ExcelToCsv {
                 files.openBufferedInputStream(file));
 
         final List<PoiSheetReader> sheets = CollectionsUtil.newArrayList();
-        final int sheetSize = poiReader.getSheetSize();
-        for (int sheetNo = 0; sheetNo < sheetSize; sheetNo++) {
-            final PoiSheetReader sheet = poiReader.getSheet(sheetNo);
-            if (!sheet.isEmpty()) {
-                sheets.add(sheet);
-            }
-        }
-
-        final TsvNaming tsvNaming = new TsvNaming();
-
-        if (0 == sheets.size()) {
-            // TODO
-            // excelが全て空の場合は、1シート目を代表にしておく
-            //tsvNaming.setSingle(true);
-            //sheets.add(poiReader.getSheet(0));
-        } else if (1 == sheets.size()) {
-            tsvNaming.setSingle(true);
-        } else if (1 < sheets.size()) {
-            tsvNaming.setSingle(false);
-        }
-
-        final CsvSetting csvSetting = new CsvSetting();
-        final FileResource fr = files.getFileResource(file);
-        for (final PoiSheetReader sheetReader : sheets) {
-            final String fileName = tsvNaming.createFileName(sheetReader,
-                    fr.getPrefix(), TSV_EXTENSION);
-            final File tsvFile = files.createFile(file.getParentFile(),
-                    fileName);
-
-            final CsvElementWriter csvWriter = csvSetting.openWriter(files
-                    .openBufferedWriter(tsvFile));
-
-            while (true) {
-                final String[] line = sheetReader.readRecord();
-                if (line == null) {
-                    break;
+        try {
+            final int sheetSize = poiReader.getSheetSize();
+            for (int sheetNo = 0; sheetNo < sheetSize; sheetNo++) {
+                final PoiSheetReader sheet = poiReader.getSheet(sheetNo);
+                if (!sheet.isEmpty()) {
+                    sheets.add(sheet);
+                } else {
+                    IOUtil.closeNoException(sheet);
                 }
-                csvWriter.writeRecord(line);
             }
 
-            csvWriter.close();
+            final TsvNaming tsvNaming = new TsvNaming();
+
+            if (0 == sheets.size()) {
+                // TODO
+                // excelが全て空の場合は、1シート目を代表にしておく
+                //tsvNaming.setSingle(true);
+                //sheets.add(poiReader.getSheet(0));
+            } else if (1 == sheets.size()) {
+                tsvNaming.setSingle(true);
+            } else if (1 < sheets.size()) {
+                tsvNaming.setSingle(false);
+            }
+
+            final CsvSetting csvSetting = new CsvSetting();
+            final FileResource fr = files.getFileResource(file);
+            for (final PoiSheetReader sheetReader : sheets) {
+                final String fileName = tsvNaming.createFileName(sheetReader,
+                        fr.getPrefix(), TSV_EXTENSION);
+                final File tsvFile = files.createFile(file.getParentFile(),
+                        fileName);
+
+                final CsvElementWriter csvWriter = csvSetting.openWriter(files
+                        .openBufferedWriter(tsvFile));
+
+                while (true) {
+                    final String[] line = sheetReader.readRecord();
+                    if (line == null) {
+                        break;
+                    }
+                    csvWriter.writeRecord(line);
+                }
+
+                csvWriter.close();
+            }
+        } finally {
+            for (final PoiSheetReader sheetReader : sheets) {
+                IOUtil.closeNoException(sheetReader);
+            }
         }
 
         poiReader.close();
