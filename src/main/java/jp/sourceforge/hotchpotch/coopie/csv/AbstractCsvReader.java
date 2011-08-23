@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
+import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
@@ -20,6 +21,9 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
 
     protected RecordDesc<T> recordDesc;
     protected boolean closed = true;
+    @SuppressWarnings("unused")
+    private final Object finalizerGuardian = new ClosingGuardian(this);
+
     protected CsvElementReader elementReader;
     private CustomLayout customLayout = DefaultLayout.getInstance();
     private boolean withHeader;

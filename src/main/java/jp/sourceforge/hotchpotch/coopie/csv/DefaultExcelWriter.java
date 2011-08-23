@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -31,6 +32,9 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
 
         private final OutputStream os;
         private boolean closed = true;
+        @SuppressWarnings("unused")
+        private final Object finalizerGuardian = new ClosingGuardian(this);
+
         private HSSFWorkbook workbook;
         private final PoiSheetWriter sheetWriter;
 
@@ -70,6 +74,9 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
     static class PoiSheetWriter implements CsvElementWriter {
 
         private boolean closed = true;
+        @SuppressWarnings("unused")
+        private final Object finalizerGuardian = new ClosingGuardian(this);
+
         private HSSFSheet sheet;
         private int rowNum;
 
