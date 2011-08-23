@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
+import jp.sourceforge.hotchpotch.coopie.Text;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 
 import org.junit.Test;
@@ -226,6 +227,62 @@ public class BeanCsvWriterTest {
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
                 "UTF-8"));
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void writeCsv() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
+            }
+        });
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+        setTo(bean, "a2", "b2", "c2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        assertWriteCsv(lines);
+    }
+
+    static void assertWriteCsv(final String lines) {
+        final Text text = new Text(lines);
+        assertEquals(3, text.getLineSize());
+        {
+            final Text line = text.getLine(0);
+            assertEquals("ccc,aaa,bbb", line.deleteChar('\"').toString());
+        }
+        {
+            final Text line = text.getLine(1);
+            assertEquals("c1,a1,b1", line.deleteChar('\"').toString());
+        }
+        {
+            final Text line = text.getLine(2);
+            assertEquals("c2,a2,b2", line.deleteChar('\"').toString());
+        }
+    }
+
+    private void setTo(final AaaBean bean, final String a, final String b,
+            final String c) {
+        bean.setAaa(a);
+        bean.setBbb(b);
+        bean.setCcc(c);
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
