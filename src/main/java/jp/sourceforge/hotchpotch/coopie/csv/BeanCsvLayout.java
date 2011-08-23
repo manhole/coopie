@@ -20,8 +20,8 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         final DefaultCsvReader<T> r = new DefaultCsvReader<T>(getRecordDesc());
         r.setWithHeader(withHeader);
         r.setElementSetting(csvSetting);
-        if (customLayout != null) {
-            r.setCustomLayout(customLayout);
+        if (readEditor != null) {
+            r.setReadEditor(readEditor);
         }
 
         new FailureProtection<RuntimeException>() {

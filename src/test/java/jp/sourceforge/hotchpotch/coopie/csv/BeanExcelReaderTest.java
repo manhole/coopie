@@ -11,7 +11,7 @@ import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.LazyColumnName;
-import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestLayout;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -258,7 +258,7 @@ public class BeanExcelReaderTest {
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        layout.setCustomLayout(new TestLayout());
+        layout.setReadEditor(new TestReadEditor());
 
         // ## Act ##
         final CsvReader<AaaBean> csvReader = layout.openReader(is);

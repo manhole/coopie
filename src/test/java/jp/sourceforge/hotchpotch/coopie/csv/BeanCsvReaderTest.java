@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.CustomLayout;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.ReadEditor;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -630,7 +630,7 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
-        layout.setCustomLayout(new TestLayout());
+        layout.setReadEditor(new TestReadEditor());
 
         // ## Act ##
         final CsvReader<AaaBean> csvReader = layout
@@ -648,7 +648,7 @@ public class BeanCsvReaderTest {
         assertRead1(csvReader, bean);
     }
 
-    static class TestLayout implements CustomLayout {
+    static class TestReadEditor implements ReadEditor {
 
         // 1オリジン
         private int lineNo;
