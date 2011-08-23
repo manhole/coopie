@@ -135,17 +135,19 @@ abstract class AbstractLayout<T> {
                 i++;
             }
 
-            columnDescs = cds;
+            final DefaultRecordDesc<T> copy = createCopy();
+
+            copy.columnDescs = cds;
 
             if (!tmpCds.isEmpty()) {
                 logger.debug("remain ColumnDescs: {}", tmpCds.size());
                 final ColumnDesc<T>[] newColumnDescs = newColumnDescs(tmpCds
                         .size());
                 tmpCds.toArray(newColumnDescs);
-                ignoredColumnDescs = newColumnDescs;
+                copy.ignoredColumnDescs = newColumnDescs;
             }
 
-            return this;
+            return copy;
         }
 
         /*
@@ -160,6 +162,12 @@ abstract class AbstractLayout<T> {
         @Override
         public T newInstance() {
             return recordType.newInstance();
+        }
+
+        private DefaultRecordDesc<T> createCopy() {
+            final DefaultRecordDesc<T> copy = new DefaultRecordDesc<T>(
+                    columnDescs, orderSpecified, recordType);
+            return copy;
         }
 
     }

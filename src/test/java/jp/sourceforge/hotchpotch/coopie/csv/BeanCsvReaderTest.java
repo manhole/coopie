@@ -708,6 +708,89 @@ public class BeanCsvReaderTest {
     }
 
     /**
+     * 1つのLayoutインスタンスから何度もCsvReaderをopenしたとき、
+     * それぞれのReaderで読めること。(前の状態が干渉しないこと)
+     */
+    @Test
+    public void read_moreThanOnce() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                setup.column("bbb");
+                setup.column("ccc");
+            }
+        });
+
+        // ## Act ##
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+
+        final Charset charset = Charset.forName("UTF-8");
+        final String ext = "tsv";
+        assertRead9_1(
+                layout.openReader(getResourceAsReader("-10-1", ext, charset)),
+                bean);
+        assertRead9_2(
+                layout.openReader(getResourceAsReader("-10-2", ext, charset)),
+                bean);
+        assertRead9_1(
+                layout.openReader(getResourceAsReader("-10-3", ext, charset)),
+                bean);
+        assertRead9_1(
+                layout.openReader(getResourceAsReader("-10-1", ext, charset)),
+                bean);
+        assertRead9_2(
+                layout.openReader(getResourceAsReader("-10-2", ext, charset)),
+                bean);
+    }
+
+    private void assertRead9_1(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.getAaa());
+        assertEquals("い2", bean.getBbb());
+        assertEquals("う2", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ3", bean.getAaa());
+        assertEquals("い3", bean.getBbb());
+        assertEquals("う3", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    private void assertRead9_2(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals(null, bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
      * 1つのLayoutインスタンスから複数のCsvReaderをopenしたとき、
      * それぞれのReaderでの処理が影響しないこと。
      */
