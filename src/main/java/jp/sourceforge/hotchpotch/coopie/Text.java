@@ -1,6 +1,12 @@
 package jp.sourceforge.hotchpotch.coopie;
 
-import org.t2framework.commons.util.StringUtil;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
+
+import org.t2framework.commons.exception.IORuntimeException;
+import org.t2framework.commons.util.CollectionsUtil;
 
 /*
  * immutable
@@ -21,13 +27,39 @@ public class Text {
 
     private String[] getLines() {
         if (lines == null) {
-            lines = StringUtil.split(rawText, "\r\n");
+            lines = toLines(rawText);
         }
         return lines;
     }
 
-    public String getLine(final int lineNo) {
-        return getLines()[lineNo];
+    private String[] toLines(final String s) {
+        final List<String> l = CollectionsUtil.newArrayList();
+        final BufferedReader reader = new BufferedReader(new StringReader(s));
+        try {
+            while (true) {
+                String line;
+                line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                l.add(line);
+            }
+            final String[] a = l.toArray(new String[l.size()]);
+            return a;
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
+
+    public int getLineSize() {
+        final String[] ls = getLines();
+        return ls.length;
+    }
+
+    public Text getLine(final int lineNo) {
+        final String[] ls = getLines();
+        final String l = ls[lineNo];
+        return instantiate(l);
     }
 
     public boolean containsText(final String s) {

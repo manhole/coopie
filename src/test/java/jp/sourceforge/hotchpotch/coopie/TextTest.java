@@ -69,4 +69,29 @@ public class TextTest {
         assertEquals("abc", new Text(",ab,,c,").deleteChar(',').toString());
     }
 
+    @Test
+    public void getLine() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        {
+            final Text text = new Text("1234");
+            assertEquals(1, text.getLineSize());
+            assertEquals("1234", text.getLine(0).toString());
+        }
+        {
+            final Text text = new Text("1234\n56");
+            assertEquals(2, text.getLineSize());
+            assertEquals("1234", text.getLine(0).toString());
+            assertEquals("56", text.getLine(1).toString());
+        }
+        {
+            final Text text = new Text("1234\n\n56");
+            assertEquals(3, text.getLineSize());
+            assertEquals("1234", text.getLine(0).toString());
+            assertEquals("", text.getLine(1).toString());
+            assertEquals("56", text.getLine(2).toString());
+        }
+    }
+
 }
