@@ -11,12 +11,13 @@ public class TextTest {
         // ## Arrange ##
         // ## Act ##
         // ## Assert ##
-        assertEquals("abc", Text.trimWhitespace(" abc "));
-        assertEquals("abc", Text.trimWhitespace("abc "));
-        assertEquals("abc", Text.trimWhitespace(" abc"));
-        assertEquals("abc", Text.trimWhitespace("abc"));
-        assertEquals("abc", Text.trimWhitespace(" 　abc　　"));
-        assertEquals("abc　 def", Text.trimWhitespace(" 　abc　 def　"));
+        assertEquals("abc", new Text(" abc ").trimWhitespace().toString());
+        assertEquals("abc", new Text("abc ").trimWhitespace().toString());
+        assertEquals("abc", new Text(" abc").trimWhitespace().toString());
+        assertEquals("abc", new Text("abc").trimWhitespace().toString());
+        assertEquals("abc", new Text(" 　abc　　").trimWhitespace().toString());
+        assertEquals("abc　 def", new Text(" 　abc　 def　").trimWhitespace()
+                .toString());
     }
 
     @Test
