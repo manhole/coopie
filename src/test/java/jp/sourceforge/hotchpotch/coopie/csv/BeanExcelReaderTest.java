@@ -300,14 +300,16 @@ public class BeanExcelReaderTest {
 
             {
                 final DefaultExcelWriter.PoiSheetWriter writer = new DefaultExcelWriter.PoiSheetWriter(
-                        workbook.createSheet("S1"));
+                        workbook, workbook.createSheet("S1"));
+                writer.open();
                 writer.writeRecord(a("aaa", "bbb", "ccc"));
                 writer.writeRecord(a("a1", "b1", "c1"));
                 writer.close();
             }
             {
                 final DefaultExcelWriter.PoiSheetWriter writer = new DefaultExcelWriter.PoiSheetWriter(
-                        workbook.createSheet("S2"));
+                        workbook, workbook.createSheet("S2"));
+                writer.open();
                 writer.writeRecord(a("aa", "bb"));
                 writer.writeRecord(a("aa1", "bb1"));
                 writer.writeRecord(a("aa2", "bb2"));

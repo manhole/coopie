@@ -5,15 +5,23 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
+import jp.sourceforge.hotchpotch.coopie.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultExcelWriter.DefaultWriteEditor;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.junit.Test;
 
 public class BeanExcelWriterTest {
@@ -170,7 +178,8 @@ public class BeanExcelWriterTest {
         // ## Act ##
         {
             final HSSFSheet sheet = workbook.createSheet("sheet-a");
-            final CsvWriter<AaaBean> csvWriter = layout1.openSheetWriter(sheet);
+            final CsvWriter<AaaBean> csvWriter = layout1.openSheetWriter(
+                    workbook, sheet);
 
             final AaaBean bean = new AaaBean();
             bean.setAaa("あ1");
@@ -187,7 +196,8 @@ public class BeanExcelWriterTest {
         }
         {
             final HSSFSheet sheet = workbook.createSheet("sheet-b");
-            final CsvWriter<BbbBean> csvWriter = layout2.openSheetWriter(sheet);
+            final CsvWriter<BbbBean> csvWriter = layout2.openSheetWriter(
+                    workbook, sheet);
 
             final BbbBean bean = new BbbBean();
             bean.setAa("a1");
@@ -222,6 +232,111 @@ public class BeanExcelWriterTest {
             assertNull(reader.readRecord());
             reader.close();
         }
+    }
+
+    /**
+     * 作成したExcelのスタイルを変更できること。(変更しやすいAPIを供えること)
+     */
+    @Test
+    public void write_customStyle() throws Throwable {
+        // ## Arrange ##
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("ccc");
+                setup.column("aaa");
+                setup.column("bbb");
+            }
+        });
+        layout.setWriteEditor(new TestWriteEditor());
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // ## Act ##
+        final CsvWriter<AaaBean> csvWriter = layout.openWriter(baos);
+
+        final AaaBean bean = new AaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc(null);
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb(null);
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        // ヘッダ行の色が変わっていること
+        // nullカラムの色が変わっていること
+        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
+                baos.toByteArray()));
+        final BufferedOutputStream os = new FileOperation()
+                .openBufferedOutputStream(new File("target/test.xls"));
+        book.write(os);
+        os.close();
+        assertEquals(1, book.getNumberOfSheets());
+        final HSSFSheet sheet = book.getSheetAt(0);
+
+        final HSSFRow firstRow = sheet.getRow(0);
+        {
+            assertEquals(3, firstRow.getLastCellNum());
+            {
+                _assertStyle(firstRow.getCell(0));
+                _assertStyle(firstRow.getCell(1));
+                _assertStyle(firstRow.getCell(2));
+            }
+        }
+    }
+
+    private void _assertStyle(final HSSFCell cell) {
+        final HSSFCellStyle style = cell.getCellStyle();
+        assertEquals(new HSSFColor.LIGHT_GREEN().getIndex(),
+                style.getFillForegroundColor());
+        assertEquals(HSSFCellStyle.SOLID_FOREGROUND, style.getFillPattern());
+    }
+
+    private static class TestWriteEditor extends DefaultWriteEditor {
+
+        private HSSFCellStyle headerStyle;
+        private HSSFCellStyle errorStyle;
+
+        @Override
+        public void begin(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+            super.begin(workbook, sheet);
+            headerStyle = workbook.createCellStyle();
+            headerStyle.setFillForegroundColor(new HSSFColor.LIGHT_GREEN()
+                    .getIndex());
+            headerStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+
+            errorStyle = workbook.createCellStyle();
+            errorStyle.setFillForegroundColor(new HSSFColor.RED().getIndex());
+            errorStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        }
+
+        @Override
+        public void setCellValue(final HSSFCell cell, final String value) {
+            super.setCellValue(cell, value);
+            if (null == value) {
+                // validate目的
+                cell.setCellStyle(errorStyle);
+            }
+        }
+
+        @Override
+        public HSSFCell createCell(final HSSFRow row, final short colNum) {
+            final HSSFCell cell = super.createCell(row, colNum);
+            if (row.getRowNum() == 0) {
+                // ヘッダ行にスタイルを適用する
+                cell.setCellStyle(headerStyle);
+            }
+            return cell;
+        }
+
     }
 
 }
