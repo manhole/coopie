@@ -14,18 +14,31 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
 
+    private WriteEditor writeEditor = DefaultWriteEditor.getInstance();
+
     public DefaultExcelWriter(final RecordDesc<T> recordDesc) {
         super(recordDesc);
     }
 
     public void open(final OutputStream os) {
-        elementWriter = new PoiWriter(os);
+        final PoiWriter w = new PoiWriter(os);
+        w.setWriteEditor(writeEditor);
+        w.open();
+        elementWriter = w;
         closed = false;
     }
 
-    public void openSheetWriter(final HSSFSheet sheet) {
-        elementWriter = new PoiSheetWriter(sheet);
+    public void openSheetWriter(final HSSFWorkbook workbook,
+            final HSSFSheet sheet) {
+        final PoiSheetWriter w = new PoiSheetWriter(workbook, sheet);
+        w.setWriteEditor(writeEditor);
+        w.open();
+        elementWriter = w;
         closed = false;
+    }
+
+    public void setWriteEditor(final WriteEditor writeEditor) {
+        this.writeEditor = writeEditor;
     }
 
     static class PoiWriter implements CsvElementWriter {
@@ -36,15 +49,19 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
         private final Object finalizerGuardian = new ClosingGuardian(this);
 
         private HSSFWorkbook workbook;
-        private final PoiSheetWriter sheetWriter;
+        private PoiSheetWriter sheetWriter;
+        private WriteEditor writeEditor = DefaultWriteEditor.getInstance();
 
         public PoiWriter(final OutputStream os) {
             this.os = os;
+        }
 
+        public void open() {
             workbook = new HSSFWorkbook();
             final HSSFSheet sheet = workbook.createSheet();
-            sheetWriter = new PoiSheetWriter(sheet);
-
+            sheetWriter = new PoiSheetWriter(workbook, sheet);
+            sheetWriter.setWriteEditor(writeEditor);
+            sheetWriter.open();
             closed = false;
         }
 
@@ -69,6 +86,10 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
             }
         }
 
+        public void setWriteEditor(final WriteEditor writeEditor) {
+            this.writeEditor = writeEditor;
+        }
+
     }
 
     static class PoiSheetWriter implements CsvElementWriter {
@@ -77,23 +98,30 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
         @SuppressWarnings("unused")
         private final Object finalizerGuardian = new ClosingGuardian(this);
 
+        private final HSSFWorkbook workbook;
         private HSSFSheet sheet;
         private int rowNum;
+        private WriteEditor writeEditor = DefaultWriteEditor.getInstance();
 
-        public PoiSheetWriter(final HSSFSheet sheet) {
+        public PoiSheetWriter(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+            this.workbook = workbook;
             this.sheet = sheet;
+        }
+
+        public void open() {
+            writeEditor.begin(workbook, sheet);
             closed = false;
         }
 
         @Override
         public void writeRecord(final String[] line) {
-            final HSSFRow row = sheet.createRow(rowNum);
+            final HSSFRow row = writeEditor.createRow(rowNum);
             rowNum++;
 
             for (int i = 0; i < line.length; i++) {
                 final String s = line[i];
-                final HSSFCell cell = row.createCell((short) i);
-                cell.setCellValue(new HSSFRichTextString(s));
+                final HSSFCell cell = writeEditor.createCell(row, (short) i);
+                writeEditor.setCellValue(cell, s);
             }
         }
 
@@ -106,6 +134,64 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
         public void close() throws IOException {
             closed = true;
             sheet = null;
+        }
+
+        public void setWriteEditor(final WriteEditor writeEditor) {
+            this.writeEditor = writeEditor;
+        }
+
+    }
+
+    public interface WriteEditor {
+
+        HSSFRow createRow(int rowNum);
+
+        void begin(HSSFWorkbook workbook, HSSFSheet sheet);
+
+        void setCellValue(HSSFCell cell, String value);
+
+        HSSFCell createCell(HSSFRow row, short i);
+
+    }
+
+    public static class DefaultWriteEditor implements WriteEditor {
+
+        static final WriteEditor INSTANCE = new DefaultWriteEditor();
+
+        private HSSFWorkbook workbook;
+        private HSSFSheet sheet;
+
+        static WriteEditor getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public void begin(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+            this.workbook = workbook;
+            this.sheet = sheet;
+        }
+
+        @Override
+        public HSSFRow createRow(final int rowNum) {
+            return sheet.createRow(rowNum);
+        }
+
+        @Override
+        public HSSFCell createCell(final HSSFRow row, final short colNum) {
+            return row.createCell(colNum);
+        }
+
+        @Override
+        public void setCellValue(final HSSFCell cell, final String value) {
+            cell.setCellValue(new HSSFRichTextString(value));
+        }
+
+        protected HSSFWorkbook getWorkbook() {
+            return workbook;
+        }
+
+        protected HSSFSheet getSheet() {
+            return sheet;
         }
 
     }
