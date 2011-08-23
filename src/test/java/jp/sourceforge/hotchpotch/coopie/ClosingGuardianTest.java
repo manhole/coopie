@@ -23,9 +23,7 @@ public class ClosingGuardianTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final StdOutBlock block = new StdOutBlock();
-        block.setOut(baos);
-        block.execute(new Task<Void, RuntimeException>() {
+        StdOutBlock.out(baos).execute(new Task<Void, RuntimeException>() {
             @Override
             public Void execute() throws RuntimeException {
                 Aaa a = new Aaa();
@@ -55,9 +53,7 @@ public class ClosingGuardianTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final StdOutBlock block = new StdOutBlock();
-        block.setOut(baos);
-        block.execute(new Task<Void, IOException>() {
+        StdOutBlock.out(baos).execute(new Task<Void, IOException>() {
             @Override
             public Void execute() throws IOException {
                 Aaa a = new Aaa();

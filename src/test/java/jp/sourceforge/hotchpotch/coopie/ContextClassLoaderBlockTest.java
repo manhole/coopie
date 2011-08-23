@@ -22,20 +22,19 @@ public class ContextClassLoaderBlockTest {
         final Object returns = new Object();
         final AtomicBoolean called = new AtomicBoolean(false);
         final ClassLoader cl = new ClassLoader();
-        final ContextClassLoaderBlock<Object, RuntimeException> block = ContextClassLoaderBlock
-                .with(cl);
-
         assertNotSame(cl, Thread.currentThread().getContextClassLoader());
 
         // ## Act ##
-        final Object ret = block.execute(new Task<Object, RuntimeException>() {
-            @Override
-            public Object execute() throws RuntimeException {
-                called.set(true);
-                assertSame(cl, Thread.currentThread().getContextClassLoader());
-                return returns;
-            }
-        });
+        final Object ret = ContextClassLoaderBlock.with(cl).execute(
+                new Task<Object, RuntimeException>() {
+                    @Override
+                    public Object execute() throws RuntimeException {
+                        called.set(true);
+                        assertSame(cl, Thread.currentThread()
+                                .getContextClassLoader());
+                        return returns;
+                    }
+                });
 
         // ## Assert ##
         assertNotSame(cl, Thread.currentThread().getContextClassLoader());
