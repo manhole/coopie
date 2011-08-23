@@ -15,15 +15,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 
-
 public class MapCsvReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
-
-    /*
-     * TODO
-     * 末端まで達した後のreadでは、例外が発生すること。
-     */
 
     /**
      * CSVヘッダがBeanのプロパティ名と同じ場合。
@@ -545,6 +539,26 @@ public class MapCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    /**
+     * 末端まで達した後のreadでは、例外が発生すること。
+     */
+    @Test
+    public void read_afterLast() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
+                "tsv");
+
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        BeanCsvReaderTest.assertReadAfterLast(csvReader, bean);
     }
 
 }

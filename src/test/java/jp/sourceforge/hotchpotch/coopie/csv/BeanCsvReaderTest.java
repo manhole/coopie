@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
@@ -30,11 +31,6 @@ import org.t2framework.commons.util.ResourceUtil;
 public class BeanCsvReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
-
-    /*
-     * TODO
-     * 末端まで達した後のreadでは、例外が発生すること。
-     */
 
     /**
      * CSVヘッダがBeanのプロパティ名と同じ場合。
@@ -697,6 +693,40 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * 末端まで達した後のreadでは、例外が発生すること。
+     */
+    @Test
+    public void read_afterLast() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-1", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertReadAfterLast(csvReader, bean);
+    }
+
+    public static <T> void assertReadAfterLast(final CsvReader<T> csvReader,
+            final T bean) {
+        csvReader.read(bean);
+        csvReader.read(bean);
+        csvReader.read(bean);
+        // 3レコードある
+        try {
+            csvReader.read(bean);
+            fail();
+        } catch (final NoSuchElementException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
     static InputStream getResourceAsStream(final String suffix, final String ext) {
         return ResourceUtil.getResourceAsStream(
                 BeanCsvReaderTest.class.getName() + suffix, ext);
@@ -745,12 +775,13 @@ public class BeanCsvReaderTest {
 
         private String aa;
         private String bb;
+
         public String getAa() {
             return aa;
         }
 
         public void setAa(final String aaa) {
-            this.aa = aaa;
+            aa = aaa;
         }
 
         public String getBb() {
@@ -758,7 +789,7 @@ public class BeanCsvReaderTest {
         }
 
         public void setBb(final String bbb) {
-            this.bb = bbb;
+            bb = bbb;
         }
 
         private final ToStringFormat toStringFormat = new ToStringFormat();

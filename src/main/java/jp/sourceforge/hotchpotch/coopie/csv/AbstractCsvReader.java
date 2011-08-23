@@ -39,7 +39,7 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
     @Override
     public void read(final T bean) {
         if (!hasNext()) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("no element");
         }
         hasNext = null;
 

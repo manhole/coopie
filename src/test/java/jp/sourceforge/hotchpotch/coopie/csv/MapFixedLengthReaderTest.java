@@ -251,4 +251,32 @@ public class MapFixedLengthReaderTest {
         MapCsvReaderTest.assertRead4(csvReader, bean);
     }
 
+    /**
+     * 末端まで達した後のreadでは、例外が発生すること。
+     */
+    @Test
+    public void read_afterLast() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
+                "-1", "tsv");
+
+        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                setup.column("ccc", 5, 12);
+                setup.column("bbb", 12, 20);
+            }
+        });
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(new InputStreamReader(is, "UTF-8"));
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        BeanCsvReaderTest.assertReadAfterLast(csvReader, bean);
+    }
+
 }
