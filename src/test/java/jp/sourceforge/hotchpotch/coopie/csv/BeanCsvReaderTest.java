@@ -6,7 +6,9 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
@@ -725,6 +727,48 @@ public class BeanCsvReaderTest {
         } catch (final NoSuchElementException e) {
             logger.debug(e.getMessage());
         }
+    }
+
+    @Test
+    public void readCsv() throws Throwable {
+        // ## Arrange ##
+        final Reader reader = getResourceAsReader("-8", "csv",
+                Charset.forName("UTF-8"));
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final CsvReader<AaaBean> csvReader = layout.openReader(reader);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertReadCsv(csvReader, bean);
+    }
+
+    static void assertReadCsv(final CsvReader<AaaBean> csvReader,
+            final AaaBean bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a1", bean.getAaa());
+        assertEquals("b1", bean.getBbb());
+        assertEquals("c1", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a2", bean.getAaa());
+        assertEquals("b2", bean.getBbb());
+        assertEquals("c2", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    static Reader getResourceAsReader(final String suffix, final String ext,
+            final Charset charset) {
+        final InputStream is = getResourceAsStream(suffix, ext);
+        return new InputStreamReader(is, charset);
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {

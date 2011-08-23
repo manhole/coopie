@@ -45,4 +45,8 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         return w;
     }
 
+    public void setElementSeparator(final char elementSeparator) {
+        csvSetting.setElementSeparator(elementSeparator);
+    }
+
 }

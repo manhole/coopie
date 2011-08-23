@@ -6,7 +6,9 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
@@ -559,6 +561,43 @@ public class MapCsvReaderTest {
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         BeanCsvReaderTest.assertReadAfterLast(csvReader, bean);
+    }
+
+    @Test
+    public void readCsv() throws Throwable {
+        // ## Arrange ##
+        final Reader reader = BeanCsvReaderTest.getResourceAsReader("-8",
+                "csv", Charset.forName("UTF-8"));
+
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final CsvReader<Map<String, String>> csvReader = layout
+                .openReader(reader);
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertReadCsv(csvReader, bean);
+    }
+
+    static void assertReadCsv(final CsvReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a1", bean.get("aaa"));
+        assertEquals("b1", bean.get("bbb"));
+        assertEquals("c1", bean.get("ccc"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a2", bean.get("aaa"));
+        assertEquals("b2", bean.get("bbb"));
+        assertEquals("c2", bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
 }
