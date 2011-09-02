@@ -156,7 +156,7 @@ public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
 
     public static class DefaultWriteEditor implements WriteEditor {
 
-        static final WriteEditor INSTANCE = new DefaultWriteEditor();
+        private static final WriteEditor INSTANCE = new DefaultWriteEditor();
 
         private HSSFWorkbook workbook;
         private HSSFSheet sheet;

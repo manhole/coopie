@@ -148,7 +148,7 @@ public abstract class AbstractCsvReader<T> implements Closable, CsvReader<T> {
 
     private static class DefaultReadEditor implements ReadEditor {
 
-        static final DefaultReadEditor INSTANCE = new DefaultReadEditor();
+        private static final DefaultReadEditor INSTANCE = new DefaultReadEditor();
 
         static ReadEditor getInstance() {
             return INSTANCE;
