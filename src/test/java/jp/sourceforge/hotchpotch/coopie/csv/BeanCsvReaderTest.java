@@ -845,7 +845,7 @@ public class BeanCsvReaderTest {
     }
 
     public static <T> void assertReadAfterLast(final CsvReader<T> csvReader,
-            final T bean) {
+            final T bean) throws Throwable {
         csvReader.read(bean);
         csvReader.read(bean);
         csvReader.read(bean);
@@ -856,6 +856,7 @@ public class BeanCsvReaderTest {
         } catch (final NoSuchElementException e) {
             logger.debug(e.getMessage());
         }
+        csvReader.close();
     }
 
     @Test
