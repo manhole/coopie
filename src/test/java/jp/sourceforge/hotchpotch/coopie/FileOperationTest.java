@@ -935,7 +935,7 @@ public class FileOperationTest {
         final List<String> paths = new ArrayList<String>();
 
         // ## Act ##
-        files.listDescendant(root, new FileCallback() {
+        files.listDescendant(root, new Callback<File, IOException>() {
             @Override
             public void callback(final File file) throws IOException {
                 logger.debug("callback {}", file);
