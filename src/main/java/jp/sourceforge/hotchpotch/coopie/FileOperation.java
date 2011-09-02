@@ -360,7 +360,7 @@ public class FileOperation {
         walker.file(file);
     }
 
-    public void listDescendant(final File parent, final FileCallback callback) {
+    public void listDescendant(final File parent, final Callback callback) {
         final FileWalker fileWalker = new FileCallbackAdapter(callback);
         walkDescendant(parent, fileWalker);
     }
@@ -490,9 +490,9 @@ public class FileOperation {
 
     private static class FileCallbackAdapter implements FileWalker {
 
-        private final FileCallback callback;
+        private final Callback<File, IOException> callback;
 
-        FileCallbackAdapter(final FileCallback callback) {
+        FileCallbackAdapter(final Callback<File, IOException> callback) {
             this.callback = callback;
         }
 
