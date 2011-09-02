@@ -47,9 +47,9 @@ public class FileOperation {
         return f;
     }
 
-    public File createTempFile(final String p) {
+    public File createTempFile(final String prefix) {
         try {
-            final File f = File.createTempFile(p, suffix_);
+            final File f = File.createTempFile(prefix, suffix_);
             return f;
         } catch (final IOException e) {
             throw new IORuntimeException(e);
@@ -67,14 +67,21 @@ public class FileOperation {
 
     public File createTempDir() {
         final File f = createTempFile();
-        deleteFile(f);
+        deleteFileInternal(f);
+        f.mkdir();
+        return f;
+    }
+
+    public File createTempDir(final String prefix) {
+        final File f = createTempFile(prefix);
+        deleteFileInternal(f);
         f.mkdir();
         return f;
     }
 
     public File createTempDir(final File parent) {
         final File f = createTempFile(parent);
-        deleteFile(f);
+        deleteFileInternal(f);
         f.mkdir();
         return f;
     }
@@ -222,30 +229,40 @@ public class FileOperation {
         return new FileResourceImpl(file);
     }
 
-    public void delete(final File file) {
+    public DeleteResult delete(final File file) {
         if (file.isDirectory()) {
-            deleteDirectory(file);
+            return deleteDirectory(file);
         } else {
-            deleteFile(file);
+            return deleteFile(file);
         }
     }
 
-    private void deleteDirectory(final File file) {
+    private DeleteResult deleteDirectory(final File dir) {
         final DeleteWalker deleteWalker = new DeleteWalker(this);
-        walk(file, deleteWalker);
-        deleteWalker.logResult();
+        walk(dir, deleteWalker);
+        final DeleteResult result = deleteWalker.getResult();
+        result.logResult();
+        return result;
     }
 
-    private boolean deleteFile(final File file) {
+    private DeleteResult deleteFile(final File file) {
+        final DeleteWalker deleteWalker = new DeleteWalker(this);
+        walk(file, deleteWalker);
+        final DeleteResult result = deleteWalker.getResult();
+        result.logResult();
+        return result;
+    }
+
+    private boolean deleteFileInternal(final File file) {
         return file.delete();
     }
 
-    public void deleteChildren(final File dir) {
+    public DeleteResult deleteChildren(final File dir) {
         final DeleteWalker deleteWalker = new DeleteWalker(this);
-
         walkDescendant(dir, deleteWalker);
-
-        deleteWalker.logResult();
+        final DeleteResult result = deleteWalker.getResult();
+        result.logResult();
+        return result;
     }
 
     public void copy(final File from, final File to) {
@@ -295,7 +312,7 @@ public class FileOperation {
         if (from.renameTo(to)) {
         } else {
             copyFile(from, to);
-            deleteFile(from);
+            deleteFileInternal(from);
         }
     }
 
@@ -512,13 +529,17 @@ public class FileOperation {
 
         private static final Logger logger = LoggerFactory.getLogger();
 
+        private final DeleteResultCollector collector;
         private final FileOperation files;
-        private int deletedFileCount;
-        private int deletedDirCount;
-        private long deletedTotalBytes;
 
         public DeleteWalker(final FileOperation files) {
+            this(files, new DefaultDeleteResult());
+        }
+
+        public DeleteWalker(final FileOperation files,
+                final DeleteResultCollector collector) {
             this.files = files;
+            this.collector = collector;
         }
 
         @Override
@@ -532,9 +553,11 @@ public class FileOperation {
 
         @Override
         public void leave(final File dir) {
-            final boolean delete = dir.delete();
+            final boolean delete = files.deleteFileInternal(dir);
             if (delete) {
-                deletedDirCount++;
+                collector.deleteDir();
+            } else {
+                collector.failureDir();
             }
             logger.debug("delete directory {} [{}]", delete, dir);
         }
@@ -542,18 +565,92 @@ public class FileOperation {
         @Override
         public void file(final File file) {
             final long len = file.length();
-            final boolean delete = files.deleteFile(file);
+            final boolean delete = files.deleteFileInternal(file);
             if (delete) {
-                deletedFileCount++;
-                deletedTotalBytes += len;
+                collector.deleteFile(len);
+            } else {
+                collector.failureFile();
             }
             logger.debug("delete file {} [{}]", delete, file);
         }
 
-        public void logResult() {
-            logger.debug("DeleteResult: files={}, dirs={}, bytes={}",
-                    new Object[] { deletedFileCount, deletedDirCount,
-                            deletedTotalBytes });
+        public DeleteResult getResult() {
+            return collector.getResult();
+        }
+
+        public static class DefaultDeleteResult implements DeleteResult,
+                DeleteResultCollector {
+
+            private static final Logger logger = LoggerFactory.getLogger();
+
+            private int fileCount_;
+            private int dirCount_;
+            private int fileFailureCount_;
+            private int dirFailureCount_;
+            private long totalBytes_;
+
+            @Override
+            public void deleteDir() {
+                dirCount_++;
+            }
+
+            @Override
+            public void deleteFile(final long size) {
+                fileCount_++;
+                totalBytes_ += size;
+            }
+
+            @Override
+            public void failureFile() {
+                fileFailureCount_++;
+            }
+
+            @Override
+            public void failureDir() {
+                dirFailureCount_++;
+            }
+
+            @Override
+            public long getDeletedTotalBytes() {
+                return totalBytes_;
+            }
+
+            @Override
+            public int getDeletedDirCount() {
+                return dirCount_;
+            }
+
+            @Override
+            public int getDeletedFileCount() {
+                return fileCount_;
+            }
+
+            @Override
+            public void logResult() {
+                logger.debug("DeleteResult: files={}, dirs={}, bytes={}",
+                        new Object[] { fileCount_, dirCount_, totalBytes_ });
+            }
+
+            @Override
+            public int getFileFailureCount() {
+                return fileFailureCount_;
+            }
+
+            @Override
+            public int getDirFailureCount() {
+                return dirFailureCount_;
+            }
+
+            @Override
+            public boolean hasFailure() {
+                return 0 < fileFailureCount_ || 0 < dirFailureCount_;
+            }
+
+            @Override
+            public DeleteResult getResult() {
+                return this;
+            }
+
         }
 
     }
@@ -654,7 +751,7 @@ public class FileOperation {
 
         public void logResult() {
             copyWalker.logResult();
-            deleteWalker.logResult();
+            deleteWalker.getResult().logResult();
         }
 
     }
@@ -694,6 +791,41 @@ public class FileOperation {
         public String getExtension() {
             return extension;
         }
+
+    }
+
+    public interface DeleteResultCollector {
+
+        void deleteDir();
+
+        void deleteFile(long size);
+
+        void failureFile();
+
+        void failureDir();
+
+        DeleteResult getResult();
+
+    }
+
+    /*
+     * read only interface
+     */
+    public interface DeleteResult {
+
+        void logResult();
+
+        long getDeletedTotalBytes();
+
+        int getDeletedDirCount();
+
+        int getDeletedFileCount();
+
+        int getDirFailureCount();
+
+        int getFileFailureCount();
+
+        boolean hasFailure();
 
     }
 

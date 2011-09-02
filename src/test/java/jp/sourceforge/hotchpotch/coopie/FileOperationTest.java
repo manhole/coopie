@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.FileOperation.DeleteResult;
 import junit.framework.Assert;
 import junitx.framework.ArrayAssert;
 
@@ -27,12 +28,15 @@ public class FileOperationTest {
 
     @Before
     public void setUp() throws Throwable {
-        root = new FileOperation().createTempDir();
+        root = new FileOperation().createTempDir("root");
     }
 
     @After
     public void tearDown() {
-        new FileOperation().delete(root);
+        final DeleteResult result = new FileOperation().delete(root);
+        if (result.hasFailure()) {
+            throw new AssertionError();
+        }
     }
 
     @Test
@@ -319,11 +323,13 @@ public class FileOperationTest {
         files.write(f1, "1234");
 
         // ## Act ##
-        files.delete(f1);
+        final DeleteResult result = files.delete(f1);
 
         // ## Assert ##
         assertEquals(false, f1.exists());
         assertEquals(true, root.exists());
+        assertEquals(1, result.getDeletedFileCount());
+        assertEquals(4, result.getDeletedTotalBytes());
     }
 
     @Test
@@ -340,11 +346,14 @@ public class FileOperationTest {
         files.write(f3, "aiueo");
 
         // ## Act ##
-        files.delete(d1);
+        final DeleteResult result = files.delete(d1);
 
         // ## Assert ##
         assertEquals(false, d1.exists());
+        assertEquals(true, d2.exists());
         assertEquals(true, root.exists());
+        assertEquals(2, result.getDeletedFileCount());
+        assertEquals(1, result.getDeletedDirCount());
     }
 
     @Test
@@ -355,17 +364,22 @@ public class FileOperationTest {
         final File d1 = files.createDirectory(root, "d1");
         final File d2 = files.createDirectory(root, "d2");
         final File d3 = files.createDirectory(d2, "d3");
+        final File d4 = files.createDirectory(d1, "d4");
         final File f2 = files.createTempFile(d1);
         final File f3 = files.createTempFile(d1);
         files.write(f2, "1234");
         files.write(f3, "aiueo");
 
         // ## Act ##
-        files.deleteChildren(d1);
+        final DeleteResult result = files.deleteChildren(d1);
 
         // ## Assert ##
         assertEquals(true, d1.exists());
         assertEquals(0, d1.list().length);
+        assertEquals(2, result.getDeletedFileCount());
+        assertEquals(1, result.getDeletedDirCount());
+        // "1234" + "aiueo"
+        assertEquals(9, result.getDeletedTotalBytes());
     }
 
     /*
