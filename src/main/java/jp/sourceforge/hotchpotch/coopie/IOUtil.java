@@ -9,6 +9,13 @@ public class IOUtil {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
+    private static final String LINE_SEPARATOR = System
+            .getProperty("line.separator");
+
+    public static String getSystemLineSeparator() {
+        return LINE_SEPARATOR;
+    }
+
     public static void closeNoException(final Closeable closeable) {
         if (closeable != null) {
             try {
