@@ -33,23 +33,23 @@ public class FileOperation {
     private static final int DEFAULT_BUFF_SIZE = K * 8;
     private static final String UTF8 = "UTF-8";
     // FileOPeration
-    private String prefix = "fop";
-    private String suffix = ".tmp";
-    private int bufferSize = DEFAULT_BUFF_SIZE;
-    private Charset charset;
+    private String prefix_ = "fop";
+    private String suffix_ = ".tmp";
+    private int bufferSize_ = DEFAULT_BUFF_SIZE;
+    private Charset charset_;
 
     public FileOperation() {
         setEncoding(UTF8);
     }
 
     public File createTempFile() {
-        final File f = createTempFile(prefix);
+        final File f = createTempFile(prefix_);
         return f;
     }
 
     public File createTempFile(final String p) {
         try {
-            final File f = File.createTempFile(p, suffix);
+            final File f = File.createTempFile(p, suffix_);
             return f;
         } catch (final IOException e) {
             throw new IORuntimeException(e);
@@ -58,7 +58,7 @@ public class FileOperation {
 
     public File createTempFile(final File parent) {
         try {
-            final File f = File.createTempFile(prefix, suffix, parent);
+            final File f = File.createTempFile(prefix_, suffix_, parent);
             return f;
         } catch (final IOException e) {
             throw new IORuntimeException(e);
@@ -137,14 +137,14 @@ public class FileOperation {
 
     private void pipe(final InputStream is, final OutputStream os)
             throws IOException {
-        final byte[] buf = new byte[bufferSize];
+        final byte[] buf = new byte[bufferSize_];
         for (int len = 0; (len = is.read(buf, 0, buf.length)) != -1;) {
             os.write(buf, 0, len);
         }
     }
 
     private void pipe(final Reader in, final Writer out) throws IOException {
-        final char[] buf = new char[bufferSize];
+        final char[] buf = new char[bufferSize_];
         for (int len = 0; (len = in.read(buf, 0, buf.length)) != -1;) {
             out.write(buf, 0, len);
         }
@@ -152,38 +152,39 @@ public class FileOperation {
 
     public BufferedWriter openBufferedWriter(final File file) {
         final OutputStreamWriter osw = openOutputStreamWriter(file);
-        final BufferedWriter writer = new BufferedWriter(osw, bufferSize);
+        final BufferedWriter writer = new BufferedWriter(osw, bufferSize_);
         return writer;
     }
 
     public BufferedReader openBufferedReader(final File file) {
         final InputStreamReader osw = openInputStreamReader(file);
-        final BufferedReader reader = new BufferedReader(osw, bufferSize);
+        final BufferedReader reader = new BufferedReader(osw, bufferSize_);
         return reader;
     }
 
     private OutputStreamWriter openOutputStreamWriter(final File file) {
         final FileOutputStream fos = openOutputStream(file);
-        final OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
+        final OutputStreamWriter osw = new OutputStreamWriter(fos, charset_);
         return osw;
     }
 
     private InputStreamReader openInputStreamReader(final File file) {
         final FileInputStream fis = openInputStream(file);
-        final InputStreamReader isr = new InputStreamReader(fis, charset);
+        final InputStreamReader isr = new InputStreamReader(fis, charset_);
         return isr;
     }
 
     public BufferedOutputStream openBufferedOutputStream(final File file) {
         final FileOutputStream fos = openOutputStream(file);
         final BufferedOutputStream bos = new BufferedOutputStream(fos,
-                bufferSize);
+                bufferSize_);
         return bos;
     }
 
     public BufferedInputStream openBufferedInputStream(final File file) {
         final FileInputStream fis = openInputStream(file);
-        final BufferedInputStream bis = new BufferedInputStream(fis, bufferSize);
+        final BufferedInputStream bis = new BufferedInputStream(fis,
+                bufferSize_);
         return bis;
     }
 
@@ -390,8 +391,8 @@ public class FileOperation {
 
     protected boolean binaryEquals(final InputStream is1, final InputStream is2)
             throws IOException {
-        final byte[] bytes1 = new byte[bufferSize];
-        final byte[] bytes2 = new byte[bufferSize];
+        final byte[] bytes1 = new byte[bufferSize_];
+        final byte[] bytes2 = new byte[bufferSize_];
         for (;;) {
             final int read1 = is1.read(bytes1);
             final int read2 = is2.read(bytes2);
@@ -404,7 +405,7 @@ public class FileOperation {
                 return false;
             }
             // 最後まで読んだ
-            if ((read1 < 0) || (read2 < 0)) {
+            if (read1 < 0 || read2 < 0) {
                 break;
             }
         }
@@ -412,11 +413,11 @@ public class FileOperation {
     }
 
     public int getBufferSize() {
-        return bufferSize;
+        return bufferSize_;
     }
 
     public void setBufferSize(final int bufferSize) {
-        this.bufferSize = bufferSize;
+        bufferSize_ = bufferSize;
     }
 
     public void setEncoding(final String encoding) {
@@ -425,15 +426,15 @@ public class FileOperation {
     }
 
     public void setCharset(final Charset charset) {
-        this.charset = charset;
+        charset_ = charset;
     }
 
     public void setSuffix(final String suffix) {
-        this.suffix = suffix;
+        suffix_ = suffix;
     }
 
     public void setPrefix(final String prefix) {
-        this.prefix = prefix;
+        prefix_ = prefix;
     }
 
     public boolean containsPath(final File file, final String path) {
