@@ -114,6 +114,9 @@ public class FileOperation {
             return writer.toString();
         } catch (final IOException e) {
             throw new IORuntimeException(e);
+        } finally {
+            closeNoException(reader);
+            closeNoException(writer);
         }
     }
 
