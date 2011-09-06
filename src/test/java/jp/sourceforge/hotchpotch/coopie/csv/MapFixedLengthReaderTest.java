@@ -40,7 +40,7 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -71,7 +71,7 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -103,7 +103,7 @@ public class MapFixedLengthReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -134,7 +134,7 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -143,7 +143,7 @@ public class MapFixedLengthReaderTest {
     }
 
     private static void assertRead3(
-            final CsvReader<Map<String, String>> csvReader,
+            final RecordReader<Map<String, String>> csvReader,
             final Map<String, String> bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -185,7 +185,7 @@ public class MapFixedLengthReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new StringReader(""));
 
         // ## Assert ##
@@ -216,7 +216,7 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -243,7 +243,7 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -271,7 +271,7 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##

@@ -39,7 +39,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<String, String>();
@@ -83,7 +83,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -135,7 +135,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -173,7 +173,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<String, String>();
@@ -221,7 +221,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<String, String>();
@@ -263,7 +263,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<String, String>();

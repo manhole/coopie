@@ -5,8 +5,8 @@ import java.io.OutputStream;
 
 public interface ExcelLayout<T> {
 
-    CsvReader<T> openReader(InputStream is);
+    RecordReader<T> openReader(InputStream is);
 
-    CsvWriter<T> openWriter(OutputStream os);
+    RecordWriter<T> openWriter(OutputStream os);
 
 }

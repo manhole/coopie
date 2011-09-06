@@ -16,7 +16,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     }
 
     @Override
-    public CsvReader<T> openReader(final Reader reader) {
+    public RecordReader<T> openReader(final Reader reader) {
         final RecordDesc<T> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultCsvReader<T> r = new DefaultCsvReader<T>(rd);
@@ -28,7 +28,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     }
 
     @Override
-    public CsvWriter<T> openWriter(final Writer writer) {
+    public RecordWriter<T> openWriter(final Writer writer) {
         final RecordDesc<T> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultCsvWriter<T> w = new DefaultCsvWriter<T>(rd);

@@ -38,7 +38,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -82,7 +82,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -134,7 +134,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -181,7 +181,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
