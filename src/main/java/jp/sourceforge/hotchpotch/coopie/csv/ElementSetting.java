@@ -5,8 +5,8 @@ import java.io.Writer;
 
 public interface ElementSetting {
 
-    CsvElementWriter openWriter(Writer writer);
+    ElementWriter openWriter(Writer writer);
 
-    CsvElementReader openReader(Reader reader);
+    ElementReader openReader(Reader reader);
 
 }

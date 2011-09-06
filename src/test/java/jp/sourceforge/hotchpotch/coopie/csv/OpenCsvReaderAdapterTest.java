@@ -8,7 +8,7 @@ import au.com.bytecode.opencsv.CSVReader;
 public class OpenCsvReaderAdapterTest extends CsvElementReaderTest {
 
     @Override
-    protected CsvElementReader constructTest1Reader() {
+    protected ElementReader constructTest1Reader() {
         final InputStreamReader reader = new InputStreamReader(
                 BeanCsvReaderTest.getResourceAsStream("-1", "tsv"),
                 Charset.forName("UTF-8"));

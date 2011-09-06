@@ -18,7 +18,7 @@ public class AbstractRecordWriter<T> implements Closable, RecordWriter<T> {
 
     private boolean firstRecord = true;
 
-    protected CsvElementWriter elementWriter;
+    protected ElementWriter elementWriter;
     private boolean withHeader;
     private boolean writtenHeader;
 

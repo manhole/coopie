@@ -9,7 +9,7 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class OpenCsvReaderAdapter implements CsvElementReader {
+public class OpenCsvReaderAdapter implements ElementReader {
 
     protected boolean closed = true;
     @SuppressWarnings("unused")

@@ -9,7 +9,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.AbstractFixedLengthLayout.SimpleFixe
 public class FixedLengthReaderTest extends CsvElementReaderTest {
 
     @Override
-    protected CsvElementReader constructTest1Reader() {
+    protected ElementReader constructTest1Reader() {
         // ## Arrange ##
         final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
                 "-1", "tsv");

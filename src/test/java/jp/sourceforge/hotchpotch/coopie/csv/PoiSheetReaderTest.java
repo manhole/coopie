@@ -7,7 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 public class PoiSheetReaderTest extends CsvElementReaderTest {
 
     @Override
-    protected CsvElementReader constructTest1Reader() throws Throwable {
+    protected ElementReader constructTest1Reader() throws Throwable {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
                 "xls");
         final HSSFWorkbook workbook = new HSSFWorkbook(is);

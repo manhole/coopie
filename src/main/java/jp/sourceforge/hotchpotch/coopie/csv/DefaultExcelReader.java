@@ -41,7 +41,7 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
         setupByHeader();
     }
 
-    static class PoiReader implements CsvElementReader {
+    static class PoiReader implements ElementReader {
 
         private HSSFWorkbook workbook;
         private PoiSheetReader sheetReader;
@@ -114,7 +114,7 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
 
     }
 
-    static class PoiSheetReader implements CsvElementReader {
+    static class PoiSheetReader implements ElementReader {
 
         private static final Logger logger = LoggerFactory.getLogger();
         protected boolean closed = true;

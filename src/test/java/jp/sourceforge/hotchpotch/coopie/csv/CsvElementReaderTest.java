@@ -9,12 +9,12 @@ import org.junit.Test;
 
 public abstract class CsvElementReaderTest {
 
-    protected abstract CsvElementReader constructTest1Reader() throws Throwable;
+    protected abstract ElementReader constructTest1Reader() throws Throwable;
 
     @Test
     public void assertRead1() throws Throwable {
         // ## Arrange ##
-        final CsvElementReader reader = constructTest1Reader();
+        final ElementReader reader = constructTest1Reader();
 
         // ## Act ##
         // ## Assert ##
