@@ -10,7 +10,7 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractCsvReader<T> implements Closable, RecordReader<T> {
+public abstract class AbstractRecordReader<T> implements Closable, RecordReader<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
@@ -32,7 +32,7 @@ public abstract class AbstractCsvReader<T> implements Closable, RecordReader<T> 
 
     private String[] nextLine;
 
-    public AbstractCsvReader(final RecordDesc<T> recordDesc) {
+    public AbstractRecordReader(final RecordDesc<T> recordDesc) {
         this.recordDesc = recordDesc;
     }
 

@@ -18,7 +18,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
             throw new NullPointerException("reader");
         }
 
-        final DefaultCsvReader<Map<String, String>> r = new DefaultCsvReader<Map<String, String>>(
+        final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 getRecordDesc());
         r.setWithHeader(withHeader);
         r.setElementSetting(csvSetting);
@@ -44,7 +44,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
             throw new NullPointerException("writer");
         }
 
-        final DefaultCsvWriter<Map<String, String>> w = new DefaultCsvWriter<Map<String, String>>(
+        final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 getRecordDesc());
         w.setWithHeader(withHeader);
         w.setElementSetting(csvSetting);

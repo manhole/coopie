@@ -12,7 +12,7 @@ public class MapFixedLengthLayout extends
     public RecordReader<Map<String, String>> openReader(final Reader reader) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
-        final DefaultCsvReader<Map<String, String>> r = new DefaultCsvReader<Map<String, String>>(
+        final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 rd);
         r.setWithHeader(withHeader);
         r.setElementSetting(es);
@@ -25,7 +25,7 @@ public class MapFixedLengthLayout extends
     public RecordWriter<Map<String, String>> openWriter(final Writer writer) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
-        final DefaultCsvWriter<Map<String, String>> w = new DefaultCsvWriter<Map<String, String>>(
+        final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 rd);
         w.setWithHeader(withHeader);
         w.setElementSetting(es);

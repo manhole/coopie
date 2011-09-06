@@ -21,7 +21,8 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
             throw new NullPointerException("reader");
         }
 
-        final DefaultCsvReader<T> r = new DefaultCsvReader<T>(getRecordDesc());
+        final DefaultRecordReader<T> r = new DefaultRecordReader<T>(
+                getRecordDesc());
         r.setWithHeader(withHeader);
         r.setElementSetting(csvSetting);
         if (readEditor != null) {
@@ -50,7 +51,8 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
             throw new NullPointerException("writer");
         }
 
-        final DefaultCsvWriter<T> w = new DefaultCsvWriter<T>(getRecordDesc());
+        final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(
+                getRecordDesc());
         w.setWithHeader(withHeader);
         w.setElementSetting(csvSetting);
         // TODO openで例外時にcloseすること
