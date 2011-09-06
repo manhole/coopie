@@ -12,7 +12,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-public class DefaultExcelWriter<T> extends AbstractCsvWriter<T> {
+public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
 
     private WriteEditor writeEditor = DefaultWriteEditor.getInstance();
 

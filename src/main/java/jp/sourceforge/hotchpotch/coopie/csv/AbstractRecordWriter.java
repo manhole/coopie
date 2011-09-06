@@ -5,7 +5,7 @@ import java.io.IOException;
 import jp.sourceforge.hotchpotch.coopie.Closable;
 import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 
-public class AbstractCsvWriter<T> implements Closable, RecordWriter<T> {
+public class AbstractRecordWriter<T> implements Closable, RecordWriter<T> {
 
     protected boolean closed = true;
     @SuppressWarnings("unused")
@@ -24,7 +24,7 @@ public class AbstractCsvWriter<T> implements Closable, RecordWriter<T> {
 
     protected RecordDesc<T> recordDesc;
 
-    public AbstractCsvWriter(final RecordDesc<T> recordDesc) {
+    public AbstractRecordWriter(final RecordDesc<T> recordDesc) {
         this.recordDesc = recordDesc;
     }
 
