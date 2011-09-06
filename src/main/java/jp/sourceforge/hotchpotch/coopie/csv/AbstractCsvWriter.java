@@ -5,14 +5,14 @@ import java.io.IOException;
 import jp.sourceforge.hotchpotch.coopie.Closable;
 import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 
-public class AbstractCsvWriter<T> implements Closable, CsvWriter<T> {
+public class AbstractCsvWriter<T> implements Closable, RecordWriter<T> {
 
     protected boolean closed = true;
     @SuppressWarnings("unused")
     private final Object finalizerGuardian = new ClosingGuardian(this);
 
     /**
-     * CsvWriter close時に、Writerを一緒にcloseする場合はtrue。
+     * RecordWriter close時に、Writerを一緒にcloseする場合はtrue。
      */
     private boolean closeWriter = true;
 

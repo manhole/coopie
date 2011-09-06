@@ -46,7 +46,7 @@ public class BeanExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final CsvWriter<AaaBean> csvWriter = layout.openWriter(baos);
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(baos);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -111,7 +111,7 @@ public class BeanExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final CsvWriter<AaaBean> csvWriter = layout.openWriter(baos);
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(baos);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -178,7 +178,7 @@ public class BeanExcelWriterTest {
         // ## Act ##
         {
             final HSSFSheet sheet = workbook.createSheet("sheet-a");
-            final CsvWriter<AaaBean> csvWriter = layout1.openSheetWriter(
+            final RecordWriter<AaaBean> csvWriter = layout1.openSheetWriter(
                     workbook, sheet);
 
             final AaaBean bean = new AaaBean();
@@ -196,7 +196,7 @@ public class BeanExcelWriterTest {
         }
         {
             final HSSFSheet sheet = workbook.createSheet("sheet-b");
-            final CsvWriter<BbbBean> csvWriter = layout2.openSheetWriter(
+            final RecordWriter<BbbBean> csvWriter = layout2.openSheetWriter(
                     workbook, sheet);
 
             final BbbBean bean = new BbbBean();
@@ -255,7 +255,7 @@ public class BeanExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final CsvWriter<AaaBean> csvWriter = layout.openWriter(baos);
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(baos);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");

@@ -40,7 +40,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -71,7 +71,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -103,7 +103,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -134,7 +134,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -142,7 +142,7 @@ public class BeanFixedLengthReaderTest {
         assertRead3(csvReader, bean);
     }
 
-    private static void assertRead3(final CsvReader<AaaBean> csvReader,
+    private static void assertRead3(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -185,7 +185,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new StringReader(""));
 
         // ## Assert ##
@@ -216,7 +216,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -243,7 +243,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -271,7 +271,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
