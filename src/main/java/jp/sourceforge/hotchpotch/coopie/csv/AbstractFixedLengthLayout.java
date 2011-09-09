@@ -5,10 +5,13 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractLayout.DefaultRecordDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractLayout.RecordType;
+
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
 
-abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
+abstract class AbstractFixedLengthLayout<T> {
 
     protected boolean withHeader = true;
     protected RecordDesc<T> recordDesc;
