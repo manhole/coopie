@@ -36,11 +36,11 @@ public class MapFixedLengthLayout extends
 
     @Override
     protected FixedLengthRecordDescSetup getRecordDescSetup() {
-        return new MapFixedLengthColumnSetup();
+        return new MapFixedLengthRecordDescSetup();
     }
 
-    private static class MapFixedLengthColumnSetup extends
-            AbstractFixedLengthColumnSetup<Map<String, String>> {
+    private static class MapFixedLengthRecordDescSetup extends
+            AbstractFixedLengthRecordDescSetup<Map<String, String>> {
 
         private FixedLengthRecordDesc<Map<String, String>> fixedLengthRecordDesc;
 
