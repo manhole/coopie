@@ -80,8 +80,9 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
             final FixedLengthColumn[] a = columns
                     .toArray(new FixedLengthColumn[columns.size()]);
+            // FIXME
             fixedLengthRecordDesc = new FixedLengthRecordDesc<T>(cds,
-                    new BeanRecordType<T>(beanDesc), a);
+                    new AbstractLayout.BeanRecordType<T>(beanDesc), a);
         }
 
     }
