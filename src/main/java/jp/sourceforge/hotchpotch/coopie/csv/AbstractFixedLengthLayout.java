@@ -61,7 +61,6 @@ abstract class AbstractFixedLengthLayout<T> {
             length = endIndex - beginIndex;
         }
 
-        @Override
         public String getName() {
             return propertyName;
         }
@@ -140,6 +139,7 @@ abstract class AbstractFixedLengthLayout<T> {
             final AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder builder = new AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder(
                     c);
             columnBuilders.add(builder);
+            builder.property(propertyName);
         }
 
     }
