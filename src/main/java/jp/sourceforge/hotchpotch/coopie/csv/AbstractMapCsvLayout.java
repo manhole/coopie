@@ -31,9 +31,11 @@ public abstract class AbstractMapCsvLayout extends
     }
 
     protected static ColumnDesc<Map<String, String>> newMapColumnDesc(
-            final ColumnName columnName) {
+            final ColumnName columnName,
+            final PropertyBinding<Map<String, String>, String> propertyBinding) {
         final MapColumnDesc cd = new MapColumnDesc();
         cd.setName(columnName);
+        cd.setPropertyBinding(propertyBinding);
         return cd;
     }
 
@@ -70,7 +72,11 @@ public abstract class AbstractMapCsvLayout extends
         int i = 0;
         for (final SimpleColumnBuilder builder : builders) {
             final ColumnName columnName = builder.getColumnName();
-            final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(columnName);
+            final String propertyName = builder.getPropertyName();
+            final PropertyBinding<Map<String, String>, String> propertyBinding = new MapPropertyBinding<String>(
+                    propertyName);
+            final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(
+                    columnName, propertyBinding);
             cds[i] = cd;
             i++;
         }
@@ -84,6 +90,8 @@ public abstract class AbstractMapCsvLayout extends
          */
         private ColumnName name_;
 
+        private PropertyBinding<Map<String, String>, String> propertyBinding_;
+
         @Override
         public ColumnName getName() {
             return name_;
@@ -93,18 +101,24 @@ public abstract class AbstractMapCsvLayout extends
             name_ = name;
         }
 
+        public PropertyBinding<Map<String, String>, String> getPropertyBinding() {
+            return propertyBinding_;
+        }
+
+        public void setPropertyBinding(
+                final PropertyBinding<Map<String, String>, String> propertyBinding) {
+            propertyBinding_ = propertyBinding;
+        }
+
         @Override
         public String getValue(final Map<String, String> bean) {
-            final String propertyName = name_.getName();
-            return bean.get(propertyName);
+            return propertyBinding_.getValue(bean);
         }
 
         @Override
         public void setValue(final Map<String, String> bean, final String value) {
-            final String propertyName = name_.getName();
-            bean.put(propertyName, value);
+            propertyBinding_.setValue(bean, value);
         }
-
     }
 
     static class LazyMapRecordDesc implements RecordDesc<Map<String, String>> {

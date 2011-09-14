@@ -216,6 +216,7 @@ abstract class AbstractFixedLengthLayout<T> {
                     beginIndex, endIndex);
             final NameAndDesc nd = new NameAndDesc(builder, c);
             columns_.add(nd);
+            builder.property(propertyName);
         }
 
         private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;

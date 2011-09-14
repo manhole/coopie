@@ -116,15 +116,17 @@ public abstract class AbstractCsvLayout<T> {
 
         @Override
         public ColumnBuilder column(final ColumnName name) {
-            final SimpleColumnBuilder builder = new SimpleColumnBuilder(name);
-            columnBuilders_.add(builder);
+            final SimpleColumnBuilder builder = builder(name);
+            builder.property(name.getLabel());
             return builder;
         }
 
         @Override
         public ColumnBuilder column(final String name) {
             final SimpleColumnName n = new SimpleColumnName(name);
-            return column(n);
+            final SimpleColumnBuilder builder = builder(n);
+            builder.property(name);
+            return builder;
         }
 
         @Override
@@ -133,7 +135,15 @@ public abstract class AbstractCsvLayout<T> {
             final SimpleColumnName n = new SimpleColumnName();
             n.setName(propertyName);
             n.setLabel(label);
-            return column(n);
+            final SimpleColumnBuilder builder = builder(n);
+            builder.property(propertyName);
+            return builder;
+        }
+
+        private SimpleColumnBuilder builder(final ColumnName name) {
+            final SimpleColumnBuilder builder = new SimpleColumnBuilder(name);
+            columnBuilders_.add(builder);
+            return builder;
         }
 
     }
@@ -141,10 +151,15 @@ public abstract class AbstractCsvLayout<T> {
     public static class SimpleColumnBuilder implements ColumnBuilder {
 
         private final ColumnName columnName_;
+        private String propertyName_;
         private Converter converter_ = PassthroughStringConverter.getInstance();
 
         public SimpleColumnBuilder(final ColumnName columnName) {
             columnName_ = columnName;
+        }
+
+        public void property(final String propertyName) {
+            propertyName_ = propertyName;
         }
 
         @Override
@@ -158,6 +173,14 @@ public abstract class AbstractCsvLayout<T> {
 
         public Converter getConverter() {
             return converter_;
+        }
+
+        public String getPropertyName() {
+            return propertyName_;
+        }
+
+        public void setPropertyName(final String propertyName) {
+            propertyName_ = propertyName;
         }
 
     }

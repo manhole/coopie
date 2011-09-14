@@ -73,8 +73,9 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final ColumnName columnName = c.getColumnName();
 
             // TODO converter
-            final ColumnDesc<T> cd = newBeanColumnDesc(columnName,
-                    c.getPropertyDesc(),
+            final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
+                    c.getPropertyDesc());
+            final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
                     PassthroughStringConverter.getInstance());
             cds[i] = cd;
         }
@@ -91,7 +92,9 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final String propertyName = pd.getPropertyName();
             final ColumnName columnName = new SimpleColumnName(propertyName);
             // TODO converter
-            final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd,
+            final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
+                    pd);
+            final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
                     PassthroughStringConverter.getInstance());
             cds[i] = cd;
             i++;
@@ -186,9 +189,10 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         int i = 0;
         for (final SimpleColumnBuilder builder : columns) {
             final ColumnName columnName = builder.getColumnName();
-            final String propertyName = columnName.getName();
-            final PropertyDesc<U> pd = getPropertyDesc(bd, propertyName);
-            final ColumnDesc<U> cd = newBeanColumnDesc(columnName, pd,
+            final String propertyName = builder.getPropertyName();
+            final PropertyBinding<U, Object> pb = getPropertyBinding(bd,
+                    propertyName);
+            final ColumnDesc<U> cd = newBeanColumnDesc(columnName, pb,
                     builder.getConverter());
             cds[i] = cd;
             i++;
@@ -197,15 +201,16 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
-            final PropertyDesc<U> pd, final Converter converter) {
+            final PropertyBinding<U, Object> propertyBinding,
+            final Converter converter) {
         final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
-        cd.setPropertyDesc(pd);
+        cd.setPropertyBinding(propertyBinding);
         cd.setName(name);
         cd.setConverter(converter);
         return cd;
     }
 
-    private static <U> PropertyDesc<U> getPropertyDesc(
+    private static <U> PropertyBinding<U, Object> getPropertyBinding(
             final BeanDesc<U> beanDesc, final String name) {
         final PropertyDesc<U> pd = beanDesc.getPropertyDesc(name);
         if (pd == null) {
@@ -216,7 +221,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             throw new PropertyNotFoundException("property not found:<" + name
                     + "> for class:<" + className + ">");
         }
-        return pd;
+        return new BeanPropertyBinding<U, Object>(pd);
     }
 
     static class PropertyNotFoundException extends RuntimeException {
@@ -235,7 +240,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
          * CSV列名。
          */
         private ColumnName name_;
-        private PropertyDesc<T> propertyDesc_;
+        private PropertyBinding<T, Object> propertyBinding_;
+
         private Converter converter_;
 
         @Override
@@ -247,12 +253,13 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             name_ = name;
         }
 
-        public PropertyDesc<T> getPropertyDesc() {
-            return propertyDesc_;
+        public PropertyBinding<T, Object> getPropertyBinding() {
+            return propertyBinding_;
         }
 
-        public void setPropertyDesc(final PropertyDesc<T> propertyDesc) {
-            propertyDesc_ = propertyDesc;
+        public void setPropertyBinding(
+                final PropertyBinding<T, Object> propertyBinding) {
+            propertyBinding_ = propertyBinding;
         }
 
         public Converter getConverter() {
@@ -265,7 +272,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         @Override
         public String getValue(final T bean) {
-            final Object v = propertyDesc_.getValue(bean);
+            final Object v = propertyBinding_.getValue(bean);
             if (v == null) {
                 return null;
             }
@@ -279,9 +286,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         public void setValue(final T bean, final String value) {
             final String from = value;
             final Object to = converter_.convertFrom(from);
-            propertyDesc_.setValue(bean, to);
+            propertyBinding_.setValue(bean, to);
         }
-
     }
 
 }
