@@ -40,25 +40,53 @@ abstract class AbstractCsvLayout<T> {
     protected static abstract class AbstractCsvRecordDescSetup<T> implements
             CsvRecordDescSetup<T> {
 
-        protected final List<ColumnName> columnNames = CollectionsUtil
+        protected final List<SimpleColumnBuilder> columnBuilders = CollectionsUtil
                 .newArrayList();
 
         @Override
-        public void column(final ColumnName name) {
-            columnNames.add(name);
+        public ColumnBuilder column(final ColumnName name) {
+            final SimpleColumnBuilder builder = new SimpleColumnBuilder(name);
+            columnBuilders.add(builder);
+            return builder;
         }
 
         @Override
-        public void column(final String name) {
-            column(new SimpleColumnName(name));
+        public ColumnBuilder column(final String name) {
+            final SimpleColumnName n = new SimpleColumnName(name);
+            return column(n);
         }
 
         @Override
-        public void column(final String propertyName, final String label) {
+        public ColumnBuilder column(final String propertyName,
+                final String label) {
             final SimpleColumnName n = new SimpleColumnName();
             n.setName(propertyName);
             n.setLabel(label);
-            column(n);
+            return column(n);
+        }
+
+        protected static class SimpleColumnBuilder implements ColumnBuilder {
+
+            private final ColumnName columnName_;
+            private Converter converter_;
+
+            public SimpleColumnBuilder(final ColumnName columnName) {
+                columnName_ = columnName;
+            }
+
+            @Override
+            public void converter(final Converter converter) {
+                converter_ = converter;
+            }
+
+            public ColumnName getColumnName() {
+                return columnName_;
+            }
+
+            public Converter getConverter() {
+                return converter_;
+            }
+
         }
 
     }

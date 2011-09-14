@@ -1,11 +1,11 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
@@ -44,11 +44,10 @@ public abstract class AbstractMapCsvLayout extends
 
         @Override
         public RecordDesc<Map<String, String>> getRecordDesc() {
-            final List<ColumnName> columns = columnNames;
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columns);
+            final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columnBuilders);
 
             return new DefaultRecordDesc<Map<String, String>>(cds,
                     OrderSpecified.SPECIFIED, new MapRecordType());
@@ -57,11 +56,12 @@ public abstract class AbstractMapCsvLayout extends
     }
 
     static ColumnDesc<Map<String, String>>[] toColumnDescs(
-            final Collection<? extends ColumnName> columns) {
+            final List<SimpleColumnBuilder> columns) {
         final ColumnDesc<Map<String, String>>[] cds = ColumnDescs
                 .newColumnDescs(columns.size());
         int i = 0;
-        for (final ColumnName columnName : columns) {
+        for (final SimpleColumnBuilder builder : columns) {
+            final ColumnName columnName = builder.getColumnName();
             final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(columnName);
             cds[i] = cd;
             i++;

@@ -76,10 +76,18 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
              * 設定されているプロパティ名を対象に。
              */
             final ColumnDesc<T>[] cds = AbstractBeanCsvLayout.toColumnDescs(
-                    columns, beanDesc);
+                    columnBuilders, beanDesc);
 
-            final FixedLengthColumn[] a = columns
-                    .toArray(new FixedLengthColumn[columns.size()]);
+            final FixedLengthColumn[] a = new FixedLengthColumn[columnBuilders
+                    .size()];
+            int i = 0;
+            for (final AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder builder : columnBuilders) {
+                // TODO downcast
+                final FixedLengthColumn col = (FixedLengthColumn) builder
+                        .getColumnName();
+                a[i] = col;
+                i++;
+            }
             // FIXME
             fixedLengthRecordDesc = new FixedLengthRecordDesc<T>(cds,
                     new BeanRecordType<T>(beanDesc), a);

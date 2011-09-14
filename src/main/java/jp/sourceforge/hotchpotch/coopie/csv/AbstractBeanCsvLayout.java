@@ -1,8 +1,10 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.util.Collection;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
 import org.t2framework.commons.meta.BeanDesc;
@@ -33,7 +35,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             for (final PropertyDesc<T> pd : pds) {
                 final String propertyName = pd.getPropertyName();
                 final ColumnName columnName = new SimpleColumnName(propertyName);
-                final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd);
+                final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd,
+                        (Converter) null);
                 cds[i] = cd;
                 i++;
             }
@@ -58,7 +61,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<T>[] cds = toColumnDescs(columnNames, beanDesc);
+            final ColumnDesc<T>[] cds = toColumnDescs(columnBuilders, beanDesc);
 
             return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
                     new BeanRecordType<T>(beanDesc));
@@ -68,13 +71,15 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     // TODO
     static <U> ColumnDesc<U>[] toColumnDescs(
-            final Collection<? extends ColumnName> columns, final BeanDesc<U> bd) {
+            final List<SimpleColumnBuilder> columns, final BeanDesc<U> bd) {
         final ColumnDesc<U>[] cds = ColumnDescs.newColumnDescs(columns.size());
         int i = 0;
-        for (final ColumnName columnName : columns) {
+        for (final SimpleColumnBuilder builder : columns) {
+            final ColumnName columnName = builder.getColumnName();
             final String propertyName = columnName.getName();
             final PropertyDesc<U> pd = getPropertyDesc(bd, propertyName);
-            final ColumnDesc<U> cd = newBeanColumnDesc(columnName, pd);
+            final ColumnDesc<U> cd = newBeanColumnDesc(columnName, pd,
+                    builder.getConverter());
             cds[i] = cd;
             i++;
         }
@@ -82,10 +87,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
-            final PropertyDesc<U> pd) {
+            final PropertyDesc<U> pd, final Converter converter) {
         final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
         cd.setPropertyDesc(pd);
         cd.setName(name);
+        cd.setConverter(converter);
         return cd;
     }
 
@@ -103,39 +109,114 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         /**
          * CSV列名。
          */
-        private ColumnName name;
+        private ColumnName name_;
 
-        private PropertyDesc<T> propertyDesc;
+        private PropertyDesc<T> propertyDesc_;
+
+        @SuppressWarnings("rawtypes")
+        private Converter converter_;
 
         @Override
         public ColumnName getName() {
-            return name;
+            return name_;
         }
 
         public void setName(final ColumnName name) {
-            this.name = name;
+            this.name_ = name;
         }
 
         public PropertyDesc<T> getPropertyDesc() {
-            return propertyDesc;
+            return propertyDesc_;
         }
 
         public void setPropertyDesc(final PropertyDesc<T> propertyDesc) {
-            this.propertyDesc = propertyDesc;
+            this.propertyDesc_ = propertyDesc;
         }
 
+        public Converter getConverter() {
+            return converter_;
+        }
+
+        public void setConverter(final Converter converter) {
+            if (converter != null) {
+                converter_ = converter;
+                return;
+            }
+            converter_ = NullConverter.getInstance();
+        }
+
+        @SuppressWarnings("unchecked")
         @Override
         public String getValue(final T bean) {
-            final Object v = propertyDesc.getValue(bean);
+            final Object v = propertyDesc_.getValue(bean);
             if (v == null) {
                 return null;
             }
-            return String.valueOf(v);
+
+            final PassthroughObjectRepresentation from = new PassthroughObjectRepresentation(
+                    v);
+            final StringExternalRepresentation to = new StringExternalRepresentation();
+            converter_.convertTo(from, to);
+            final String s = to.get();
+            return s;
         }
 
         @Override
         public void setValue(final T bean, final String value) {
-            propertyDesc.setValue(bean, value);
+            final StringExternalRepresentation from = new StringExternalRepresentation(
+                    value);
+            final PassthroughObjectRepresentation to = new PassthroughObjectRepresentation();
+            converter_.convertFrom(from, to);
+            final Object obj = to.get();
+            propertyDesc_.setValue(bean, obj);
+        }
+
+    }
+
+    private static class StringExternalRepresentation implements
+            Converter.ExternalRepresentation<String> {
+
+        private final Deque<String> list_ = new LinkedList<String>();
+
+        StringExternalRepresentation() {
+        }
+
+        StringExternalRepresentation(final String s) {
+            add(s);
+        }
+
+        @Override
+        public void add(final String s) {
+            list_.add(s);
+        }
+
+        @Override
+        public String get() {
+            return list_.remove();
+        }
+
+    }
+
+    private static class PassthroughObjectRepresentation implements
+            Converter.ObjectRepresentation<Object> {
+
+        private final Deque<Object> list_ = new LinkedList<Object>();
+
+        PassthroughObjectRepresentation() {
+        }
+
+        PassthroughObjectRepresentation(final Object o) {
+            add(o);
+        }
+
+        @Override
+        public void add(final Object o) {
+            list_.add(o);
+        }
+
+        @Override
+        public Object get() {
+            return list_.remove();
         }
 
     }

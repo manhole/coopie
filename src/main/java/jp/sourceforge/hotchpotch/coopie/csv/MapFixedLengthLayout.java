@@ -66,10 +66,18 @@ public class MapFixedLengthLayout extends
              */
 
             final ColumnDesc<Map<String, String>>[] cds = AbstractMapCsvLayout
-                    .toColumnDescs(columns);
+                    .toColumnDescs(columnBuilders);
 
-            final FixedLengthColumn[] a = columns
-                    .toArray(new FixedLengthColumn[columns.size()]);
+            final FixedLengthColumn[] a = new FixedLengthColumn[columnBuilders
+                    .size()];
+            int i = 0;
+            for (final AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder builder : columnBuilders) {
+                // TODO downcast
+                final FixedLengthColumn col = (FixedLengthColumn) builder
+                        .getColumnName();
+                a[i] = col;
+                i++;
+            }
             fixedLengthRecordDesc = new FixedLengthRecordDesc<Map<String, String>>(
                     cds, new MapRecordType(), a);
         }

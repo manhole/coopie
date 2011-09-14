@@ -5,6 +5,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder;
+
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
 
@@ -127,7 +129,7 @@ abstract class AbstractFixedLengthLayout<T> {
     protected abstract static class AbstractFixedLengthRecordDescSetup<T>
             implements FixedLengthRecordDescSetup {
 
-        protected final List<FixedLengthColumn> columns = CollectionsUtil
+        protected final List<SimpleColumnBuilder> columnBuilders = CollectionsUtil
                 .newArrayList();
 
         @Override
@@ -135,7 +137,9 @@ abstract class AbstractFixedLengthLayout<T> {
                 final int endIndex) {
             final SimpleFixedLengthColumn c = new SimpleFixedLengthColumn(
                     propertyName, beginIndex, endIndex);
-            columns.add(c);
+            final AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder builder = new AbstractCsvLayout.AbstractCsvRecordDescSetup.SimpleColumnBuilder(
+                    c);
+            columnBuilders.add(builder);
         }
 
     }

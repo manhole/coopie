@@ -9,7 +9,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
@@ -20,6 +25,7 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.t2framework.commons.exception.ParseRuntimeException;
 import org.t2framework.commons.util.ResourceUtil;
 
 /*
@@ -878,6 +884,9 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * カンマ区切りファイルを読めること。
+     */
     @Test
     public void readCsv() throws Throwable {
         // ## Arrange ##
@@ -1000,6 +1009,49 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void readBigDecimal() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CccBean> layout = new BeanCsvLayout<CccBean>(
+                CccBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa").converter(new BigDecimalConverter());
+                setup.column("bbb");
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<CccBean> csvReader = layout
+                .openReader(getResourceAsReader("-11", "tsv"));
+
+        // ## Assert ##
+        final CccBean bean = new CccBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("11.10", bean.getAaa().toPlainString());
+        assertEquals("21.02", bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("1101.45", bean.getAaa().toPlainString());
+        assertEquals("1,201.56", bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    static Reader getResourceAsReader(final String suffix, final String ext) {
+        final Reader reader = getResourceAsReader(suffix, ext,
+                Charset.forName("UTF-8"));
+        return reader;
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext,
             final Charset charset) {
         final InputStream is = getResourceAsStream(suffix, ext);
@@ -1076,6 +1128,70 @@ public class BeanCsvReaderTest {
         @Override
         public String toString() {
             return toStringFormat.format(this);
+        }
+
+    }
+
+    public static class CccBean {
+
+        private BigDecimal aaa;
+        private String bbb;
+
+        public BigDecimal getAaa() {
+            return aaa;
+        }
+
+        public void setAaa(final BigDecimal aaa) {
+            this.aaa = aaa;
+        }
+
+        public String getBbb() {
+            return bbb;
+        }
+
+        public void setBbb(final String bbb) {
+            this.bbb = bbb;
+        }
+
+    }
+
+    public static class BigDecimalConverter implements
+            Converter<BigDecimal, String> {
+
+        private final DecimalFormat format_;
+
+        public BigDecimalConverter() {
+            format_ = (DecimalFormat) NumberFormat.getNumberInstance();
+            format_.setMinimumFractionDigits(2);
+            format_.setMaximumFractionDigits(2);
+            format_.setGroupingUsed(true);
+            format_.setGroupingSize(3);
+            format_.setParseBigDecimal(true);
+        }
+
+        @Override
+        public void convertTo(
+                final Converter.ObjectRepresentation<BigDecimal> from,
+                final Converter.ExternalRepresentation<String> to) {
+            final BigDecimal o = from.get();
+            final String s = format_.format(o);
+            to.add(s);
+        }
+
+        @Override
+        public void convertFrom(
+                final Converter.ExternalRepresentation<String> from,
+                final Converter.ObjectRepresentation<BigDecimal> to) {
+            final String s = from.get();
+            final ParsePosition pp = new ParsePosition(0);
+            final Number parse = format_.parse(s, pp);
+            if (parse == null || pp.getIndex() != s.length()) {
+                // パースエラー
+                throw new ParseRuntimeException(new ParseException(s,
+                        pp.getIndex()));
+            }
+            final BigDecimal o = (BigDecimal) parse;
+            to.add(o);
         }
 
     }
