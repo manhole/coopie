@@ -12,10 +12,15 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import jp.sourceforge.hotchpotch.coopie.Text;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CccBean;
 
 import org.junit.Test;
@@ -486,6 +491,69 @@ public class BeanCsvWriterTest {
         bean.setAaa(a);
         bean.setBbb(b);
         bean.setCcc(c);
+    }
+
+    /**
+     * CSV側が2カラムで、対応するJava側が1プロパティの場合。
+     * 年月日と時分秒で列が別れているとする。
+     */
+    @Test
+    public void writeCalendar() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                setup.columns("ymd", "hms").property("bbb")
+                        .converter(new CalendarConverter());
+            }
+        });
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<CalendarBean> csvWriter = layout.openWriter(writer);
+
+        final CalendarBean bean = new CalendarBean();
+        bean.setAaa("a");
+        {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(format.parse("2011/09/13 17:54:01"));
+            bean.setBbb(c);
+        }
+        csvWriter.write(bean);
+
+        bean.setAaa("b");
+        {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(format.parse("2011/01/01 00:00:59"));
+            bean.setBbb(c);
+        }
+        csvWriter.write(bean);
+
+        bean.setAaa("c");
+        bean.setBbb(null);
+        csvWriter.write(bean);
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+
+        {
+            final ElementReader reader = new CsvSetting()
+                    .openReader(new StringReader(lines));
+            assertArrayEquals(a("aaa", "ymd", "hms"), reader.readRecord());
+            assertArrayEquals(a("a", "2011-09-13", "17:54:01"),
+                    reader.readRecord());
+            assertArrayEquals(a("b", "2011-01-01", "00:00:59"),
+                    reader.readRecord());
+            assertArrayEquals(a("c", "", ""), reader.readRecord());
+            assertNull(reader.readRecord());
+            reader.close();
+        }
+
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {

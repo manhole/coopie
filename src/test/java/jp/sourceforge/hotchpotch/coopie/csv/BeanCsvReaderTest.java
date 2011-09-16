@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static jp.sourceforge.hotchpotch.coopie.VarArgs.a;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -9,12 +10,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
@@ -1046,6 +1052,102 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * CSV側が2カラムで、対応するJava側が1プロパティの場合。
+     * 年月日と時分秒で列が別れているとする。
+     */
+    @Test
+    public void readCalendar() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                setup.columns("ymd", "hms").property("bbb")
+                        .converter(new CalendarConverter());
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<CalendarBean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final CalendarBean bean = new CalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/09/13 17:54:01",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals("2011/01/01 00:00:59",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    @Test
+    public void readCalendar2() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                setup.columns("ymd", "hms").property("bbb")
+                        .converter(new CalendarConverter());
+            }
+        });
+
+        final String text;
+        {
+            final StringWriter sw = new StringWriter();
+            final ElementWriter writer = new CsvSetting().openWriter(sw);
+            writer.writeRecord(a("aaa", "ymd", "hms"));
+            writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
+            writer.writeRecord(a("b", "2011-09-14", ""));
+            writer.writeRecord(a("c", "", "12:22:33"));
+            writer.close();
+            text = sw.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<CalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final CalendarBean bean = new CalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/08/13 11:22:33",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("c", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Reader reader = getResourceAsReader(suffix, ext,
                 Charset.forName("UTF-8"));
@@ -1155,6 +1257,29 @@ public class BeanCsvReaderTest {
 
     }
 
+    public static class CalendarBean {
+
+        private String aaa_;
+        private Calendar bbb_;
+
+        public String getAaa() {
+            return aaa_;
+        }
+
+        public void setAaa(final String aaa) {
+            aaa_ = aaa;
+        }
+
+        public Calendar getBbb() {
+            return bbb_;
+        }
+
+        public void setBbb(final Calendar bbb) {
+            bbb_ = bbb;
+        }
+
+    }
+
     public static class BigDecimalConverter implements
             Converter<BigDecimal, String> {
 
@@ -1192,6 +1317,98 @@ public class BeanCsvReaderTest {
             }
             final BigDecimal o = (BigDecimal) parse;
             to.add(o);
+        }
+
+    }
+
+    static class CalendarConverter implements Converter<Calendar, String> {
+
+        private final DateFormat dayFormat_;
+        private final DateFormat timeFormat_;
+
+        public CalendarConverter() {
+            dayFormat_ = new SimpleDateFormat("yyyy-MM-dd");
+            timeFormat_ = new SimpleDateFormat("HH:mm:ss");
+        }
+
+        /*
+         * Calendarがnullの場合は年月日と時分秒をどちらもnullとする
+         */
+        @Override
+        public void convertTo(
+                final Converter.ObjectRepresentation<Calendar> from,
+                final Converter.ExternalRepresentation<String> to) {
+            final Calendar o = from.get();
+            if (o == null) {
+                to.add(null);
+                to.add(null);
+                return;
+            }
+            final Date date = o.getTime();
+            {
+                final String s = dayFormat_.format(date);
+                to.add(s);
+            }
+            {
+                final String s = timeFormat_.format(date);
+                to.add(s);
+            }
+        }
+
+        /*
+         * 年月日と時分秒の一方でもnullの場合はCalendarをnullとする
+         */
+        @Override
+        public void convertFrom(
+                final Converter.ExternalRepresentation<String> from,
+                final Converter.ObjectRepresentation<Calendar> to) {
+
+            final Calendar cal = Calendar.getInstance();
+            cal.clear();
+            {
+                final String s = from.get();
+                if (s == null) {
+                    to.add(null);
+                    return;
+                }
+                final Date date = parse(s, dayFormat_);
+                final Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                copy(c, cal, Calendar.YEAR);
+                copy(c, cal, Calendar.MONTH);
+                copy(c, cal, Calendar.DATE);
+            }
+            {
+                final String s = from.get();
+                if (s == null) {
+                    to.add(null);
+                    return;
+                }
+                final Date date = parse(s, timeFormat_);
+                final Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                copy(c, cal, Calendar.HOUR_OF_DAY);
+                copy(c, cal, Calendar.MINUTE);
+                copy(c, cal, Calendar.SECOND);
+            }
+            to.add(cal);
+        }
+
+        private void copy(final Calendar src, final Calendar dest,
+                final int field) {
+            final int v = src.get(field);
+            dest.set(field, v);
+        }
+
+        private Date parse(final String s, final DateFormat format) {
+            final ParsePosition pp = new ParsePosition(0);
+            final Date date = format.parse(s, pp);
+            if (date == null || pp.getIndex() != s.length()) {
+                // パースエラー
+                throw new ParseRuntimeException(new ParseException(s,
+                        pp.getIndex()));
+            }
+            return date;
         }
 
     }
