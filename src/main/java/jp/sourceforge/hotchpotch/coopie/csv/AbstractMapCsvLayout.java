@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
@@ -202,15 +201,6 @@ public abstract class AbstractMapCsvLayout extends
         public Map<String, String> newInstance() {
             // これで良いのだっけ?
             throw new AssertionError();
-        }
-
-    }
-
-    static class MapRecordType implements RecordType<Map<String, String>> {
-
-        @Override
-        public Map<String, String> newInstance() {
-            return new TreeMap<String, String>();
         }
 
     }
