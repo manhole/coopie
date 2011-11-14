@@ -28,7 +28,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
              * beanの全プロパティを対象に。
              */
             final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
-            final ColumnDesc<T>[] cds = newColumnDescs(pds.size());
+            final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(pds.size());
             int i = 0;
             for (final PropertyDesc<T> pd : pds) {
                 final String propertyName = pd.getPropertyName();
@@ -44,7 +44,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return recordDesc;
     }
 
-    static class BeanCsvRecordDescSetup<T> extends AbstractCsvRecordDescSetup<T> {
+    static class BeanCsvRecordDescSetup<T> extends
+            AbstractCsvRecordDescSetup<T> {
 
         private final BeanDesc<T> beanDesc;
 
@@ -68,7 +69,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     // TODO
     static <U> ColumnDesc<U>[] toColumnDescs(
             final Collection<? extends ColumnName> columns, final BeanDesc<U> bd) {
-        final ColumnDesc<U>[] cds = newColumnDescs(columns.size());
+        final ColumnDesc<U>[] cds = ColumnDescs.newColumnDescs(columns.size());
         int i = 0;
         for (final ColumnName columnName : columns) {
             final String propertyName = columnName.getName();
