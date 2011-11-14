@@ -17,8 +17,7 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
     protected ColumnDesc<T>[] columnDescs;
     protected OrderSpecified orderSpecified;
     private final RecordType<T> recordType;
-    private ColumnDesc<T>[] ignoredColumnDescs = AbstractLayout
-            .newColumnDescs(0);
+    private ColumnDesc<T>[] ignoredColumnDescs = ColumnDescs.newColumnDescs(0);
 
     protected DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
             final OrderSpecified orderSpecified, final RecordType<T> recordType) {
@@ -104,8 +103,7 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
          */
         final List<ColumnDesc<T>> tmpCds = CollectionsUtil.newArrayList();
         Collections.addAll(tmpCds, getColumnDescs());
-        final ColumnDesc<T>[] cds = AbstractLayout
-                .newColumnDescs(header.length);
+        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(header.length);
 
         int i = 0;
         HEADER: for (final String headerElem : header) {
@@ -132,7 +130,7 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
 
         if (!tmpCds.isEmpty()) {
             logger.debug("remain ColumnDescs: {}", tmpCds.size());
-            final ColumnDesc<T>[] newColumnDescs = AbstractLayout
+            final ColumnDesc<T>[] newColumnDescs = ColumnDescs
                     .newColumnDescs(tmpCds.size());
             tmpCds.toArray(newColumnDescs);
             copy.ignoredColumnDescs = newColumnDescs;
