@@ -58,8 +58,8 @@ public abstract class AbstractMapCsvLayout extends
 
     static ColumnDesc<Map<String, String>>[] toColumnDescs(
             final Collection<? extends ColumnName> columns) {
-        final ColumnDesc<Map<String, String>>[] cds = newColumnDescs(columns
-                .size());
+        final ColumnDesc<Map<String, String>>[] cds = ColumnDescs
+                .newColumnDescs(columns.size());
         int i = 0;
         for (final ColumnName columnName : columns) {
             final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(columnName);
