@@ -71,7 +71,7 @@ public class MapFixedLengthLayout extends
             final FixedLengthColumn[] a = columns
                     .toArray(new FixedLengthColumn[columns.size()]);
             fixedLengthRecordDesc = new FixedLengthRecordDesc<Map<String, String>>(
-                    cds, new AbstractMapCsvLayout.MapRecordType(), a);
+                    cds, new MapRecordType(), a);
         }
     }
 
