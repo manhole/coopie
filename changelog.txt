@@ -2,6 +2,7 @@
 
 - CsvAssertをtest→mainへ移動
 - rename: CsvReader/CsvWriter -> RecordReader/RecordWriter
+- rename (internal API): XxxColumnSetup -> XxxRecordDescSetup
 
 0.1.7 2011/11/15
 
