@@ -58,6 +58,9 @@ public class FileSize {
     private void appendTo(final FileSizeUnit unit, final long size,
             final StringBuilder sb) {
         sb.append(unit.format(size));
+        if (unit == B) {
+            return;
+        }
         sb.append(" ");
         sb.append(unit.getUnitLabel());
     }
