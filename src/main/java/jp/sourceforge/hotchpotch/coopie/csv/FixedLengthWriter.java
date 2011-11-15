@@ -6,6 +6,7 @@ import java.io.Writer;
 
 import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
+import jp.sourceforge.hotchpotch.coopie.WriterUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.StringUtil;
@@ -22,16 +23,9 @@ public class FixedLengthWriter implements CsvElementWriter {
 
     public FixedLengthWriter(final Writer writer,
             final FixedLengthColumn[] columns) {
-        this.writer = toBufferedWriter(writer);
+        this.writer = WriterUtil.toBufferedWriter(writer);
         this.columns = columns;
         closed = false;
-    }
-
-    private BufferedWriter toBufferedWriter(final Writer w) {
-        if (w instanceof BufferedWriter) {
-            return (BufferedWriter) w;
-        }
-        return new BufferedWriter(w);
     }
 
     @Override

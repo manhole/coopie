@@ -6,6 +6,7 @@ import java.io.Reader;
 
 import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
+import jp.sourceforge.hotchpotch.coopie.ReaderUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -21,16 +22,9 @@ public class FixedLengthReader implements CsvElementReader {
 
     public FixedLengthReader(final Reader reader,
             final FixedLengthColumn[] columns) {
-        this.reader = toBufferedReader(reader);
+        this.reader = ReaderUtil.toBufferedReader(reader);
         this.columns = columns;
         closed = false;
-    }
-
-    private BufferedReader toBufferedReader(final Reader r) {
-        if (r instanceof BufferedReader) {
-            return (BufferedReader) r;
-        }
-        return new BufferedReader(r);
     }
 
     @Override
