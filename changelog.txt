@@ -7,6 +7,7 @@
 - pom.xmlをMaven3用に修正しました。
 - CsvElementReader#getRecordNo()の初期値を-1から0に変更しました。
 - add: BeanMap
+- add: Logger interface
 
 0.1.6 2011/08/23
 
