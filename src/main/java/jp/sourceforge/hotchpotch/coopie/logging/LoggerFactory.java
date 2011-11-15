@@ -1,7 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.logging;
 
-import org.slf4j.Logger;
-
 public class LoggerFactory {
 
     private static final String MY_CLASS_NAME = LoggerFactory.class.getName();
@@ -17,8 +15,8 @@ public class LoggerFactory {
     }
 
     private static Logger getLogger(final String name) {
-        final Logger logger = org.slf4j.LoggerFactory.getLogger(name);
-        return logger;
+        final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(name);
+        return new LoggerWrapper(logger);
     }
 
     /*
