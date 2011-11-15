@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 

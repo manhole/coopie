@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+
 import org.slf4j.Logger;
 
 public class ClosingGuardian {

@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.FileOperation.DeleteResult;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import junit.framework.Assert;
 import junitx.framework.ArrayAssert;
 

@@ -7,8 +7,8 @@ import java.util.List;
 import jp.sourceforge.hotchpotch.coopie.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.FileResource;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultExcelReader.PoiSheetReader;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;

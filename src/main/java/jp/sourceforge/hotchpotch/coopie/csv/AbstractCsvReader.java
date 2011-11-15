@@ -5,8 +5,8 @@ import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.Closable;
 import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 

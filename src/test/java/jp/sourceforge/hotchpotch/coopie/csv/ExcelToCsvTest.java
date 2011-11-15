@@ -8,7 +8,7 @@ import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import junitx.framework.ListAssert;
 
 import org.junit.After;

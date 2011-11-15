@@ -8,6 +8,8 @@ import static org.junit.matchers.JUnitMatchers.containsString;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.task.Task;

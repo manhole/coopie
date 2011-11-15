@@ -1,4 +1,4 @@
-package jp.sourceforge.hotchpotch.coopie;
+package jp.sourceforge.hotchpotch.coopie.logging;
 
 import org.slf4j.Logger;
 

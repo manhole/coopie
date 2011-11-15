@@ -11,9 +11,9 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.NoSuchElementException;
 
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.ReadEditor;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Ignore;
 import org.junit.Test;

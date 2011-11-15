@@ -22,6 +22,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+
 import org.slf4j.Logger;
 import org.t2framework.commons.exception.FileNotFoundRuntimeException;
 import org.t2framework.commons.exception.IORuntimeException;

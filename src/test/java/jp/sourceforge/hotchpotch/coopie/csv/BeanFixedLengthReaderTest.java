@@ -7,8 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
 import org.slf4j.Logger;

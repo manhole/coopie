@@ -7,11 +7,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.LazyColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
