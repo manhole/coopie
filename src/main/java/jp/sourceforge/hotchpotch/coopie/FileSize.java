@@ -41,19 +41,25 @@ public class FileSize {
 
     @Override
     public String toString() {
-        final FileSizeUnit unit = detectUnit(size_);
+        final long size = getSize();
+        final FileSizeUnit unit = detectUnit(size);
         final StringBuilder sb = new StringBuilder();
-        sb.append(unit.format(size_));
-        sb.append(unit.getUnitLabel());
+        appendTo(unit, size, sb);
         if (unit == B) {
             return sb.toString();
         }
 
         sb.append(" (");
-        sb.append(B.format(size_));
-        sb.append(B.getUnitLabel());
+        appendTo(B, size, sb);
         sb.append(")");
         return sb.toString();
+    }
+
+    private void appendTo(final FileSizeUnit unit, final long size,
+            final StringBuilder sb) {
+        sb.append(unit.format(size));
+        sb.append(" ");
+        sb.append(unit.getUnitLabel());
     }
 
     private FileSizeUnit detectUnit(final long size) {
