@@ -32,7 +32,7 @@ public abstract class CsvElementReaderTest {
         assertEquals(3, reader.getRecordNo());
         assertNull(reader.readRecord());
         /*
-         * 最後まで呼んだ後はカウントアップしない
+         * 最後まで読んだ後はカウントアップしない
          */
         assertEquals(3, reader.getRecordNo());
         assertEquals(3, reader.getRecordNo());
