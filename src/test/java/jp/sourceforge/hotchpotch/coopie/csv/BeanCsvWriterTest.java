@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import jp.sourceforge.hotchpotch.coopie.Text;
@@ -42,9 +43,10 @@ public class BeanCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = getResourceAsStream("-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
-        assertEquals(expected, actual);
+        final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
+        //        final String expected = ReaderUtil.readText(reader);
+        //        assertEquals(expected, actual);
+        new CsvAssert().assertCsvEquals(reader, new StringReader(actual));
     }
 
     /**
@@ -176,9 +178,10 @@ public class BeanCsvWriterTest {
 
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
                 "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
-        assertEquals(expected, actual);
+        final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
+        //        final String expected = ReaderUtil.readText(reader);
+        //        assertEquals(expected, actual);
+        new CsvAssert().assertCsvEquals(reader, new StringReader(actual));
     }
 
     /**
