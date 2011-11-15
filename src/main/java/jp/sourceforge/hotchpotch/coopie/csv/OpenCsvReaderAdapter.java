@@ -16,7 +16,7 @@ public class OpenCsvReaderAdapter implements CsvElementReader {
     private final Object finalizerGuardian = new ClosingGuardian(this);
 
     private final CSVReader csvReader;
-    private int lineNo = -1;
+    private int lineNo;
 
     public OpenCsvReaderAdapter(final CSVReader csvReader) {
         this.csvReader = csvReader;

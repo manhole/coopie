@@ -149,7 +149,7 @@ class DefaultExcelReader<T> extends AbstractCsvReader<T> {
 
         @Override
         public int getRecordNo() {
-            return rowNum - 1;
+            return rowNum;
         }
 
         @Override

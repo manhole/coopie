@@ -17,7 +17,7 @@ public class FixedLengthReader implements CsvElementReader {
 
     private final BufferedReader reader;
     private final FixedLengthColumn[] columns;
-    private int lineNo = -1;
+    private int lineNo;
 
     public FixedLengthReader(final Reader reader,
             final FixedLengthColumn[] columns) {
