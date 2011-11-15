@@ -58,7 +58,7 @@ public class MapFixedLengthWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = ResourceUtil.getResourceAsStream(
-        BeanFixedLengthWriterTest.class.getName() + "-1", "tsv");
+                BeanFixedLengthWriterTest.class.getName() + "-1", "tsv");
         final String expected = ReaderUtil.readText(new InputStreamReader(is,
                 "UTF-8"));
         assertEquals(expected, actual);
