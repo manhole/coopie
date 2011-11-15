@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.ArrayMap;

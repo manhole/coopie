@@ -2,8 +2,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.ReadEditor;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.meta.BeanDesc;

@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Map;
 
-import jp.sourceforge.hotchpotch.coopie.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -9,6 +9,8 @@ import static org.junit.matchers.JUnitMatchers.containsString;
 import java.util.Calendar;
 import java.util.Date;
 
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 

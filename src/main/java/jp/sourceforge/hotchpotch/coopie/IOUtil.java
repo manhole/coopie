@@ -3,6 +3,8 @@ package jp.sourceforge.hotchpotch.coopie;
 import java.io.Closeable;
 import java.io.IOException;
 
+import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+
 import org.slf4j.Logger;
 
 public class IOUtil {
