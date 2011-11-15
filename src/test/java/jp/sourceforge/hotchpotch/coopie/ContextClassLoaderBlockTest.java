@@ -9,8 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
 import org.t2framework.commons.util.task.Task;
 
-import com.sun.org.apache.bcel.internal.util.ClassLoader;
-
 public class ContextClassLoaderBlockTest {
 
     /**
@@ -21,7 +19,8 @@ public class ContextClassLoaderBlockTest {
         // ## Arrange ##
         final Object returns = new Object();
         final AtomicBoolean called = new AtomicBoolean(false);
-        final ClassLoader cl = new ClassLoader();
+        final ClassLoader cl = new ClassLoader() {
+        };
         assertNotSame(cl, Thread.currentThread().getContextClassLoader());
 
         // ## Act ##
