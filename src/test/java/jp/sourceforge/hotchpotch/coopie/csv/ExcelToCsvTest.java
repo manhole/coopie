@@ -110,7 +110,7 @@ public class ExcelToCsvTest {
 
         // ## Assert ##
         assertEquals(true, outFile1.exists());
-        assertEquals(false, outFile2.exists());
+        assertEquals("空シートはcsvに出力しない", false, outFile2.exists());
         assertEquals(true, outFile3.exists());
         assertEquals(3, rootDir.list().length);
 
@@ -118,8 +118,13 @@ public class ExcelToCsvTest {
                 .getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
                         .replace('.', '/')
                         + "/" + "ExcelToCsvTest-3-expected1.tsv");
+        final File expectedFile3 = ResourceUtil
+                .getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
+                        .replace('.', '/')
+                        + "/" + "ExcelToCsvTest-3-expected3.tsv");
 
         csvAssert_.assertCsvEquals(expectedFile1, outFile1);
+        csvAssert_.assertCsvEquals(expectedFile3, outFile3);
     }
 
 }
