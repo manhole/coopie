@@ -329,7 +329,7 @@ public class FileOperationTest {
         assertEquals(false, f1.exists());
         assertEquals(true, root.exists());
         assertEquals(1, result.getDeletedFileCount());
-        assertEquals(4, result.getDeletedTotalBytes());
+        assertEquals(4, result.getDeletedTotalSize().getSize());
     }
 
     @Test
@@ -379,7 +379,7 @@ public class FileOperationTest {
         assertEquals(2, result.getDeletedFileCount());
         assertEquals(1, result.getDeletedDirCount());
         // "1234" + "aiueo"
-        assertEquals(9, result.getDeletedTotalBytes());
+        assertEquals(9, result.getDeletedTotalSize().getSize());
     }
 
     /*

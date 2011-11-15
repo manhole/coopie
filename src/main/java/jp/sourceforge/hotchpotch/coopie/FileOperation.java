@@ -28,8 +28,8 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileOperation {
 
-    public static final int K = 1024;
-    public static final int M = K * 1024;
+    private static final int K = 1024;
+    private static final int M = K * 1024;
     private static final int DEFAULT_BUFF_SIZE = K * 8;
     private static final String UTF8 = "UTF-8";
     // FileOPeration
@@ -611,8 +611,8 @@ public class FileOperation {
             }
 
             @Override
-            public long getDeletedTotalBytes() {
-                return totalBytes_;
+            public FileSize getDeletedTotalSize() {
+                return new FileSize(totalBytes_);
             }
 
             @Override
@@ -627,8 +627,9 @@ public class FileOperation {
 
             @Override
             public void logResult() {
-                logger.debug("DeleteResult: files={}, dirs={}, bytes={}",
-                        new Object[] { fileCount_, dirCount_, totalBytes_ });
+                logger.debug("DeleteResult: files={}, dirs={}, size={}",
+                        new Object[] { fileCount_, dirCount_,
+                                getDeletedTotalSize() });
             }
 
             @Override
@@ -815,7 +816,7 @@ public class FileOperation {
 
         void logResult();
 
-        long getDeletedTotalBytes();
+        FileSize getDeletedTotalSize();
 
         int getDeletedDirCount();
 
