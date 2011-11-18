@@ -1,6 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,6 +15,22 @@ import org.t2framework.commons.util.CollectionsUtil;
 import org.t2framework.commons.util.ReaderUtil;
 
 public class MapCsvWriterTest {
+
+    @Test
+    public void write_open_null() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openWriter(null);
+            fail();
+        } catch (final NullPointerException npe) {
+            assertTrue(npe.getMessage() != null
+                    && 0 < npe.getMessage().length());
+        }
+    }
 
     @Test
     public void write1() throws Throwable {
