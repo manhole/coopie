@@ -14,6 +14,10 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
 
     @Override
     public CsvReader<Map<String, String>> openReader(final Reader reader) {
+        if (reader == null) {
+            throw new NullPointerException("reader");
+        }
+
         final DefaultCsvReader<Map<String, String>> r = new DefaultCsvReader<Map<String, String>>(
                 getRecordDesc());
         r.setWithHeader(withHeader);
@@ -36,6 +40,10 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
 
     @Override
     public CsvWriter<Map<String, String>> openWriter(final Writer writer) {
+        if (writer == null) {
+            throw new NullPointerException("writer");
+        }
+
         final DefaultCsvWriter<Map<String, String>> w = new DefaultCsvWriter<Map<String, String>>(
                 getRecordDesc());
         w.setWithHeader(withHeader);

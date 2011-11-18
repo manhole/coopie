@@ -1,6 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -20,6 +21,22 @@ import org.t2framework.commons.util.CollectionsUtil;
 public class MapCsvReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
+
+    @Test
+    public void read_open_null() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openReader(null);
+            fail();
+        } catch (final NullPointerException npe) {
+            assertTrue(npe.getMessage() != null
+                    && 0 < npe.getMessage().length());
+        }
+    }
 
     /**
      * CSVヘッダがBeanのプロパティ名と同じ場合。

@@ -17,6 +17,10 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     @Override
     public CsvReader<T> openReader(final Reader reader) {
+        if (reader == null) {
+            throw new NullPointerException("reader");
+        }
+
         final DefaultCsvReader<T> r = new DefaultCsvReader<T>(getRecordDesc());
         r.setWithHeader(withHeader);
         r.setElementSetting(csvSetting);
@@ -42,6 +46,10 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     @Override
     public CsvWriter<T> openWriter(final Writer writer) {
+        if (writer == null) {
+            throw new NullPointerException("writer");
+        }
+
         final DefaultCsvWriter<T> w = new DefaultCsvWriter<T>(getRecordDesc());
         w.setWithHeader(withHeader);
         w.setElementSetting(csvSetting);
