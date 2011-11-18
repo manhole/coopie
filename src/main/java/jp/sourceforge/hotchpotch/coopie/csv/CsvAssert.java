@@ -2,6 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.File;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.FileOperation;
@@ -58,11 +59,46 @@ public class CsvAssert {
             Assert.assertEquals(exp, act);
         }
         if (expectedCsvReader.hasNext() || actualCsvReader.hasNext()) {
-            throw new AssertionError("different size");
+            throw new CsvAssertionError("different size");
         }
 
         IOUtil.closeNoException(expectedCsvReader);
         IOUtil.closeNoException(actualCsvReader);
+    }
+
+    public void assertArrayEquals(final String[] expected, final String[] actual) {
+        if (expected == null && actual == null) {
+            return;
+        }
+        if (expected == null) {
+            throw new CsvAssertionError("expected was null");
+        }
+        if (actual == null) {
+            throw new CsvAssertionError("actual was null");
+        }
+        if (expected.length != actual.length) {
+            throw new CsvAssertionError("size is not equals. expected:<"
+                    + expected.length + "> " + Arrays.toString(expected)
+                    + ", actual:<" + actual.length + "> "
+                    + Arrays.toString(actual));
+        }
+        for (int i = 0; i < expected.length; i++) {
+            if (!expected[i].equals(actual[i])) {
+                throw new CsvAssertionError("[" + i
+                        + "] is not equals. expected:<" + expected[i]
+                        + ">, actual:<" + actual[i] + ">");
+            }
+        }
+    }
+
+    static class CsvAssertionError extends AssertionError {
+
+        private static final long serialVersionUID = 1L;
+
+        public CsvAssertionError(final String message) {
+            super(message);
+        }
+
     }
 
 }
