@@ -8,11 +8,10 @@ import java.util.Map;
 import jp.sourceforge.hotchpotch.coopie.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
 
-import org.junit.Assert;
-
 public class CsvAssert {
 
     private final FileOperation files_ = new FileOperation();
+    private char elementSeparator_ = CsvSetting.TAB;
 
     /**
      * CSVとして等しいかassertします。
@@ -30,6 +29,10 @@ public class CsvAssert {
      */
     public void assertCsvEquals(final Reader expectedReader,
             final Reader actualReader) {
+        if (nullarg(expectedReader, actualReader)) {
+            return;
+        }
+
         try {
             final CsvReader<Map<String, String>> actualCsvReader = openMapReader(actualReader);
             final CsvReader<Map<String, String>> expectedCsvReader = openMapReader(expectedReader);
@@ -44,6 +47,7 @@ public class CsvAssert {
             final Reader actualReader) {
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setWithHeader(true);
+        layout.setElementSeparator(elementSeparator_);
         final CsvReader<Map<String, String>> csvReader = layout
                 .openReader(actualReader);
         return csvReader;
@@ -56,7 +60,10 @@ public class CsvAssert {
         while (expectedCsvReader.hasNext() && actualCsvReader.hasNext()) {
             final Map<String, String> exp = expectedCsvReader.read();
             final Map<String, String> act = actualCsvReader.read();
-            Assert.assertEquals(exp, act);
+            if (!exp.equals(act)) {
+                throw new CsvAssertionError("expected:<" + exp + "> but was:<"
+                        + act + ">");
+            }
         }
         if (expectedCsvReader.hasNext() || actualCsvReader.hasNext()) {
             throw new CsvAssertionError("different size");
@@ -67,14 +74,8 @@ public class CsvAssert {
     }
 
     public void assertArrayEquals(final String[] expected, final String[] actual) {
-        if (expected == null && actual == null) {
+        if (nullarg(expected, actual)) {
             return;
-        }
-        if (expected == null) {
-            throw new CsvAssertionError("expected was null");
-        }
-        if (actual == null) {
-            throw new CsvAssertionError("actual was null");
         }
         if (expected.length != actual.length) {
             throw new CsvAssertionError("size is not equals. expected:<"
@@ -91,6 +92,19 @@ public class CsvAssert {
         }
     }
 
+    private boolean nullarg(final Object expected, final Object actual) {
+        if (expected == null && actual == null) {
+            return true;
+        }
+        if (expected == null) {
+            throw new CsvAssertionError("expected was null");
+        }
+        if (actual == null) {
+            throw new CsvAssertionError("actual was null");
+        }
+        return false;
+    }
+
     static class CsvAssertionError extends AssertionError {
 
         private static final long serialVersionUID = 1L;
@@ -99,6 +113,10 @@ public class CsvAssert {
             super(message);
         }
 
+    }
+
+    public void setElementSeparator(final char elementSeparator) {
+        elementSeparator_ = elementSeparator;
     }
 
 }
