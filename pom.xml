@@ -13,7 +13,7 @@
   <artifactId>coopie</artifactId>
   <packaging>jar</packaging>
   <name>coopie</name>
-  <version>0.1.7</version>
+  <version>0.2.0-SNAPSHOT</version>
   <description />
   <url>http://hotchpotch.sourceforge.jp/</url>
   <inceptionYear>2010</inceptionYear>
