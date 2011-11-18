@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractRecordReader.ReadEditor;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Ignore;
@@ -908,6 +909,92 @@ public class BeanCsvReaderTest {
         assertEquals("a2", bean.getAaa());
         assertEquals("b2", bean.getBbb());
         assertEquals("c2", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    static String CRLF = CsvSetting.CRLF;
+    static String LF = CsvSetting.LF;
+
+    @Test
+    public void read_separator_comma() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader(
+                        BeanCsvWriterTest.V_WRITE_SEPARATOR_COMMA));
+
+        // ## Assert ##
+        _assert(csvReader);
+    }
+
+    @Test
+    public void read_separator_tab() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.TAB);
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader(
+                        BeanCsvWriterTest.V_WRITE_SEPARATOR_TAB));
+
+        // ## Assert ##
+        _assert(csvReader);
+    }
+
+    @Test
+    public void read_lineseparator_LF() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setLineSeparator("\n");
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader(
+                        BeanCsvWriterTest.V_WRITE_LINESEPARATOR_LF));
+
+        // ## Assert ##
+        _assert(csvReader);
+    }
+
+    @Test
+    public void read_quotechar_single() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setQuoteMark('\'');
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader(
+                        BeanCsvWriterTest.V_WRITE_QUOTECHAR_SINGLE));
+
+        // ## Assert ##
+        _assert(csvReader);
+    }
+
+    private void _assert(final RecordReader<AaaBean> csvReader)
+            throws IOException {
+        final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a1", bean.getAaa());
+        assertEquals("b1", bean.getBbb());
+        assertEquals("c1", bean.getCcc());
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
