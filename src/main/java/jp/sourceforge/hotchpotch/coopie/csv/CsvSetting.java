@@ -3,10 +3,9 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.t2framework.commons.util.StringUtil;
+import jp.sourceforge.hotchpotch.coopie.csv.Rfc4180Writer.QuoteMode;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
+import org.t2framework.commons.util.StringUtil;
 
 public class CsvSetting implements ElementSetting {
 
@@ -42,16 +41,22 @@ public class CsvSetting implements ElementSetting {
 
     @Override
     public ElementWriter openWriter(final Writer writer) {
-        final CSVWriter csvWriter = new CSVWriter(writer,
-                getElementSeparator(), getQuoteMark(), getLineSeparator());
-        return new OpenCsvWriterAdapter(csvWriter);
+        final Rfc4180Writer csvWriter = new Rfc4180Writer();
+        csvWriter.setElementSeparator(getElementSeparator());
+        csvWriter.setLineSeparator(getLineSeparator());
+        csvWriter.setQuoteMark(getQuoteMark());
+        csvWriter.setQuoteMode(QuoteMode.ALWAYS_EXCEPT_NULL);
+        csvWriter.open(writer);
+        return csvWriter;
     }
 
     @Override
     public ElementReader openReader(final Reader reader) {
-        final CSVReader csvReader = new CSVReader(reader,
-                getElementSeparator(), getQuoteMark());
-        return new OpenCsvReaderAdapter(csvReader);
+        final Rfc4180Reader rfcReader = new Rfc4180Reader();
+        rfcReader.setElementSeparator(getElementSeparator());
+        rfcReader.setQuoteMark(getQuoteMark());
+        rfcReader.open(reader);
+        return rfcReader;
     }
 
     public String getLineSeparator() {
