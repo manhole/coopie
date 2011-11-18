@@ -300,6 +300,132 @@ public class BeanCsvWriterTest {
         }
     }
 
+    static class AaaBeanBasicSetup implements SetupBlock<CsvColumnSetup> {
+        @Override
+        public void setup(final CsvColumnSetup setup) {
+            setup.column("aaa", "a");
+            setup.column("bbb", "b");
+            setup.column("ccc", "c");
+        }
+    }
+
+    static String CRLF = CsvSetting.CRLF;
+    static String LF = CsvSetting.LF;
+
+    @Test
+    public void write_separator_comma() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        assert_write_separator_comma(lines);
+    }
+
+    static void assert_write_separator_comma(final String lines) {
+        assertEquals(
+                "\"a\",\"b\",\"c\"" + CRLF + "\"a1\",\"b1\",\"c1\"" + CRLF,
+                lines);
+    }
+
+    @Test
+    public void write_separator_tab() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.TAB);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        assert_write_separator_tab(lines);
+    }
+
+    static void assert_write_separator_tab(final String lines) {
+        assertEquals("\"a\"\t\"b\"\t\"c\"" + CRLF + "\"a1\"\t\"b1\"\t\"c1\""
+                + CRLF, lines);
+    }
+
+    @Test
+    public void write_lineseparator_LF() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setLineSeparator("\n");
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        assert_write_lineseparator_LF(lines);
+    }
+
+    static void assert_write_lineseparator_LF(final String lines) {
+        assertEquals("\"a\",\"b\",\"c\"" + LF + "\"a1\",\"b1\",\"c1\"" + LF,
+                lines);
+    }
+
+    @Test
+    public void write_quotechar_single() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setQuoteMark('\'');
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        assert_write_quotechar_single(lines);
+    }
+
+    static void assert_write_quotechar_single(final String lines) {
+        assertEquals("'a','b','c'" + CRLF + "'a1','b1','c1'" + CRLF, lines);
+    }
+
     private void setTo(final AaaBean bean, final String a, final String b,
             final String c) {
         bean.setAaa(a);

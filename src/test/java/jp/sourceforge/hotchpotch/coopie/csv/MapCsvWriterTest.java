@@ -10,6 +10,8 @@ import java.io.StringWriter;
 import java.util.Map;
 import java.util.TreeMap;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
+
 import org.junit.Test;
 import org.t2framework.commons.util.CollectionsUtil;
 import org.t2framework.commons.util.ReaderUtil;
@@ -277,6 +279,100 @@ public class MapCsvWriterTest {
         // ## Assert ##
         final String lines = writer.toString();
         BeanCsvWriterTest.assertWriteCsv(lines);
+    }
+
+    @Test
+    public void write_separator_comma() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, String>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, String> bean = new TreeMap<String, String>();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        BeanCsvWriterTest.assert_write_separator_comma(lines);
+    }
+
+    @Test
+    public void write_separator_tab() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.TAB);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, String>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, String> bean = new TreeMap<String, String>();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        BeanCsvWriterTest.assert_write_separator_tab(lines);
+    }
+
+    @Test
+    public void write_lineseparator_LF() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setLineSeparator("\n");
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, String>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, String> bean = new TreeMap<String, String>();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        BeanCsvWriterTest.assert_write_lineseparator_LF(lines);
+    }
+
+    @Test
+    public void write_quotechar_single() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setQuoteMark('\'');
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, String>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, String> bean = new TreeMap<String, String>();
+        setTo(bean, "a1", "b1", "c1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        BeanCsvWriterTest.assert_write_quotechar_single(lines);
     }
 
     private void setTo(final Map<String, String> bean, final String a,
