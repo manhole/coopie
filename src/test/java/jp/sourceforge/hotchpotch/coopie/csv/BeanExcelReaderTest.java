@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import static jp.sourceforge.hotchpotch.coopie.VarArgs.a;
+import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
@@ -331,7 +331,8 @@ public class BeanExcelReaderTest {
         // ## Assert ##
         {
             final HSSFSheet sheet = workbook.getSheet("S1");
-            final RecordReader<AaaBean> csvReader = layout1.openSheetReader(sheet);
+            final RecordReader<AaaBean> csvReader = layout1
+                    .openSheetReader(sheet);
 
             final AaaBean bean = new AaaBean();
             assertEquals(true, csvReader.hasNext());
@@ -346,7 +347,8 @@ public class BeanExcelReaderTest {
         }
         {
             final HSSFSheet sheet = workbook.getSheet("S2");
-            final RecordReader<BbbBean> csvReader = layout2.openSheetReader(sheet);
+            final RecordReader<BbbBean> csvReader = layout2
+                    .openSheetReader(sheet);
 
             final BbbBean bean = new BbbBean();
             assertEquals(true, csvReader.hasNext());

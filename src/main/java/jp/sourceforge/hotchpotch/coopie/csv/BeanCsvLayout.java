@@ -3,8 +3,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.Reader;
 import java.io.Writer;
 
-import jp.sourceforge.hotchpotch.coopie.FailureProtection;
-import jp.sourceforge.hotchpotch.coopie.IOUtil;
+import jp.sourceforge.hotchpotch.coopie.util.FailureProtection;
+import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {

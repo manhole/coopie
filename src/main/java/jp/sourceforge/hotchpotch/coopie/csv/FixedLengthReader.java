@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.IOUtil;
-import jp.sourceforge.hotchpotch.coopie.ReaderUtil;
+import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
+import jp.sourceforge.hotchpotch.coopie.util.ReaderUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 

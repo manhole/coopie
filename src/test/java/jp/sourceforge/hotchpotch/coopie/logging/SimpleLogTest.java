@@ -1,12 +1,12 @@
 package jp.sourceforge.hotchpotch.coopie.logging;
 
-import static jp.sourceforge.hotchpotch.coopie.VarArgs.a;
+import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
 import java.io.ByteArrayOutputStream;
 
-import jp.sourceforge.hotchpotch.coopie.StdOutBlock;
+import jp.sourceforge.hotchpotch.coopie.util.StdOutBlock;
 
 import org.junit.Test;
 import org.t2framework.commons.util.task.EasyTask;

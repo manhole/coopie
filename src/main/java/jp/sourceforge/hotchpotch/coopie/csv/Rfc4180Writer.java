@@ -3,8 +3,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.Closeable;
 import java.io.IOException;
 
-import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.IOUtil;
+import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 

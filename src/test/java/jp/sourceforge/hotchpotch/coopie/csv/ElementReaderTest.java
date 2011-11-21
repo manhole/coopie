@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import static jp.sourceforge.hotchpotch.coopie.VarArgs.a;
+import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
