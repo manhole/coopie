@@ -61,14 +61,13 @@ public class BeanCsvReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-1", "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -110,7 +109,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-2", "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -124,8 +123,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -141,7 +139,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read2_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-2", "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -170,8 +168,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -221,14 +218,13 @@ public class BeanCsvReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-4", "tsv");
+        final Reader r = getResourceAsReader("-4", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -262,14 +258,13 @@ public class BeanCsvReaderTest {
     @Test
     public void read3_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-4", "tsv");
+        final Reader r = getResourceAsReader("-4", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         {
@@ -299,7 +294,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-3", "tsv");
+        final Reader r = getResourceAsReader("-3", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -318,8 +313,7 @@ public class BeanCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -341,7 +335,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_noheader_badsetting() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-3", "tsv");
+        final Reader r = getResourceAsReader("-3", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -349,7 +343,7 @@ public class BeanCsvReaderTest {
 
         // ## Act ##
         try {
-            layout.openReader(new InputStreamReader(is, "UTF-8"));
+            layout.openReader(r);
             fail();
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage());
@@ -385,14 +379,13 @@ public class BeanCsvReaderTest {
     @Test
     public void read_empty_row() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-5", "tsv");
+        final Reader r = getResourceAsReader("-5", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -437,14 +430,13 @@ public class BeanCsvReaderTest {
     @Test
     public void read_empty_row_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-5", "tsv");
+        final Reader r = getResourceAsReader("-5", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         assertReadEmptyRow2(csvReader);
@@ -490,7 +482,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-2", "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -503,8 +495,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -538,7 +529,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-6", "tsv");
+        final Reader r = getResourceAsReader("-6", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -551,8 +542,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -587,8 +577,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_smallColumns() throws Throwable {
         // ## Arrange ##
-        final Reader r = getResourceAsReader("-9", "tsv",
-                Charset.forName("UTF-8"));
+        final Reader r = getResourceAsReader("-9", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
@@ -645,15 +634,14 @@ public class BeanCsvReaderTest {
     @Test
     public void read_customLayout() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-7", "tsv");
+        final Reader r = getResourceAsReader("-7", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
         layout.setReadEditor(new TestReadEditor());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -742,20 +730,15 @@ public class BeanCsvReaderTest {
 
         final Charset charset = Charset.forName("UTF-8");
         final String ext = "tsv";
-        assertRead9_1(
-                layout.openReader(getResourceAsReader("-10-1", ext, charset)),
+        assertRead9_1(layout.openReader(getResourceAsReader("-10-1", ext)),
                 bean);
-        assertRead9_2(
-                layout.openReader(getResourceAsReader("-10-2", ext, charset)),
+        assertRead9_2(layout.openReader(getResourceAsReader("-10-2", ext)),
                 bean);
-        assertRead9_1(
-                layout.openReader(getResourceAsReader("-10-3", ext, charset)),
+        assertRead9_1(layout.openReader(getResourceAsReader("-10-3", ext)),
                 bean);
-        assertRead9_1(
-                layout.openReader(getResourceAsReader("-10-1", ext, charset)),
+        assertRead9_1(layout.openReader(getResourceAsReader("-10-1", ext)),
                 bean);
-        assertRead9_2(
-                layout.openReader(getResourceAsReader("-10-2", ext, charset)),
+        assertRead9_2(layout.openReader(getResourceAsReader("-10-2", ext)),
                 bean);
     }
 
@@ -849,14 +832,13 @@ public class BeanCsvReaderTest {
     @Test
     public void read_afterLast() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-1", "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -881,8 +863,7 @@ public class BeanCsvReaderTest {
     @Test
     public void readCsv() throws Throwable {
         // ## Arrange ##
-        final Reader reader = getResourceAsReader("-8", "csv",
-                Charset.forName("UTF-8"));
+        final Reader reader = getResourceAsReader("-8", "csv");
         final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
                 AaaBean.class);
         layout.setElementSeparator(CsvSetting.COMMA);
@@ -1000,10 +981,17 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
+    static Reader getResourceAsReader(final String suffix, final String ext) {
+        final Charset charset = Charset.forName("UTF-8");
+        final Reader reader = getResourceAsReader(suffix, ext, charset);
+        return reader;
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext,
             final Charset charset) {
         final InputStream is = getResourceAsStream(suffix, ext);
-        return new InputStreamReader(is, charset);
+        final InputStreamReader reader = new InputStreamReader(is, charset);
+        return reader;
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
