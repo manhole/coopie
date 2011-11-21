@@ -23,6 +23,8 @@ import org.t2framework.commons.util.CollectionsUtil;
 public class Rfc4180Reader implements ElementReader {
 
     private static final Logger logger = LoggerFactory.getLogger();
+    private static final char CR = CsvSetting.CR;
+    private static final char LF = CsvSetting.LF;
 
     protected boolean closed_ = true;
     @SuppressWarnings("unused")
@@ -33,8 +35,6 @@ public class Rfc4180Reader implements ElementReader {
 
     private char elementSeparator_ = CsvSetting.COMMA;
     private char quoteMark_ = CsvSetting.DOUBLE_QUOTE;
-    private final char CR = '\r';
-    private final char LF = '\n';
 
     public void open(final Readable readable) {
         br_ = new BufferedReadable(readable);
