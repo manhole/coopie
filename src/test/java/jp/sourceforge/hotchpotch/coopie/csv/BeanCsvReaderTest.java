@@ -896,7 +896,7 @@ public class BeanCsvReaderTest {
     }
 
     static String CRLF = CsvSetting.CRLF;
-    static String LF = CsvSetting.LF;
+    static String LF = CsvSetting.LF_S;
 
     @Test
     public void read_separator_comma() throws Throwable {
