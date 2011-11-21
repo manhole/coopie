@@ -275,30 +275,24 @@ public class Rfc4180Reader implements ElementReader {
         private boolean inRecord_;
 
         public void startRecord() {
-            if (inRecord_) {
-                throw new IllegalStateException("already started");
-            }
+            assertNotInRecord();
             inRecord_ = true;
         }
 
         public void endRecord() {
-            if (!inRecord_) {
-                throw new IllegalStateException("already ended");
-            }
+            assertInRecord();
             inRecord_ = false;
         }
 
         public void startElement() {
-            if (inElement_) {
-                throw new IllegalStateException("already started");
-            }
+            assertInRecord();
+            assertNotInElement();
             inElement_ = true;
         }
 
         public void endElement() {
-            if (!isInElement()) {
-                throw new IllegalStateException("not started");
-            }
+            assertInRecord();
+            assertInElement();
             elems_.add(bufferString());
             inElement_ = false;
         }
@@ -315,10 +309,7 @@ public class Rfc4180Reader implements ElementReader {
         }
 
         public void append(final char c) {
-            if (!isInElement()) {
-                throw new IllegalStateException("not started");
-            }
-
+            assertInElement();
             sb_.append(c);
         }
 
@@ -333,10 +324,32 @@ public class Rfc4180Reader implements ElementReader {
         }
 
         public String[] toRecord() {
-            if (inRecord_) {
-                throw new IllegalStateException("not ended");
-            }
+            assertNotInRecord();
             return elems_.toArray(new String[elems_.size()]);
+        }
+
+        private void assertInRecord() {
+            if (!inRecord_) {
+                throw new IllegalStateException("not in record");
+            }
+        }
+
+        private void assertNotInRecord() {
+            if (inRecord_) {
+                throw new IllegalStateException("in record");
+            }
+        }
+
+        private void assertInElement() {
+            if (!isInElement()) {
+                throw new IllegalStateException("not started");
+            }
+        }
+
+        private void assertNotInElement() {
+            if (isInElement()) {
+                throw new IllegalStateException("already started");
+            }
         }
 
     }
