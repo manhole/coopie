@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
@@ -46,14 +44,13 @@ public class MapCsvReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -94,8 +91,7 @@ public class MapCsvReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
-                "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -109,7 +105,7 @@ public class MapCsvReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -144,14 +140,13 @@ public class MapCsvReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
-                "tsv");
+        final Reader r = getResourceAsReader("-4", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -184,14 +179,13 @@ public class MapCsvReaderTest {
     @Test
     public void read3_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
-                "tsv");
+        final Reader r = getResourceAsReader("-4", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         assertRead3_2(csvReader);
@@ -226,8 +220,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
-                "tsv");
+        final Reader r = getResourceAsReader("-3", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -246,7 +239,7 @@ public class MapCsvReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -269,15 +262,14 @@ public class MapCsvReaderTest {
     @Test
     public void read_noheader_badsetting() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
-                "tsv");
+        final Reader r = getResourceAsReader("-3", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setWithHeader(false);
 
         // ## Act ##
         try {
-            layout.openReader(new InputStreamReader(is, "UTF-8"));
+            layout.openReader(r);
             fail();
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage());
@@ -363,14 +355,13 @@ public class MapCsvReaderTest {
     @Test
     public void read_empty_row() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-5",
-                "tsv");
+        final Reader r = getResourceAsReader("-5", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -416,14 +407,13 @@ public class MapCsvReaderTest {
     @Test
     public void read_empty_row_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-5",
-                "tsv");
+        final Reader r = getResourceAsReader("-5", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         assertReadEmptyRow2(csvReader);
@@ -471,8 +461,7 @@ public class MapCsvReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
-                "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -485,7 +474,7 @@ public class MapCsvReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -518,8 +507,7 @@ public class MapCsvReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6",
-                "tsv");
+        final Reader r = getResourceAsReader("-6", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -532,7 +520,7 @@ public class MapCsvReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -622,14 +610,13 @@ public class MapCsvReaderTest {
     @Test
     public void read_afterLast() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -657,19 +644,19 @@ public class MapCsvReaderTest {
     static void assertReadCsv(
             final RecordReader<Map<String, String>> csvReader,
             final Map<String, String> bean) throws IOException {
-    
+
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         assertEquals("a1", bean.get("aaa"));
         assertEquals("b1", bean.get("bbb"));
         assertEquals("c1", bean.get("ccc"));
-    
+
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         assertEquals("a2", bean.get("aaa"));
         assertEquals("b2", bean.get("bbb"));
         assertEquals("c2", bean.get("ccc"));
-    
+
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
     }
@@ -747,6 +734,12 @@ public class MapCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    static Reader getResourceAsReader(final String suffix, final String ext) {
+        final Reader reader = BeanCsvReaderTest
+                .getResourceAsReader(suffix, ext);
+        return reader;
     }
 
 }
