@@ -3,10 +3,10 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import jp.sourceforge.hotchpotch.coopie.Closable;
-import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.Closable;
+import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 import org.slf4j.Logger;
 

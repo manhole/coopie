@@ -10,11 +10,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import jp.sourceforge.hotchpotch.coopie.Text;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CccBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.DddBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.EeeBean;
+import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.junit.Test;
 import org.t2framework.commons.util.ReaderUtil;

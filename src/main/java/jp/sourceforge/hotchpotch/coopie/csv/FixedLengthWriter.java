@@ -4,9 +4,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.IOUtil;
-import jp.sourceforge.hotchpotch.coopie.WriterUtil;
+import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
+import jp.sourceforge.hotchpotch.coopie.util.WriterUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.StringUtil;

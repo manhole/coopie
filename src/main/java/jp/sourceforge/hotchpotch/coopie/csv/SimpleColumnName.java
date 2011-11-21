@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
+import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 
 public class SimpleColumnName implements ColumnName {
 

@@ -5,8 +5,8 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.Map;
 
-import jp.sourceforge.hotchpotch.coopie.FileOperation;
-import jp.sourceforge.hotchpotch.coopie.IOUtil;
+import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
+import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 public class CsvAssert {
 
