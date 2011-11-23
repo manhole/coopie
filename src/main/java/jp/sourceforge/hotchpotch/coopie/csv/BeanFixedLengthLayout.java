@@ -14,6 +14,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
     @Override
     public RecordReader<T> openReader(final Readable readable) {
+        if (readable == null) {
+            throw new NullPointerException("readable");
+        }
+
         final RecordDesc<T> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
@@ -26,6 +30,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
     @Override
     public RecordWriter<T> openWriter(final Appendable appendable) {
+        if (appendable == null) {
+            throw new NullPointerException("appendable");
+        }
+
         final RecordDesc<T> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(rd);
