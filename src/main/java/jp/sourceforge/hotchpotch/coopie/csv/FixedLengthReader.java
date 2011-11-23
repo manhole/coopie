@@ -1,12 +1,11 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
-import jp.sourceforge.hotchpotch.coopie.util.ReaderUtil;
+import jp.sourceforge.hotchpotch.coopie.util.Line;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -16,13 +15,13 @@ public class FixedLengthReader implements ElementReader {
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    private final BufferedReader reader_;
+    private final LineReadable reader_;
     private final FixedLengthColumn[] columns_;
     private int lineNo_;
 
-    public FixedLengthReader(final Reader reader,
+    public FixedLengthReader(final Readable reader,
             final FixedLengthColumn[] columns) {
-        reader_ = ReaderUtil.toBufferedReader(reader);
+        reader_ = new LineReadable(reader);
         columns_ = columns;
         closed_ = false;
     }
@@ -35,14 +34,15 @@ public class FixedLengthReader implements ElementReader {
     @Override
     public String[] readRecord() {
         try {
-            final String line = reader_.readLine();
+            final Line line = reader_.readLine();
             if (line == null) {
                 return null;
             }
             final String[] record = new String[columns_.length];
             for (int i = 0; i < columns_.length; i++) {
                 final FixedLengthColumn column = columns_[i];
-                final String elem = column.read(line);
+                final String str = line.getBody();
+                final String elem = column.read(str);
                 record[i] = elem;
             }
             lineNo_++;
