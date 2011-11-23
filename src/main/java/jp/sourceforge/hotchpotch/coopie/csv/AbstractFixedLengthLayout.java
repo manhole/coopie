@@ -194,12 +194,12 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
         }
 
         @Override
-        public CsvElementWriter openWriter(final Writer writer) {
+        public ElementWriter openWriter(final Writer writer) {
             return new FixedLengthWriter(writer, columns);
         }
 
         @Override
-        public CsvElementReader openReader(final Reader reader) {
+        public ElementReader openReader(final Reader reader) {
             return new FixedLengthReader(reader, columns);
         }
 

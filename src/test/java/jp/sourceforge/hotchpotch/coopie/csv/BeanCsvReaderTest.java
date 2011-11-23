@@ -669,7 +669,7 @@ public class BeanCsvReaderTest {
     static class TestReadEditor implements ReadEditor {
 
         @Override
-        public String[] readRecord(final CsvElementReader elementReader) {
+        public String[] readRecord(final ElementReader elementReader) {
             if (elementReader.getRecordNo() == 0) {
                 // 3行あるheader部をskip
                 elementReader.readRecord();

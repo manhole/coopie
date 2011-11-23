@@ -11,7 +11,7 @@ import jp.sourceforge.hotchpotch.coopie.WriterUtil;
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.StringUtil;
 
-public class FixedLengthWriter implements CsvElementWriter {
+public class FixedLengthWriter implements ElementWriter {
 
     protected boolean closed = true;
     @SuppressWarnings("unused")

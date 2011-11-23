@@ -24,7 +24,7 @@ public abstract class AbstractRecordReader<T> implements Closable, RecordReader<
     @SuppressWarnings("unused")
     private final Object finalizerGuardian = new ClosingGuardian(this);
 
-    protected CsvElementReader elementReader;
+    protected ElementReader elementReader;
     private ReadEditor readEditor = DefaultReadEditor.getInstance();
     private boolean withHeader;
 
@@ -142,7 +142,7 @@ public abstract class AbstractRecordReader<T> implements Closable, RecordReader<
 
     public static interface ReadEditor {
 
-        String[] readRecord(CsvElementReader elementReader);
+        String[] readRecord(ElementReader elementReader);
 
     }
 
@@ -155,7 +155,7 @@ public abstract class AbstractRecordReader<T> implements Closable, RecordReader<
         }
 
         @Override
-        public String[] readRecord(final CsvElementReader elementReader) {
+        public String[] readRecord(final ElementReader elementReader) {
             return elementReader.readRecord();
         }
 

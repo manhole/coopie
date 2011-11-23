@@ -39,14 +39,14 @@ public class CsvSetting implements ElementSetting {
     private String lineSeparator = CRLF;
 
     @Override
-    public CsvElementWriter openWriter(final Writer writer) {
+    public ElementWriter openWriter(final Writer writer) {
         final CSVWriter csvWriter = new CSVWriter(writer,
                 getElementSeparator(), getQuoteMark(), getLineSeparator());
         return new OpenCsvWriterAdapter(csvWriter);
     }
 
     @Override
-    public CsvElementReader openReader(final Reader reader) {
+    public ElementReader openReader(final Reader reader) {
         final CSVReader csvReader = new CSVReader(reader,
                 getElementSeparator(), getQuoteMark());
         return new OpenCsvReaderAdapter(csvReader);
