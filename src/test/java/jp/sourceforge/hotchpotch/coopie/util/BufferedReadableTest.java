@@ -1,11 +1,9 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.util;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringReader;
-
-import jp.sourceforge.hotchpotch.coopie.csv.Rfc4180Reader.BufferedReadable;
 
 import org.junit.Test;
 
