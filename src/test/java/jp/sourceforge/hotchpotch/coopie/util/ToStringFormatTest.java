@@ -152,7 +152,7 @@ public class ToStringFormatTest {
 
         // ## Assert ##
         assertEquals(
-                "Class[jp.sourceforge.hotchpotch.coopie.ToStringFormatTest$Foo]",
+                "Class[jp.sourceforge.hotchpotch.coopie.util.ToStringFormatTest$Foo]",
                 actual);
     }
 
