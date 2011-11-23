@@ -6,10 +6,10 @@ import java.nio.charset.Charset;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractFixedLengthLayout.SimpleFixedLengthColumn;
 
-public class FixedLengthReaderTest extends CsvElementReaderTest {
+public class FixedLengthReaderTest extends ElementReaderTest {
 
     @Override
-    protected CsvElementReader constructTest1Reader() {
+    protected ElementReader constructTest1Reader() {
         // ## Arrange ##
         final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
                 "-1", "tsv");

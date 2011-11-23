@@ -41,7 +41,7 @@ public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
         this.writeEditor = writeEditor;
     }
 
-    static class PoiWriter implements CsvElementWriter {
+    static class PoiWriter implements ElementWriter {
 
         private final OutputStream os;
         private boolean closed = true;
@@ -92,7 +92,7 @@ public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
 
     }
 
-    static class PoiSheetWriter implements CsvElementWriter {
+    static class PoiSheetWriter implements ElementWriter {
 
         private boolean closed = true;
         @SuppressWarnings("unused")

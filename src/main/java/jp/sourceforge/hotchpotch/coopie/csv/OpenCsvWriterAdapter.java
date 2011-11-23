@@ -6,7 +6,7 @@ import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.IOUtil;
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class OpenCsvWriterAdapter implements CsvElementWriter {
+public class OpenCsvWriterAdapter implements ElementWriter {
 
     protected boolean closed = true;
     @SuppressWarnings("unused")

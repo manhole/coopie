@@ -5,10 +5,10 @@ import java.nio.charset.Charset;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class OpenCsvReaderAdapterTest extends CsvElementReaderTest {
+public class OpenCsvReaderAdapterTest extends ElementReaderTest {
 
     @Override
-    protected CsvElementReader constructTest1Reader() {
+    protected ElementReader constructTest1Reader() {
         final InputStreamReader reader = new InputStreamReader(
                 BeanCsvReaderTest.getResourceAsStream("-1", "tsv"),
                 Charset.forName("UTF-8"));
