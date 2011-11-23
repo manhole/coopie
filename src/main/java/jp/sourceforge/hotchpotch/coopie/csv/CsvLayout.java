@@ -1,12 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.Reader;
-import java.io.Writer;
-
 public interface CsvLayout<T> {
 
-    RecordReader<T> openReader(Reader reader);
+    RecordReader<T> openReader(Readable readable);
 
-    RecordWriter<T> openWriter(Writer writer);
+    RecordWriter<T> openWriter(Appendable appendable);
 
 }

@@ -1,7 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.Map;
 
 public class MapFixedLengthLayout extends
@@ -9,7 +7,7 @@ public class MapFixedLengthLayout extends
         CsvLayout<Map<String, String>> {
 
     @Override
-    public RecordReader<Map<String, String>> openReader(final Reader reader) {
+    public RecordReader<Map<String, String>> openReader(final Readable readable) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
@@ -17,12 +15,13 @@ public class MapFixedLengthLayout extends
         r.setWithHeader(isWithHeader());
         r.setElementSetting(es);
         // TODO openで例外時にcloseすること
-        r.open(reader);
+        r.open(readable);
         return r;
     }
 
     @Override
-    public RecordWriter<Map<String, String>> openWriter(final Writer writer) {
+    public RecordWriter<Map<String, String>> openWriter(
+            final Appendable appendable) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
@@ -30,7 +29,7 @@ public class MapFixedLengthLayout extends
         w.setWithHeader(isWithHeader());
         w.setElementSetting(es);
         // TODO openで例外時にcloseすること
-        w.open(writer);
+        w.open(appendable);
         return w;
     }
 

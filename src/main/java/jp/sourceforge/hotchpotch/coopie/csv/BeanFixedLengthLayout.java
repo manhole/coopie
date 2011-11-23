@@ -1,8 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.Reader;
-import java.io.Writer;
-
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
 
@@ -16,26 +13,26 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     }
 
     @Override
-    public RecordReader<T> openReader(final Reader reader) {
+    public RecordReader<T> openReader(final Readable readable) {
         final RecordDesc<T> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
         r.setWithHeader(isWithHeader());
         r.setElementSetting(es);
         // TODO openで例外時にcloseすること
-        r.open(reader);
+        r.open(readable);
         return r;
     }
 
     @Override
-    public RecordWriter<T> openWriter(final Writer writer) {
+    public RecordWriter<T> openWriter(final Appendable appendable) {
         final RecordDesc<T> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(rd);
         w.setWithHeader(isWithHeader());
         w.setElementSetting(es);
         // TODO openで例外時にcloseすること
-        w.open(writer);
+        w.open(appendable);
         return w;
     }
 
