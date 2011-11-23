@@ -1,12 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.Reader;
-import java.io.Writer;
-
 public interface ElementSetting {
 
-    ElementWriter openWriter(Writer writer);
+    ElementWriter openWriter(Appendable appendable);
 
-    ElementReader openReader(Reader reader);
+    ElementReader openReader(Readable readable);
 
 }

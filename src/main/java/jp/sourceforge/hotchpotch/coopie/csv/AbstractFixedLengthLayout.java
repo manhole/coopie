@@ -1,8 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.List;
 
 import org.t2framework.commons.exception.IORuntimeException;
@@ -197,13 +195,13 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         @Override
-        public ElementWriter openWriter(final Writer writer) {
-            return new FixedLengthWriter(writer, columns_);
+        public ElementWriter openWriter(final Appendable appendable) {
+            return new FixedLengthWriter(appendable, columns_);
         }
 
         @Override
-        public ElementReader openReader(final Reader reader) {
-            return new FixedLengthReader(reader, columns_);
+        public ElementReader openReader(final Readable readable) {
+            return new FixedLengthReader(readable, columns_);
         }
 
     }

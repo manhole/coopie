@@ -1,8 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.Reader;
-import java.io.Writer;
-
 import jp.sourceforge.hotchpotch.coopie.csv.Rfc4180Writer.QuoteMode;
 
 import org.t2framework.commons.util.StringUtil;
@@ -42,22 +39,22 @@ public class CsvSetting implements ElementSetting {
     private String lineSeparator_ = CRLF;
 
     @Override
-    public ElementWriter openWriter(final Writer writer) {
+    public ElementWriter openWriter(final Appendable appendable) {
         final Rfc4180Writer csvWriter = new Rfc4180Writer();
         csvWriter.setElementSeparator(getElementSeparator());
         csvWriter.setLineSeparator(getLineSeparator());
         csvWriter.setQuoteMark(getQuoteMark());
         csvWriter.setQuoteMode(QuoteMode.ALWAYS_EXCEPT_NULL);
-        csvWriter.open(writer);
+        csvWriter.open(appendable);
         return csvWriter;
     }
 
     @Override
-    public ElementReader openReader(final Reader reader) {
+    public ElementReader openReader(final Readable readable) {
         final Rfc4180Reader rfcReader = new Rfc4180Reader();
         rfcReader.setElementSeparator(getElementSeparator());
         rfcReader.setQuoteMark(getQuoteMark());
-        rfcReader.open(reader);
+        rfcReader.open(readable);
         return rfcReader;
     }
 
