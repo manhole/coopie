@@ -1,4 +1,4 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.fl;
 
 public interface FixedLengthColumnSetup {
 

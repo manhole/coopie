@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-class DefaultRecordWriter<T> extends AbstractRecordWriter<T> {
+public class DefaultRecordWriter<T> extends AbstractRecordWriter<T> {
 
     private ElementSetting elementSetting_;
 

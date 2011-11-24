@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 
 import org.t2framework.commons.meta.PropertyDesc;
 
-class Annotations {
+public class Annotations {
 
-    static <ANN extends Annotation> ANN getAnnotation(
+    public static <ANN extends Annotation> ANN getAnnotation(
             final PropertyDesc<?> propertyDesc, final Class<ANN> annotationClass) {
         if (propertyDesc.isReadable()) {
             final Method reader = propertyDesc.getReadMethod();

@@ -171,7 +171,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     // TODO
-    static <U> ColumnDesc<U>[] toColumnDescs(
+    public static <U> ColumnDesc<U>[] toColumnDescs(
             final Collection<? extends ColumnName> columns, final BeanDesc<U> bd) {
         final ColumnDesc<U>[] cds = ColumnDescs.newColumnDescs(columns.size());
         int i = 0;

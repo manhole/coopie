@@ -1,8 +1,11 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderTest;
 
 public class FixedLengthReaderTest extends ElementReaderTest {
 

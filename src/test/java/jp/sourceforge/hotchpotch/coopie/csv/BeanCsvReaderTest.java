@@ -320,8 +320,9 @@ public class BeanCsvReaderTest {
         assertReadNoheader(csvReader, bean);
     }
 
-    static void assertReadNoheader(final RecordReader<AaaBean> csvReader,
-            final AaaBean bean) throws IOException {
+    public static void assertReadNoheader(
+            final RecordReader<AaaBean> csvReader, final AaaBean bean)
+            throws IOException {
         /*
          * データはread2のテストと同じなので。
          */
@@ -392,8 +393,9 @@ public class BeanCsvReaderTest {
         assertReadEmptyRow(csvReader, bean);
     }
 
-    static void assertReadEmptyRow(final RecordReader<AaaBean> csvReader,
-            final AaaBean bean) throws IOException {
+    public static void assertReadEmptyRow(
+            final RecordReader<AaaBean> csvReader, final AaaBean bean)
+            throws IOException {
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);

@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-class DefaultRecordReader<T> extends AbstractRecordReader<T> {
+public class DefaultRecordReader<T> extends AbstractRecordReader<T> {
 
     private ElementSetting elementSetting_;
 
