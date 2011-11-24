@@ -3,8 +3,8 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 import java.io.IOException;
 
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
 import org.t2framework.commons.exception.IORuntimeException;
@@ -59,7 +59,7 @@ public class FixedLengthReader implements ElementReader {
     @Override
     public void close() throws IOException {
         closed_ = true;
-        IOUtil.closeNoException(reader_);
+        CloseableUtil.closeNoException(reader_);
     }
 
 }

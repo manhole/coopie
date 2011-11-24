@@ -6,8 +6,8 @@ import java.util.List;
 import jp.sourceforge.hotchpotch.coopie.logging.Logger;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.BufferedReadable;
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
@@ -255,7 +255,7 @@ public class Rfc4180Reader implements ElementReader {
     @Override
     public void close() throws IOException {
         closed_ = true;
-        IOUtil.closeNoException(br_);
+        CloseableUtil.closeNoException(br_);
     }
 
     public void setElementSeparator(final char elementSeparator) {

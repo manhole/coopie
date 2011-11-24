@@ -1,7 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FailureProtection;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {
@@ -42,7 +42,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
             @Override
             protected void rescue() {
-                IOUtil.closeNoException(r);
+                CloseableUtil.closeNoException(r);
             }
 
         }.execute();

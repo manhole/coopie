@@ -99,7 +99,7 @@ public class BufferedReadable implements Closeable {
     public void close() throws IOException {
         if (readable_ instanceof Closeable) {
             final Closeable closeable = Closeable.class.cast(readable_);
-            IOUtil.closeNoException(closeable);
+            CloseableUtil.closeNoException(closeable);
         }
     }
 

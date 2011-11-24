@@ -80,7 +80,7 @@ public class LineReadable implements Closable {
     @Override
     public void close() throws IOException {
         closed_ = true;
-        IOUtil.closeNoException(readable_);
+        CloseableUtil.closeNoException(readable_);
     }
 
     /**

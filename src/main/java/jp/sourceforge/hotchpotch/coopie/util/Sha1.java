@@ -23,7 +23,7 @@ public class Sha1 {
                 md.update(bytes, 0, len);
             }
         } finally {
-            IOUtil.closeNoException(is);
+            CloseableUtil.closeNoException(is);
         }
 
         final byte[] digest = md.digest();

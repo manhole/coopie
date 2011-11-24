@@ -6,9 +6,9 @@ import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultExcelReader.PoiSheetReader;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.util.FileResource;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
@@ -37,7 +37,7 @@ public class ExcelToCsv {
                 if (!sheet.isEmpty()) {
                     sheets.add(sheet);
                 } else {
-                    IOUtil.closeNoException(sheet);
+                    CloseableUtil.closeNoException(sheet);
                 }
             }
 
@@ -79,7 +79,7 @@ public class ExcelToCsv {
             }
         } finally {
             for (final PoiSheetReader sheetReader : sheets) {
-                IOUtil.closeNoException(sheetReader);
+                CloseableUtil.closeNoException(sheetReader);
             }
         }
 

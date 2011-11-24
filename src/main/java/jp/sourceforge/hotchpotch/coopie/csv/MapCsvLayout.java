@@ -2,8 +2,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FailureProtection;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 public class MapCsvLayout extends AbstractMapCsvLayout implements
         CsvLayout<Map<String, String>> {
@@ -36,7 +36,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
 
             @Override
             protected void rescue() {
-                IOUtil.closeNoException(r);
+                CloseableUtil.closeNoException(r);
             }
 
         }.execute();
