@@ -11,6 +11,7 @@ import java.io.StringReader;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -353,9 +354,89 @@ public class BeanFixedLengthReaderTest {
         csvReader.close();
     }
 
+    @Test
+    public void read_annotation_1() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(
+                FlAaaBean.class);
+
+        // ## Act ##
+        final RecordReader<FlAaaBean> csvReader = layout
+                .openReader(new StringReader("0123456789\n1234567890\n23\n"));
+
+        // ## Assert ##
+        final FlAaaBean bean = new FlAaaBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("012", bean.getAaa());
+        assertEquals("34", bean.getBbb());
+        assertEquals("5", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("123", bean.getAaa());
+        assertEquals("45", bean.getBbb());
+        assertEquals("6", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("23", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+        assertEquals(null, bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
     static InputStream getResourceAsStream(final String suffix, final String ext) {
         return ResourceUtil.getResourceAsStream(
                 BeanFixedLengthReaderTest.class.getName() + suffix, ext);
+    }
+
+    public static class FlAaaBean {
+
+        private String aaa;
+        private String bbb;
+        private String ccc;
+
+        @FixedLengthColumn(beginIndex = 0, endIndex = 3)
+        public String getAaa() {
+            return aaa;
+        }
+
+        public void setAaa(final String aaa) {
+            this.aaa = aaa;
+        }
+
+        @FixedLengthColumn(beginIndex = 3, endIndex = 5)
+        public String getBbb() {
+            return bbb;
+        }
+
+        public void setBbb(final String bbb) {
+            this.bbb = bbb;
+        }
+
+        @FixedLengthColumn(beginIndex = 5, endIndex = 6)
+        public String getCcc() {
+            return ccc;
+        }
+
+        public void setCcc(final String ccc) {
+            this.ccc = ccc;
+        }
+
+        private final ToStringFormat toStringFormat = new ToStringFormat();
+
+        @Override
+        public String toString() {
+            return toStringFormat.format(this);
+        }
+
     }
 
 }
