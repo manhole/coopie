@@ -8,7 +8,6 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     private final CsvSetting csvSetting_;
     private final ElementSetting elementSetting_;
-    private ElementEditor elementEditor_;
 
     public static <T> BeanCsvLayout<T> getInstance(final Class<T> beanClass) {
         final BeanCsvLayout<T> instance = new BeanCsvLayout<T>(beanClass);
@@ -32,7 +31,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         r.setWithHeader(isWithHeader());
         r.setElementSetting(elementSetting_);
         r.setReadEditor(getReadEditor());
-        r.setElementEditor(elementEditor_);
+        r.setElementEditor(getElementEditor());
 
         new FailureProtection<RuntimeException>() {
 
@@ -75,10 +74,6 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     public void setQuoteMark(final char quoteMark) {
         csvSetting_.setQuoteMark(quoteMark);
-    }
-
-    public void setElementEditor(final ElementEditor elementEditor) {
-        elementEditor_ = elementEditor;
     }
 
 }
