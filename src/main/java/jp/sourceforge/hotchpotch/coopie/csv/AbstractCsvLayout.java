@@ -13,6 +13,7 @@ abstract class AbstractCsvLayout<T> {
     private RecordDesc<T> recordDesc_;
     private boolean withHeader_ = true;
     private ReadEditor readEditor_ = DefaultReadEditor.getInstance();
+    private ElementEditor elementEditor_;
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
         final CsvRecordDescSetup<T> setup = getRecordDescSetup();
@@ -44,6 +45,14 @@ abstract class AbstractCsvLayout<T> {
 
     protected void setRecordDesc(final RecordDesc<T> recordDesc) {
         recordDesc_ = recordDesc;
+    }
+
+    protected ElementEditor getElementEditor() {
+        return elementEditor_;
+    }
+
+    public void setElementEditor(final ElementEditor elementEditor) {
+        elementEditor_ = elementEditor;
     }
 
     protected static interface CsvRecordDescSetup<T> extends CsvColumnSetup {
