@@ -7,13 +7,14 @@ import java.nio.CharBuffer;
 public class BufferedReadable implements Closeable {
 
     private static final char NULL_CHAR = '\u0000';
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 8;
     private final Readable readable_;
     private final CharBuffer charBuffer_;
     private int readSize_;
     private boolean eof_;
 
     public BufferedReadable(final Readable readable) {
-        this(readable, 128);
+        this(readable, DEFAULT_BUFFER_SIZE);
     }
 
     public BufferedReadable(final Readable readable, final int bufferSize) {
