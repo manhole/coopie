@@ -981,6 +981,41 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * ヘッダがBeanのプロパティ名と異なる場合。
+     * アノテーションからlabelを取得して、ヘッダ名とbeanのプロパティ名をマッピングすること。
+     */
+    @Test
+    public void read_annotation_1() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-2", "tsv");
+
+        final BeanCsvLayout<CccBean> layout = new BeanCsvLayout<CccBean>(
+                CccBean.class);
+
+        // ## Act ##
+        final RecordReader<CccBean> csvReader = layout.openReader(r);
+
+        // ## Assert ##
+        final CccBean bean = new CccBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.getAaa());
+        assertEquals("い2", bean.getBbb());
+        assertEquals("う2", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Charset charset = Charset.forName("UTF-8");
         final Reader reader = getResourceAsReader(suffix, ext, charset);
@@ -1057,6 +1092,132 @@ public class BeanCsvReaderTest {
 
         public void setBb(final String bbb) {
             bb = bbb;
+        }
+
+        private final ToStringFormat toStringFormat = new ToStringFormat();
+
+        @Override
+        public String toString() {
+            return toStringFormat.format(this);
+        }
+
+    }
+
+    public static class CccBean {
+
+        private String aaa;
+        private String bbb;
+        private String ccc;
+
+        @CsvColumn(label = "あ")
+        public String getAaa() {
+            return aaa;
+        }
+
+        public void setAaa(final String aaa) {
+            this.aaa = aaa;
+        }
+
+        @CsvColumn(label = "いい")
+        public String getBbb() {
+            return bbb;
+        }
+
+        public void setBbb(final String bbb) {
+            this.bbb = bbb;
+        }
+
+        @CsvColumn(label = "ううう")
+        public String getCcc() {
+            return ccc;
+        }
+
+        public void setCcc(final String ccc) {
+            this.ccc = ccc;
+        }
+
+        private final ToStringFormat toStringFormat = new ToStringFormat();
+
+        @Override
+        public String toString() {
+            return toStringFormat.format(this);
+        }
+
+    }
+
+    public static class DddBean {
+
+        private String aaa;
+        private String bbb;
+        private String ccc;
+
+        @CsvColumn(order = 0)
+        public String getAaa() {
+            return aaa;
+        }
+
+        public void setAaa(final String aaa) {
+            this.aaa = aaa;
+        }
+
+        @CsvColumn(order = 1)
+        public String getBbb() {
+            return bbb;
+        }
+
+        public void setBbb(final String bbb) {
+            this.bbb = bbb;
+        }
+
+        @CsvColumn(order = 2)
+        public String getCcc() {
+            return ccc;
+        }
+
+        public void setCcc(final String ccc) {
+            this.ccc = ccc;
+        }
+
+        private final ToStringFormat toStringFormat = new ToStringFormat();
+
+        @Override
+        public String toString() {
+            return toStringFormat.format(this);
+        }
+
+    }
+
+    public static class EeeBean {
+
+        private String aaa;
+        private String bbb;
+        private String ccc;
+
+        @CsvColumn(label = "あ", order = 0)
+        public String getAaa() {
+            return aaa;
+        }
+
+        public void setAaa(final String aaa) {
+            this.aaa = aaa;
+        }
+
+        @CsvColumn(label = "いい", order = 2)
+        public String getBbb() {
+            return bbb;
+        }
+
+        public void setBbb(final String bbb) {
+            this.bbb = bbb;
+        }
+
+        @CsvColumn(label = "ううう", order = 1)
+        public String getCcc() {
+            return ccc;
+        }
+
+        public void setCcc(final String ccc) {
+            this.ccc = ccc;
         }
 
         private final ToStringFormat toStringFormat = new ToStringFormat();
