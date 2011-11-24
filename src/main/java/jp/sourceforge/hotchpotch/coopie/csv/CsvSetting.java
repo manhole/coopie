@@ -20,13 +20,13 @@ public class CsvSetting implements ElementSetting {
      * 要素区切り文字。
      * 未指定の場合はタブです。
      */
-    private char elementSeparator = TAB;
+    private char elementSeparator_ = TAB;
 
     /**
      * 要素をクォートする文字。
      * 未指定の場合はダブルクォート(二重引用符)です。
      */
-    private char quoteMark = DOUBLE_QUOTE;
+    private char quoteMark_ = DOUBLE_QUOTE;
 
     /**
      * 改行文字。
@@ -37,7 +37,7 @@ public class CsvSetting implements ElementSetting {
      * 
      * CsvReaderを使う場合は、未設定のままで構いません。
      */
-    private String lineSeparator = CRLF;
+    private String lineSeparator_ = CRLF;
 
     @Override
     public ElementWriter openWriter(final Writer writer) {
@@ -60,30 +60,30 @@ public class CsvSetting implements ElementSetting {
     }
 
     public String getLineSeparator() {
-        if (StringUtil.isEmpty(lineSeparator)) {
-            lineSeparator = CRLF;
+        if (StringUtil.isEmpty(lineSeparator_)) {
+            lineSeparator_ = CRLF;
         }
-        return lineSeparator;
+        return lineSeparator_;
     }
 
     public void setLineSeparator(final String lineSeparator) {
-        this.lineSeparator = lineSeparator;
+        lineSeparator_ = lineSeparator;
     }
 
     public char getQuoteMark() {
-        return quoteMark;
+        return quoteMark_;
     }
 
     public void setQuoteMark(final char quoteMark) {
-        this.quoteMark = quoteMark;
+        quoteMark_ = quoteMark;
     }
 
     public char getElementSeparator() {
-        return elementSeparator;
+        return elementSeparator_;
     }
 
     public void setElementSeparator(final char elementSeparator) {
-        this.elementSeparator = elementSeparator;
+        elementSeparator_ = elementSeparator;
     }
 
 }

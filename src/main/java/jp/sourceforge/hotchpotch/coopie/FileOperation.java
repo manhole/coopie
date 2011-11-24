@@ -492,16 +492,16 @@ public class FileOperation {
 
     private static class FileCallbackAdapter implements FileWalker {
 
-        private final Callback<File, IOException> callback;
+        private final Callback<File, IOException> callback_;
 
         FileCallbackAdapter(final Callback<File, IOException> callback) {
-            this.callback = callback;
+            callback_ = callback;
         }
 
         @Override
         public void enter(final File dir) {
             try {
-                callback.callback(dir);
+                callback_.callback(dir);
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             }
@@ -510,7 +510,7 @@ public class FileOperation {
         @Override
         public void file(final File file) {
             try {
-                callback.callback(file);
+                callback_.callback(file);
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             }
@@ -531,8 +531,8 @@ public class FileOperation {
 
         private static final Logger logger = LoggerFactory.getLogger();
 
-        private final DeleteResultCollector collector;
-        private final FileOperation files;
+        private final DeleteResultCollector collector_;
+        private final FileOperation files_;
 
         public DeleteWalker(final FileOperation files) {
             this(files, new DefaultDeleteResult());
@@ -540,8 +540,8 @@ public class FileOperation {
 
         public DeleteWalker(final FileOperation files,
                 final DeleteResultCollector collector) {
-            this.files = files;
-            this.collector = collector;
+            files_ = files;
+            collector_ = collector;
         }
 
         @Override
@@ -555,11 +555,11 @@ public class FileOperation {
 
         @Override
         public void leave(final File dir) {
-            final boolean delete = files.deleteFileInternal(dir);
+            final boolean delete = files_.deleteFileInternal(dir);
             if (delete) {
-                collector.deleteDir();
+                collector_.deleteDir();
             } else {
-                collector.failureDir();
+                collector_.failureDir();
             }
             logger.debug("delete directory {} [{}]", delete, dir);
         }
@@ -567,17 +567,17 @@ public class FileOperation {
         @Override
         public void file(final File file) {
             final long len = file.length();
-            final boolean delete = files.deleteFileInternal(file);
+            final boolean delete = files_.deleteFileInternal(file);
             if (delete) {
-                collector.deleteFile(len);
+                collector_.deleteFile(len);
             } else {
-                collector.failureFile();
+                collector_.failureFile();
             }
             logger.debug("delete file {} [{}]", delete, file);
         }
 
         public DeleteResult getResult() {
-            return collector.getResult();
+            return collector_.getResult();
         }
 
         public static class DefaultDeleteResult implements DeleteResult,
@@ -661,17 +661,17 @@ public class FileOperation {
     public static class CopyWalker implements FileWalker {
 
         private static final Logger logger = LoggerFactory.getLogger();
-        protected final File toDir;
-        protected File currentToDir;
-        protected final FileOperation files;
-        protected int copiedFileCount;
-        protected int createdDirCount;
-        protected long copiedTotalBytes;
+        private final File toDir_;
+        private File currentToDir_;
+        private final FileOperation files_;
+        private int copiedFileCount_;
+        private int createdDirCount_;
+        private long copiedTotalBytes_;
 
         public CopyWalker(final File toDir, final FileOperation files) {
-            this.toDir = toDir;
-            toDir.mkdirs();
-            this.files = files;
+            toDir_ = toDir;
+            toDir_.mkdirs();
+            files_ = files;
         }
 
         @Override
@@ -681,40 +681,40 @@ public class FileOperation {
 
         @Override
         public void enter(final File dir) {
-            if (currentToDir == null) {
+            if (currentToDir_ == null) {
                 // いちばん最初
-                currentToDir = toDir;
+                currentToDir_ = toDir_;
             } else {
                 // 2度目以降
-                currentToDir = new File(currentToDir, dir.getName());
+                currentToDir_ = new File(currentToDir_, dir.getName());
             }
-            if (!currentToDir.exists()) {
-                currentToDir.mkdir();
-                createdDirCount++;
+            if (!currentToDir_.exists()) {
+                currentToDir_.mkdir();
+                createdDirCount_++;
             }
-            logger.debug("enter into [{}]", currentToDir);
+            logger.debug("enter into [{}]", currentToDir_);
         }
 
         @Override
         public void leave(final File dir) {
-            logger.debug("leave from [{}]", currentToDir);
-            currentToDir = currentToDir.getParentFile();
+            logger.debug("leave from [{}]", currentToDir_);
+            currentToDir_ = currentToDir_.getParentFile();
         }
 
         @Override
         public void file(final File file) {
-            final File to = new File(currentToDir, file.getName());
+            final File to = new File(currentToDir_, file.getName());
             final long len = file.length();
-            files.copyFile(file, to);
-            copiedFileCount++;
-            copiedTotalBytes += len;
+            files_.copyFile(file, to);
+            copiedFileCount_++;
+            copiedTotalBytes_ += len;
             logger.debug("copy file [{}] to [{}]", file, to);
         }
 
         public void logResult() {
             logger.debug("CopyResult: files={}, dirs={}, bytes={}",
-                    new Object[] { copiedFileCount, createdDirCount,
-                            copiedTotalBytes });
+                    new Object[] { copiedFileCount_, createdDirCount_,
+                            copiedTotalBytes_ });
         }
 
     }
@@ -761,12 +761,12 @@ public class FileOperation {
 
     static class FileResourceImpl implements FileResource {
 
-        private final File file;
-        private String extensionPrefix;
-        private String extension;
+        private final File file_;
+        private String extensionPrefix_;
+        private String extension_;
 
         public FileResourceImpl(final File file) {
-            this.file = file;
+            file_ = file;
 
             final String name = file.getName();
             final int pos = name.lastIndexOf('.');
@@ -774,25 +774,25 @@ public class FileOperation {
                 /*
                  * 先頭が"."
                  */
-                extensionPrefix = null;
-                extension = name.substring(1);
+                extensionPrefix_ = null;
+                extension_ = name.substring(1);
             } else if (1 <= pos) {
-                extensionPrefix = name.substring(0, pos);
-                extension = name.substring(pos + 1);
+                extensionPrefix_ = name.substring(0, pos);
+                extension_ = name.substring(pos + 1);
             } else {
-                extensionPrefix = name;
-                extension = null;
+                extensionPrefix_ = name;
+                extension_ = null;
             }
         }
 
         @Override
         public String getPrefix() {
-            return extensionPrefix;
+            return extensionPrefix_;
         }
 
         @Override
         public String getExtension() {
-            return extension;
+            return extension_;
         }
 
     }

@@ -16,41 +16,44 @@ import org.t2framework.commons.util.StringUtil;
 
 public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
-    private final BeanDesc<T> beanDesc;
+    private final BeanDesc<T> beanDesc_;
 
     public AbstractBeanCsvLayout(final Class<T> beanClass) {
-        beanDesc = BeanDescFactory.getBeanDesc(beanClass);
+        beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
 
     @Override
     protected CsvRecordDescSetup<T> getRecordDescSetup() {
-        return new BeanCsvRecordDescSetup<T>(beanDesc);
+        return new BeanCsvRecordDescSetup<T>(beanDesc_);
     }
 
+    @Override
     protected RecordDesc<T> getRecordDesc() {
-        if (recordDesc == null) {
+        if (super.getRecordDesc() == null) {
             /*
              * アノテーションが付いている場合は、アノテーションを優先する
              */
-            recordDesc = setupByAnnotation();
+            final RecordDesc<T> recordDesc = createByAnnotation();
+            super.setRecordDesc(recordDesc);
         }
 
-        if (recordDesc == null) {
+        if (super.getRecordDesc() == null) {
             /*
              * beanの全プロパティを対象に。
              */
-            recordDesc = setupByProperties();
+            final RecordDesc<T> recordDesc = setupByProperties();
+            super.setRecordDesc(recordDesc);
         }
 
-        if (recordDesc == null) {
+        if (super.getRecordDesc() == null) {
             throw new AssertionError();
         }
-        return recordDesc;
+        return super.getRecordDesc();
     }
 
-    private RecordDesc<T> setupByAnnotation() {
+    private RecordDesc<T> createByAnnotation() {
         final List<CsvColumnValue<T>> list = CollectionsUtil.newArrayList();
-        final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
+        final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final CsvColumn column = getCsvColumnAnnotation(pd);
             if (column == null) {
@@ -84,11 +87,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             cds[i] = cd;
         }
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
-                new BeanRecordType<T>(beanDesc));
+                new BeanRecordType<T>(beanDesc_));
     }
 
     private RecordDesc<T> setupByProperties() {
-        final List<PropertyDesc<T>> pds = beanDesc.getAllPropertyDesc();
+        final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(pds.size());
         int i = 0;
         for (final PropertyDesc<T> pd : pds) {
@@ -100,7 +103,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
 
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
-                new BeanRecordType<T>(beanDesc));
+                new BeanRecordType<T>(beanDesc_));
     }
 
     private static class CsvColumnValue<T> {
@@ -164,10 +167,10 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     static class BeanCsvRecordDescSetup<T> extends
             AbstractCsvRecordDescSetup<T> {
 
-        private final BeanDesc<T> beanDesc;
+        private final BeanDesc<T> beanDesc_;
 
         BeanCsvRecordDescSetup(final BeanDesc<T> beanDesc) {
-            this.beanDesc = beanDesc;
+            beanDesc_ = beanDesc;
         }
 
         @Override
@@ -175,10 +178,10 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<T>[] cds = toColumnDescs(columnNames, beanDesc);
+            final ColumnDesc<T>[] cds = toColumnDescs(columnNames_, beanDesc_);
 
             return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
-                    new BeanRecordType<T>(beanDesc));
+                    new BeanRecordType<T>(beanDesc_));
         }
 
     }
@@ -220,30 +223,30 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         /**
          * CSV列名。
          */
-        private ColumnName name;
+        private ColumnName name_;
 
-        private PropertyDesc<T> propertyDesc;
+        private PropertyDesc<T> propertyDesc_;
 
         @Override
         public ColumnName getName() {
-            return name;
+            return name_;
         }
 
         public void setName(final ColumnName name) {
-            this.name = name;
+            name_ = name;
         }
 
         public PropertyDesc<T> getPropertyDesc() {
-            return propertyDesc;
+            return propertyDesc_;
         }
 
         public void setPropertyDesc(final PropertyDesc<T> propertyDesc) {
-            this.propertyDesc = propertyDesc;
+            propertyDesc_ = propertyDesc;
         }
 
         @Override
         public String getValue(final T bean) {
-            final Object v = propertyDesc.getValue(bean);
+            final Object v = propertyDesc_.getValue(bean);
             if (v == null) {
                 return null;
             }
@@ -252,7 +255,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         @Override
         public void setValue(final T bean, final String value) {
-            propertyDesc.setValue(bean, value);
+            propertyDesc_.setValue(bean, value);
         }
 
     }

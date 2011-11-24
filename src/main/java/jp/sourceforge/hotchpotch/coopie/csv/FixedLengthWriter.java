@@ -13,31 +13,31 @@ import org.t2framework.commons.util.StringUtil;
 
 public class FixedLengthWriter implements ElementWriter {
 
-    protected boolean closed = true;
+    private boolean closed_ = true;
     @SuppressWarnings("unused")
-    private final Object finalizerGuardian = new ClosingGuardian(this);
+    private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    private final BufferedWriter writer;
-    private final FixedLengthColumn[] columns;
-    private String lineSeparator = CsvSetting.CRLF;
+    private final BufferedWriter writer_;
+    private final FixedLengthColumn[] columns_;
+    private String lineSeparator_ = CsvSetting.CRLF;
 
     public FixedLengthWriter(final Writer writer,
             final FixedLengthColumn[] columns) {
-        this.writer = WriterUtil.toBufferedWriter(writer);
-        this.columns = columns;
-        closed = false;
+        writer_ = WriterUtil.toBufferedWriter(writer);
+        columns_ = columns;
+        closed_ = false;
     }
 
     @Override
     public void writeRecord(final String[] line) {
-        final int len = Math.min(line.length, columns.length);
+        final int len = Math.min(line.length, columns_.length);
         try {
             for (int i = 0; i < len; i++) {
                 final String s = line[i];
-                final FixedLengthColumn column = columns[i];
-                column.write(s, writer);
+                final FixedLengthColumn column = columns_[i];
+                column.write(s, writer_);
             }
-            writer.write(getLineSeparator());
+            writer_.write(getLineSeparator());
         } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
@@ -45,24 +45,24 @@ public class FixedLengthWriter implements ElementWriter {
 
     @Override
     public boolean isClosed() {
-        return closed;
+        return closed_;
     }
 
     @Override
     public void close() throws IOException {
-        closed = true;
-        IOUtil.closeNoException(writer);
+        closed_ = true;
+        IOUtil.closeNoException(writer_);
     }
 
     public String getLineSeparator() {
-        if (StringUtil.isEmpty(lineSeparator)) {
-            lineSeparator = CsvSetting.CRLF;
+        if (StringUtil.isEmpty(lineSeparator_)) {
+            lineSeparator_ = CsvSetting.CRLF;
         }
-        return lineSeparator;
+        return lineSeparator_;
     }
 
     public void setLineSeparator(final String lineSeparator) {
-        this.lineSeparator = lineSeparator;
+        lineSeparator_ = lineSeparator;
     }
 
 }

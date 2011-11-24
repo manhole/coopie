@@ -27,34 +27,34 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
     public void open(final InputStream is) {
         final PoiReader poiReader = new PoiReader(is);
         poiReader.focusSheet(0);
-        elementReader = poiReader;
-        closed = false;
+        setElementReader(poiReader);
+        setClosed(false);
 
         setupByHeader();
     }
 
     public void openSheetReader(final HSSFSheet sheet) {
         final PoiSheetReader poiReader = new PoiSheetReader(null, sheet);
-        elementReader = poiReader;
-        closed = false;
+        setElementReader(poiReader);
+        setClosed(false);
 
         setupByHeader();
     }
 
     static class PoiReader implements ElementReader {
 
-        private HSSFWorkbook workbook;
-        private PoiSheetReader sheetReader;
-        private boolean closed = true;
+        private HSSFWorkbook workbook_;
+        private PoiSheetReader sheetReader_;
+        private boolean closed_ = true;
         @SuppressWarnings("unused")
-        private final Object finalizerGuardian = new ClosingGuardian(this);
+        private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-        private final List<PoiSheetReader> sheets = CollectionsUtil
+        private final List<PoiSheetReader> sheets_ = CollectionsUtil
                 .newArrayList();
 
         public PoiReader(final InputStream is) {
             try {
-                workbook = new HSSFWorkbook(is);
+                workbook_ = new HSSFWorkbook(is);
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             } finally {
@@ -64,50 +64,50 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
 
         @Override
         public int getRecordNo() {
-            return sheetReader.getRecordNo();
+            return sheetReader_.getRecordNo();
         }
 
         @Override
         public String[] readRecord() {
-            return sheetReader.readRecord();
+            return sheetReader_.readRecord();
         }
 
         @Override
         public boolean isClosed() {
-            return closed;
+            return closed_;
         }
 
         @Override
         public void close() throws IOException {
-            closed = true;
-            IOUtil.closeNoException(sheetReader);
-            workbook = null;
+            closed_ = true;
+            IOUtil.closeNoException(sheetReader_);
+            workbook_ = null;
         }
 
         public int getSheetSize() {
-            return workbook.getNumberOfSheets();
+            return workbook_.getNumberOfSheets();
         }
 
         void focusSheet(final int sheetNo) {
-            sheetReader = getSheet(sheetNo);
+            sheetReader_ = getSheet(sheetNo);
         }
 
         public PoiSheetReader getSheet(final int sheetNo) {
-            if (sheetNo < sheets.size()) {
-                final PoiSheetReader r = sheets.get(sheetNo);
+            if (sheetNo < sheets_.size()) {
+                final PoiSheetReader r = sheets_.get(sheetNo);
                 if (r != null) {
                     return r;
                 }
             } else {
-                final int need = sheetNo + 1 - sheets.size();
+                final int need = sheetNo + 1 - sheets_.size();
                 for (int i = 0; i < need; i++) {
-                    sheets.add(null);
+                    sheets_.add(null);
                 }
             }
 
-            final HSSFSheet sheet = workbook.getSheetAt(sheetNo);
-            final PoiSheetReader reader = new PoiSheetReader(workbook, sheet);
-            sheets.set(sheetNo, reader);
+            final HSSFSheet sheet = workbook_.getSheetAt(sheetNo);
+            final PoiSheetReader reader = new PoiSheetReader(workbook_, sheet);
+            sheets_.set(sheetNo, reader);
 
             return reader;
         }
@@ -117,47 +117,47 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
     static class PoiSheetReader implements ElementReader {
 
         private static final Logger logger = LoggerFactory.getLogger();
-        protected boolean closed = true;
+        private boolean closed_ = true;
         @SuppressWarnings("unused")
-        private final Object finalizerGuardian = new ClosingGuardian(this);
+        private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-        private final HSSFWorkbook workbook;
-        private HSSFSheet sheet;
+        private final HSSFWorkbook workbook_;
+        private HSSFSheet sheet_;
         /*
          * Excelの行番号は0オリジン。(見た目は1からだが)
          */
-        private int rowNum = 0;
-        private final int lastRowNum;
+        private int rowNum_ = 0;
+        private final int lastRowNum_;
 
         public PoiSheetReader(final HSSFWorkbook workbook, final HSSFSheet sheet) {
-            this.workbook = workbook;
-            this.sheet = sheet;
+            workbook_ = workbook;
+            sheet_ = sheet;
             /*
              * 行番号。
              * 0オリジン。
              * 4行目まである場合は3になる。
              */
-            lastRowNum = sheet.getLastRowNum();
-            logger.debug("lastRowNum={}", lastRowNum);
-            closed = false;
+            lastRowNum_ = sheet.getLastRowNum();
+            logger.debug("lastRowNum={}", lastRowNum_);
+            closed_ = false;
         }
 
         public String getSheetName() {
-            final int sheetIndex = workbook.getSheetIndex(sheet);
-            return workbook.getSheetName(sheetIndex);
+            final int sheetIndex = workbook_.getSheetIndex(sheet_);
+            return workbook_.getSheetName(sheetIndex);
         }
 
         @Override
         public int getRecordNo() {
-            return rowNum;
+            return rowNum_;
         }
 
         @Override
         public String[] readRecord() {
-            if (lastRowNum < rowNum) {
+            if (lastRowNum_ < rowNum_) {
                 return null;
             }
-            final HSSFRow row = sheet.getRow(rowNum);
+            final HSSFRow row = sheet_.getRow(rowNum_);
             final String[] line;
             if (row != null) {
                 /*
@@ -172,7 +172,7 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
                      * ここでは空行と同じ扱いにする。
                      */
                     logger.warn("lastCellNum={}, rowNum={}", lastCellNum,
-                            rowNum);
+                            rowNum_);
                     line = new String[0];
                 } else {
                     //logger.debug("lastCellNum={}", lastCellNum);
@@ -189,34 +189,34 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug("row({}): {}", rowNum, Arrays.asList(line));
+                logger.debug("row({}): {}", rowNum_, Arrays.asList(line));
             }
 
-            rowNum++;
+            rowNum_++;
             return line;
         }
 
         @Override
         public boolean isClosed() {
-            return closed;
+            return closed_;
         }
 
         @Override
         public void close() throws IOException {
-            closed = true;
-            sheet = null;
+            closed_ = true;
+            sheet_ = null;
         }
 
         /**
          * @return このsheetが空の場合はtrue
          */
         public boolean isEmpty() {
-            if (lastRowNum != 0) {
+            if (lastRowNum_ != 0) {
                 return false;
             }
 
             // シートが空の場合はrowがnull
-            final HSSFRow row = sheet.getRow(0);
+            final HSSFRow row = sheet_.getRow(0);
             if (row != null) {
                 return false;
             }

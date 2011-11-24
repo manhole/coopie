@@ -11,24 +11,40 @@ import org.t2framework.commons.util.CollectionsUtil;
 abstract class AbstractCsvLayout<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
-    protected RecordDesc<T> recordDesc;
-    protected boolean withHeader = true;
-    protected ReadEditor readEditor;
+    private RecordDesc<T> recordDesc_;
+    private boolean withHeader_ = true;
+    private ReadEditor readEditor_;
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
         final CsvRecordDescSetup<T> setup = getRecordDescSetup();
         block.setup(setup);
-        recordDesc = setup.getRecordDesc();
+        recordDesc_ = setup.getRecordDesc();
     }
 
     protected abstract CsvRecordDescSetup<T> getRecordDescSetup();
 
+    protected boolean isWithHeader() {
+        return withHeader_;
+    }
+
     public void setWithHeader(final boolean withHeader) {
-        this.withHeader = withHeader;
+        withHeader_ = withHeader;
+    }
+
+    protected ReadEditor getReadEditor() {
+        return readEditor_;
     }
 
     public void setReadEditor(final ReadEditor readEditor) {
-        this.readEditor = readEditor;
+        readEditor_ = readEditor;
+    }
+
+    protected RecordDesc<T> getRecordDesc() {
+        return recordDesc_;
+    }
+
+    protected void setRecordDesc(final RecordDesc<T> recordDesc) {
+        recordDesc_ = recordDesc;
     }
 
     protected static interface CsvRecordDescSetup<T> extends CsvColumnSetup {
@@ -40,12 +56,12 @@ abstract class AbstractCsvLayout<T> {
     protected static abstract class AbstractCsvRecordDescSetup<T> implements
             CsvRecordDescSetup<T> {
 
-        protected final List<ColumnName> columnNames = CollectionsUtil
+        protected final List<ColumnName> columnNames_ = CollectionsUtil
                 .newArrayList();
 
         @Override
         public void column(final ColumnName name) {
-            columnNames.add(name);
+            columnNames_.add(name);
         }
 
         @Override

@@ -26,12 +26,11 @@ public class ToStringFormat {
         };
     };
 
-    private final FieldDescComparator comparator = new FieldDescComparator();
+    private final FieldDescComparator comparator_ = new FieldDescComparator();
+    private int maxDepth_ = 1;
 
     public ToStringFormat() {
     }
-
-    private int maxDepth = 1;
 
     public <T> String format(final T obj) {
         final StringBuilder sb = new StringBuilder();
@@ -105,7 +104,7 @@ public class ToStringFormat {
         final Class<T> clazz = (Class<T>) obj.getClass();
         final String simpleName = clazz.getSimpleName();
 
-        if (context.isDepthOver(maxDepth)) {
+        if (context.isDepthOver(maxDepth_)) {
             final String s = identityHashCode(obj);
             out.append(simpleName);
             out.append("@");
@@ -118,7 +117,7 @@ public class ToStringFormat {
 
         // classがpublic classでなくても続行
 
-        Collections.sort(descs, comparator);
+        Collections.sort(descs, comparator_);
 
         boolean first = true;
         out.append(simpleName);
@@ -170,7 +169,7 @@ public class ToStringFormat {
     }
 
     public void setMaxDepth(final int depth) {
-        maxDepth = depth;
+        maxDepth_ = depth;
     }
 
     private static class FieldDescComparator implements
@@ -187,25 +186,25 @@ public class ToStringFormat {
 
     private static class FieldDesc<T> {
 
-        private final Class<?> clazz;
-        private final Field field;
+        private final Class<?> clazz_;
+        private final Field field_;
 
         FieldDesc(final Class<?> clazz, final Field field) {
-            this.clazz = clazz;
-            this.field = field;
+            clazz_ = clazz;
+            field_ = field;
         }
 
         public String getName() {
-            return field.getName();
+            return field_.getName();
         }
 
         @SuppressWarnings("unchecked")
         public T getValue(final Object instance) {
             try {
-                final Object object = field.get(instance);
+                final Object object = field_.get(instance);
                 return (T) object;
             } catch (final IllegalAccessException e) {
-                throw new IllegalAccessRuntimeException(clazz, e);
+                throw new IllegalAccessRuntimeException(clazz_, e);
             }
         }
 
@@ -218,28 +217,28 @@ public class ToStringFormat {
 
     private static class Context {
 
-        private final Set<Object> set = new IdentityHashSet<Object>();
-        private int depth;
+        private final Set<Object> set_ = new IdentityHashSet<Object>();
+        private int depth_;
 
         public boolean contains(final Object obj) {
-            return set.contains(obj);
+            return set_.contains(obj);
         }
 
         public boolean isDepthOver(final int maxDepth) {
-            if (maxDepth < depth) {
+            if (maxDepth < depth_) {
                 return true;
             }
             return false;
         }
 
         public void enter(final Object obj) {
-            depth++;
-            set.add(obj);
+            depth_++;
+            set_.add(obj);
         }
 
         public void leave(final Object obj) {
-            set.remove(obj);
-            depth--;
+            set_.remove(obj);
+            depth_--;
         }
 
     }

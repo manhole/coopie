@@ -12,40 +12,40 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 public class FixedLengthReader implements ElementReader {
 
-    protected boolean closed = true;
+    private boolean closed_ = true;
     @SuppressWarnings("unused")
-    private final Object finalizerGuardian = new ClosingGuardian(this);
+    private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    private final BufferedReader reader;
-    private final FixedLengthColumn[] columns;
-    private int lineNo;
+    private final BufferedReader reader_;
+    private final FixedLengthColumn[] columns_;
+    private int lineNo_;
 
     public FixedLengthReader(final Reader reader,
             final FixedLengthColumn[] columns) {
-        this.reader = ReaderUtil.toBufferedReader(reader);
-        this.columns = columns;
-        closed = false;
+        reader_ = ReaderUtil.toBufferedReader(reader);
+        columns_ = columns;
+        closed_ = false;
     }
 
     @Override
     public int getRecordNo() {
-        return lineNo;
+        return lineNo_;
     }
 
     @Override
     public String[] readRecord() {
         try {
-            final String line = reader.readLine();
+            final String line = reader_.readLine();
             if (line == null) {
                 return null;
             }
-            final String[] record = new String[columns.length];
-            for (int i = 0; i < columns.length; i++) {
-                final FixedLengthColumn column = columns[i];
+            final String[] record = new String[columns_.length];
+            for (int i = 0; i < columns_.length; i++) {
+                final FixedLengthColumn column = columns_[i];
                 final String elem = column.read(line);
                 record[i] = elem;
             }
-            lineNo++;
+            lineNo_++;
             return record;
         } catch (final IOException e) {
             throw new IORuntimeException(e);
@@ -54,13 +54,13 @@ public class FixedLengthReader implements ElementReader {
 
     @Override
     public boolean isClosed() {
-        return closed;
+        return closed_;
     }
 
     @Override
     public void close() throws IOException {
-        closed = true;
-        IOUtil.closeNoException(reader);
+        closed_ = true;
+        IOUtil.closeNoException(reader_);
     }
 
 }
