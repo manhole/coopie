@@ -127,6 +127,7 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
+        private FixedLengthElementSetting fixedLengthElementSetting_;
 
         @Override
         public RecordDesc<T> getRecordDesc() {
@@ -137,7 +138,7 @@ abstract class AbstractFixedLengthLayout<T> {
         @Override
         public ElementSetting getElementSetting() {
             buildIfNeed();
-            return fixedLengthRecordDesc_;
+            return fixedLengthElementSetting_;
         }
 
         private void buildIfNeed() {
@@ -148,24 +149,26 @@ abstract class AbstractFixedLengthLayout<T> {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final List<ColumnName> cnames = CollectionsUtil.newArrayList();
-            final FixedLengthColumnDesc[] a = new FixedLengthColumnDesc[columns_
+            final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
+            final FixedLengthColumnDesc[] flColumnDescs = new FixedLengthColumnDesc[columns_
                     .size()];
             int i = 0;
             for (final NameAndDesc nd : columns_) {
                 final ColumnName cn = nd.columnName_;
-                cnames.add(cn);
+                columnNames.add(cn);
                 final FixedLengthColumnDesc desc = nd.fixedLengthColumnDesc_;
-                a[i] = desc;
+                flColumnDescs[i] = desc;
                 i++;
             }
 
-            final ColumnDesc<T>[] cds = createColumnDesc(cnames);
+            final ColumnDesc<T>[] cds = createColumnDescs(columnNames);
             fixedLengthRecordDesc_ = new FixedLengthRecordDesc<T>(cds,
-                    getRecordType(), a);
+                    getRecordType());
+            fixedLengthElementSetting_ = new FixedLengthElementSetting(
+                    flColumnDescs);
         }
 
-        abstract protected ColumnDesc<T>[] createColumnDesc(
+        abstract protected ColumnDesc<T>[] createColumnDescs(
                 List<ColumnName> columnNames);
 
         abstract protected RecordType<T> getRecordType();
@@ -185,19 +188,36 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    protected static class FixedLengthRecordDesc<T> implements RecordDesc<T>,
-            ElementSetting {
+    protected static class FixedLengthElementSetting implements ElementSetting {
 
-        private final DefaultRecordDesc<T> delegate_;
         private final FixedLengthColumnDesc[] columns_;
 
-        protected FixedLengthRecordDesc(final ColumnDesc<T>[] columnDescs,
-                final RecordType<T> recordType,
+        protected FixedLengthElementSetting(
                 final FixedLengthColumnDesc[] columns) {
+            columns_ = columns;
+        }
+
+        @Override
+        public ElementWriter openWriter(final Appendable appendable) {
+            return new FixedLengthWriter(appendable, columns_);
+        }
+
+        @Override
+        public ElementReader openReader(final Readable readable) {
+            return new FixedLengthReader(readable, columns_);
+        }
+
+    }
+
+    protected static class FixedLengthRecordDesc<T> implements RecordDesc<T> {
+
+        private final DefaultRecordDesc<T> delegate_;
+
+        protected FixedLengthRecordDesc(final ColumnDesc<T>[] columnDescs,
+                final RecordType<T> recordType) {
             // 固定長なので、常に指定した順序
             delegate_ = new DefaultRecordDesc<T>(columnDescs,
                     OrderSpecified.SPECIFIED, recordType);
-            columns_ = columns;
         }
 
         @Override
@@ -235,16 +255,6 @@ abstract class AbstractFixedLengthLayout<T> {
         public RecordDesc<T> setupByHeader(final String[] header) {
             // 固定長では、ヘッダがあっても見ない
             return this;
-        }
-
-        @Override
-        public ElementWriter openWriter(final Appendable appendable) {
-            return new FixedLengthWriter(appendable, columns_);
-        }
-
-        @Override
-        public ElementReader openReader(final Readable readable) {
-            return new FixedLengthReader(readable, columns_);
         }
 
     }
