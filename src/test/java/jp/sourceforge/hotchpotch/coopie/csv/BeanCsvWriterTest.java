@@ -12,6 +12,9 @@ import java.io.StringWriter;
 
 import jp.sourceforge.hotchpotch.coopie.Text;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CccBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.DddBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.EeeBean;
 
 import org.junit.Test;
 import org.t2framework.commons.util.ReaderUtil;
@@ -433,6 +436,110 @@ public class BeanCsvWriterTest {
         bean.setAaa(a);
         bean.setBbb(b);
         bean.setCcc(c);
+    }
+
+    /**
+     * 列名のみをアノテーションで指定して出力できること。
+     * (列順は不定)
+     */
+    @Test
+    public void write_annotation_1() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CccBean> layout = new BeanCsvLayout<CccBean>(
+                CccBean.class);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<CccBean> csvWriter = layout.openWriter(writer);
+
+        final CccBean bean = new CccBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う1");
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb("い2");
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        new CsvAssert().assertCsvEquals(getResourceAsReader("-2", "tsv"),
+                new StringReader(actual));
+    }
+
+    /**
+     * 列名と列順をアノテーションで指定して出力できること。
+     */
+    @Test
+    public void write_annotation_2() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<EeeBean> layout = new BeanCsvLayout<EeeBean>(
+                EeeBean.class);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<EeeBean> csvWriter = layout.openWriter(writer);
+
+        final EeeBean bean = new EeeBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う1");
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb("い2");
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final Reader r = getResourceAsReader("-2", "tsv");
+        final String expected = ReaderUtil.readText(r);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * 列順序のみをアノテーションで指定して出力できること。
+     * (列名は、property名)
+     */
+    @Test
+    public void write_annotation_3() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<DddBean> layout = new BeanCsvLayout<DddBean>(
+                DddBean.class);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<DddBean> csvWriter = layout.openWriter(writer);
+
+        final DddBean bean = new DddBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う1");
+        csvWriter.write(bean);
+
+        bean.setAaa("あ2");
+        bean.setBbb("い2");
+        bean.setCcc("う2");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String actual = writer.toString();
+
+        final InputStream is = getResourceAsStream("-1", "tsv");
+        final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
+        final String expected = ReaderUtil.readText(reader);
+        assertEquals(expected, actual);
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
