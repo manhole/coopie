@@ -54,7 +54,9 @@ public class ExcelToCsv {
                 tsvNaming.setSingle(false);
             }
 
-            final DefaultCsvSetting csvSetting = new DefaultCsvSetting();
+            final CsvSetting csvSetting = new DefaultCsvSetting();
+            final ElementSetting elementSetting = new CsvElementSetting(
+                    csvSetting);
             final FileResource fr = files_.getFileResource(file);
             for (final PoiSheetReader sheetReader : sheets) {
                 final String fileName = tsvNaming.createFileName(sheetReader,
@@ -62,8 +64,8 @@ public class ExcelToCsv {
                 final File tsvFile = files_.createFile(file.getParentFile(),
                         fileName);
 
-                final ElementWriter csvWriter = csvSetting.openWriter(files_
-                        .openBufferedWriter(tsvFile));
+                final ElementWriter csvWriter = elementSetting
+                        .openWriter(files_.openBufferedWriter(tsvFile));
 
                 while (true) {
                     final String[] line = sheetReader.readRecord();
