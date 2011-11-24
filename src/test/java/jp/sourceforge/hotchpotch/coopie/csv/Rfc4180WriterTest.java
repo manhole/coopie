@@ -6,8 +6,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 import java.io.StringWriter;
 
-import jp.sourceforge.hotchpotch.coopie.csv.Rfc4180Writer.QuoteMode;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -265,7 +263,7 @@ public class Rfc4180WriterTest {
     public void always_separator() throws Throwable {
         // ## Arrange ##
         final Rfc4180Writer writer = new Rfc4180Writer();
-        writer.setQuoteMode(Rfc4180Writer.QuoteMode.ALWAYS);
+        writer.setQuoteMode(QuoteMode.ALWAYS);
         writer.open(stringWriter_);
 
         // ## Act ##
@@ -322,7 +320,7 @@ public class Rfc4180WriterTest {
     public void null_element_always() throws Throwable {
         // ## Arrange ##
         final Rfc4180Writer writer = new Rfc4180Writer();
-        writer.setQuoteMode(Rfc4180Writer.QuoteMode.ALWAYS);
+        writer.setQuoteMode(QuoteMode.ALWAYS);
         writer.open(stringWriter_);
 
         // ## Act ##
@@ -343,7 +341,7 @@ public class Rfc4180WriterTest {
     public void null_element_always_except_null() throws Throwable {
         // ## Arrange ##
         final Rfc4180Writer writer = new Rfc4180Writer();
-        writer.setQuoteMode(Rfc4180Writer.QuoteMode.ALWAYS_EXCEPT_NULL);
+        writer.setQuoteMode(QuoteMode.ALWAYS_EXCEPT_NULL);
         writer.open(stringWriter_);
 
         // ## Act ##

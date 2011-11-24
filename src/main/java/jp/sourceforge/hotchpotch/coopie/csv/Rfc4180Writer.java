@@ -98,25 +98,6 @@ public class Rfc4180Writer implements ElementWriter {
         }
     }
 
-    public enum QuoteMode {
-
-        /**
-         * 常にクォートする
-         */
-        ALWAYS,
-
-        /**
-         * null値以外はクォートする
-         */
-        ALWAYS_EXCEPT_NULL,
-
-        /**
-         * 必要なときのみクォートする
-         */
-        MINIMUM
-
-    }
-
     private abstract class ElementWriteStrategy {
 
         public abstract void writeElement(final String elem) throws IOException;
