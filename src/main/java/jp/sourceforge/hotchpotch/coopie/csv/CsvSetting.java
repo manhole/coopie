@@ -1,15 +1,17 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
+
 public interface CsvSetting {
 
     char TAB = '\t';
     char COMMA = ',';
     char DOUBLE_QUOTE = '\"';
-    char CR = '\r';
-    char LF = '\n';
-    String CR_S = Character.toString(CR);
-    String LF_S = Character.toString(LF);
-    String CRLF = CR_S + LF_S;
+    char CR = IOUtil.CR;
+    char LF = IOUtil.LF;
+    String CR_S = IOUtil.CR_S;
+    String LF_S = IOUtil.LF_S;
+    String CRLF = IOUtil.CRLF;
 
     String getLineSeparator();
 
