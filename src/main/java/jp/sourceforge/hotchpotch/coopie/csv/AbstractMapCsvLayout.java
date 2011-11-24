@@ -2,7 +2,6 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,8 +18,9 @@ public abstract class AbstractMapCsvLayout extends
         return new MapCsvRecordDescSetup();
     }
 
+    @Override
     protected RecordDesc<Map<String, String>> getRecordDesc() {
-        if (recordDesc == null) {
+        if (super.getRecordDesc() == null) {
             /*
              * カラム名が設定されていない場合は、
              * Readの場合はヘッダから、
@@ -29,7 +29,7 @@ public abstract class AbstractMapCsvLayout extends
              */
             return new LazyMapRecordDesc(this);
         }
-        return recordDesc;
+        return super.getRecordDesc();
     }
 
     protected static ColumnDesc<Map<String, String>> newMapColumnDesc(
@@ -44,11 +44,10 @@ public abstract class AbstractMapCsvLayout extends
 
         @Override
         public RecordDesc<Map<String, String>> getRecordDesc() {
-            final List<ColumnName> columns = columnNames;
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columns);
+            final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columnNames_);
 
             return new DefaultRecordDesc<Map<String, String>>(cds,
                     OrderSpecified.SPECIFIED, new MapRecordType());
@@ -74,26 +73,26 @@ public abstract class AbstractMapCsvLayout extends
         /**
          * CSV列名。
          */
-        private ColumnName name;
+        private ColumnName name_;
 
         @Override
         public ColumnName getName() {
-            return name;
+            return name_;
         }
 
         public void setName(final ColumnName name) {
-            this.name = name;
+            name_ = name;
         }
 
         @Override
         public String getValue(final Map<String, String> bean) {
-            final String propertyName = name.getName();
+            final String propertyName = name_.getName();
             return bean.get(propertyName);
         }
 
         @Override
         public void setValue(final Map<String, String> bean, final String value) {
-            final String propertyName = name.getName();
+            final String propertyName = name_.getName();
             bean.put(propertyName, value);
         }
 
@@ -102,10 +101,10 @@ public abstract class AbstractMapCsvLayout extends
     static class LazyMapRecordDesc implements RecordDesc<Map<String, String>> {
 
         private static final Logger logger = LoggerFactory.getLogger();
-        private final AbstractMapCsvLayout layout;
+        private final AbstractMapCsvLayout layout_;
 
         public LazyMapRecordDesc(final AbstractMapCsvLayout layout) {
-            this.layout = layout;
+            layout_ = layout;
         }
 
         /*
@@ -124,7 +123,7 @@ public abstract class AbstractMapCsvLayout extends
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
              */
-            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            layout_.setupColumns(new SetupBlock<CsvColumnSetup>() {
                 @Override
                 public void setup(final CsvColumnSetup setup) {
                     for (final String headerElem : header) {
@@ -133,7 +132,7 @@ public abstract class AbstractMapCsvLayout extends
                 }
             });
 
-            final RecordDesc<Map<String, String>> built = layout
+            final RecordDesc<Map<String, String>> built = layout_
                     .getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
@@ -157,7 +156,7 @@ public abstract class AbstractMapCsvLayout extends
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
              */
-            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            layout_.setupColumns(new SetupBlock<CsvColumnSetup>() {
                 @Override
                 public void setup(final CsvColumnSetup setup) {
                     final Set<String> keys = bean.keySet();
@@ -167,7 +166,7 @@ public abstract class AbstractMapCsvLayout extends
                 }
             });
 
-            final RecordDesc<Map<String, String>> built = layout
+            final RecordDesc<Map<String, String>> built = layout_
                     .getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ

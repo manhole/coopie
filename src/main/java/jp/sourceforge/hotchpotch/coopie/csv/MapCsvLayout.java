@@ -10,7 +10,7 @@ import jp.sourceforge.hotchpotch.coopie.IOUtil;
 public class MapCsvLayout extends AbstractMapCsvLayout implements
         CsvLayout<Map<String, String>> {
 
-    private final CsvSetting csvSetting = new CsvSetting();
+    private final CsvSetting csvSetting_ = new CsvSetting();
 
     @Override
     public RecordReader<Map<String, String>> openReader(final Reader reader) {
@@ -20,8 +20,8 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
 
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 getRecordDesc());
-        r.setWithHeader(withHeader);
-        r.setElementSetting(csvSetting);
+        r.setWithHeader(isWithHeader());
+        r.setElementSetting(csvSetting_);
         new FailureProtection<RuntimeException>() {
 
             @Override
@@ -46,23 +46,23 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
 
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 getRecordDesc());
-        w.setWithHeader(withHeader);
-        w.setElementSetting(csvSetting);
+        w.setWithHeader(isWithHeader());
+        w.setElementSetting(csvSetting_);
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
     }
 
     public void setElementSeparator(final char elementSeparator) {
-        csvSetting.setElementSeparator(elementSeparator);
+        csvSetting_.setElementSeparator(elementSeparator);
     }
 
     public void setLineSeparator(final String lineSeparator) {
-        csvSetting.setLineSeparator(lineSeparator);
+        csvSetting_.setLineSeparator(lineSeparator);
     }
 
     public void setQuoteMark(final char quoteMark) {
-        csvSetting.setQuoteMark(quoteMark);
+        csvSetting_.setQuoteMark(quoteMark);
     }
 
 }

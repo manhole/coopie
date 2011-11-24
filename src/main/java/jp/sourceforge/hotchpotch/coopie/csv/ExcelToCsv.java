@@ -16,7 +16,7 @@ import org.t2framework.commons.util.CollectionsUtil;
 public class ExcelToCsv {
 
     private static final Logger logger = LoggerFactory.getLogger();
-    private final FileOperation files = new FileOperation();
+    private final FileOperation files_ = new FileOperation();
     private static final String TSV_EXTENSION = ".tsv";
 
     public void writeTsv(final File file) throws IOException {
@@ -27,7 +27,7 @@ public class ExcelToCsv {
         }
 
         final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(
-                files.openBufferedInputStream(file));
+                files_.openBufferedInputStream(file));
 
         final List<PoiSheetReader> sheets = CollectionsUtil.newArrayList();
         try {
@@ -55,14 +55,14 @@ public class ExcelToCsv {
             }
 
             final CsvSetting csvSetting = new CsvSetting();
-            final FileResource fr = files.getFileResource(file);
+            final FileResource fr = files_.getFileResource(file);
             for (final PoiSheetReader sheetReader : sheets) {
                 final String fileName = tsvNaming.createFileName(sheetReader,
                         fr.getPrefix(), TSV_EXTENSION);
-                final File tsvFile = files.createFile(file.getParentFile(),
+                final File tsvFile = files_.createFile(file.getParentFile(),
                         fileName);
 
-                final ElementWriter csvWriter = csvSetting.openWriter(files
+                final ElementWriter csvWriter = csvSetting.openWriter(files_
                         .openBufferedWriter(tsvFile));
 
                 while (true) {
@@ -86,11 +86,11 @@ public class ExcelToCsv {
 
     private static class TsvNaming {
 
-        private boolean single = true;
+        private boolean single_ = true;
 
         public String createFileName(final PoiSheetReader sheetReader,
                 final String prefix, final String suffix) {
-            if (single) {
+            if (single_) {
                 return prefix + suffix;
             } else {
                 return prefix + "-" + sheetReader.getSheetName() + suffix;
@@ -98,7 +98,7 @@ public class ExcelToCsv {
         }
 
         public void setSingle(final boolean single) {
-            this.single = single;
+            single_ = single;
         }
 
     }

@@ -5,17 +5,17 @@ import java.io.Writer;
 
 public class CharSequenceWriter extends Writer {
 
-    private final StringBuilder buf;
-    private String lineSeparator = IOUtil.getSystemLineSeparator();
+    private final StringBuilder buf_;
+    private String lineSeparator_ = IOUtil.getSystemLineSeparator();
 
     public CharSequenceWriter() {
-        buf = new StringBuilder();
-        lock = buf;
+        buf_ = new StringBuilder();
+        lock = buf_;
     }
 
     @Override
     public void write(final int c) {
-        buf.append((char) c);
+        buf_.append((char) c);
     }
 
     @Override
@@ -26,17 +26,17 @@ public class CharSequenceWriter extends Writer {
         } else if (len == 0) {
             return;
         }
-        buf.append(cbuf, off, len);
+        buf_.append(cbuf, off, len);
     }
 
     @Override
     public void write(final String str) {
-        buf.append(str);
+        buf_.append(str);
     }
 
     @Override
     public void write(final String str, final int off, final int len) {
-        buf.append(str.substring(off, off + len));
+        buf_.append(str.substring(off, off + len));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CharSequenceWriter extends Writer {
 
     @Override
     public String toString() {
-        return buf.toString();
+        return buf_.toString();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class CharSequenceWriter extends Writer {
     }
 
     public StringBuilder getBuffer() {
-        return buf;
+        return buf_;
     }
 
     public void writeLine(final CharSequence csq) {
@@ -86,15 +86,15 @@ public class CharSequenceWriter extends Writer {
     }
 
     public void newLine() {
-        append(lineSeparator);
+        append(lineSeparator_);
     }
 
     public String getLineSeparator() {
-        return lineSeparator;
+        return lineSeparator_;
     }
 
     public void setLineSeparator(final String lineSeparator) {
-        this.lineSeparator = lineSeparator;
+        lineSeparator_ = lineSeparator;
     }
 
 }

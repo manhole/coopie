@@ -8,12 +8,12 @@ import java.util.Set;
 
 public class IdentityHashSet<E> implements Set<E> {
 
-    private final Map<E, Object> map = new IdentityHashMap<E, Object>();
+    private final Map<E, Object> map_ = new IdentityHashMap<E, Object>();
     private static final Object ITEM = new Object();
 
     @Override
     public boolean add(final E e) {
-        final Object prev = map.put(e, ITEM);
+        final Object prev = map_.put(e, ITEM);
         return prev == null ? true : false;
     }
 
@@ -24,12 +24,12 @@ public class IdentityHashSet<E> implements Set<E> {
 
     @Override
     public void clear() {
-        map.clear();
+        map_.clear();
     }
 
     @Override
     public boolean contains(final Object o) {
-        return map.containsKey(o);
+        return map_.containsKey(o);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class IdentityHashSet<E> implements Set<E> {
 
     @Override
     public boolean isEmpty() {
-        return map.isEmpty();
+        return map_.isEmpty();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class IdentityHashSet<E> implements Set<E> {
 
     @Override
     public boolean remove(final Object o) {
-        final Object removed = map.remove(o);
+        final Object removed = map_.remove(o);
         return removed != null ? true : false;
     }
 
@@ -65,7 +65,7 @@ public class IdentityHashSet<E> implements Set<E> {
 
     @Override
     public int size() {
-        return map.size();
+        return map_.size();
     }
 
     @Override

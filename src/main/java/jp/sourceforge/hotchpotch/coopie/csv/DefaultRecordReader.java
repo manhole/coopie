@@ -4,19 +4,20 @@ import java.io.Reader;
 
 class DefaultRecordReader<T> extends AbstractRecordReader<T> {
 
-    private ElementSetting elementSetting;
+    private ElementSetting elementSetting_;
 
     public DefaultRecordReader(final RecordDesc<T> recordDesc) {
         super(recordDesc);
     }
 
     public void setElementSetting(final ElementSetting elementSetting) {
-        this.elementSetting = elementSetting;
+        elementSetting_ = elementSetting;
     }
 
     public void open(final Reader reader) {
-        elementReader = elementSetting.openReader(reader);
-        closed = false;
+        final ElementReader elementReader = elementSetting_.openReader(reader);
+        setElementReader(elementReader);
+        setClosed(false);
 
         setupByHeader();
     }

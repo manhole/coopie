@@ -9,10 +9,10 @@ import org.t2framework.commons.meta.BeanDescFactory;
 public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         implements CsvLayout<T> {
 
-    private final BeanDesc<T> beanDesc;
+    private final BeanDesc<T> beanDesc_;
 
     public BeanFixedLengthLayout(final Class<T> beanClass) {
-        beanDesc = BeanDescFactory.getBeanDesc(beanClass);
+        beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         final RecordDesc<T> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
-        r.setWithHeader(withHeader);
+        r.setWithHeader(isWithHeader());
         r.setElementSetting(es);
         // TODO openで例外時にcloseすること
         r.open(reader);
@@ -32,7 +32,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         final RecordDesc<T> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(rd);
-        w.setWithHeader(withHeader);
+        w.setWithHeader(isWithHeader());
         w.setElementSetting(es);
         // TODO openで例外時にcloseすること
         w.open(writer);
@@ -41,34 +41,34 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
     @Override
     protected FixedLengthRecordDescSetup getRecordDescSetup() {
-        return new BeanFixedLengthRecordDescSetup<T>(beanDesc);
+        return new BeanFixedLengthRecordDescSetup<T>(beanDesc_);
     }
 
     private static class BeanFixedLengthRecordDescSetup<T> extends
             AbstractFixedLengthRecordDescSetup<T> {
 
-        private final BeanDesc<T> beanDesc;
+        private final BeanDesc<T> beanDesc_;
 
         BeanFixedLengthRecordDescSetup(final BeanDesc<T> beanDesc) {
-            this.beanDesc = beanDesc;
+            beanDesc_ = beanDesc;
         }
 
-        private FixedLengthRecordDesc<T> fixedLengthRecordDesc;
+        private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
 
         @Override
         public RecordDesc<T> getRecordDesc() {
             buildIfNeed();
-            return fixedLengthRecordDesc;
+            return fixedLengthRecordDesc_;
         }
 
         @Override
         public ElementSetting getElementSetting() {
             buildIfNeed();
-            return fixedLengthRecordDesc;
+            return fixedLengthRecordDesc_;
         }
 
         private void buildIfNeed() {
-            if (fixedLengthRecordDesc != null) {
+            if (fixedLengthRecordDesc_ != null) {
                 return;
             }
 
@@ -76,13 +76,13 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
              * 設定されているプロパティ名を対象に。
              */
             final ColumnDesc<T>[] cds = AbstractBeanCsvLayout.toColumnDescs(
-                    columns, beanDesc);
+                    columns_, beanDesc_);
 
-            final FixedLengthColumn[] a = columns
-                    .toArray(new FixedLengthColumn[columns.size()]);
+            final FixedLengthColumn[] a = columns_
+                    .toArray(new FixedLengthColumn[columns_.size()]);
             // FIXME
-            fixedLengthRecordDesc = new FixedLengthRecordDesc<T>(cds,
-                    new BeanRecordType<T>(beanDesc), a);
+            fixedLengthRecordDesc_ = new FixedLengthRecordDesc<T>(cds,
+                    new BeanRecordType<T>(beanDesc_), a);
         }
 
     }

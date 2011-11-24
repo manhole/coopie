@@ -14,7 +14,7 @@ public class MapFixedLengthLayout extends
         final ElementSetting es = getElementSetting();
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 rd);
-        r.setWithHeader(withHeader);
+        r.setWithHeader(isWithHeader());
         r.setElementSetting(es);
         // TODO openで例外時にcloseすること
         r.open(reader);
@@ -27,7 +27,7 @@ public class MapFixedLengthLayout extends
         final ElementSetting es = getElementSetting();
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 rd);
-        w.setWithHeader(withHeader);
+        w.setWithHeader(isWithHeader());
         w.setElementSetting(es);
         // TODO openで例外時にcloseすること
         w.open(writer);
@@ -42,22 +42,22 @@ public class MapFixedLengthLayout extends
     private static class MapFixedLengthRecordDescSetup extends
             AbstractFixedLengthRecordDescSetup<Map<String, String>> {
 
-        private FixedLengthRecordDesc<Map<String, String>> fixedLengthRecordDesc;
+        private FixedLengthRecordDesc<Map<String, String>> fixedLengthRecordDesc_;
 
         @Override
         public RecordDesc<Map<String, String>> getRecordDesc() {
             buildIfNeed();
-            return fixedLengthRecordDesc;
+            return fixedLengthRecordDesc_;
         }
 
         @Override
         public ElementSetting getElementSetting() {
             buildIfNeed();
-            return fixedLengthRecordDesc;
+            return fixedLengthRecordDesc_;
         }
 
         private void buildIfNeed() {
-            if (fixedLengthRecordDesc != null) {
+            if (fixedLengthRecordDesc_ != null) {
                 return;
             }
 
@@ -66,11 +66,11 @@ public class MapFixedLengthLayout extends
              */
 
             final ColumnDesc<Map<String, String>>[] cds = AbstractMapCsvLayout
-                    .toColumnDescs(columns);
+                    .toColumnDescs(columns_);
 
-            final FixedLengthColumn[] a = columns
-                    .toArray(new FixedLengthColumn[columns.size()]);
-            fixedLengthRecordDesc = new FixedLengthRecordDesc<Map<String, String>>(
+            final FixedLengthColumn[] a = columns_
+                    .toArray(new FixedLengthColumn[columns_.size()]);
+            fixedLengthRecordDesc_ = new FixedLengthRecordDesc<Map<String, String>>(
                     cds, new MapRecordType(), a);
         }
     }

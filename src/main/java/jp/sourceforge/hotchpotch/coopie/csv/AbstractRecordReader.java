@@ -10,30 +10,30 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractRecordReader<T> implements Closable, RecordReader<T> {
+public abstract class AbstractRecordReader<T> implements Closable,
+        RecordReader<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
     /**
      * RecordReader close時に、Readerを一緒にcloseする場合はtrue。
      */
-    private boolean closeReader = true;
+    private boolean closeReader_ = true;
 
-    protected RecordDesc<T> recordDesc;
-    protected boolean closed = true;
+    private RecordDesc<T> recordDesc_;
+    private boolean closed_ = true;
     @SuppressWarnings("unused")
-    private final Object finalizerGuardian = new ClosingGuardian(this);
+    private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    protected ElementReader elementReader;
-    private ReadEditor readEditor = DefaultReadEditor.getInstance();
-    private boolean withHeader;
+    private ElementReader elementReader_;
+    private ReadEditor readEditor_ = DefaultReadEditor.getInstance();
+    private boolean withHeader_;
 
-    private Boolean hasNext;
-
-    private String[] nextLine;
+    private Boolean hasNext_;
+    private String[] nextLine_;
 
     public AbstractRecordReader(final RecordDesc<T> recordDesc) {
-        this.recordDesc = recordDesc;
+        recordDesc_ = recordDesc;
     }
 
     @Override
@@ -41,16 +41,16 @@ public abstract class AbstractRecordReader<T> implements Closable, RecordReader<
         if (!hasNext()) {
             throw new NoSuchElementException("no element");
         }
-        hasNext = null;
+        hasNext_ = null;
 
         final String[] line;
-        if (nextLine != null) {
-            line = nextLine;
+        if (nextLine_ != null) {
+            line = nextLine_;
         } else {
             throw new AssertionError();
         }
 
-        recordDesc.setValues(bean, line);
+        recordDesc_.setValues(bean, line);
     }
 
     @Override
@@ -61,43 +61,43 @@ public abstract class AbstractRecordReader<T> implements Closable, RecordReader<
     }
 
     protected T newInstance() {
-        return recordDesc.newInstance();
+        return recordDesc_.newInstance();
     }
 
     protected String[] readLine() {
-        final String[] line = readEditor.readRecord(elementReader);
+        final String[] line = readEditor_.readRecord(elementReader_);
         return line;
     }
 
     @Override
     public boolean hasNext() {
-        if (hasNext != null) {
-            return hasNext.booleanValue();
+        if (hasNext_ != null) {
+            return hasNext_.booleanValue();
         }
-        nextLine = readLine();
+        nextLine_ = readLine();
 
-        if (nextLine == null) {
-            hasNext = Boolean.FALSE;
+        if (nextLine_ == null) {
+            hasNext_ = Boolean.FALSE;
         } else {
-            hasNext = Boolean.TRUE;
+            hasNext_ = Boolean.TRUE;
         }
-        return hasNext.booleanValue();
+        return hasNext_.booleanValue();
     }
 
     protected void setupByHeader() {
-        if (withHeader) {
+        if (withHeader_) {
             final String[] header = readLine();
             if (header == null) {
                 logger.debug("header is null");
                 return;
             }
-            recordDesc = recordDesc.setupByHeader(header);
+            recordDesc_ = recordDesc_.setupByHeader(header);
         } else {
             /*
              * ヘッダなしの場合は、列順が指定されていないとダメ。
              * JavaBeansのプロパティ情報は順序が不定なため。
              */
-            if (OrderSpecified.SPECIFIED != recordDesc.getOrderSpecified()) {
+            if (OrderSpecified.SPECIFIED != recordDesc_.getOrderSpecified()) {
                 if (readLine() == null) {
                     /*
                      * 本来はエラーだが、空ファイルに限ってはOKとしておく。
@@ -113,31 +113,43 @@ public abstract class AbstractRecordReader<T> implements Closable, RecordReader<
 
     @Override
     public boolean isClosed() {
-        return closed;
+        return closed_;
     }
 
     @Override
     public void close() throws IOException {
-        closed = true;
-        if (closeReader) {
-            elementReader.close();
-            elementReader = null;
+        closed_ = true;
+        if (closeReader_) {
+            elementReader_.close();
+            elementReader_ = null;
         }
     }
 
+    protected void setClosed(final boolean closed) {
+        closed_ = closed;
+    }
+
     public void setCloseReader(final boolean closeReader) {
-        this.closeReader = closeReader;
+        closeReader_ = closeReader;
     }
 
     public void setWithHeader(final boolean withHeader) {
-        this.withHeader = withHeader;
+        withHeader_ = withHeader;
     }
 
     public void setReadEditor(final ReadEditor readEditor) {
         if (readEditor == null) {
             throw new NullPointerException("readEditor");
         }
-        this.readEditor = readEditor;
+        readEditor_ = readEditor;
+    }
+
+    protected ElementReader getElementReader() {
+        return elementReader_;
+    }
+
+    protected void setElementReader(final ElementReader elementReader) {
+        elementReader_ = elementReader;
     }
 
     public static interface ReadEditor {

@@ -9,7 +9,7 @@ import jp.sourceforge.hotchpotch.coopie.IOUtil;
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {
 
-    private final CsvSetting csvSetting = new CsvSetting();
+    private final CsvSetting csvSetting_ = new CsvSetting();
 
     public BeanCsvLayout(final Class<T> beanClass) {
         super(beanClass);
@@ -23,10 +23,10 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(
                 getRecordDesc());
-        r.setWithHeader(withHeader);
-        r.setElementSetting(csvSetting);
-        if (readEditor != null) {
-            r.setReadEditor(readEditor);
+        r.setWithHeader(isWithHeader());
+        r.setElementSetting(csvSetting_);
+        if (getReadEditor() != null) {
+            r.setReadEditor(getReadEditor());
         }
 
         new FailureProtection<RuntimeException>() {
@@ -53,23 +53,23 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(
                 getRecordDesc());
-        w.setWithHeader(withHeader);
-        w.setElementSetting(csvSetting);
+        w.setWithHeader(isWithHeader());
+        w.setElementSetting(csvSetting_);
         // TODO openで例外時にcloseすること
         w.open(writer);
         return w;
     }
 
     public void setElementSeparator(final char elementSeparator) {
-        csvSetting.setElementSeparator(elementSeparator);
+        csvSetting_.setElementSeparator(elementSeparator);
     }
 
     public void setLineSeparator(final String lineSeparator) {
-        csvSetting.setLineSeparator(lineSeparator);
+        csvSetting_.setLineSeparator(lineSeparator);
     }
 
     public void setQuoteMark(final char quoteMark) {
-        csvSetting.setQuoteMark(quoteMark);
+        csvSetting_.setQuoteMark(quoteMark);
     }
 
 }

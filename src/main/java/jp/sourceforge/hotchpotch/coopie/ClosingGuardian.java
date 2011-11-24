@@ -15,14 +15,14 @@ public class ClosingGuardian {
     static final String STACKTRACE_TEXT = "warning by ClosingGuardian";
     static final String SUCCESS_TEXT = "ok, already closed";
 
-    private final Closable closable;
-    private final String createdBy;
+    private final Closable closable_;
+    private final String createdBy_;
 
     public ClosingGuardian(final Closable closable) {
         if (closable == null) {
             throw new NullPointerException("closable");
         }
-        this.closable = closable;
+        closable_ = closable;
 
         /*
          * where construct instance
@@ -31,21 +31,21 @@ public class ClosingGuardian {
             final StringWriter sw = new StringWriter();
             final PrintWriter pw = new PrintWriter(sw);
             new UnclosedWarning(STACKTRACE_TEXT).printStackTrace(pw);
-            createdBy = sw.toString().trim();
+            createdBy_ = sw.toString().trim();
         } else {
-            createdBy = null;
+            createdBy_ = null;
         }
     }
 
     @Override
     protected void finalize() {
-        if (closable.isClosed()) {
-            logger.debug(SUCCESS_TEXT + ": {}", closable.getClass().getName());
+        if (closable_.isClosed()) {
+            logger.debug(SUCCESS_TEXT + ": {}", closable_.getClass().getName());
             return;
         }
         warn();
         try {
-            closable.close();
+            closable_.close();
         } catch (final IOException e) {
             logger.warn("closing failure at finalize", e);
         }
@@ -55,11 +55,11 @@ public class ClosingGuardian {
         if (logger.isWarnEnabled()) {
             final StringWriter sw = new StringWriter();
             final PrintWriter pw = new PrintWriter(sw);
-            pw.print("closed at finalize: " + closable.getClass().getName()
-                    + ", " + closable);
-            if (createdBy != null) {
+            pw.print("closed at finalize: " + closable_.getClass().getName()
+                    + ", " + closable_);
+            if (createdBy_ != null) {
                 pw.println();
-                pw.print(createdBy);
+                pw.print(createdBy_);
             }
             logger.warn(sw.toString());
         }

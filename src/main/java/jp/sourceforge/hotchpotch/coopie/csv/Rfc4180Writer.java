@@ -12,7 +12,7 @@ public class Rfc4180Writer implements ElementWriter {
 
     protected boolean closed_ = true;
     @SuppressWarnings("unused")
-    private final Object finalizerGuardian = new ClosingGuardian(this);
+    private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
     private Appendable appendable_;
 
