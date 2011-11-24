@@ -2,6 +2,9 @@ package jp.sourceforge.hotchpotch.coopie.util;
 
 public interface LineSeparator {
 
+    /**
+     * @return 改行文字
+     */
     String getSeparator();
 
     LineSeparator CR = new LineSeparatorImpl(IOUtil.CR_S, "<CR>");

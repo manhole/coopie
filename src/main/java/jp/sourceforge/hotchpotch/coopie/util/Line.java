@@ -12,6 +12,9 @@ public interface Line {
      */
     int getNumber();
 
+    /**
+     * @return 行の改行文字。
+     */
     LineSeparator getSeparator();
 
 }
