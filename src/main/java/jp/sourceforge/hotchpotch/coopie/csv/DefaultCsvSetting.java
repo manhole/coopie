@@ -1,10 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import jp.sourceforge.hotchpotch.coopie.csv.Rfc4180Writer.QuoteMode;
-
 import org.t2framework.commons.util.StringUtil;
 
-public class DefaultCsvSetting implements ElementSetting, CsvSetting {
+public class DefaultCsvSetting implements CsvSetting {
 
     /**
      * 要素区切り文字。
@@ -28,26 +26,6 @@ public class DefaultCsvSetting implements ElementSetting, CsvSetting {
      * CsvReaderを使う場合は、未設定のままで構いません。
      */
     private String lineSeparator_ = CRLF;
-
-    @Override
-    public ElementWriter openWriter(final Appendable appendable) {
-        final Rfc4180Writer csvWriter = new Rfc4180Writer();
-        csvWriter.setElementSeparator(getElementSeparator());
-        csvWriter.setLineSeparator(getLineSeparator());
-        csvWriter.setQuoteMark(getQuoteMark());
-        csvWriter.setQuoteMode(QuoteMode.ALWAYS_EXCEPT_NULL);
-        csvWriter.open(appendable);
-        return csvWriter;
-    }
-
-    @Override
-    public ElementReader openReader(final Readable readable) {
-        final Rfc4180Reader rfcReader = new Rfc4180Reader();
-        rfcReader.setElementSeparator(getElementSeparator());
-        rfcReader.setQuoteMark(getQuoteMark());
-        rfcReader.open(readable);
-        return rfcReader;
-    }
 
     @Override
     public String getLineSeparator() {

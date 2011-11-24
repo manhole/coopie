@@ -6,10 +6,13 @@ import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {
 
-    private final DefaultCsvSetting csvSetting_ = new DefaultCsvSetting();
+    private final CsvSetting csvSetting_;
+    private final ElementSetting elementSetting_;
 
     public BeanCsvLayout(final Class<T> beanClass) {
         super(beanClass);
+        csvSetting_ = new DefaultCsvSetting();
+        elementSetting_ = new CsvElementSetting(csvSetting_);
     }
 
     @Override
@@ -21,7 +24,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
-        r.setElementSetting(csvSetting_);
+        r.setElementSetting(elementSetting_);
         if (getReadEditor() != null) {
             r.setReadEditor(getReadEditor());
         }
@@ -51,7 +54,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
-        w.setElementSetting(csvSetting_);
+        w.setElementSetting(elementSetting_);
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;
