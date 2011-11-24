@@ -39,8 +39,8 @@ public class BeanCsvReaderTest {
     @Test
     public void read_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -63,8 +63,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -111,8 +111,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -141,8 +141,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -220,8 +220,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-4", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -260,8 +260,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-4", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -296,8 +296,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-3", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -338,8 +338,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-3", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setWithHeader(false);
 
         // ## Act ##
@@ -357,8 +357,8 @@ public class BeanCsvReaderTest {
     @Test
     public void read_empty() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         layout.setWithHeader(false);
 
@@ -382,8 +382,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -434,8 +434,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -486,8 +486,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -533,8 +533,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-6", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -581,8 +581,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-9", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -638,8 +638,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-7", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setReadEditor(new TestReadEditor());
 
         // ## Act ##
@@ -715,8 +715,8 @@ public class BeanCsvReaderTest {
     @Test
     public void read_moreThanOnce() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -796,8 +796,8 @@ public class BeanCsvReaderTest {
     public void openMultiReader() throws Throwable {
         // ## Arrange ##
         final InputStream is1 = getResourceAsStream("-1", "tsv");
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -836,8 +836,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -866,8 +866,8 @@ public class BeanCsvReaderTest {
     public void readCsv() throws Throwable {
         // ## Arrange ##
         final Reader reader = getResourceAsReader("-8", "csv");
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
@@ -903,8 +903,8 @@ public class BeanCsvReaderTest {
     @Test
     public void read_separator_comma() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
 
@@ -920,8 +920,8 @@ public class BeanCsvReaderTest {
     @Test
     public void read_separator_tab() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.TAB);
 
@@ -937,8 +937,8 @@ public class BeanCsvReaderTest {
     @Test
     public void read_lineseparator_LF() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setLineSeparator("\n");
@@ -955,8 +955,8 @@ public class BeanCsvReaderTest {
     @Test
     public void read_quotechar_single() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setQuoteMark('\'');
@@ -992,8 +992,8 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final BeanCsvLayout<CccBean> layout = new BeanCsvLayout<CccBean>(
-                CccBean.class);
+        final BeanCsvLayout<CccBean> layout = BeanCsvLayout
+                .getInstance(CccBean.class);
 
         // ## Act ##
         final RecordReader<CccBean> csvReader = layout.openReader(r);

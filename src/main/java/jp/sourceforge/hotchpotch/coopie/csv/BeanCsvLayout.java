@@ -9,6 +9,11 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
     private final CsvSetting csvSetting_;
     private final ElementSetting elementSetting_;
 
+    public static <T> BeanCsvLayout<T> getInstance(final Class<T> beanClass) {
+        final BeanCsvLayout<T> instance = new BeanCsvLayout<T>(beanClass);
+        return instance;
+    }
+
     public BeanCsvLayout(final Class<T> beanClass) {
         super(beanClass);
         csvSetting_ = new DefaultCsvSetting();
