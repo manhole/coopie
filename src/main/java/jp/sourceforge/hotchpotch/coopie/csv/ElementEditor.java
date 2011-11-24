@@ -1,5 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import jp.sourceforge.hotchpotch.coopie.util.Text;
+
 public interface ElementEditor {
 
     /**
@@ -18,6 +20,13 @@ public interface ElementEditor {
         @Override
         public String edit(final String element) {
             return element.trim();
+        }
+    };
+
+    ElementEditor TRIM_WHITESPACE = new ElementEditor() {
+        @Override
+        public String edit(final String element) {
+            return Text.trimWhitespace(element);
         }
     };
 

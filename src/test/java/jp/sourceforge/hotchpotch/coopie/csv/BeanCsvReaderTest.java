@@ -1021,7 +1021,34 @@ public class BeanCsvReaderTest {
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
-                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b  , \n"));
+                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals(null, bean.getAaa());
+        assertEquals("b　", bean.getBbb());
+        assertEquals(null, bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 全角スペースもtrim対象とするオプション
+     */
+    @Test
+    public void read_trim_all_whitespace() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setElementEditor(ElementEditor.TRIM_WHITESPACE);
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
