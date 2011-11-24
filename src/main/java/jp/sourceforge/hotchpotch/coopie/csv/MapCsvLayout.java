@@ -8,7 +8,7 @@ import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 public class MapCsvLayout extends AbstractMapCsvLayout implements
         CsvLayout<Map<String, String>> {
 
-    private final CsvSetting csvSetting_ = new CsvSetting();
+    private final DefaultCsvSetting csvSetting_ = new DefaultCsvSetting();
 
     @Override
     public RecordReader<Map<String, String>> openReader(final Readable readable) {

@@ -54,7 +54,7 @@ public class ExcelToCsv {
                 tsvNaming.setSingle(false);
             }
 
-            final CsvSetting csvSetting = new CsvSetting();
+            final DefaultCsvSetting csvSetting = new DefaultCsvSetting();
             final FileResource fr = files_.getFileResource(file);
             for (final PoiSheetReader sheetReader : sheets) {
                 final String fileName = tsvNaming.createFileName(sheetReader,
