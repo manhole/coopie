@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractFixedLengthLayout.SimpleFixedLengthColumnDesc;
-
 import org.junit.Test;
 import org.t2framework.commons.util.ReaderUtil;
 
@@ -19,7 +17,7 @@ public class FixedLengthWriterTest {
         // ## Arrange ##
 
         final FixedLengthColumnDesc[] columns = new FixedLengthColumnDesc[] {
-                col("a", 0, 5), col("b", 5, 12), col("c", 12, 20) };
+                col(0, 5), col(5, 12), col(12, 20) };
 
         final StringWriter sw = new StringWriter();
 
@@ -41,10 +39,9 @@ public class FixedLengthWriterTest {
         assertEquals(expected, actual);
     }
 
-    private SimpleFixedLengthColumnDesc col(final String name, final int begin,
-            final int end) {
-        return new AbstractFixedLengthLayout.SimpleFixedLengthColumnDesc(name,
-                begin, end);
+    private FixedLengthColumnDesc col(final int begin, final int end) {
+        return new AbstractFixedLengthLayout.SimpleFixedLengthColumnDesc(begin,
+                end);
     }
 
 }

@@ -4,8 +4,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractFixedLengthLayout.SimpleFixedLengthColumnDesc;
-
 public class FixedLengthReaderTest extends ElementReaderTest {
 
     @Override
@@ -14,7 +12,7 @@ public class FixedLengthReaderTest extends ElementReaderTest {
         final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
                 "-1", "tsv");
         final FixedLengthColumnDesc[] columns = new FixedLengthColumnDesc[] {
-                col("a", 0, 5), col("b", 5, 12), col("c", 12, 20) };
+                col(0, 5), col(5, 12), col(12, 20) };
 
         // ## Act ##
         final FixedLengthReader reader = new FixedLengthReader(
@@ -22,10 +20,9 @@ public class FixedLengthReaderTest extends ElementReaderTest {
         return reader;
     }
 
-    private SimpleFixedLengthColumnDesc col(final String name, final int begin,
-            final int end) {
-        return new AbstractFixedLengthLayout.SimpleFixedLengthColumnDesc(name,
-                begin, end);
+    private FixedLengthColumnDesc col(final int begin, final int end) {
+        return new AbstractFixedLengthLayout.SimpleFixedLengthColumnDesc(begin,
+                end);
     }
 
 }

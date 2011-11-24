@@ -50,22 +50,14 @@ abstract class AbstractFixedLengthLayout<T> {
     protected static class SimpleFixedLengthColumnDesc implements
             FixedLengthColumnDesc {
 
-        private final String propertyName_;
         private final int beginIndex_;
         private final int endIndex_;
         private final int length_;
 
-        SimpleFixedLengthColumnDesc(final String propertyName,
-                final int beginIndex, final int endIndex) {
-            propertyName_ = propertyName;
+        SimpleFixedLengthColumnDesc(final int beginIndex, final int endIndex) {
             beginIndex_ = beginIndex;
             endIndex_ = endIndex;
             length_ = endIndex - beginIndex;
-        }
-
-        @Override
-        public String getName() {
-            return propertyName_;
         }
 
         public int getBeginIndex() {
@@ -74,17 +66,6 @@ abstract class AbstractFixedLengthLayout<T> {
 
         public int getEndIndex() {
             return endIndex_;
-        }
-
-        @Override
-        public String getLabel() {
-            // nameと同じで良いでしょう
-            return getName();
-        }
-
-        @Override
-        public boolean labelEquals(final String label) {
-            return getLabel().equals(label);
         }
 
         @Override
@@ -131,15 +112,74 @@ abstract class AbstractFixedLengthLayout<T> {
     protected abstract static class AbstractFixedLengthRecordDescSetup<T>
             implements FixedLengthRecordDescSetup {
 
-        protected final List<FixedLengthColumnDesc> columns_ = CollectionsUtil
+        private final List<NameAndDesc> columns_ = CollectionsUtil
                 .newArrayList();
 
         @Override
         public void column(final String propertyName, final int beginIndex,
                 final int endIndex) {
+            final ColumnName columnName = new SimpleColumnName(propertyName);
             final SimpleFixedLengthColumnDesc c = new SimpleFixedLengthColumnDesc(
-                    propertyName, beginIndex, endIndex);
-            columns_.add(c);
+                    beginIndex, endIndex);
+            final NameAndDesc nd = new NameAndDesc(columnName, c);
+            columns_.add(nd);
+        }
+
+        private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
+
+        @Override
+        public RecordDesc<T> getRecordDesc() {
+            buildIfNeed();
+            return fixedLengthRecordDesc_;
+        }
+
+        @Override
+        public ElementSetting getElementSetting() {
+            buildIfNeed();
+            return fixedLengthRecordDesc_;
+        }
+
+        private void buildIfNeed() {
+            if (fixedLengthRecordDesc_ != null) {
+                return;
+            }
+
+            /*
+             * 設定されているプロパティ名を対象に。
+             */
+            final List<ColumnName> cnames = CollectionsUtil.newArrayList();
+            final FixedLengthColumnDesc[] a = new FixedLengthColumnDesc[columns_
+                    .size()];
+            int i = 0;
+            for (final NameAndDesc nd : columns_) {
+                final ColumnName cn = nd.columnName_;
+                cnames.add(cn);
+                final FixedLengthColumnDesc desc = nd.fixedLengthColumnDesc_;
+                a[i] = desc;
+                i++;
+            }
+
+            final ColumnDesc<T>[] cds = createColumnDesc(cnames);
+            fixedLengthRecordDesc_ = new FixedLengthRecordDesc<T>(cds,
+                    getRecordType(), a);
+        }
+
+        abstract protected ColumnDesc<T>[] createColumnDesc(
+                List<ColumnName> columnNames);
+
+        abstract protected RecordType<T> getRecordType();
+
+    }
+
+    private static class NameAndDesc {
+
+        final ColumnName columnName_;
+        final FixedLengthColumnDesc fixedLengthColumnDesc_;
+
+        public NameAndDesc(final ColumnName columnName,
+                final SimpleFixedLengthColumnDesc desc) {
+            columnName_ = columnName;
+            fixedLengthColumnDesc_ = desc;
         }
 
     }
