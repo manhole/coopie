@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TextTest {
 
     @Test
-    public void trim() throws Throwable {
+    public void trim1() throws Throwable {
         // ## Arrange ##
         // ## Act ##
         // ## Assert ##
@@ -18,6 +18,17 @@ public class TextTest {
         assertEquals("abc", new Text(" 　abc　　").trimWhitespace().toString());
         assertEquals("abc　 def", new Text(" 　abc　 def　\r\n\t").trimWhitespace()
                 .toString());
+    }
+
+    @Test
+    public void trim2() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        // String相当
+        assertEquals("abc　", new Text(" abc　 ").trim(Text.STANDARD).toString());
+        // 全角スペースも対象
+        assertEquals("abc", new Text(" abc　 ").trim(Text.WHITESPACE).toString());
     }
 
     @Test

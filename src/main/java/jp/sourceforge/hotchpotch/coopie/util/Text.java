@@ -86,17 +86,35 @@ public class Text {
         return false;
     }
 
+    public Text trim(final TrimStrategy trimStrategy) {
+        final String trim = trim0(rawText_, trimStrategy);
+        return instantiate(trim);
+    }
+
     public Text trimWhitespace() {
         final String trim = trimWhitespace0(rawText_);
         return instantiate(trim);
     }
 
+    public static String trim(final String s, final TrimStrategy trimStrategy) {
+        return trim0(s, trimStrategy);
+    }
+
+    public static String trimWhitespace(final String s) {
+        return trim0(s, WHITESPACE);
+    }
+
     private String trimWhitespace0(final String s) {
+        return trim0(s, WHITESPACE);
+    }
+
+    private static String trim0(final String s, final TrimStrategy trimStrategy) {
+
         final int len = s.length();
         int begin = 0;
         for (int i = 0; i < len; i++) {
             final char c = s.charAt(i);
-            if (Character.isWhitespace(c)) {
+            if (trimStrategy.isTrim(c)) {
                 begin++;
             } else {
                 break;
@@ -106,7 +124,7 @@ public class Text {
         int end = len;
         for (int i = len - 1; begin < i; i--) {
             final char c = s.charAt(i);
-            if (Character.isWhitespace(c)) {
+            if (trimStrategy.isTrim(c)) {
                 end--;
             } else {
                 break;
@@ -137,5 +155,25 @@ public class Text {
     protected Text instantiate(final String s) {
         return new Text(s);
     }
+
+    public interface TrimStrategy {
+
+        boolean isTrim(char c);
+
+    }
+
+    public static TrimStrategy STANDARD = new TrimStrategy() {
+        @Override
+        public boolean isTrim(final char c) {
+            // java.lang.Stringと同じ
+            return c <= ' ';
+        }
+    };
+    public static TrimStrategy WHITESPACE = new TrimStrategy() {
+        @Override
+        public boolean isTrim(final char c) {
+            return Character.isWhitespace(c);
+        }
+    };
 
 }
