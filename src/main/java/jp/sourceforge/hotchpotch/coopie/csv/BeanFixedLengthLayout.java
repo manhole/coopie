@@ -61,7 +61,12 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
              */
             setupByAnnotation();
         }
-        return super.getRecordDesc();
+
+        final RecordDesc<T> recordDesc = super.getRecordDesc();
+        if (recordDesc == null) {
+            throw new IllegalStateException("recordDesc");
+        }
+        return recordDesc;
     }
 
     @Override
@@ -69,7 +74,12 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         if (super.getElementSetting() == null) {
             setupByAnnotation();
         }
-        return super.getElementSetting();
+
+        final ElementSetting elementSetting = super.getElementSetting();
+        if (elementSetting == null) {
+            throw new IllegalStateException("elementSetting");
+        }
+        return elementSetting;
     }
 
     private void setupByAnnotation() {
