@@ -12,7 +12,6 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.NoSuchElementException;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractRecordReader.ReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
@@ -657,7 +656,7 @@ public class BeanCsvReaderTest {
         assertRead1(csvReader, bean);
     }
 
-    static class TestReadEditor implements ReadEditor {
+    static class TestReadEditor extends DefaultReadEditor {
 
         @Override
         public String[] readRecord(final ElementReader elementReader) {

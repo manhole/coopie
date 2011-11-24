@@ -30,9 +30,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
         r.setElementSetting(elementSetting_);
-        if (getReadEditor() != null) {
-            r.setReadEditor(getReadEditor());
-        }
+        r.setReadEditor(getReadEditor());
 
         new FailureProtection<RuntimeException>() {
 
