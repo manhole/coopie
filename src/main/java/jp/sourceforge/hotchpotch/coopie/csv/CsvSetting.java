@@ -13,14 +13,18 @@ public interface CsvSetting {
 
     String getLineSeparator();
 
-    void setLineSeparator(final String lineSeparator);
+    void setLineSeparator(String lineSeparator);
 
     char getQuoteMark();
 
-    void setQuoteMark(final char quoteMark);
+    void setQuoteMark(char quoteMark);
 
     char getElementSeparator();
 
-    void setElementSeparator(final char elementSeparator);
+    void setElementSeparator(char elementSeparator);
+
+    QuoteMode getQuoteMode();
+
+    void setQuoteMode(QuoteMode quoteMode);
 
 }

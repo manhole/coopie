@@ -27,6 +27,8 @@ public class DefaultCsvSetting implements CsvSetting {
      */
     private String lineSeparator_ = CRLF;
 
+    private QuoteMode quoteMode_ = QuoteMode.ALWAYS_EXCEPT_NULL;
+
     @Override
     public String getLineSeparator() {
         if (StringUtil.isEmpty(lineSeparator_)) {
@@ -58,6 +60,16 @@ public class DefaultCsvSetting implements CsvSetting {
     @Override
     public void setElementSeparator(final char elementSeparator) {
         elementSeparator_ = elementSeparator;
+    }
+
+    @Override
+    public QuoteMode getQuoteMode() {
+        return quoteMode_;
+    }
+
+    @Override
+    public void setQuoteMode(final QuoteMode quoteMode) {
+        quoteMode_ = quoteMode;
     }
 
 }
