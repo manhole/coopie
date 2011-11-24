@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface FixedLengthColumnDesc extends ColumnName {
+public interface FixedLengthColumnDesc {
 
     /**
      * 1行の文字列から、当カラムぶんのデータを読みます。

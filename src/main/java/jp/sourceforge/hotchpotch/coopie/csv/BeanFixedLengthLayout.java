@@ -1,5 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.List;
+
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
 
@@ -58,36 +60,17 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
             beanDesc_ = beanDesc;
         }
 
-        private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
-
         @Override
-        public RecordDesc<T> getRecordDesc() {
-            buildIfNeed();
-            return fixedLengthRecordDesc_;
+        protected RecordType<T> getRecordType() {
+            return new BeanRecordType<T>(beanDesc_);
         }
 
         @Override
-        public ElementSetting getElementSetting() {
-            buildIfNeed();
-            return fixedLengthRecordDesc_;
-        }
-
-        private void buildIfNeed() {
-            if (fixedLengthRecordDesc_ != null) {
-                return;
-            }
-
-            /*
-             * 設定されているプロパティ名を対象に。
-             */
+        protected ColumnDesc<T>[] createColumnDesc(
+                final List<ColumnName> columnNames) {
             final ColumnDesc<T>[] cds = AbstractBeanCsvLayout.toColumnDescs(
-                    columns_, beanDesc_);
-
-            final FixedLengthColumnDesc[] a = columns_
-                    .toArray(new FixedLengthColumnDesc[columns_.size()]);
-            // FIXME
-            fixedLengthRecordDesc_ = new FixedLengthRecordDesc<T>(cds,
-                    new BeanRecordType<T>(beanDesc_), a);
+                    columnNames, beanDesc_);
+            return cds;
         }
 
     }

@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.List;
 import java.util.Map;
 
 public class MapFixedLengthLayout extends
@@ -41,37 +42,21 @@ public class MapFixedLengthLayout extends
     private static class MapFixedLengthRecordDescSetup extends
             AbstractFixedLengthRecordDescSetup<Map<String, String>> {
 
-        private FixedLengthRecordDesc<Map<String, String>> fixedLengthRecordDesc_;
+        private final MapRecordType recordType_ = new MapRecordType();
 
         @Override
-        public RecordDesc<Map<String, String>> getRecordDesc() {
-            buildIfNeed();
-            return fixedLengthRecordDesc_;
+        protected MapRecordType getRecordType() {
+            return recordType_;
         }
 
         @Override
-        public ElementSetting getElementSetting() {
-            buildIfNeed();
-            return fixedLengthRecordDesc_;
-        }
-
-        private void buildIfNeed() {
-            if (fixedLengthRecordDesc_ != null) {
-                return;
-            }
-
-            /*
-             * 設定されているプロパティ名を対象に。
-             */
-
+        protected ColumnDesc<Map<String, String>>[] createColumnDesc(
+                final List<ColumnName> columnNames) {
             final ColumnDesc<Map<String, String>>[] cds = AbstractMapCsvLayout
-                    .toColumnDescs(columns_);
-
-            final FixedLengthColumnDesc[] a = columns_
-                    .toArray(new FixedLengthColumnDesc[columns_.size()]);
-            fixedLengthRecordDesc_ = new FixedLengthRecordDesc<Map<String, String>>(
-                    cds, new MapRecordType(), a);
+                    .toColumnDescs(columnNames);
+            return cds;
         }
+
     }
 
 }
