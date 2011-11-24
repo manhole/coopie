@@ -983,6 +983,59 @@ public class BeanCsvReaderTest {
     }
 
     /**
+     * デフォルトではtrimしない。
+     */
+    @Test
+    public void read_trim_off() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b , \n"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("  ", bean.getAaa());
+        assertEquals(" b ", bean.getBbb());
+        assertEquals(" ", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 要素をtrimするオプション
+     */
+    @Test
+    public void read_trim_all() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setElementEditor(ElementEditor.TRIM);
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b  , \n"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals(null, bean.getAaa());
+        assertEquals("b", bean.getBbb());
+        assertEquals(null, bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
      * ヘッダがBeanのプロパティ名と異なる場合。
      * アノテーションからlabelを取得して、ヘッダ名とbeanのプロパティ名をマッピングすること。
      */
