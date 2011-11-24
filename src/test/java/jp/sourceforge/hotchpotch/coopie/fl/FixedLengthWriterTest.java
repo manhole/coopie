@@ -1,4 +1,4 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.fl;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertEquals;
