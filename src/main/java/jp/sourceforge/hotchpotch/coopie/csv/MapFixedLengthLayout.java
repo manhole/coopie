@@ -50,7 +50,7 @@ public class MapFixedLengthLayout extends
         }
 
         @Override
-        protected ColumnDesc<Map<String, String>>[] createColumnDesc(
+        protected ColumnDesc<Map<String, String>>[] createColumnDescs(
                 final List<ColumnName> columnNames) {
             final ColumnDesc<Map<String, String>>[] cds = AbstractMapCsvLayout
                     .toColumnDescs(columnNames);
