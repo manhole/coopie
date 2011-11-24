@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
@@ -58,7 +58,7 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             } finally {
-                IOUtil.closeNoException(is);
+                CloseableUtil.closeNoException(is);
             }
         }
 
@@ -80,7 +80,7 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
         @Override
         public void close() throws IOException {
             closed_ = true;
-            IOUtil.closeNoException(sheetReader_);
+            CloseableUtil.closeNoException(sheetReader_);
             workbook_ = null;
         }
 

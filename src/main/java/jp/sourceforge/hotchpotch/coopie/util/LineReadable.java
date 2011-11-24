@@ -58,7 +58,7 @@ public class LineReadable implements Closable {
     @Override
     public void close() throws IOException {
         closed_ = true;
-        IOUtil.closeNoException(br_);
+        CloseableUtil.closeNoException(br_);
     }
 
     /**
