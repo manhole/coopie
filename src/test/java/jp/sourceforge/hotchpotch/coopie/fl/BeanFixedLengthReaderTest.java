@@ -11,6 +11,7 @@ import java.io.StringReader;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
@@ -411,6 +412,112 @@ public class BeanFixedLengthReaderTest {
         assertEquals("23", bean.getAaa());
         assertEquals(null, bean.getBbb());
         assertEquals(null, bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * デフォルトではtrimしない。
+     * → 既にtrimするよう実装していたので、とりあえずそのままにする。
+     * TODO 要素が右寄せなのか左寄せなのかに合わせてtrimするのが良いだろうか。
+     */
+    @Test
+    public void read_trim_off() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 3);
+                setup.column("bbb", 3, 6);
+                setup.column("ccc", 6, 9);
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader("　a bb ccc"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        // TODO 現状、trimされている
+        //assertEquals("　a ", bean.getAaa());
+        assertEquals("　a", bean.getAaa());
+        //assertEquals("bb ", bean.getBbb());
+        assertEquals("bb", bean.getBbb());
+        assertEquals("ccc", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 要素をtrimするオプション
+     */
+    @Test
+    public void read_trim_all() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 3);
+                setup.column("bbb", 3, 6);
+                setup.column("ccc", 6, 9);
+            }
+        });
+        layout.setElementEditor(ElementEditor.TRIM);
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader("　a bb ccc"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("　a", bean.getAaa());
+        assertEquals("bb", bean.getBbb());
+        assertEquals("ccc", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 全角スペースもtrim対象とするオプション
+     */
+    @Test
+    public void read_trim_all_whitespace() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 3);
+                setup.column("bbb", 3, 6);
+                setup.column("ccc", 6, 9);
+            }
+        });
+        layout.setElementEditor(ElementEditor.TRIM_WHITESPACE);
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader("　a bb ccc"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("bb", bean.getBbb());
+        assertEquals("ccc", bean.getCcc());
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
