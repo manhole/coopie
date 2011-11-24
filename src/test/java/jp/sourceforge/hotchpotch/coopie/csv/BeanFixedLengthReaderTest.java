@@ -39,6 +39,27 @@ public class BeanFixedLengthReaderTest {
     }
 
     /**
+     * setupしないでopenしようとしたら、エラーにする。
+     */
+    @Test
+    public void read_nosetup() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-1", "tsv");
+
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openReader(new InputStreamReader(is, "UTF-8"));
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
+    /**
      * ファイルヘッダがBeanのプロパティ名と同じ場合。
      * 
      * ※固定長ファイルでは、ヘッダがあっても大事に扱わない。
