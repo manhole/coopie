@@ -47,14 +47,15 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    protected static class SimpleFixedLengthColumn implements FixedLengthColumn {
+    protected static class SimpleFixedLengthColumnDesc implements
+            FixedLengthColumnDesc {
 
         private final String propertyName_;
         private final int beginIndex_;
         private final int endIndex_;
         private final int length_;
 
-        SimpleFixedLengthColumn(final String propertyName,
+        SimpleFixedLengthColumnDesc(final String propertyName,
                 final int beginIndex, final int endIndex) {
             propertyName_ = propertyName;
             beginIndex_ = beginIndex;
@@ -130,13 +131,13 @@ abstract class AbstractFixedLengthLayout<T> {
     protected abstract static class AbstractFixedLengthRecordDescSetup<T>
             implements FixedLengthRecordDescSetup {
 
-        protected final List<FixedLengthColumn> columns_ = CollectionsUtil
+        protected final List<FixedLengthColumnDesc> columns_ = CollectionsUtil
                 .newArrayList();
 
         @Override
         public void column(final String propertyName, final int beginIndex,
                 final int endIndex) {
-            final SimpleFixedLengthColumn c = new SimpleFixedLengthColumn(
+            final SimpleFixedLengthColumnDesc c = new SimpleFixedLengthColumnDesc(
                     propertyName, beginIndex, endIndex);
             columns_.add(c);
         }
@@ -147,11 +148,11 @@ abstract class AbstractFixedLengthLayout<T> {
             ElementSetting {
 
         private final DefaultRecordDesc<T> delegate_;
-        private final FixedLengthColumn[] columns_;
+        private final FixedLengthColumnDesc[] columns_;
 
         protected FixedLengthRecordDesc(final ColumnDesc<T>[] columnDescs,
                 final RecordType<T> recordType,
-                final FixedLengthColumn[] columns) {
+                final FixedLengthColumnDesc[] columns) {
             // 固定長なので、常に指定した順序
             delegate_ = new DefaultRecordDesc<T>(columnDescs,
                     OrderSpecified.SPECIFIED, recordType);

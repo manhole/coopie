@@ -83,8 +83,8 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
             final ColumnDesc<T>[] cds = AbstractBeanCsvLayout.toColumnDescs(
                     columns_, beanDesc_);
 
-            final FixedLengthColumn[] a = columns_
-                    .toArray(new FixedLengthColumn[columns_.size()]);
+            final FixedLengthColumnDesc[] a = columns_
+                    .toArray(new FixedLengthColumnDesc[columns_.size()]);
             // FIXME
             fixedLengthRecordDesc_ = new FixedLengthRecordDesc<T>(cds,
                     new BeanRecordType<T>(beanDesc_), a);
