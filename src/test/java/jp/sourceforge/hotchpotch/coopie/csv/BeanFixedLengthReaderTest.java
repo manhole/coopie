@@ -57,6 +57,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("bbb", 12, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -88,6 +89,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("bbb", 12, 30);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -119,8 +121,6 @@ public class BeanFixedLengthReaderTest {
             }
         });
 
-        layout.setWithHeader(false);
-
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
@@ -151,6 +151,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("ccc", 14, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -200,7 +201,6 @@ public class BeanFixedLengthReaderTest {
                 setup.column("ccc", 14, 20);
             }
         });
-
         layout.setWithHeader(false);
 
         // ## Act ##
@@ -217,6 +217,7 @@ public class BeanFixedLengthReaderTest {
      * 空行がある場合。
      * 
      * 各要素を"" (null)として扱う。
+     * ※異常データとして扱えた方が良いだろうか。
      */
     @Test
     public void read_empty_row() throws Throwable {
@@ -233,6 +234,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("bbb", 14, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -260,6 +262,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("ccc", 5, 12);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -288,6 +291,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("bbb", 12, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -296,6 +300,57 @@ public class BeanFixedLengthReaderTest {
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         BeanCsvReaderTest.assertReadAfterLast(csvReader, bean);
+    }
+
+    /**
+     * 指定した長さに満たない行がある場合(空行ではなく)
+     * → データがある部分までを読む。足りない部分はnullにする。
+     * ※異常データとして扱えた方が良いだろうか。
+     */
+    @Test
+    public void read5() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 3);
+                setup.column("bbb", 3, 6);
+                setup.column("ccc", 6, 9);
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout
+                .openReader(new StringReader("111222333\n44455\n666777888\n"));
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("111", bean.getAaa());
+        assertEquals("222", bean.getBbb());
+        assertEquals("333", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("444", bean.getAaa());
+        assertEquals("55", bean.getBbb());
+        assertEquals(null, bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("666", bean.getAaa());
+        assertEquals("777", bean.getBbb());
+        assertEquals("888", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
