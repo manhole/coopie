@@ -54,6 +54,7 @@ public class BeanFixedLengthWriterTest {
                 setup.column("ccc", 12, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -97,6 +98,7 @@ public class BeanFixedLengthWriterTest {
                 setup.column("bbb", 12, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -149,6 +151,7 @@ public class BeanFixedLengthWriterTest {
                 setup.column("ccc", 14, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -195,7 +198,6 @@ public class BeanFixedLengthWriterTest {
                 setup.column("bbb", 12, 20);
             }
         });
-        layout.setWithHeader(false);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();

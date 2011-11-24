@@ -8,7 +8,8 @@ import org.t2framework.commons.util.CollectionsUtil;
 
 abstract class AbstractFixedLengthLayout<T> {
 
-    private boolean withHeader_ = true;
+    // 固定長ファイルでは「ヘッダ無し」をデフォルトにする。
+    private boolean withHeader_ = false;
     private RecordDesc<T> recordDesc_;
     private ElementSetting elementSetting_;
 

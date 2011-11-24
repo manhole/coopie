@@ -38,6 +38,7 @@ public class MapFixedLengthReaderTest {
                 setup.column("bbb", 12, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -69,6 +70,7 @@ public class MapFixedLengthReaderTest {
                 setup.column("bbb", 12, 30);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -100,8 +102,6 @@ public class MapFixedLengthReaderTest {
             }
         });
 
-        layout.setWithHeader(false);
-
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
@@ -132,6 +132,7 @@ public class MapFixedLengthReaderTest {
                 setup.column("ccc", 14, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -182,8 +183,6 @@ public class MapFixedLengthReaderTest {
             }
         });
 
-        layout.setWithHeader(false);
-
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(new StringReader(""));
@@ -214,6 +213,7 @@ public class MapFixedLengthReaderTest {
                 setup.column("bbb", 14, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -241,6 +241,7 @@ public class MapFixedLengthReaderTest {
                 setup.column("ccc", 5, 12);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -269,6 +270,7 @@ public class MapFixedLengthReaderTest {
                 setup.column("bbb", 12, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -277,6 +279,56 @@ public class MapFixedLengthReaderTest {
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         BeanCsvReaderTest.assertReadAfterLast(csvReader, bean);
+    }
+
+    /**
+     * 指定した長さに満たない行がある場合(空行ではなく)
+     * → データがある部分までを読む。足りない部分はnullにする。
+     * ※異常データとして扱えた方が良いだろうか。
+     */
+    @Test
+    public void read5() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 3);
+                setup.column("bbb", 3, 6);
+                setup.column("ccc", 6, 9);
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader("111222333\n44455\n666777888\n"));
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("111", bean.get("aaa"));
+        assertEquals("222", bean.get("bbb"));
+        assertEquals("333", bean.get("ccc"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("444", bean.get("aaa"));
+        assertEquals("55", bean.get("bbb"));
+        assertEquals(null, bean.get("ccc"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("666", bean.get("aaa"));
+        assertEquals("777", bean.get("bbb"));
+        assertEquals("888", bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
 }
