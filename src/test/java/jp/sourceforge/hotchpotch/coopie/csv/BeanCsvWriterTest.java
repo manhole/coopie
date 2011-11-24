@@ -25,8 +25,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -42,8 +42,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -78,8 +78,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -125,8 +125,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write3() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -172,8 +172,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -208,8 +208,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -251,8 +251,8 @@ public class BeanCsvWriterTest {
     @Test
     public void writeCsv() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -312,8 +312,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_separator_comma() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
 
@@ -342,8 +342,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_separator_tab() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.TAB);
 
@@ -372,8 +372,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_lineseparator_LF() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setLineSeparator("\n");
@@ -403,8 +403,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_quotechar_single() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = new BeanCsvLayout<AaaBean>(
-                AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setQuoteMark('\'');
@@ -445,8 +445,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_annotation_1() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<CccBean> layout = new BeanCsvLayout<CccBean>(
-                CccBean.class);
+        final BeanCsvLayout<CccBean> layout = BeanCsvLayout
+                .getInstance(CccBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -478,8 +478,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_annotation_2() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<EeeBean> layout = new BeanCsvLayout<EeeBean>(
-                EeeBean.class);
+        final BeanCsvLayout<EeeBean> layout = BeanCsvLayout
+                .getInstance(EeeBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -513,8 +513,8 @@ public class BeanCsvWriterTest {
     @Test
     public void write_annotation_3() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<DddBean> layout = new BeanCsvLayout<DddBean>(
-                DddBean.class);
+        final BeanCsvLayout<DddBean> layout = BeanCsvLayout
+                .getInstance(DddBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
