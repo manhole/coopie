@@ -11,6 +11,7 @@
 - 固定長ファイル関連クラスをflパッケージへ移動しました。
 - add: ElementEditor. 読んだ要素を編集(trimなど)できるようにしました。
 - slf4jとlogbackのバージョンを、それぞれ 1.6.4と1.0.0へバージョンアップしました。
+- rename: ElementSetting -> ElementStream
 
 0.1.7 2011/11/15
 

@@ -2,19 +2,18 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 public class DefaultRecordReader<T> extends AbstractRecordReader<T> {
 
-    private ElementSetting elementSetting_;
+    private ElementStream elementStream_;
 
     public DefaultRecordReader(final RecordDesc<T> recordDesc) {
         super(recordDesc);
     }
 
-    public void setElementSetting(final ElementSetting elementSetting) {
-        elementSetting_ = elementSetting;
+    public void setElementStream(final ElementStream elementStream) {
+        elementStream_ = elementStream;
     }
 
     public void open(final Readable readable) {
-        final ElementReader elementReader = elementSetting_
-                .openReader(readable);
+        final ElementReader elementReader = elementStream_.openReader(readable);
         setElementReader(elementReader);
         setClosed(false);
 
