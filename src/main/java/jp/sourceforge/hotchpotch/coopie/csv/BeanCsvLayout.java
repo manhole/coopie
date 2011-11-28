@@ -76,4 +76,8 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         csvSetting_.setQuoteMark(quoteMark);
     }
 
+    public void setQuoteMode(final QuoteMode quoteMode) {
+        csvSetting_.setQuoteMode(quoteMode);
+    }
+
 }
