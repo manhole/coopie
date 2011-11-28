@@ -1017,7 +1017,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
                 .getInstance(AaaBean.class);
         layout.setElementSeparator(CsvSetting.COMMA);
-        layout.setElementEditor(ElementEditor.TRIM);
+        layout.setElementEditor(ElementEditors.TRIM);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -1044,7 +1044,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
                 .getInstance(AaaBean.class);
         layout.setElementSeparator(CsvSetting.COMMA);
-        layout.setElementEditor(ElementEditor.TRIM_WHITESPACE);
+        layout.setElementEditor(ElementEditors.TRIM_WHITESPACE);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
