@@ -72,14 +72,14 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    protected static class SimpleFixedLengthColumnDesc implements
-            FixedLengthColumnDesc {
+    protected static class SimpleFixedLengthElementDesc implements
+            FixedLengthElementDesc {
 
         private final int beginIndex_;
         private final int endIndex_;
         private final int length_;
 
-        SimpleFixedLengthColumnDesc(final int beginIndex, final int endIndex) {
+        SimpleFixedLengthElementDesc(final int beginIndex, final int endIndex) {
             beginIndex_ = beginIndex;
             endIndex_ = endIndex;
             length_ = endIndex - beginIndex;
@@ -145,7 +145,7 @@ abstract class AbstractFixedLengthLayout<T> {
         public void column(final String propertyName, final int beginIndex,
                 final int endIndex) {
             final ColumnName columnName = new SimpleColumnName(propertyName);
-            final SimpleFixedLengthColumnDesc c = new SimpleFixedLengthColumnDesc(
+            final SimpleFixedLengthElementDesc c = new SimpleFixedLengthElementDesc(
                     beginIndex, endIndex);
             final NameAndDesc nd = new NameAndDesc(columnName, c);
             columns_.add(nd);
@@ -175,13 +175,13 @@ abstract class AbstractFixedLengthLayout<T> {
              * 設定されているプロパティ名を対象に。
              */
             final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
-            final FixedLengthColumnDesc[] flColumnDescs = new FixedLengthColumnDesc[columns_
+            final FixedLengthElementDesc[] flColumnDescs = new FixedLengthElementDesc[columns_
                     .size()];
             int i = 0;
             for (final NameAndDesc nd : columns_) {
                 final ColumnName cn = nd.columnName_;
                 columnNames.add(cn);
-                final FixedLengthColumnDesc desc = nd.fixedLengthColumnDesc_;
+                final FixedLengthElementDesc desc = nd.fixedLengthElementDesc_;
                 flColumnDescs[i] = desc;
                 i++;
             }
@@ -203,32 +203,33 @@ abstract class AbstractFixedLengthLayout<T> {
     private static class NameAndDesc {
 
         final ColumnName columnName_;
-        final FixedLengthColumnDesc fixedLengthColumnDesc_;
+        final FixedLengthElementDesc fixedLengthElementDesc_;
 
         public NameAndDesc(final ColumnName columnName,
-                final SimpleFixedLengthColumnDesc desc) {
+                final SimpleFixedLengthElementDesc desc) {
             columnName_ = columnName;
-            fixedLengthColumnDesc_ = desc;
+            fixedLengthElementDesc_ = desc;
         }
 
     }
 
     protected static class FixedLengthElementStream implements ElementStream {
 
-        private final FixedLengthColumnDesc[] columns_;
+        private final FixedLengthElementDesc[] elementDescs_;
 
-        protected FixedLengthElementStream(final FixedLengthColumnDesc[] columns) {
-            columns_ = columns;
+        protected FixedLengthElementStream(
+                final FixedLengthElementDesc[] elementDescs) {
+            elementDescs_ = elementDescs;
         }
 
         @Override
         public ElementWriter openWriter(final Appendable appendable) {
-            return new FixedLengthWriter(appendable, columns_);
+            return new FixedLengthWriter(appendable, elementDescs_);
         }
 
         @Override
         public ElementReader openReader(final Readable readable) {
-            return new FixedLengthReader(readable, columns_);
+            return new FixedLengthReader(readable, elementDescs_);
         }
 
     }

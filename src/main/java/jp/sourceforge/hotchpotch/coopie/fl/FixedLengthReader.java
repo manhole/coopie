@@ -17,13 +17,13 @@ public class FixedLengthReader implements ElementReader {
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
     private final LineReadable reader_;
-    private final FixedLengthColumnDesc[] columns_;
+    private final FixedLengthElementDesc[] elementDescs_;
     private int lineNo_;
 
     public FixedLengthReader(final Readable reader,
-            final FixedLengthColumnDesc[] columns) {
+            final FixedLengthElementDesc[] columns) {
         reader_ = new LineReadable(reader);
-        columns_ = columns;
+        elementDescs_ = columns;
         closed_ = false;
     }
 
@@ -39,11 +39,11 @@ public class FixedLengthReader implements ElementReader {
             if (line == null) {
                 return null;
             }
-            final String[] record = new String[columns_.length];
-            for (int i = 0; i < columns_.length; i++) {
-                final FixedLengthColumnDesc column = columns_[i];
+            final String[] record = new String[elementDescs_.length];
+            for (int i = 0; i < elementDescs_.length; i++) {
+                final FixedLengthElementDesc elementDesc = elementDescs_[i];
                 final String str = line.getBody();
-                final String elem = column.read(str);
+                final String elem = elementDesc.read(str);
                 record[i] = elem;
             }
             lineNo_++;

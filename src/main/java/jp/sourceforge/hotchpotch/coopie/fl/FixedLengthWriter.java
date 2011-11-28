@@ -18,24 +18,24 @@ public class FixedLengthWriter implements ElementWriter {
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
     private final Appendable appendable_;
-    private final FixedLengthColumnDesc[] columns_;
+    private final FixedLengthElementDesc[] elementDescs_;
     private String lineSeparator_ = CsvSetting.CRLF;
 
     public FixedLengthWriter(final Appendable appendable,
-            final FixedLengthColumnDesc[] columns) {
+            final FixedLengthElementDesc[] columns) {
         appendable_ = appendable;
-        columns_ = columns;
+        elementDescs_ = columns;
         closed_ = false;
     }
 
     @Override
     public void writeRecord(final String[] line) {
-        final int len = Math.min(line.length, columns_.length);
+        final int len = Math.min(line.length, elementDescs_.length);
         try {
             for (int i = 0; i < len; i++) {
                 final String s = line[i];
-                final FixedLengthColumnDesc column = columns_[i];
-                column.write(s, appendable_);
+                final FixedLengthElementDesc elementDesc = elementDescs_[i];
+                elementDesc.write(s, appendable_);
             }
             appendable_.append(getLineSeparator());
         } catch (final IOException e) {
