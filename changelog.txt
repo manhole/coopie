@@ -8,6 +8,7 @@
 - add: util package
 - 固定長ファイル関連クラスをflパッケージへ移動
 - slf4jとlogbackのバージョンを、それぞれ 1.6.4と1.0.0へバージョンアップしました。
+- rename: ElementSetting -> ElementStream
 
 0.1.7 2011/11/15
 

@@ -1,10 +1,10 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public class CsvElementSetting implements ElementSetting {
+public class CsvElementStream implements ElementStream {
 
     private final CsvSetting csvSetting_;
 
-    public CsvElementSetting(final CsvSetting csvSetting) {
+    public CsvElementStream(final CsvSetting csvSetting) {
         if (csvSetting == null) {
             throw new NullPointerException("csvSetting");
         }

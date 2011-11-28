@@ -10,7 +10,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
-import jp.sourceforge.hotchpotch.coopie.csv.ElementSetting;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementStream;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
@@ -38,10 +38,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         }
 
         final RecordDesc<T> rd = getRecordDesc();
-        final ElementSetting es = getElementSetting();
+        final ElementStream es = getElementStream();
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
         r.setWithHeader(isWithHeader());
-        r.setElementSetting(es);
+        r.setElementStream(es);
         r.setElementEditor(getElementEditor());
         // TODO openで例外時にcloseすること
         r.open(readable);
@@ -55,10 +55,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         }
 
         final RecordDesc<T> rd = getRecordDesc();
-        final ElementSetting es = getElementSetting();
+        final ElementStream es = getElementStream();
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(rd);
         w.setWithHeader(isWithHeader());
-        w.setElementSetting(es);
+        w.setElementStream(es);
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;
@@ -86,16 +86,16 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     }
 
     @Override
-    protected ElementSetting getElementSetting() {
-        if (super.getElementSetting() == null) {
+    protected ElementStream getElementStream() {
+        if (super.getElementStream() == null) {
             setupByAnnotation();
         }
 
-        final ElementSetting elementSetting = super.getElementSetting();
-        if (elementSetting == null) {
-            throw new IllegalStateException("elementSetting");
+        final ElementStream elementStream = super.getElementStream();
+        if (elementStream == null) {
+            throw new IllegalStateException("elementStream");
         }
-        return elementSetting;
+        return elementStream;
     }
 
     private void setupByAnnotation() {
