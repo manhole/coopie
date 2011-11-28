@@ -16,13 +16,13 @@ public class FixedLengthWriterTest {
     public void test1() throws Throwable {
         // ## Arrange ##
 
-        final FixedLengthColumnDesc[] columns = new FixedLengthColumnDesc[] {
+        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] {
                 col(0, 5), col(5, 12), col(12, 20) };
 
         final StringWriter sw = new StringWriter();
 
         // ## Act ##
-        final FixedLengthWriter writer = new FixedLengthWriter(sw, columns);
+        final FixedLengthWriter writer = new FixedLengthWriter(sw, descs);
         writer.writeRecord(a("aaa", "ccc", "bbb"));
         writer.writeRecord(a("あ1", "う1", "い1"));
         writer.writeRecord(a("あ2", "う2", "い2"));
@@ -39,9 +39,9 @@ public class FixedLengthWriterTest {
         assertEquals(expected, actual);
     }
 
-    private FixedLengthColumnDesc col(final int begin, final int end) {
-        return new AbstractFixedLengthLayout.SimpleFixedLengthColumnDesc(begin,
-                end);
+    private FixedLengthElementDesc col(final int begin, final int end) {
+        return new AbstractFixedLengthLayout.SimpleFixedLengthElementDesc(
+                begin, end);
     }
 
 }

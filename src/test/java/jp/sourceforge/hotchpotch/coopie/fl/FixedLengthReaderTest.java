@@ -14,18 +14,18 @@ public class FixedLengthReaderTest extends ElementReaderTest {
         // ## Arrange ##
         final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
                 "-1", "tsv");
-        final FixedLengthColumnDesc[] columns = new FixedLengthColumnDesc[] {
+        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] {
                 col(0, 5), col(5, 12), col(12, 20) };
 
         // ## Act ##
         final FixedLengthReader reader = new FixedLengthReader(
-                new InputStreamReader(is, Charset.forName("UTF-8")), columns);
+                new InputStreamReader(is, Charset.forName("UTF-8")), descs);
         return reader;
     }
 
-    private FixedLengthColumnDesc col(final int begin, final int end) {
-        return new AbstractFixedLengthLayout.SimpleFixedLengthColumnDesc(begin,
-                end);
+    private FixedLengthElementDesc col(final int begin, final int end) {
+        return new AbstractFixedLengthLayout.SimpleFixedLengthElementDesc(
+                begin, end);
     }
 
 }
