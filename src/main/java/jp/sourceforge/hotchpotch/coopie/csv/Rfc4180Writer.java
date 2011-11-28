@@ -8,6 +8,14 @@ import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
+/**
+ * CSV Writer
+ * 
+ * http://www.rfc-editor.org/rfc/rfc4180.txt
+ * http://www.kasai.fm/wiki/rfc4180jp (日本語訳)
+ * 
+ * @author manhole
+ */
 public class Rfc4180Writer implements ElementWriter {
 
     private static final char CR = CsvSetting.CR;
