@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.Closable;
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 import org.slf4j.Logger;
@@ -129,7 +130,7 @@ public abstract class AbstractRecordReader<T> implements Closable,
     public void close() throws IOException {
         closed_ = true;
         if (closeReader_) {
-            elementReader_.close();
+            CloseableUtil.closeNoException(elementReader_);
             elementReader_ = null;
         }
     }

@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.IOException;
 
 import jp.sourceforge.hotchpotch.coopie.util.Closable;
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 public class AbstractRecordWriter<T> implements Closable, RecordWriter<T> {
@@ -59,7 +60,7 @@ public class AbstractRecordWriter<T> implements Closable, RecordWriter<T> {
     public void close() throws IOException {
         closed_ = true;
         if (closeWriter_) {
-            elementWriter_.close();
+            CloseableUtil.closeNoException(elementWriter_);
             elementWriter_ = null;
         }
     }
