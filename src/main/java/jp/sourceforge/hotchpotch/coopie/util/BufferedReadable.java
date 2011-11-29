@@ -4,7 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.CharBuffer;
 
-public class BufferedReadable implements Closeable {
+public class BufferedReadable implements Closable {
 
     private static final char NULL_CHAR = '\u0000';
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 8;
@@ -12,6 +12,10 @@ public class BufferedReadable implements Closeable {
     private final CharBuffer charBuffer_;
     private int readSize_;
     private boolean eof_;
+
+    private boolean closed_;
+    @SuppressWarnings("unused")
+    private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
     public BufferedReadable(final Readable readable) {
         this(readable, DEFAULT_BUFFER_SIZE);
@@ -97,7 +101,13 @@ public class BufferedReadable implements Closeable {
     }
 
     @Override
+    public boolean isClosed() {
+        return closed_;
+    }
+
+    @Override
     public void close() throws IOException {
+        closed_ = true;
         if (readable_ instanceof Closeable) {
             final Closeable closeable = Closeable.class.cast(readable_);
             CloseableUtil.closeNoException(closeable);
