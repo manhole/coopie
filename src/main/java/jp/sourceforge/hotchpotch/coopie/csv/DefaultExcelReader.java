@@ -63,8 +63,8 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
         }
 
         @Override
-        public int getRecordNo() {
-            return sheetReader_.getRecordNo();
+        public int getRecordNumber() {
+            return sheetReader_.getRecordNumber();
         }
 
         @Override
@@ -148,7 +148,7 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
         }
 
         @Override
-        public int getRecordNo() {
+        public int getRecordNumber() {
             return rowNum_;
         }
 

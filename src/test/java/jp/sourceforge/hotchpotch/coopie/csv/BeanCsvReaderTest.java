@@ -76,9 +76,12 @@ public class BeanCsvReaderTest {
     public static void assertRead1(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
+        assertEquals(0, csvReader.getRecordNumber());
         assertEquals(true, csvReader.hasNext());
+        assertEquals(0, csvReader.getRecordNumber());
         csvReader.read(bean);
         logger.debug(bean.toString());
+        assertEquals(1, csvReader.getRecordNumber());
         assertEquals("あ1", bean.getAaa());
         assertEquals("い1", bean.getBbb());
         assertEquals("う1", bean.getCcc());
@@ -86,6 +89,7 @@ public class BeanCsvReaderTest {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
+        assertEquals(2, csvReader.getRecordNumber());
         assertEquals("あ2", bean.getAaa());
         assertEquals("い2", bean.getBbb());
         assertEquals("う2", bean.getCcc());
@@ -93,11 +97,13 @@ public class BeanCsvReaderTest {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
+        assertEquals(3, csvReader.getRecordNumber());
         assertEquals("あ3", bean.getAaa());
         assertEquals("い3", bean.getBbb());
         assertEquals("う3", bean.getCcc());
 
         assertEquals(false, csvReader.hasNext());
+        assertEquals(3, csvReader.getRecordNumber());
         csvReader.close();
     }
 
@@ -660,7 +666,7 @@ public class BeanCsvReaderTest {
 
         @Override
         public String[] readRecord(final ElementReader elementReader) {
-            if (elementReader.getRecordNo() == 0) {
+            if (elementReader.getRecordNumber() == 0) {
                 // 3行あるheader部をskip
                 elementReader.readRecord();
                 elementReader.readRecord();

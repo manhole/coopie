@@ -22,21 +22,21 @@ public abstract class ElementReaderTest {
          * 初期値は"0"。
          * 1行目を読み終えたら"1"。
          */
-        assertEquals(0, reader.getRecordNo());
+        assertEquals(0, reader.getRecordNumber());
         assertArrayEquals(a("aaa", "ccc", "bbb"), reader.readRecord());
-        assertEquals(1, reader.getRecordNo());
+        assertEquals(1, reader.getRecordNumber());
         assertArrayEquals(a("あ1", "う1", "い1"), reader.readRecord());
-        assertEquals(2, reader.getRecordNo());
+        assertEquals(2, reader.getRecordNumber());
         assertArrayEquals(a("あ2", "う2", "い2"), reader.readRecord());
-        assertEquals(3, reader.getRecordNo());
+        assertEquals(3, reader.getRecordNumber());
         assertArrayEquals(a("あ3", "う3", "い3"), reader.readRecord());
-        assertEquals(4, reader.getRecordNo());
+        assertEquals(4, reader.getRecordNumber());
         assertNull(reader.readRecord());
         /*
          * 最後まで読んだ後はカウントアップしない
          */
-        assertEquals(4, reader.getRecordNo());
-        assertEquals(4, reader.getRecordNo());
+        assertEquals(4, reader.getRecordNumber());
+        assertEquals(4, reader.getRecordNumber());
 
         reader.close();
     }

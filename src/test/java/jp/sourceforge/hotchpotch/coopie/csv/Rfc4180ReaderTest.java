@@ -32,11 +32,11 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(0, reader.getRecordNo());
+        assertEquals(0, reader.getRecordNumber());
         assertArrayEquals(a("aaa", "bbb", "ccc"), reader.readRecord());
-        assertEquals(1, reader.getRecordNo());
+        assertEquals(1, reader.getRecordNumber());
         assertArrayEquals(a("zzz", "yyy", "xxx"), reader.readRecord());
-        assertEquals(2, reader.getRecordNo());
+        assertEquals(2, reader.getRecordNumber());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -58,11 +58,11 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(0, reader.getRecordNo());
+        assertEquals(0, reader.getRecordNumber());
         assertArrayEquals(a("aaa", "bbb", "ccc"), reader.readRecord());
-        assertEquals(1, reader.getRecordNo());
+        assertEquals(1, reader.getRecordNumber());
         assertArrayEquals(a("zzz", "yyy", "xxx"), reader.readRecord());
-        assertEquals(2, reader.getRecordNo());
+        assertEquals(2, reader.getRecordNumber());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -228,7 +228,7 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(0, reader.getRecordNo());
+        assertEquals(0, reader.getRecordNumber());
         assertArrayEquals(a("aaa", "bbb", "ccc"), reader.readRecord());
         assertArrayEquals(a("zzz", "yyy", "xxx"), reader.readRecord());
         assertNull(reader.readRecord());
@@ -250,7 +250,7 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(0, reader.getRecordNo());
+        assertEquals(0, reader.getRecordNumber());
         assertArrayEquals(a("aaa", "bb,b", "ccc"), reader.readRecord());
         assertNull(reader.readRecord());
         reader.close();
@@ -272,7 +272,7 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(0, reader.getRecordNo());
+        assertEquals(0, reader.getRecordNumber());
         assertArrayEquals(a("aaa", "bb\tb", "ccc"), reader.readRecord());
         assertNull(reader.readRecord());
         reader.close();
@@ -288,7 +288,7 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(0, reader.getRecordNo());
+        assertEquals(0, reader.getRecordNumber());
         assertArrayEquals(a("aa" + '\u0000' + "a", "bbb"), reader.readRecord());
         assertNull(reader.readRecord());
         reader.close();
@@ -304,7 +304,7 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(0, reader.getRecordNo());
+        assertEquals(0, reader.getRecordNumber());
         assertArrayEquals(a("", "aa", "", " ", "   ", "bbb", ""),
                 reader.readRecord());
         assertNull(reader.readRecord());

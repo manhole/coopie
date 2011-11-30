@@ -61,9 +61,12 @@ public class MapCsvReaderTest {
             final RecordReader<Map<String, String>> csvReader,
             final Map<String, String> bean) throws IOException {
 
+        assertEquals(0, csvReader.getRecordNumber());
         assertEquals(true, csvReader.hasNext());
+        assertEquals(0, csvReader.getRecordNumber());
         csvReader.read(bean);
         logger.debug(bean.toString());
+        assertEquals(1, csvReader.getRecordNumber());
         assertEquals("あ1", bean.get("aaa"));
         assertEquals("い1", bean.get("bbb"));
         assertEquals("う1", bean.get("ccc"));
@@ -71,6 +74,7 @@ public class MapCsvReaderTest {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
+        assertEquals(2, csvReader.getRecordNumber());
         assertEquals("あ2", bean.get("aaa"));
         assertEquals("い2", bean.get("bbb"));
         assertEquals("う2", bean.get("ccc"));
@@ -78,11 +82,13 @@ public class MapCsvReaderTest {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
+        assertEquals(3, csvReader.getRecordNumber());
         assertEquals("あ3", bean.get("aaa"));
         assertEquals("い3", bean.get("bbb"));
         assertEquals("う3", bean.get("ccc"));
 
         assertEquals(false, csvReader.hasNext());
+        assertEquals(3, csvReader.getRecordNumber());
         csvReader.close();
     }
 

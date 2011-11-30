@@ -42,7 +42,7 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     @Override
-    public int getRecordNo() {
+    public int getRecordNumber() {
         return recordNo_;
     }
 

@@ -14,7 +14,7 @@ public interface ElementReader extends Closable {
      * レコードが複数行に渡る可能性がある場合は、テキストの行番号とは異なる値となります。
      * (テキストの行番号ではなく、データ番号)
      */
-    int getRecordNo();
+    int getRecordNumber();
 
     /**
      * 1レコードを読んで返します。
