@@ -73,6 +73,11 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
         }
 
         @Override
+        public int getLineNumber() {
+            return sheetReader_.getLineNumber();
+        }
+
+        @Override
         public boolean isClosed() {
             return closed_;
         }
@@ -149,6 +154,11 @@ class DefaultExcelReader<T> extends AbstractRecordReader<T> {
 
         @Override
         public int getRecordNumber() {
+            return rowNum_;
+        }
+
+        @Override
+        public int getLineNumber() {
             return rowNum_;
         }
 

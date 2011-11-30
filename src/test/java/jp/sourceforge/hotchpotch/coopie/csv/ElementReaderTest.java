@@ -23,20 +23,26 @@ public abstract class ElementReaderTest {
          * 1行目を読み終えたら"1"。
          */
         assertEquals(0, reader.getRecordNumber());
+        assertEquals(0, reader.getLineNumber());
         assertArrayEquals(a("aaa", "ccc", "bbb"), reader.readRecord());
         assertEquals(1, reader.getRecordNumber());
+        assertEquals(1, reader.getLineNumber());
         assertArrayEquals(a("あ1", "う1", "い1"), reader.readRecord());
         assertEquals(2, reader.getRecordNumber());
+        assertEquals(2, reader.getLineNumber());
         assertArrayEquals(a("あ2", "う2", "い2"), reader.readRecord());
         assertEquals(3, reader.getRecordNumber());
+        assertEquals(3, reader.getLineNumber());
         assertArrayEquals(a("あ3", "う3", "い3"), reader.readRecord());
         assertEquals(4, reader.getRecordNumber());
+        assertEquals(4, reader.getLineNumber());
         assertNull(reader.readRecord());
         /*
          * 最後まで読んだ後はカウントアップしない
          */
         assertEquals(4, reader.getRecordNumber());
         assertEquals(4, reader.getRecordNumber());
+        assertEquals(4, reader.getLineNumber());
 
         reader.close();
     }

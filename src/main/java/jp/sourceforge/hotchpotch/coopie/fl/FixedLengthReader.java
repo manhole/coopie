@@ -32,6 +32,11 @@ public class FixedLengthReader implements ElementReader {
     }
 
     @Override
+    public int getLineNumber() {
+        return lineNo_;
+    }
+
+    @Override
     public String[] readRecord() {
         try {
             final String line = reader_.readLine();

@@ -14,6 +14,7 @@
 - rename: ElementSetting -> ElementStream
 - rename: FixedLengthColumnDesc -> FixedLengthElementDesc
 - add: RecordReader#getRecordNumber()
+- add: ElementReader#getLineNumber()
 
 0.1.7 2011/11/15
 
