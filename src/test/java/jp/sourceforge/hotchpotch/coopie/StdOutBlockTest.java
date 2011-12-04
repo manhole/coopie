@@ -89,4 +89,23 @@ public class StdOutBlockTest {
         assertThat(retErr, not(containsString("to sysout")));
     }
 
+    @Test
+    public void testTrapOut() {
+        // ## Arrange ##
+        // ## Act ##
+        final Text text = StdOutBlock.trapOut(new EasyTask<Void>() {
+            @Override
+            public Void execute() throws RuntimeException {
+                System.out.println("trap sysout");
+                return null;
+            }
+        });
+
+        final String ret = text.toString();
+        logger.debug("[[{}]]", ret);
+
+        // ## Assert ##
+        assertThat(ret, containsString("trap sysout"));
+    }
+
 }

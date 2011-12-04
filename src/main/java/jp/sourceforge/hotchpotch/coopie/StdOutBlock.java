@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -20,6 +21,16 @@ public class StdOutBlock {
         final Block a = new Block();
         a.err(os);
         return a;
+    }
+
+    public static <V, E extends Throwable> Text trapOut(final Task<V, E> task)
+            throws E {
+        final Block a = new Block();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        a.out(baos);
+        a.execute(task);
+        final Text text = new Text(baos.toString());
+        return text;
     }
 
     private StdOutBlock() {
