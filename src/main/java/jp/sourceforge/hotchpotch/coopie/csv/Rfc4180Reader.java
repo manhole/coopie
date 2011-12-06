@@ -31,6 +31,7 @@ public class Rfc4180Reader implements ElementReader {
     private static final Logger logger = LoggerFactory.getLogger();
     private static final char CR = CsvSetting.CR;
     private static final char LF = CsvSetting.LF;
+    private static final char SP = ' ';
 
     protected boolean closed_ = true;
     @SuppressWarnings("unused")
@@ -87,6 +88,10 @@ public class Rfc4180Reader implements ElementReader {
                         rb.startRecord();
                         rb.startElement();
                         rb.endElement();
+                    } else if (c == SP) {
+                        state = State.BEGIN_ELEMENT;
+                        rb.startRecord();
+                        rb.pendingSpace(c);
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
                         break read_loop;
@@ -103,10 +108,14 @@ public class Rfc4180Reader implements ElementReader {
                 case BEGIN_ELEMENT:
                     if (c == quoteMark_) {
                         state = State.QUOTED_ELEMENT;
+                        // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
+                        rb.discardPending();
                         rb.startElement();
                     } else if (c == elementSeparator_) {
                         rb.startElement();
                         rb.endElement();
+                    } else if (c == SP) {
+                        rb.pendingSpace(c);
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
                         rb.endRecord();
@@ -157,16 +166,21 @@ public class Rfc4180Reader implements ElementReader {
                     if (c == quoteMark_) {
                         rb.append(c);
                         state = State.QUOTED_ELEMENT;
+                    } else if (c == SP) {
+                        rb.pendingSpace(c);
                     } else if (c == elementSeparator_) {
+                        rb.discardPending();
                         rb.endElement();
                         state = State.BEGIN_ELEMENT;
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
+                        rb.discardPending();
                         rb.endElement();
                         rb.endRecord();
                         state = State.INITIAL;
                         break read_loop;
                     } else if (c == LF) {
+                        rb.discardPending();
                         rb.endElement();
                         rb.endRecord();
                         state = State.INITIAL;
@@ -241,6 +255,8 @@ public class Rfc4180Reader implements ElementReader {
                 break;
             case QUOTE:
                 if (rb.isInElement()) {
+                    // クォートされていたら最後のスペースは除く
+                    rb.discardPending();
                     rb.endElement();
                 }
                 rb.endRecord();
@@ -305,6 +321,7 @@ public class Rfc4180Reader implements ElementReader {
 
         private final List<String> elems_ = CollectionsUtil.newArrayList();
         private final StringBuilder sb_ = new StringBuilder();
+        private StringBuilder pending_;
         private boolean inElement_;
         private boolean inRecord_;
 
@@ -314,6 +331,11 @@ public class Rfc4180Reader implements ElementReader {
         }
 
         public void endRecord() {
+            // 空白だけの要素で行が終わる場合をフォロー
+            if (pending_ != null) {
+                startElement();
+                endElement();
+            }
             assertInRecord();
             inRecord_ = false;
         }
@@ -322,6 +344,7 @@ public class Rfc4180Reader implements ElementReader {
             assertInRecord();
             assertNotInElement();
             inElement_ = true;
+            flushPending();
         }
 
         public void endElement() {
@@ -345,6 +368,31 @@ public class Rfc4180Reader implements ElementReader {
         public void append(final char c) {
             assertInElement();
             sb_.append(c);
+        }
+
+        /*
+         * 両端のスペースを一時的に持つ。
+         * 状態によってtrim扱いとするため。
+         */
+        public void pendingSpace(final char c) {
+            if (pending_ == null) {
+                pending_ = new StringBuilder();
+            }
+            pending_.append(c);
+        }
+
+        public void discardPending() {
+            pending_ = null;
+        }
+
+        public void flushPending() {
+            if (pending_ != null) {
+                final int len = pending_.length();
+                for (int i = 0; i < len; i++) {
+                    append(pending_.charAt(i));
+                }
+                pending_ = null;
+            }
         }
 
         private String bufferString() {
