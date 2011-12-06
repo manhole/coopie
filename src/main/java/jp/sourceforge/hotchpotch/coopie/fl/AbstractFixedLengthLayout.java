@@ -95,10 +95,13 @@ abstract class AbstractFixedLengthLayout<T> {
 
         @Override
         public String read(final CharSequence line) {
-            final int len = length(line);
+            final String str = line.toString();
+            final int len = length(str);
             final int begin = Math.min(len, beginIndex_);
             final int end = Math.min(len, endIndex_);
-            final CharSequence s = line.subSequence(begin, end);
+            final int actualBegin = str.offsetByCodePoints(0, begin);
+            final int actualEnd = str.offsetByCodePoints(0, end);
+            final CharSequence s = str.substring(actualBegin, actualEnd);
             final String trimmed = s.toString().trim();
             return trimmed;
         }
@@ -113,24 +116,31 @@ abstract class AbstractFixedLengthLayout<T> {
             }
         }
 
-        private CharSequence lpad(final CharSequence str, final int len,
+        private CharSequence lpad(final CharSequence elem, final int len,
                 final char pad) {
+            final int strlen;
+            if (elem == null) {
+                strlen = 0;
+            } else {
+                final String s = elem.toString();
+                strlen = length(s);
+            }
+            final int padlen = len - strlen;
             final StringBuilder sb = new StringBuilder();
-            final int padlen = len - length(str);
             for (int i = 0; i < padlen; i++) {
                 sb.append(pad);
             }
-            if (str != null) {
-                sb.append(str);
+            if (elem != null) {
+                sb.append(elem);
             }
             return sb.toString();
         }
 
-        private int length(final CharSequence str) {
+        private int length(final String str) {
             if (str == null) {
                 return 0;
             }
-            return str.length();
+            return str.codePointCount(0, str.length());
         }
 
     }

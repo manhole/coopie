@@ -379,11 +379,14 @@ public class BeanFixedLengthReaderTest {
         csvReader.close();
     }
 
+    /**
+     * アノテーションから列サイズを取得できること。
+     */
     @Test
     public void read_annotation_1() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(
-                FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout
+                .getInstance(FlAaaBean.class);
 
         // ## Act ##
         final RecordReader<FlAaaBean> csvReader = layout
@@ -412,6 +415,33 @@ public class BeanFixedLengthReaderTest {
         assertEquals("23", bean.getAaa());
         assertEquals(null, bean.getBbb());
         assertEquals(null, bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 列の文字数がサロゲートペアに対応していること。
+     */
+    @Test
+    public void read_annotation_2() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout
+                .getInstance(FlAaaBean.class);
+
+        // ## Act ##
+        final RecordReader<FlAaaBean> csvReader = layout
+                .openReader(new StringReader("𠮷野家すき家"));
+
+        // ## Assert ##
+        final FlAaaBean bean = new FlAaaBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("𠮷野家", bean.getAaa());
+        assertEquals("すき", bean.getBbb());
+        assertEquals("家", bean.getCcc());
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();

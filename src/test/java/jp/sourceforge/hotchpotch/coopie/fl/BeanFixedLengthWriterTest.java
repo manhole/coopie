@@ -11,6 +11,7 @@ import java.io.StringWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
+import jp.sourceforge.hotchpotch.coopie.fl.BeanFixedLengthReaderTest.FlAaaBean;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
@@ -251,6 +252,60 @@ public class BeanFixedLengthWriterTest {
     /*
      * TODO 定義した長さよりも実際のデータが長い場合
      */
+
+    /**
+     * アノテーションから列サイズを取得できること。
+     */
+    @Test
+    public void write_annotation_1() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout
+                .getInstance(FlAaaBean.class);
+
+        final StringWriter writer = new StringWriter();
+
+        // ## Act ##
+        final RecordWriter<FlAaaBean> csvWriter = layout.openWriter(writer);
+
+        // ## Act ##
+        final FlAaaBean bean = new FlAaaBean();
+        bean.setAaa("あ1");
+        bean.setBbb("い1");
+        bean.setCcc("う");
+        csvWriter.write(bean);
+
+        // ## Assert ##
+        final String actual = writer.toString();
+        assertEquals(" あ1い1う\r\n", actual);
+        csvWriter.close();
+    }
+
+    /**
+     * 列の文字数がサロゲートペアに対応していること。
+     */
+    @Test
+    public void write_annotation_2() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout
+                .getInstance(FlAaaBean.class);
+
+        final StringWriter writer = new StringWriter();
+
+        // ## Act ##
+        final RecordWriter<FlAaaBean> csvWriter = layout.openWriter(writer);
+
+        // ## Act ##
+        final FlAaaBean bean = new FlAaaBean();
+        bean.setAaa("𠮷野");
+        bean.setBbb(" き");
+        bean.setCcc("家");
+        csvWriter.write(bean);
+
+        // ## Assert ##
+        final String actual = writer.toString();
+        assertEquals(" 𠮷野 き家\r\n", actual);
+        csvWriter.close();
+    }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
         return ResourceUtil.getResourceAsStream(
