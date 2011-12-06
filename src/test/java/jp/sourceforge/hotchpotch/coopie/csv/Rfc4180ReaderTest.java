@@ -494,6 +494,7 @@ public class Rfc4180ReaderTest {
      * 不正データ
      * 
      * 余分なクォートがある場合に、どう振る舞うのが良いか。。
+     * → "b""部分をそのままの要素とする
      * 
      * a,"b"","c" CRLF
      * A,"B",C
@@ -511,7 +512,7 @@ public class Rfc4180ReaderTest {
         /*
          * readした後に、stateがINVALIDかどうかを見れるようにした。
          */
-        assertArrayEquals(a("a", "b\",\"c"), reader.readRecord());
+        assertArrayEquals(a("a", "\"b\"\"", "c"), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
         assertArrayEquals(a("A", "B", "C"), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
@@ -523,6 +524,7 @@ public class Rfc4180ReaderTest {
      * 不正データ
      * 
      * 余分なクォートがある場合に、どう振る舞うのが良いか。。
+     * → "b""部分をそのままの要素とする
      * 
      * a,"b"",c CRLF
      * A,"B",C CRLF
@@ -546,9 +548,65 @@ public class Rfc4180ReaderTest {
          * クォートが登場しない場合は、最後まで食べに行ってしまう。
          * 「前行に比べてデータ量がやけに多い」という判別くらいしかできなそう。。
          */
-        assertArrayEquals(a("a", "b\",c\r\nA,\"B", "C"), reader.readRecord());
+        assertArrayEquals(a("a", "\"b\"\"", "c"), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertArrayEquals(a("A", "B", "C"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
         assertArrayEquals(a("D", "E", "F"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
+     * 不正データ
+     * 
+     * 余分なクォートがある場合に、どう振る舞うのが良いか。。
+     * → "B" ""部分をそのままの要素とする
+     * 
+     * a,"b""",c CRLF
+     * A,"B" "",C
+     * 
+     * 2行目が不正
+     */
+    @Test
+    public void invalid_quote3() throws Throwable {
+        // ## Arrange ##
+        final String in = "a,\"b\"\"\",c" + "\r\n" + "A,\"B\" \"\",C";
+        final Rfc4180Reader reader = open(in);
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a", "b\"", "c"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertArrayEquals(a("A", "\"B\" \"\"", "C"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
+     * 不正データ
+     * 
+     * 余分なクォートがある場合に、どう振る舞うのが良いか。。
+     * → "b" ""部分をそのままの要素とする
+     * 
+     * a,"b" "" CRLF
+     * A,B,C
+     * 
+     * 1行目が不正
+     */
+    @Test
+    public void invalid_quote4() throws Throwable {
+        // ## Arrange ##
+        final String in = "a,\"b\" \"\"" + "\r\n" + "A,B,C";
+        final Rfc4180Reader reader = open(in);
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a", "\"b\" \"\""), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertArrayEquals(a("A", "B", "C"), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
