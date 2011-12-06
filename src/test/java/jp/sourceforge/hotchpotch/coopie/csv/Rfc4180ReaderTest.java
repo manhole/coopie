@@ -472,16 +472,20 @@ public class Rfc4180ReaderTest {
      * 
      * クォートされた要素内で、EOFになった場合
      * 
+     * "aaa","bbb","cc
+     * 
      * 途切れた要素を、1要素として読み込む
      */
     @Test
-    public void eof_inQuotedElement() throws Throwable {
+    public void invalid_eof_inQuotedElement() throws Throwable {
         // ## Arrange ##
         final Rfc4180Reader reader = open("\"aaa\",\"bbb\",\"cc");
 
         // ## Act ##
         // ## Assert ##
         assertArrayEquals(a("aaa", "bbb", "cc"), reader.readRecord());
+        // invalid扱いとしたい
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }

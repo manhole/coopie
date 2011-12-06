@@ -276,6 +276,7 @@ public class Rfc4180Reader implements ElementReader {
                 // クォートされた要素の途中でEOFになった場合
                 if (rb.isInElement()) {
                     rb.endElement();
+                    recordState_ = RecordState.INVALID;
                 }
                 rb.endRecord();
                 break;
