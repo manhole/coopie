@@ -1,12 +1,14 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.Logger;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.logging.SimpleLog;
+import jp.sourceforge.hotchpotch.coopie.util.BufferedReadable;
 import jp.sourceforge.hotchpotch.coopie.util.Closable;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
@@ -63,6 +65,7 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     private RecordState recordState_;
+    private BufferedReadable pushback_;
 
     @Override
     public String[] readRecord() {
@@ -83,6 +86,7 @@ public class Rfc4180Reader implements ElementReader {
                         state = State.QUOTED_ELEMENT;
                         rb.startRecord();
                         rb.startElement();
+                        rb.appendPlain(c);
                     } else if (c == elementSeparator_) {
                         state = State.BEGIN_ELEMENT;
                         rb.startRecord();
@@ -92,6 +96,7 @@ public class Rfc4180Reader implements ElementReader {
                         state = State.BEGIN_ELEMENT;
                         rb.startRecord();
                         rb.pendingSpace(c);
+                        rb.appendPlain(c);
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
                         break read_loop;
@@ -109,13 +114,15 @@ public class Rfc4180Reader implements ElementReader {
                     if (c == quoteMark_) {
                         state = State.QUOTED_ELEMENT;
                         // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
-                        rb.discardPending();
+                        rb.discardHeadingSpace();
                         rb.startElement();
+                        rb.appendPlain(c);
                     } else if (c == elementSeparator_) {
                         rb.startElement();
                         rb.endElement();
                     } else if (c == SP) {
                         rb.pendingSpace(c);
+                        rb.appendPlain(c);
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
                         rb.endRecord();
@@ -129,10 +136,12 @@ public class Rfc4180Reader implements ElementReader {
                         state = State.UNQUOTED_ELEMENT;
                         rb.startElement();
                         rb.append(c);
+                        rb.appendPlain(c);
                     }
                     break;
 
                 case UNQUOTED_ELEMENT:
+                    rb.appendPlain(c);
                     if (c == quoteMark_) {
                         rb.append(c);
                     } else if (c == elementSeparator_) {
@@ -155,6 +164,7 @@ public class Rfc4180Reader implements ElementReader {
                     break;
 
                 case QUOTED_ELEMENT:
+                    rb.appendPlain(c);
                     if (c == quoteMark_) {
                         state = State.QUOTE;
                     } else {
@@ -163,7 +173,8 @@ public class Rfc4180Reader implements ElementReader {
                     break;
 
                 case QUOTE:
-                    if (c == quoteMark_) {
+                    rb.appendPlain(c);
+                    if (c == quoteMark_ && !rb.hasPendingSpace()) {
                         rb.append(c);
                         state = State.QUOTED_ELEMENT;
                     } else if (c == SP) {
@@ -207,16 +218,31 @@ public class Rfc4180Reader implements ElementReader {
                             log.append("{}[{}]", line.getNumber(),
                                     line.getBody());
                         }
-                        logger.warn(log);
-                        recordState_ = RecordState.INVALID;
-                        /*
-                         * ここでは、エスケープ文字と続く不正文字を、通常の文字として扱うことにする。
-                         * つまり、"abc"d" このような入力を、"abc""d" とみなすということ。
-                         * (見直す可能性アリ)
-                         */
-                        rb.append(quoteMark_);
-                        rb.append(c);
-                        state = State.QUOTED_ELEMENT;
+
+                        if (rb.isDiscardedHeadingSpace()) {
+                            logger.debug(log);
+                            /*
+                             * ここでは、要素自体がクォートされていないものとして扱うことにする。
+                             * つまり、"abc"d" このような入力を、"abc"d" そのものとみなすということ。
+                             * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
+                             * (見直す可能性アリ)
+                             */
+                            pushback_ = new BufferedReadable(new StringReader(
+                                    rb.getPlain()));
+                            rb.clearElement();
+                            state = State.UNQUOTED_ELEMENT;
+                        } else {
+                            logger.warn(log);
+                            recordState_ = RecordState.INVALID;
+                            /*
+                             * ここでは、エスケープ文字と続く不正文字を、通常の文字として扱うことにする。
+                             * つまり、"abc"d" このような入力を、"abc""d" とみなすということ。
+                             * (見直す可能性アリ)
+                             */
+                            rb.append(quoteMark_);
+                            rb.append(c);
+                            state = State.QUOTED_ELEMENT;
+                        }
                     }
                     break;
 
@@ -284,10 +310,28 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     private char peek() throws IOException {
+        if (pushback_ != null) {
+            final char c = pushback_.peekChar();
+            if (pushback_.isEof()) {
+                CloseableUtil.closeNoException(pushback_);
+                pushback_ = null;
+            } else {
+                return c;
+            }
+        }
         return reader_.peekChar();
     }
 
     private char next() throws IOException {
+        if (pushback_ != null) {
+            final char c = pushback_.readChar();
+            if (pushback_.isEof()) {
+                CloseableUtil.closeNoException(pushback_);
+                pushback_ = null;
+            } else {
+                return c;
+            }
+        }
         return reader_.readChar();
     }
 
@@ -317,11 +361,23 @@ public class Rfc4180Reader implements ElementReader {
         quoteMark_ = quoteMark;
     }
 
+    private static void clearBuffer(final StringBuilder sb) {
+        if (sb != null) {
+            sb.setLength(0);
+        }
+    }
+
     static class RecordBuffer {
 
         private final List<String> elems_ = CollectionsUtil.newArrayList();
         private final StringBuilder sb_ = new StringBuilder();
+        /*
+         * クォートされた要素がパースエラーだった場合に使用する。
+         * 要素区切り文字の次の文字から、その要素を終える区切り文字(or 改行)の手前までを持つ。
+         */
+        private StringBuilder plainElement_;
         private StringBuilder pending_;
+        private boolean discardedHeadingSpace_;
         private boolean inElement_;
         private boolean inRecord_;
 
@@ -352,6 +408,7 @@ public class Rfc4180Reader implements ElementReader {
             assertInElement();
             elems_.add(bufferString());
             inElement_ = false;
+            clearBuffer(plainElement_);
         }
 
         public boolean isInElement() {
@@ -370,6 +427,19 @@ public class Rfc4180Reader implements ElementReader {
             sb_.append(c);
         }
 
+        public void appendPlain(final char c) {
+            if (plainElement_ == null) {
+                plainElement_ = new StringBuilder();
+            }
+            plainElement_.append(c);
+        }
+
+        public void clearElement() {
+            clearBuffer(sb_);
+            discardPending();
+            clearBuffer(plainElement_);
+        }
+
         /*
          * 両端のスペースを一時的に持つ。
          * 状態によってtrim扱いとするため。
@@ -381,11 +451,25 @@ public class Rfc4180Reader implements ElementReader {
             pending_.append(c);
         }
 
+        public void discardHeadingSpace() {
+            if (pending_ != null) {
+                discardedHeadingSpace_ = true;
+                pending_ = null;
+            }
+        }
+
         public void discardPending() {
             pending_ = null;
         }
 
-        public void flushPending() {
+        public boolean hasPendingSpace() {
+            if (pending_ != null) {
+                return true;
+            }
+            return false;
+        }
+
+        private void flushPending() {
             if (pending_ != null) {
                 final int len = pending_.length();
                 for (int i = 0; i < len; i++) {
@@ -397,7 +481,7 @@ public class Rfc4180Reader implements ElementReader {
 
         private String bufferString() {
             final String s = sb_.toString();
-            sb_.setLength(0);
+            clearBuffer(sb_);
             return s;
         }
 
@@ -432,6 +516,14 @@ public class Rfc4180Reader implements ElementReader {
             if (isInElement()) {
                 throw new IllegalStateException("already started");
             }
+        }
+
+        public boolean isDiscardedHeadingSpace() {
+            return discardedHeadingSpace_;
+        }
+
+        public String getPlain() {
+            return plainElement_.toString();
         }
 
     }

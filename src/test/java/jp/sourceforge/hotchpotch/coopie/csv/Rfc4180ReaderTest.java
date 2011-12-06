@@ -390,6 +390,25 @@ public class Rfc4180ReaderTest {
     }
 
     /*
+     * クォートされた要素と見せかけて実は前後にスペースを持つ通常の要素である場合、をフォローする。
+     * 
+     * これはフォーマットエラーとはみなさない。
+     */
+    @Test
+    public void space4() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("a, \"b\"bb\" ,c");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a", " \"b\"bb\" ", "c"), reader.readRecord());
+        // これはエラーではないためOKとみなしたい。
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
      * データ中にnull文字があっても、扱えること。
      */
     @Test
