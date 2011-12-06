@@ -27,6 +27,13 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
     private final BeanDesc<T> beanDesc_;
 
+    public static <T> BeanFixedLengthLayout<T> getInstance(
+            final Class<T> beanClass) {
+        final BeanFixedLengthLayout<T> instance = new BeanFixedLengthLayout<T>(
+                beanClass);
+        return instance;
+    }
+
     public BeanFixedLengthLayout(final Class<T> beanClass) {
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
