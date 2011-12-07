@@ -100,10 +100,8 @@ abstract class AbstractFixedLengthLayout<T> {
             final int len = Text.length(str);
             final int begin = Math.min(len, beginIndex_);
             final int end = Math.min(len, endIndex_);
-            final int actualBegin = str.offsetByCodePoints(0, begin);
-            final int actualEnd = str.offsetByCodePoints(0, end);
-            final CharSequence s = str.substring(actualBegin, actualEnd);
-            final String trimmed = s.toString().trim();
+            final String s = Text.substring(str, begin, end);
+            final String trimmed = s.trim();
             return trimmed;
         }
 

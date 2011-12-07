@@ -133,4 +133,15 @@ public class TextTest {
         }
     }
 
+    @Test
+    public void substring() throws Throwable {
+        {
+            // この"𠮷"は補助文字
+            final String s = "𠮷野家";
+            assertEquals("𠮷野", s.substring(0, 3));
+            assertEquals("𠮷野", Text.substring(s, 0, 2));
+            assertEquals("野家", Text.substring(s, 1, 3));
+        }
+    }
+
 }
