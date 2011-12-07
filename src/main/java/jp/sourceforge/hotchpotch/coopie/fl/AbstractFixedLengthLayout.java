@@ -14,6 +14,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.csv.SimpleColumnName;
+import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
@@ -96,7 +97,7 @@ abstract class AbstractFixedLengthLayout<T> {
         @Override
         public String read(final CharSequence line) {
             final String str = line.toString();
-            final int len = length(str);
+            final int len = Text.length(str);
             final int begin = Math.min(len, beginIndex_);
             final int end = Math.min(len, endIndex_);
             final int actualBegin = str.offsetByCodePoints(0, begin);
@@ -118,13 +119,7 @@ abstract class AbstractFixedLengthLayout<T> {
 
         private CharSequence lpad(final CharSequence elem, final int len,
                 final char pad) {
-            final int strlen;
-            if (elem == null) {
-                strlen = 0;
-            } else {
-                final String s = elem.toString();
-                strlen = length(s);
-            }
+            final int strlen = Text.length(elem);
             final int padlen = len - strlen;
             final StringBuilder sb = new StringBuilder();
             for (int i = 0; i < padlen; i++) {
@@ -134,13 +129,6 @@ abstract class AbstractFixedLengthLayout<T> {
                 sb.append(elem);
             }
             return sb.toString();
-        }
-
-        private int length(final String str) {
-            if (str == null) {
-                return 0;
-            }
-            return str.codePointCount(0, str.length());
         }
 
     }

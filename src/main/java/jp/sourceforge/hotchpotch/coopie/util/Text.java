@@ -156,6 +156,24 @@ public class Text {
         return new Text(s);
     }
 
+    public static int length(final CharSequence cs) {
+        if (cs == null) {
+            return 0;
+        }
+        final String str = cs.toString();
+        final int count = length(str);
+        return count;
+    }
+
+    public static int length(final String str) {
+        if (str == null) {
+            return 0;
+        }
+        final int length = str.length();
+        final int count = str.codePointCount(0, length);
+        return count;
+    }
+
     public interface TrimStrategy {
 
         boolean isTrim(char c);
