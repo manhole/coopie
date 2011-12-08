@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
@@ -686,9 +687,8 @@ public class BeanCsvReaderTest {
             }
 
             // データ部は、2列目以降
-            final String[] customRecord = new String[rawRecord.length - 1];
-            System.arraycopy(rawRecord, 1, customRecord, 0,
-                    rawRecord.length - 1);
+            final String[] customRecord = Arrays.copyOfRange(rawRecord, 1,
+                    rawRecord.length);
 
             return customRecord;
         }
