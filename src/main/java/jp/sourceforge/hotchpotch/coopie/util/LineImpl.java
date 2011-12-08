@@ -9,7 +9,7 @@ public class LineImpl implements Line {
     public LineImpl() {
     }
 
-    public LineImpl(final int number, final String body,
+    public LineImpl(final String body, final int number,
             final LineSeparator separator) {
         body_ = body;
         number_ = number;

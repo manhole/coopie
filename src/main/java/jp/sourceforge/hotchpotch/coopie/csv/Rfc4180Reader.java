@@ -667,7 +667,7 @@ public class Rfc4180Reader implements ElementReader {
                 int num = beginLineNumber_;
                 final LinkedList<Line> lines = new LinkedList<Line>();
                 for (final String s : lines_) {
-                    final Line l = new LineImpl(num, s, null);
+                    final Line l = new LineImpl(s, num, null);
                     lines.add(l);
                     num++;
                 }
