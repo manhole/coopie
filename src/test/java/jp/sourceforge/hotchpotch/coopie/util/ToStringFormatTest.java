@@ -283,6 +283,17 @@ public class ToStringFormatTest {
     }
 
     @Test
+    public void formatEmptyString() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format("");
+
+        // ## Assert ##
+        assertEquals("<empty>", actual);
+    }
+
+    @Test
     public void composit1() throws Throwable {
         // ## Arrange ##
         final Composit c1 = new Composit("c1");
