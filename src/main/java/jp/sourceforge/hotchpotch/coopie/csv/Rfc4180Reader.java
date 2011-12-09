@@ -618,7 +618,7 @@ public class Rfc4180Reader implements ElementReader {
 
         protected void readNextIfNeed() throws IOException {
             while (!eof_ && chars_.length <= pos_) {
-                line_ = reader_.readLine();
+                line_ = reader_.readLineBody();
                 if (line_ == null) {
                     eof_ = true;
                     return;
