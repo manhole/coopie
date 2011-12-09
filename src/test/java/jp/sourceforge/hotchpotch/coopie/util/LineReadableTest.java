@@ -268,6 +268,65 @@ public class LineReadableTest {
         r.close();
     }
 
+    @Test
+    public void pushback1() throws Throwable {
+        // ## Arrange ##
+        final LineReadable r = create("a1\r\n" + "a2\r" + "a3\n" + "a4\n"
+                + "a5");
+
+        // ## Act ##
+        // ## Assert ##
+        final Line l1 = r.readLine();
+        assertEquals(1, r.getLineNumber());
+        final Line l2 = r.readLine();
+        assertEquals(2, r.getLineNumber());
+        final Line l3 = r.readLine();
+        assertEquals(3, r.getLineNumber());
+        r.pushback(l3);
+        r.pushback(l2);
+        assertEquals(1, r.getLineNumber());
+
+        assertEquals("a2", r.readLineBody());
+        assertEquals(2, r.getLineNumber());
+        assertEquals("a3", r.readLineBody());
+        assertEquals(3, r.getLineNumber());
+        assertEquals("a4", r.readLineBody());
+        assertEquals(4, r.getLineNumber());
+        assertEquals("a5", r.readLineBody());
+        assertEquals(5, r.getLineNumber());
+        assertEquals(null, r.readLineBody());
+
+        r.close();
+    }
+
+    @Test
+    public void pushback2() throws Throwable {
+        // ## Arrange ##
+        final LineReadable r = create("a1\r\n" + "a2\r" + "a3\n" + "a4\n"
+                + "a5");
+
+        // ## Act ##
+        // ## Assert ##
+        final Line l1 = r.readLine();
+        final Line l2 = r.readLine();
+        final Line l3 = r.readLine();
+        r.pushback(l1);
+        r.pushback(l2);
+
+        assertEquals(1, r.getLineNumber());
+        assertEquals("a2", r.readLineBody());
+        assertEquals(2, r.getLineNumber());
+        assertEquals("a1", r.readLineBody());
+        assertEquals(3, r.getLineNumber());
+        assertEquals("a4", r.readLineBody());
+        assertEquals(4, r.getLineNumber());
+        assertEquals("a5", r.readLineBody());
+        assertEquals(5, r.getLineNumber());
+        assertEquals(null, r.readLineBody());
+
+        r.close();
+    }
+
     private LineReadable create(final String in) {
         final Readable readable = new StringReader(in);
         return new LineReadable(readable);
