@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
@@ -611,6 +612,38 @@ public class MapCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    /**
+     * 独自レイアウトのtsvファイルを入力する。
+     * 
+     * - header部が3行
+     * - footer部が2行
+     * - データ部は2列目から
+     * という想定。
+     */
+    @Test
+    public void read_customLayout() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-7", "tsv");
+
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setReadEditor(new TestReadEditor());
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(r);
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertReadCustomLayout(csvReader, bean);
+    }
+
+    public static void assertReadCustomLayout(
+            final RecordReader<Map<String, String>> csvReader,
+            final Map<String, String> bean) throws IOException {
+        // tsvデータ部分は1と同じ
+        assertRead1(csvReader, bean);
     }
 
     /**
