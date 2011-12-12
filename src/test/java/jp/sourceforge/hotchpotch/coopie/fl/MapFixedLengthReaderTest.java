@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.Map;
 
@@ -30,8 +30,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-1", "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final MapFixedLengthLayout layout = new MapFixedLengthLayout();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
@@ -46,7 +45,7 @@ public class MapFixedLengthReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -62,8 +61,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-2", "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final MapFixedLengthLayout layout = new MapFixedLengthLayout();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
@@ -78,7 +76,7 @@ public class MapFixedLengthReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -93,8 +91,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-3", "tsv");
+        final Reader r = getResourceAsReader("-3", "tsv");
 
         final MapFixedLengthLayout layout = new MapFixedLengthLayout();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
@@ -108,7 +105,7 @@ public class MapFixedLengthReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -124,8 +121,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-4", "tsv");
+        final Reader r = getResourceAsReader("-4", "tsv");
 
         final MapFixedLengthLayout layout = new MapFixedLengthLayout();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
@@ -140,7 +136,7 @@ public class MapFixedLengthReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -205,8 +201,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read_empty_row() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-5", "tsv");
+        final Reader r = getResourceAsReader("-5", "tsv");
 
         final MapFixedLengthLayout layout = new MapFixedLengthLayout();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
@@ -221,7 +216,7 @@ public class MapFixedLengthReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -234,8 +229,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-2", "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final MapFixedLengthLayout layout = new MapFixedLengthLayout();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
@@ -249,7 +243,7 @@ public class MapFixedLengthReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -262,8 +256,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read_afterLast() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-1", "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final MapFixedLengthLayout layout = new MapFixedLengthLayout();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
@@ -278,7 +271,7 @@ public class MapFixedLengthReaderTest {
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -333,6 +326,14 @@ public class MapFixedLengthReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    static Reader getResourceAsReader(final String suffix, final String ext) {
+        return BeanFixedLengthReaderTest.getResourceAsReader(suffix, ext);
+    }
+
+    static InputStream getResourceAsStream(final String suffix, final String ext) {
+        return BeanFixedLengthReaderTest.getResourceAsStream(suffix, ext);
     }
 
 }

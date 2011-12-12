@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
@@ -148,10 +149,8 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-1",
+                "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -196,10 +195,8 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-4-2", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-4-2",
+                "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -242,10 +239,8 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-3", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-3",
+                "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -305,6 +300,10 @@ public class BeanFixedLengthWriterTest {
         final String actual = writer.toString();
         assertEquals(" 𠮷野 き家\r\n", actual);
         csvWriter.close();
+    }
+
+    static Reader getResourceAsReader(final String suffix, final String ext) {
+        return BeanFixedLengthReaderTest.getResourceAsReader(suffix, ext);
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {

@@ -7,7 +7,9 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
@@ -48,7 +50,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_nosetup() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-1", "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
@@ -56,7 +58,7 @@ public class BeanFixedLengthReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(new InputStreamReader(is, "UTF-8"));
+            layout.openReader(r);
             fail();
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage());
@@ -71,7 +73,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-1", "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
@@ -86,8 +88,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -103,7 +104,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-2", "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
@@ -118,8 +119,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -134,7 +134,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-3", "tsv");
+        final Reader r = getResourceAsReader("-3", "tsv");
 
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
@@ -148,8 +148,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -165,7 +164,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-4", "tsv");
+        final Reader r = getResourceAsReader("-4", "tsv");
 
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
@@ -180,8 +179,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -248,7 +246,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_empty_row() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-5", "tsv");
+        final Reader r = getResourceAsReader("-5", "tsv");
 
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
@@ -263,8 +261,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -277,7 +274,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-2", "tsv");
+        final Reader r = getResourceAsReader("-2", "tsv");
 
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
@@ -291,8 +288,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -305,7 +301,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_afterLast() throws Throwable {
         // ## Arrange ##
-        final InputStream is = getResourceAsStream("-1", "tsv");
+        final Reader r = getResourceAsReader("-1", "tsv");
 
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
@@ -320,8 +316,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new InputStreamReader(is, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -551,6 +546,19 @@ public class BeanFixedLengthReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    static Reader getResourceAsReader(final String suffix, final String ext) {
+        final Charset charset = Charset.forName("UTF-8");
+        final Reader reader = getResourceAsReader(suffix, ext, charset);
+        return reader;
+    }
+
+    static Reader getResourceAsReader(final String suffix, final String ext,
+            final Charset charset) {
+        final InputStream is = getResourceAsStream(suffix, ext);
+        final InputStreamReader reader = new InputStreamReader(is, charset);
+        return reader;
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
