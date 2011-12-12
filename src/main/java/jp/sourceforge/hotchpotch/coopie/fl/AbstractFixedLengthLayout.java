@@ -220,12 +220,28 @@ abstract class AbstractFixedLengthLayout<T> {
 
         @Override
         public ElementWriter openWriter(final Appendable appendable) {
-            return new FixedLengthWriter(appendable, elementDescs_);
+            final FixedLengthWriter writer = createWriter(appendable);
+            writer.open(appendable);
+            return writer;
         }
 
         @Override
         public ElementReader openReader(final Readable readable) {
-            return new FixedLengthReader(readable, elementDescs_);
+            final FixedLengthReader reader = createReader();
+            reader.open(readable);
+            return reader;
+        }
+
+        protected FixedLengthWriter createWriter(final Appendable appendable) {
+            final FixedLengthWriter writer = new FixedLengthWriter(
+                    elementDescs_);
+            return writer;
+        }
+
+        protected FixedLengthReader createReader() {
+            final FixedLengthReader reader = new FixedLengthReader(
+                    elementDescs_);
+            return reader;
         }
 
     }

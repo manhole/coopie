@@ -17,14 +17,16 @@ public class FixedLengthWriter implements ElementWriter {
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    private final Appendable appendable_;
+    private Appendable appendable_;
     private final FixedLengthElementDesc[] elementDescs_;
     private String lineSeparator_ = CsvSetting.CRLF;
 
-    public FixedLengthWriter(final Appendable appendable,
-            final FixedLengthElementDesc[] columns) {
-        appendable_ = appendable;
+    public FixedLengthWriter(final FixedLengthElementDesc[] columns) {
         elementDescs_ = columns;
+    }
+
+    public void open(final Appendable appendable) {
+        appendable_ = appendable;
         closed_ = false;
     }
 

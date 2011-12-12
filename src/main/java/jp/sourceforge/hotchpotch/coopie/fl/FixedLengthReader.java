@@ -15,14 +15,16 @@ public class FixedLengthReader implements ElementReader {
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    private final LineReadable reader_;
+    private LineReadable reader_;
     private final FixedLengthElementDesc[] elementDescs_;
     private int lineNo_;
 
-    public FixedLengthReader(final Readable reader,
-            final FixedLengthElementDesc[] columns) {
-        reader_ = new LineReadable(reader);
+    public FixedLengthReader(final FixedLengthElementDesc[] columns) {
         elementDescs_ = columns;
+    }
+
+    public void open(final Readable readable) {
+        reader_ = new LineReadable(readable);
         closed_ = false;
     }
 
