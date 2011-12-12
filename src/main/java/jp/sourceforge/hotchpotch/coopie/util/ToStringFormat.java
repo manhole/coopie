@@ -71,7 +71,7 @@ public class ToStringFormat {
             @SuppressWarnings("unchecked")
             final Class<T> clazz = (Class<T>) obj.getClass();
             if (obj instanceof String) {
-                out.append((String) obj);
+                appendString(out, (String) obj);
             } else if (obj instanceof Float) {
                 out.append(obj.toString());
             } else if (obj instanceof Integer) {
@@ -155,6 +155,28 @@ public class ToStringFormat {
             append(out, obj, context);
         }
         out.append("]");
+    }
+
+    private void appendString(final Appendable out, final String str)
+            throws IOException {
+        final char[] chars = str.toCharArray();
+        for (final char c : chars) {
+            switch (c) {
+            case 0x09:
+                out.append("<TAB>");
+                break;
+            case 0x0a:
+                out.append("<LF>");
+                break;
+            case 0x0d:
+                out.append("<CR>");
+                break;
+
+            default:
+                out.append(c);
+                break;
+            }
+        }
     }
 
     private List<FieldDesc<?>> getFieldDescs(final Class<?> clazz) {
