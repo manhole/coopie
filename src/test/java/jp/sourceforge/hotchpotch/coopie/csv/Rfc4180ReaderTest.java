@@ -408,8 +408,8 @@ public class Rfc4180ReaderTest {
         reader.close();
     }
 
-    /*
-     * データ中にnull文字があっても、扱えること。
+    /**
+     * データ中にnull文字があっても、扱えること。(null文字で終了しないこと)
      */
     @Test
     public void null_char() throws Throwable {
@@ -424,7 +424,7 @@ public class Rfc4180ReaderTest {
         reader.close();
     }
 
-    /*
+    /**
      * データ中の空要素は""として読むこと。
      */
     @Test
@@ -441,6 +441,9 @@ public class Rfc4180ReaderTest {
         reader.close();
     }
 
+    /**
+     * クォート文字をシングルクォートへ変更できること。
+     */
     @Test
     public void quotechar_single() throws Throwable {
         // ## Arrange ##
@@ -455,6 +458,9 @@ public class Rfc4180ReaderTest {
         reader.close();
     }
 
+    /**
+     * クォートだけの入力は、クォート1文字だけの1要素とみなす。
+     */
     @Test
     public void only_quote_record() throws Throwable {
         // ## Arrange ##
