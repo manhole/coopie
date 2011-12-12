@@ -1,6 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,26 @@ import org.t2framework.commons.util.CollectionsUtil;
 public class MapFixedLengthReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
+
+    /**
+     * setupしないでopenしようとしたら、エラーにする。
+     */
+    @Test
+    public void read_nosetup() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-1", "tsv");
+
+        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openReader(r);
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
 
     /**
      * ファイルヘッダがBeanのプロパティ名と同じ場合。
