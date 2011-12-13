@@ -15,7 +15,6 @@ import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineImpl;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
-import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 import jp.sourceforge.hotchpotch.coopie.util.LineSeparator;
 
 import org.t2framework.commons.exception.IORuntimeException;
@@ -42,7 +41,7 @@ public class Rfc4180Reader implements ElementReader {
 
     private int recordNo_;
     private CharacterReadable reader_;
-    private LineReaderHandler lineReaderHandler_ = PassThroughHandler
+    private LineReaderHandler lineReaderHandler_ = PassThroughLineReaderHandler
             .getInstance();
 
     private char elementSeparator_ = CsvSetting.COMMA;
@@ -704,27 +703,6 @@ public class Rfc4180Reader implements ElementReader {
 
     public enum RecordState {
         OK, INVALID
-    }
-
-    private static class PassThroughHandler implements LineReaderHandler {
-
-        private static final LineReaderHandler INSTANCE = new PassThroughHandler();
-
-        public static LineReaderHandler getInstance() {
-            return INSTANCE;
-        }
-
-        @Override
-        public boolean acceptLine(final Line line,
-                final ElementParserContext parserContext) {
-            return true;
-        }
-
-        @Override
-        public Line readLine(final LineReader reader) throws IOException {
-            return reader.readLine();
-        }
-
     }
 
 }

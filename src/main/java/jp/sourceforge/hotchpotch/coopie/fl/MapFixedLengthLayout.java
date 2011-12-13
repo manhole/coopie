@@ -22,11 +22,10 @@ public class MapFixedLengthLayout extends
     @Override
     public RecordReader<Map<String, String>> openReader(final Readable readable) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
-        final ElementInOut es = getElementInOut();
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 rd);
         r.setWithHeader(isWithHeader());
-        r.setElementInOut(es);
+        r.setElementInOut(createElementInOut());
         // TODO openで例外時にcloseすること
         r.open(readable);
         return r;
@@ -36,7 +35,7 @@ public class MapFixedLengthLayout extends
     public RecordWriter<Map<String, String>> openWriter(
             final Appendable appendable) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
-        final ElementInOut es = getElementInOut();
+        final ElementInOut es = createElementInOut();
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 rd);
         w.setWithHeader(isWithHeader());

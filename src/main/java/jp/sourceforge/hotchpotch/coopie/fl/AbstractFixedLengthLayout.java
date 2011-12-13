@@ -5,11 +5,14 @@ import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.LineReaderHandler;
+import jp.sourceforge.hotchpotch.coopie.csv.ReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
@@ -24,8 +27,9 @@ abstract class AbstractFixedLengthLayout<T> {
     // 固定長ファイルでは「ヘッダ無し」をデフォルトにする。
     private boolean withHeader_ = false;
     private RecordDesc<T> recordDesc_;
-    private ElementInOut elementInOut_;
+    private ReadEditor readEditor_ = DefaultReadEditor.getInstance();
     private ElementEditor elementEditor_;
+    private FixedLengthElementDesc[] fixedLengthElementDescs_;
 
     protected abstract FixedLengthRecordDescSetup getRecordDescSetup();
 
@@ -33,7 +37,7 @@ abstract class AbstractFixedLengthLayout<T> {
         final FixedLengthRecordDescSetup setup = getRecordDescSetup();
         block.setup(setup);
         recordDesc_ = setup.getRecordDesc();
-        elementInOut_ = setup.getElementInOut();
+        fixedLengthElementDescs_ = setup.getElementDescs();
     }
 
     protected RecordDesc<T> getRecordDesc() {
@@ -44,16 +48,20 @@ abstract class AbstractFixedLengthLayout<T> {
         recordDesc_ = recordDesc;
     }
 
-    protected ElementInOut getElementInOut() {
-        return elementInOut_;
-    }
-
     protected boolean isWithHeader() {
         return withHeader_;
     }
 
     public void setWithHeader(final boolean withHeader) {
         withHeader_ = withHeader;
+    }
+
+    protected ReadEditor getReadEditor() {
+        return readEditor_;
+    }
+
+    public void setReadEditor(final ReadEditor readEditor) {
+        readEditor_ = readEditor;
     }
 
     protected ElementEditor getElementEditor() {
@@ -64,12 +72,24 @@ abstract class AbstractFixedLengthLayout<T> {
         elementEditor_ = elementEditor;
     }
 
+    protected FixedLengthElementDesc[] getFixedLengthElementDescs() {
+        return fixedLengthElementDescs_;
+    }
+
+    protected ElementInOut createElementInOut() {
+        final FixedLengthElementInOut a = new FixedLengthElementInOut(
+                getFixedLengthElementDescs());
+        final ReadEditor readEditor = getReadEditor();
+        a.setLineReaderHandler(readEditor);
+        return a;
+    }
+
     protected static interface FixedLengthRecordDescSetup extends
             FixedLengthColumnSetup {
 
         <T> RecordDesc<T> getRecordDesc();
 
-        ElementInOut getElementInOut();
+        FixedLengthElementDesc[] getElementDescs();
 
     }
 
@@ -148,7 +168,7 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
-        private FixedLengthElementInOut fixedLengthElementInOut_;
+        private FixedLengthElementDesc[] fixedLengthElementDescs_;
 
         @Override
         public RecordDesc<T> getRecordDesc() {
@@ -157,9 +177,8 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         @Override
-        public ElementInOut getElementInOut() {
-            buildIfNeed();
-            return fixedLengthElementInOut_;
+        public FixedLengthElementDesc[] getElementDescs() {
+            return fixedLengthElementDescs_;
         }
 
         private void buildIfNeed() {
@@ -185,8 +204,7 @@ abstract class AbstractFixedLengthLayout<T> {
             final ColumnDesc<T>[] cds = createColumnDescs(columnNames);
             fixedLengthRecordDesc_ = new FixedLengthRecordDesc<T>(cds,
                     getRecordType());
-            fixedLengthElementInOut_ = new FixedLengthElementInOut(
-                    flColumnDescs);
+            fixedLengthElementDescs_ = flColumnDescs;
         }
 
         abstract protected ColumnDesc<T>[] createColumnDescs(
@@ -212,6 +230,7 @@ abstract class AbstractFixedLengthLayout<T> {
     protected static class FixedLengthElementInOut implements ElementInOut {
 
         private final FixedLengthElementDesc[] elementDescs_;
+        private LineReaderHandler lineReaderHandler_;
 
         protected FixedLengthElementInOut(
                 final FixedLengthElementDesc[] elementDescs) {
@@ -241,7 +260,15 @@ abstract class AbstractFixedLengthLayout<T> {
         protected FixedLengthReader createReader() {
             final FixedLengthReader reader = new FixedLengthReader(
                     elementDescs_);
+            if (lineReaderHandler_ != null) {
+                reader.setLineReaderHandler(lineReaderHandler_);
+            }
             return reader;
+        }
+
+        public void setLineReaderHandler(
+                final LineReaderHandler lineReaderHandler) {
+            lineReaderHandler_ = lineReaderHandler;
         }
 
     }

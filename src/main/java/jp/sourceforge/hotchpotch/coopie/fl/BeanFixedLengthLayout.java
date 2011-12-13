@@ -9,7 +9,6 @@ import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
-import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
@@ -44,11 +43,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
             throw new NullPointerException("readable");
         }
 
-        final RecordDesc<T> rd = getRecordDesc();
-        final ElementInOut es = getElementInOut();
+        final RecordDesc<T> rd = myRecordDesc();
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
         r.setWithHeader(isWithHeader());
-        r.setElementInOut(es);
+        r.setElementInOut(createElementInOut());
         r.setElementEditor(getElementEditor());
         // TODO openで例外時にcloseすること
         r.open(readable);
@@ -61,11 +59,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
             throw new NullPointerException("appendable");
         }
 
-        final RecordDesc<T> rd = getRecordDesc();
-        final ElementInOut es = getElementInOut();
+        final RecordDesc<T> rd = myRecordDesc();
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(rd);
         w.setWithHeader(isWithHeader());
-        w.setElementInOut(es);
+        w.setElementInOut(createElementInOut());
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;
@@ -76,33 +73,19 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         return new BeanFixedLengthRecordDescSetup<T>(beanDesc_);
     }
 
-    @Override
-    protected RecordDesc<T> getRecordDesc() {
-        if (super.getRecordDesc() == null) {
+    protected RecordDesc<T> myRecordDesc() {
+        if (getRecordDesc() == null) {
             /*
              * アノテーションが付いている場合は、アノテーションから構築する
              */
             setupByAnnotation();
         }
 
-        final RecordDesc<T> recordDesc = super.getRecordDesc();
+        final RecordDesc<T> recordDesc = getRecordDesc();
         if (recordDesc == null) {
             throw new IllegalStateException("recordDesc");
         }
         return recordDesc;
-    }
-
-    @Override
-    protected ElementInOut getElementInOut() {
-        if (super.getElementInOut() == null) {
-            setupByAnnotation();
-        }
-
-        final ElementInOut elementInOut = super.getElementInOut();
-        if (elementInOut == null) {
-            throw new IllegalStateException("elementInOut");
-        }
-        return elementInOut;
     }
 
     private void setupByAnnotation() {

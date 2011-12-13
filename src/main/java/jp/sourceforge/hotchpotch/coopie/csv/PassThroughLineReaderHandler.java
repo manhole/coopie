@@ -1,0 +1,27 @@
+package jp.sourceforge.hotchpotch.coopie.csv;
+
+import java.io.IOException;
+
+import jp.sourceforge.hotchpotch.coopie.util.Line;
+import jp.sourceforge.hotchpotch.coopie.util.LineReader;
+
+public class PassThroughLineReaderHandler implements LineReaderHandler {
+
+    private static final LineReaderHandler INSTANCE = new PassThroughLineReaderHandler();
+
+    public static LineReaderHandler getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public boolean acceptLine(final Line line,
+            final ElementParserContext parserContext) {
+        return true;
+    }
+
+    @Override
+    public Line readLine(final LineReader reader) throws IOException {
+        return reader.readLine();
+    }
+
+}
