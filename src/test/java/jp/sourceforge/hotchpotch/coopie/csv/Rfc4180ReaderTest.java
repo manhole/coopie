@@ -4,7 +4,11 @@ import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
 import java.io.StringReader;
+
+import jp.sourceforge.hotchpotch.coopie.util.Line;
+import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
 import org.junit.Test;
 
@@ -473,6 +477,44 @@ public class Rfc4180ReaderTest {
         reader.close();
     }
 
+    /**
+     * 空行をskipして読めること。
+     * その際に、データ部の改行による空行を除かないこと。
+     */
+    @Test
+    public void skip_emptyline() throws Throwable {
+        // ## Arrange ##
+
+        final LineReaderHandler lineReaderHandler = new LineReaderHandler() {
+            @Override
+            public Line readLine(final LineReader lineReader)
+                    throws IOException {
+                return lineReader.readLine();
+            }
+
+            @Override
+            public boolean acceptLine(final Line line,
+                    final ElementParserContext parserContext) {
+                if (parserContext.isInElement()) {
+                    return true;
+                }
+                if (line.getBody().length() == 0) {
+                    return false;
+                }
+                return true;
+            }
+        };
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n"
+                + "\"b\r\n\r\n2\"", lineReaderHandler);
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a1"), reader.readRecord());
+        assertArrayEquals(a("b\r\n\r\n2"), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
     /*
      * 不正データ
      * 
@@ -639,15 +681,29 @@ public class Rfc4180ReaderTest {
     }
 
     protected Rfc4180Reader open(final String text) {
-        return open(text, null);
+        return open(text, (Character) null, (LineReaderHandler) null);
+    }
+
+    protected Rfc4180Reader open(final String text,
+            final LineReaderHandler lineReaderHandler) {
+        return open(text, (Character) null, lineReaderHandler);
     }
 
     protected Rfc4180Reader open(final String text,
             final Character elementSeparator) {
+        return open(text, elementSeparator, (LineReaderHandler) null);
+    }
+
+    protected Rfc4180Reader open(final String text,
+            final Character elementSeparator,
+            final LineReaderHandler lineReaderHandler) {
         final StringReader reader = new StringReader(text);
         final Rfc4180Reader csvReader = new Rfc4180Reader();
         if (elementSeparator != null) {
             csvReader.setElementSeparator(elementSeparator);
+        }
+        if (lineReaderHandler != null) {
+            csvReader.setLineReaderHandler(lineReaderHandler);
         }
         csvReader.open(reader);
         return csvReader;

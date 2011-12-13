@@ -5,7 +5,7 @@ import java.io.IOException;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
-interface LineReaderHandler {
+public interface LineReaderHandler {
 
     /**
      * 1行読むタイミングで呼ばれます。
@@ -15,5 +15,13 @@ interface LineReaderHandler {
     // 当メソッドが返却した値が、 {@link #readRecord(ElementReader)} へ流れていきます。
     // (当メソッドにて読み飛ばした行は、{@link #readRecord(ElementReader)} へ流れません。)
     Line readLine(LineReader lineReader) throws IOException;
+
+    /**
+     * 行を使用するかを判定します。
+     * trueを返すとこの行は採用されます。
+     * falseを返すとこの行はskipされます。
+     * 
+     */
+    boolean acceptLine(Line line, ElementParserContext parserContext);
 
 }
