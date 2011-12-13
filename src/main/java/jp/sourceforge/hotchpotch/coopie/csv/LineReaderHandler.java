@@ -17,11 +17,14 @@ public interface LineReaderHandler {
     Line readLine(LineReader lineReader) throws IOException;
 
     /**
+     * 1行読むタイミングで呼ばれます。
+     * 
      * 行を使用するかを判定します。
      * trueを返すとこの行は採用されます。
      * falseを返すとこの行はskipされます。
      * 
      */
+    // 当メソッドがtrueを返した行が、 {@link #readRecord(ElementReader)} へ流れていきます。
     boolean acceptLine(Line line, ElementParserContext parserContext);
 
 }

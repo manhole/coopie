@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.SkipEmptyLineReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
@@ -850,6 +851,42 @@ public class MapCsvReaderTest {
         assertEquals(null, bean.get("aaa"));
         assertEquals("b", bean.get("bbb"));
         assertEquals(null, bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 空行をskipして読めること。
+     * その際に、データ部の改行による空行を除かないこと。
+     */
+    @Test
+    public void read_skip_emptyline() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-11", "tsv");
+
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setReadEditor(new SkipEmptyLineReadEditor());
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(r);
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.get("aaa"));
+        assertEquals("い1", bean.get("bbb"));
+        assertEquals("う1", bean.get("ccc"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.get("aaa"));
+        assertEquals("い\r\n\r\n\r\n2", bean.get("bbb"));
+        assertEquals("う2", bean.get("ccc"));
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();

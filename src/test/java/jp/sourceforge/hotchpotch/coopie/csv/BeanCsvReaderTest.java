@@ -1113,6 +1113,55 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * 空行をskipして読めること。
+     * その際に、データ部の改行による空行を除かないこと。
+     */
+    @Test
+    public void read_skip_emptyline() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-11", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+        layout.setReadEditor(new SkipEmptyLineReadEditor());
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.getAaa());
+        assertEquals("い1", bean.getBbb());
+        assertEquals("う1", bean.getCcc());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ2", bean.getAaa());
+        assertEquals("い\r\n\r\n\r\n2", bean.getBbb());
+        assertEquals("う2", bean.getCcc());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    static class SkipEmptyLineReadEditor extends DefaultReadEditor {
+        @Override
+        public boolean acceptLine(final Line line,
+                final ElementParserContext parserContext) {
+            if (!parserContext.isInElement()) {
+                if (line.getBody().length() == 0) {
+                    return false;
+                }
+            }
+            return super.acceptLine(line, parserContext);
+        }
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Charset charset = Charset.forName("UTF-8");
         final Reader reader = getResourceAsReader(suffix, ext, charset);
