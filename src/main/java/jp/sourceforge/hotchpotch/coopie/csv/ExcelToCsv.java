@@ -62,7 +62,7 @@ public class ExcelToCsv {
                 final File tsvFile = files.createFile(file.getParentFile(),
                         fileName);
 
-                final CsvElementWriter csvWriter = csvSetting.openWriter(files
+                final ElementWriter csvWriter = csvSetting.openWriter(files
                         .openBufferedWriter(tsvFile));
 
                 while (true) {

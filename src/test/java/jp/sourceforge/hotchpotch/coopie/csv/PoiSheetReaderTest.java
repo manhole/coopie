@@ -4,10 +4,10 @@ import java.io.InputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-public class PoiSheetReaderTest extends CsvElementReaderTest {
+public class PoiSheetReaderTest extends ElementReaderTest {
 
     @Override
-    protected CsvElementReader constructTest1Reader() throws Throwable {
+    protected ElementReader constructTest1Reader() throws Throwable {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
                 "xls");
         final HSSFWorkbook workbook = new HSSFWorkbook(is);

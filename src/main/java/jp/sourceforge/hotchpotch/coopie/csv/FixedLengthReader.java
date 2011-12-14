@@ -10,7 +10,7 @@ import jp.sourceforge.hotchpotch.coopie.ReaderUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
-public class FixedLengthReader implements CsvElementReader {
+public class FixedLengthReader implements ElementReader {
 
     protected boolean closed = true;
     @SuppressWarnings("unused")
