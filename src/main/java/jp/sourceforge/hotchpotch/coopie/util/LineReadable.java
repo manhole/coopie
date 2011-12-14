@@ -29,13 +29,12 @@ public class LineReadable implements LineReader, Closable {
 
     @Override
     public Line readLine() throws IOException {
-        read0();
-        if (line_ == null) {
-            return null;
+        final Line line = createLine();
+        final boolean read = readLine(line);
+        if (read) {
+            return line;
         }
-
-        final Line line = new LineImpl(line_, lineNumber_, lineSeparator_);
-        return line;
+        return null;
     }
 
     public boolean readLine(final Line line) throws IOException {
@@ -46,6 +45,10 @@ public class LineReadable implements LineReader, Closable {
 
         line.reinit(line_, lineNumber_, lineSeparator_);
         return true;
+    }
+
+    protected Line createLine() {
+        return new LineImpl();
     }
 
     private void read0() throws IOException {
