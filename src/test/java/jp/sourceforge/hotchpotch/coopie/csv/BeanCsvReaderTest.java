@@ -15,6 +15,8 @@ import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.Line;
+import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 
 import org.junit.Ignore;
@@ -666,21 +668,29 @@ public class BeanCsvReaderTest {
     static class TestReadEditor extends DefaultReadEditor {
 
         @Override
-        public String[] readRecord(final ElementReader elementReader) {
-            if (elementReader.getRecordNumber() == 0) {
+        public Line readLine(final LineReader lineReader) throws IOException {
+            if (lineReader.getLineNumber() == 0) {
                 // 3行あるheader部をskip
-                elementReader.readRecord();
-                elementReader.readRecord();
-                elementReader.readRecord();
+                lineReader.readLine();
+                lineReader.readLine();
+                lineReader.readLine();
             }
+            final Line line = super.readLine(lineReader);
+            return line;
+        }
 
+        @Override
+        public String[] readRecord(final ElementReader elementReader) {
             final String[] rawRecord = elementReader.readRecord();
             // EOFまで進んでいたらnull
             if (null == rawRecord) {
                 return null;
             }
 
-            // footerエリアはskip
+            /*
+             * footerエリアはskip
+             * (ここでは、データ部は必ず2つ以上要素がある想定)
+             */
             final int validLength = validLength(rawRecord);
             if (validLength == 0 || validLength == 1) {
                 return readRecord(elementReader);

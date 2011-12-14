@@ -9,11 +9,9 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         RecordInOut<Map<String, String>> {
 
     private final CsvSetting csvSetting_;
-    private final ElementInOut elementInOut_;
 
     public MapCsvLayout() {
         csvSetting_ = new DefaultCsvSetting();
-        elementInOut_ = new CsvElementInOut(csvSetting_);
     }
 
     @Override
@@ -25,7 +23,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
-        r.setElementInOut(elementInOut_);
+        r.setElementInOut(createElementInOut());
         r.setReadEditor(getReadEditor());
         r.setElementEditor(getElementEditor());
         new FailureProtection<RuntimeException>() {
@@ -54,7 +52,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
-        w.setElementInOut(elementInOut_);
+        w.setElementInOut(createElementInOut());
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;
@@ -70,6 +68,13 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
 
     public void setQuoteMark(final char quoteMark) {
         csvSetting_.setQuoteMark(quoteMark);
+    }
+
+    protected ElementInOut createElementInOut() {
+        final CsvElementInOut a = new CsvElementInOut(csvSetting_);
+        final ReadEditor readEditor = getReadEditor();
+        a.setLineReaderHandler(readEditor);
+        return a;
     }
 
 }
