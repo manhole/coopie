@@ -67,8 +67,8 @@ public class MapFixedLengthLayout extends
             final ColumnDesc<Map<String, String>>[] cds = AbstractMapCsvLayout
                     .toColumnDescs(columns_);
 
-            final FixedLengthColumn[] a = columns_
-                    .toArray(new FixedLengthColumn[columns_.size()]);
+            final FixedLengthColumnDesc[] a = columns_
+                    .toArray(new FixedLengthColumnDesc[columns_.size()]);
             fixedLengthRecordDesc_ = new FixedLengthRecordDesc<Map<String, String>>(
                     cds, new MapRecordType(), a);
         }
