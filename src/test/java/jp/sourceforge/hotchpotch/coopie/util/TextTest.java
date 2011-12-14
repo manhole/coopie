@@ -16,7 +16,7 @@ public class TextTest {
         assertEquals("abc", new Text(" abc").trimWhitespace().toString());
         assertEquals("abc", new Text("abc").trimWhitespace().toString());
         assertEquals("abc", new Text(" 　abc　　").trimWhitespace().toString());
-        assertEquals("abc　 def", new Text(" 　abc　 def　").trimWhitespace()
+        assertEquals("abc　 def", new Text(" 　abc　 def　\r\n\t").trimWhitespace()
                 .toString());
     }
 
