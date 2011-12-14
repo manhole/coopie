@@ -8,7 +8,13 @@ import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 public class MapCsvLayout extends AbstractMapCsvLayout implements
         CsvLayout<Map<String, String>> {
 
-    private final DefaultCsvSetting csvSetting_ = new DefaultCsvSetting();
+    private final CsvSetting csvSetting_;
+    private final ElementSetting elementSetting_;
+
+    public MapCsvLayout() {
+        csvSetting_ = new DefaultCsvSetting();
+        elementSetting_ = new CsvElementSetting(csvSetting_);
+    }
 
     @Override
     public RecordReader<Map<String, String>> openReader(final Readable readable) {
@@ -19,7 +25,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
-        r.setElementSetting(csvSetting_);
+        r.setElementSetting(elementSetting_);
         new FailureProtection<RuntimeException>() {
 
             @Override
@@ -46,7 +52,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
-        w.setElementSetting(csvSetting_);
+        w.setElementSetting(elementSetting_);
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;
