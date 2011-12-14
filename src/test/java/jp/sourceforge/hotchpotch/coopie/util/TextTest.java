@@ -105,4 +105,32 @@ public class TextTest {
         }
     }
 
+    @Test
+    public void length() throws Throwable {
+        {
+            // この"𠮷"は補助文字
+            final String s = "𠮷野家";
+            assertEquals(4, s.length());
+            assertEquals(3, Text.length(s));
+            assertEquals(3, Text.length((CharSequence) s));
+        }
+        {
+            final String s = "吉野家";
+            assertEquals(3, s.length());
+            assertEquals(3, Text.length(s));
+            assertEquals(3, Text.length((CharSequence) s));
+        }
+        {
+            final String s = "";
+            assertEquals(0, s.length());
+            assertEquals(0, Text.length(s));
+            assertEquals(0, Text.length((CharSequence) s));
+        }
+        {
+            final String s = null;
+            assertEquals(0, Text.length(s));
+            assertEquals(0, Text.length((CharSequence) s));
+        }
+    }
+
 }
