@@ -14,6 +14,12 @@ public class DefaultReadEditor implements ReadEditor {
     }
 
     @Override
+    public boolean acceptLine(final Line line,
+            final ElementParserContext parserContext) {
+        return true;
+    }
+
+    @Override
     public Line readLine(final LineReader lineReader) throws IOException {
         return lineReader.readLine();
     }

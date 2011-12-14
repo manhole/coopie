@@ -49,7 +49,8 @@ public class Rfc4180Reader implements ElementReader {
     private char quoteMark_ = CsvSetting.DOUBLE_QUOTE;
 
     public void open(final Readable readable) {
-        reader_ = new CharacterReadable(readable, lineReaderHandler_);
+        rb_ = new RecordBuffer();
+        reader_ = new CharacterReadable(readable, lineReaderHandler_, rb_);
         closed_ = false;
     }
 
@@ -69,6 +70,7 @@ public class Rfc4180Reader implements ElementReader {
 
     private RecordState recordState_;
     private BufferedReadable pushback_;
+    private RecordBuffer rb_;
 
     @Override
     public String[] readRecord() {
@@ -78,7 +80,7 @@ public class Rfc4180Reader implements ElementReader {
 
         reader_.mark();
         recordState_ = RecordState.OK;
-        final RecordBuffer rb = new RecordBuffer();
+        rb_.clear();
         State state = State.INITIAL;
 
         try {
@@ -87,19 +89,19 @@ public class Rfc4180Reader implements ElementReader {
                 case INITIAL:
                     if (c == quoteMark_) {
                         state = State.QUOTED_ELEMENT;
-                        rb.startRecord();
-                        rb.startElement();
-                        rb.appendPlain(c);
+                        rb_.startRecord();
+                        rb_.startElement();
+                        rb_.appendPlain(c);
                     } else if (c == elementSeparator_) {
                         state = State.BEGIN_ELEMENT;
-                        rb.startRecord();
-                        rb.startElement();
-                        rb.endElement();
+                        rb_.startRecord();
+                        rb_.startElement();
+                        rb_.endElement();
                     } else if (c == SP) {
                         state = State.BEGIN_ELEMENT;
-                        rb.startRecord();
-                        rb.pendingSpace(c);
-                        rb.appendPlain(c);
+                        rb_.startRecord();
+                        rb_.pendingSpace(c);
+                        rb_.appendPlain(c);
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
                         break read_loop;
@@ -107,9 +109,9 @@ public class Rfc4180Reader implements ElementReader {
                         break read_loop;
                     } else {
                         state = State.UNQUOTED_ELEMENT;
-                        rb.startRecord();
-                        rb.startElement();
-                        rb.append(c);
+                        rb_.startRecord();
+                        rb_.startElement();
+                        rb_.append(c);
                     }
                     break;
 
@@ -117,28 +119,28 @@ public class Rfc4180Reader implements ElementReader {
                     if (c == quoteMark_) {
                         state = State.QUOTED_ELEMENT;
                         // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
-                        rb.discardHeadingSpace();
-                        rb.startElement();
-                        rb.appendPlain(c);
+                        rb_.discardHeadingSpace();
+                        rb_.startElement();
+                        rb_.appendPlain(c);
                     } else if (c == elementSeparator_) {
-                        rb.startElement();
-                        rb.endElement();
+                        rb_.startElement();
+                        rb_.endElement();
                     } else if (c == SP) {
-                        rb.pendingSpace(c);
-                        rb.appendPlain(c);
+                        rb_.pendingSpace(c);
+                        rb_.appendPlain(c);
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
-                        rb.endRecord();
+                        rb_.endRecord();
                         state = State.INITIAL;
                         break read_loop;
                     } else if (c == LF) {
-                        rb.endRecord();
+                        rb_.endRecord();
                         state = State.INITIAL;
                         break read_loop;
                     } else {
                         state = State.UNQUOTED_ELEMENT;
-                        rb.startElement();
-                        rb.append(c);
+                        rb_.startElement();
+                        rb_.append(c);
                         //rb.appendPlain(c);
                     }
                     break;
@@ -146,57 +148,57 @@ public class Rfc4180Reader implements ElementReader {
                 case UNQUOTED_ELEMENT:
                     //rb.appendPlain(c);
                     if (c == quoteMark_) {
-                        rb.append(c);
+                        rb_.append(c);
                     } else if (c == elementSeparator_) {
-                        rb.endElement();
+                        rb_.endElement();
                         state = State.BEGIN_ELEMENT;
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
-                        rb.endElement();
-                        rb.endRecord();
+                        rb_.endElement();
+                        rb_.endRecord();
                         state = State.INITIAL;
                         break read_loop;
                     } else if (c == LF) {
-                        rb.endElement();
-                        rb.endRecord();
+                        rb_.endElement();
+                        rb_.endRecord();
                         state = State.INITIAL;
                         break read_loop;
                     } else {
-                        rb.append(c);
+                        rb_.append(c);
                     }
                     break;
 
                 case QUOTED_ELEMENT:
-                    rb.appendPlain(c);
+                    rb_.appendPlain(c);
                     if (c == quoteMark_) {
                         state = State.QUOTE;
                     } else {
-                        rb.append(c);
+                        rb_.append(c);
                     }
                     break;
 
                 case QUOTE:
-                    rb.appendPlain(c);
-                    if (c == quoteMark_ && !rb.hasPendingSpace()) {
-                        rb.append(c);
+                    rb_.appendPlain(c);
+                    if (c == quoteMark_ && !rb_.hasPendingSpace()) {
+                        rb_.append(c);
                         state = State.QUOTED_ELEMENT;
                     } else if (c == SP) {
-                        rb.pendingSpace(c);
+                        rb_.pendingSpace(c);
                     } else if (c == elementSeparator_) {
-                        rb.discardPending();
-                        rb.endElement();
+                        rb_.discardPending();
+                        rb_.endElement();
                         state = State.BEGIN_ELEMENT;
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
-                        rb.discardPending();
-                        rb.endElement();
-                        rb.endRecord();
+                        rb_.discardPending();
+                        rb_.endElement();
+                        rb_.endRecord();
                         state = State.INITIAL;
                         break read_loop;
                     } else if (c == LF) {
-                        rb.discardPending();
-                        rb.endElement();
-                        rb.endRecord();
+                        rb_.discardPending();
+                        rb_.endElement();
+                        rb_.endRecord();
                         state = State.INITIAL;
                         break read_loop;
                     } else {
@@ -229,7 +231,7 @@ public class Rfc4180Reader implements ElementReader {
                          * 先頭ではなく末尾にスペースを持つ要素の場合は、INVALIDにはしない。
                          * (グレーだけれど)
                          */
-                        if (rb.isDiscardedHeadingSpace()) {
+                        if (rb_.isDiscardedHeadingSpace()) {
                             logger.debug(log);
                         } else {
                             logger.warn(log);
@@ -243,8 +245,8 @@ public class Rfc4180Reader implements ElementReader {
                          * (見直す可能性アリ)
                          */
                         pushback_ = new BufferedReadable(new StringReader(
-                                rb.getPlain()));
-                        rb.clearElement();
+                                rb_.getPlain()));
+                        rb_.clearElement();
                         state = State.UNQUOTED_ELEMENT;
                     }
                     break;
@@ -260,47 +262,47 @@ public class Rfc4180Reader implements ElementReader {
             case INITIAL:
                 break;
             case BEGIN_ELEMENT:
-                rb.startElement();
-                rb.endElement();
-                rb.endRecord();
+                rb_.startElement();
+                rb_.endElement();
+                rb_.endRecord();
                 break;
             case UNQUOTED_ELEMENT:
-                if (rb.isInElement()) {
-                    rb.endElement();
+                if (rb_.isInElement()) {
+                    rb_.endElement();
                 }
-                rb.endRecord();
+                rb_.endRecord();
                 break;
             case QUOTED_ELEMENT:
                 // クォート文字しかないrecordの場合
-                if (rb.isEmpty()) {
-                    rb.append(quoteMark_);
-                    rb.endElement();
+                if (rb_.isEmpty()) {
+                    rb_.append(quoteMark_);
+                    rb_.endElement();
                 }
                 // クォートされた要素の途中でEOFになった場合
-                if (rb.isInElement()) {
-                    rb.endElement();
+                if (rb_.isInElement()) {
+                    rb_.endElement();
                     recordState_ = RecordState.INVALID;
                 }
-                rb.endRecord();
+                rb_.endRecord();
                 break;
             case QUOTE:
-                if (rb.isInElement()) {
+                if (rb_.isInElement()) {
                     // クォートされていたら最後のスペースは除く
-                    rb.discardPending();
-                    rb.endElement();
+                    rb_.discardPending();
+                    rb_.endElement();
                 }
-                rb.endRecord();
+                rb_.endRecord();
                 break;
             default:
                 throw new AssertionError();
             }
 
-            if (isEof() && rb.isEmpty()) {
+            if (isEof() && rb_.isEmpty()) {
                 return null;
             }
 
             recordNo_++;
-            final String[] record = rb.toRecord();
+            final String[] record = rb_.toRecord();
             return record;
         } catch (final IOException e) {
             throw new IORuntimeException(e);
@@ -375,7 +377,7 @@ public class Rfc4180Reader implements ElementReader {
         }
     }
 
-    static class RecordBuffer {
+    static class RecordBuffer implements ElementParserContext {
 
         private final List<String> elems_ = CollectionsUtil.newArrayList();
         private final StringBuilder sb_ = new StringBuilder();
@@ -389,6 +391,16 @@ public class Rfc4180Reader implements ElementReader {
         private boolean inElement_;
         private boolean inRecord_;
 
+        public void clear() {
+            elems_.clear();
+            clearBuffer(sb_);
+            clearBuffer(plainElement_);
+            clearBuffer(pending_);
+            discardedHeadingSpace_ = false;
+            inElement_ = false;
+            inRecord_ = false;
+        }
+
         public void startRecord() {
             assertNotInRecord();
             inRecord_ = true;
@@ -401,6 +413,7 @@ public class Rfc4180Reader implements ElementReader {
                 endElement();
             }
             assertInRecord();
+            assertNotInElement();
             inRecord_ = false;
         }
 
@@ -419,6 +432,7 @@ public class Rfc4180Reader implements ElementReader {
             clearBuffer(plainElement_);
         }
 
+        @Override
         public boolean isInElement() {
             return inElement_;
         }
@@ -581,11 +595,14 @@ public class Rfc4180Reader implements ElementReader {
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
         private String line_;
         private Marker marker_;
+        private final ElementParserContext parserContext_;
 
         CharacterReadable(final Readable readable,
-                final LineReaderHandler lineReaderHandler) {
+                final LineReaderHandler lineReaderHandler,
+                final ElementParserContext parserContext) {
             reader_ = new LineReadable(readable);
             lineReaderHandler_ = lineReaderHandler;
+            parserContext_ = parserContext;
         }
 
         /*
@@ -629,6 +646,10 @@ public class Rfc4180Reader implements ElementReader {
                     eof_ = true;
                     return;
                 }
+                if (!lineReaderHandler_.acceptLine(line, parserContext_)) {
+                    continue;
+                }
+
                 line_ = line.getBody();
                 final LineSeparator sep = line.getSeparator();
                 final String end = sep.getSeparator();
@@ -691,6 +712,12 @@ public class Rfc4180Reader implements ElementReader {
 
         public static LineReaderHandler getInstance() {
             return INSTANCE;
+        }
+
+        @Override
+        public boolean acceptLine(final Line line,
+                final ElementParserContext parserContext) {
+            return true;
         }
 
         @Override
