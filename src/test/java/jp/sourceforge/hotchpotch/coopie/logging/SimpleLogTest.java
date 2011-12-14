@@ -3,10 +3,8 @@ package jp.sourceforge.hotchpotch.coopie.logging;
 import static jp.sourceforge.hotchpotch.coopie.VarArgs.a;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
-
-import java.io.ByteArrayOutputStream;
-
 import jp.sourceforge.hotchpotch.coopie.StdOutBlock;
+import jp.sourceforge.hotchpotch.coopie.Text;
 
 import org.junit.Test;
 import org.t2framework.commons.util.task.EasyTask;
@@ -18,10 +16,8 @@ public class SimpleLogTest {
     @Test
     public void debug1() {
         // ## Arrange ##
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
         // ## Act ##
-        StdOutBlock.out(baos).execute(new EasyTask<Void>() {
+        final String ret = execute(new EasyTask<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -31,7 +27,6 @@ public class SimpleLogTest {
         });
 
         // ## Assert ##
-        final String ret = baos.toString();
         logger.debug("[[{}]]", ret);
         assertThat(ret, containsString("null"));
     }
@@ -39,10 +34,8 @@ public class SimpleLogTest {
     @Test
     public void debug2() {
         // ## Arrange ##
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
         // ## Act ##
-        StdOutBlock.out(baos).execute(new EasyTask<Void>() {
+        final String ret = execute(new EasyTask<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -50,9 +43,6 @@ public class SimpleLogTest {
                 return null;
             }
         });
-
-        // ## Assert ##
-        final String ret = baos.toString();
         logger.debug("[[{}]]", ret);
         assertThat(ret, containsString("foo"));
     }
@@ -60,10 +50,8 @@ public class SimpleLogTest {
     @Test
     public void debug3() {
         // ## Arrange ##
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
         // ## Act ##
-        StdOutBlock.out(baos).execute(new EasyTask<Void>() {
+        final String ret = execute(new EasyTask<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -73,9 +61,13 @@ public class SimpleLogTest {
         });
 
         // ## Assert ##
-        final String ret = baos.toString();
         logger.debug("[[{}]]", ret);
         assertThat(ret, containsString("foo bar, baz"));
+    }
+
+    protected String execute(final EasyTask<Void> task) {
+        final Text text = StdOutBlock.trapOut(task);
+        return text.toString();
     }
 
 }
