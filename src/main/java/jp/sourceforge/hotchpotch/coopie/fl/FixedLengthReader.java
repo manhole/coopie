@@ -5,7 +5,7 @@ import java.io.IOException;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementParserContext;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
 import jp.sourceforge.hotchpotch.coopie.csv.LineReaderHandler;
-import jp.sourceforge.hotchpotch.coopie.csv.PassThroughLineReaderHandler;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultLineReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
@@ -22,7 +22,7 @@ public class FixedLengthReader implements ElementReader {
     private LineReadable reader_;
     private final FixedLengthElementDesc[] elementDescs_;
     private int lineNo_;
-    private LineReaderHandler lineReaderHandler_ = PassThroughLineReaderHandler
+    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
             .getInstance();
 
     private final ElementParserContext parserContext_ = FixedLengthParserContext

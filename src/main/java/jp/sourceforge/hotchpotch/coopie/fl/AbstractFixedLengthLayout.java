@@ -5,14 +5,15 @@ import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
-import jp.sourceforge.hotchpotch.coopie.csv.DefaultReadEditor;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultElementReaderHandler;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultLineReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.LineReaderHandler;
-import jp.sourceforge.hotchpotch.coopie.csv.ReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
@@ -27,7 +28,10 @@ abstract class AbstractFixedLengthLayout<T> {
     // 固定長ファイルでは「ヘッダ無し」をデフォルトにする。
     private boolean withHeader_ = false;
     private RecordDesc<T> recordDesc_;
-    private ReadEditor readEditor_ = DefaultReadEditor.getInstance();
+    private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
+            .getInstance();
+    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
+            .getInstance();
     private ElementEditor elementEditor_;
     private FixedLengthElementDesc[] fixedLengthElementDescs_;
 
@@ -56,12 +60,21 @@ abstract class AbstractFixedLengthLayout<T> {
         withHeader_ = withHeader;
     }
 
-    protected ReadEditor getReadEditor() {
-        return readEditor_;
+    protected ElementReaderHandler getElementReaderHandler() {
+        return elementReaderHandler_;
     }
 
-    public void setReadEditor(final ReadEditor readEditor) {
-        readEditor_ = readEditor;
+    public void setElementReaderHandler(
+            final ElementReaderHandler elementReaderHandler) {
+        elementReaderHandler_ = elementReaderHandler;
+    }
+
+    protected LineReaderHandler getLineReaderHandler() {
+        return lineReaderHandler_;
+    }
+
+    public void setLineReaderHandler(final LineReaderHandler lineReaderHandler) {
+        lineReaderHandler_ = lineReaderHandler;
     }
 
     protected ElementEditor getElementEditor() {
@@ -79,8 +92,7 @@ abstract class AbstractFixedLengthLayout<T> {
     protected ElementInOut createElementInOut() {
         final FixedLengthElementInOut a = new FixedLengthElementInOut(
                 getFixedLengthElementDescs());
-        final ReadEditor readEditor = getReadEditor();
-        a.setLineReaderHandler(readEditor);
+        a.setLineReaderHandler(getLineReaderHandler());
         return a;
     }
 

@@ -41,7 +41,7 @@ public class Rfc4180Reader implements ElementReader {
 
     private int recordNo_;
     private CharacterReadable reader_;
-    private LineReaderHandler lineReaderHandler_ = PassThroughLineReaderHandler
+    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
             .getInstance();
 
     private char elementSeparator_ = CsvSetting.COMMA;

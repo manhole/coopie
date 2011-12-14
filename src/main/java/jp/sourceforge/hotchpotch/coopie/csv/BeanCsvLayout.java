@@ -28,7 +28,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
         r.setElementInOut(createElementInOut());
-        r.setReadEditor(getReadEditor());
+        r.setElementReaderHandler(getElementReaderHandler());
         r.setElementEditor(getElementEditor());
 
         new FailureProtection<RuntimeException>() {
@@ -80,8 +80,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     protected ElementInOut createElementInOut() {
         final CsvElementInOut a = new CsvElementInOut(csvSetting_);
-        final ReadEditor readEditor = getReadEditor();
-        a.setLineReaderHandler(readEditor);
+        a.setLineReaderHandler(getLineReaderHandler());
         return a;
     }
 

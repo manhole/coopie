@@ -258,7 +258,9 @@ public class BeanExcelReaderTest {
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        layout.setReadEditor(new TestReadEditor());
+        final TestReadEditor elementReaderHandler = new TestReadEditor();
+        layout.setElementReaderHandler(elementReaderHandler);
+        layout.setLineReaderHandler(elementReaderHandler);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(is);

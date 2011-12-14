@@ -20,7 +20,7 @@
 - rename: ElementSetting -> ElementInOut
 - rename: CsvLayout -> RecordInOut
 - rename: ExcelLayout -> ExcelInOut
-- add: LineReaderHandler. LineReaderレベルで不要行をfilterできるようにしました。
+- add: LineReaderHandler, ElementReaderHandler. LineReaderやElementReaderレベルで不要行をfilterできるようにしました。
 
 0.1.7 2011/11/15
 

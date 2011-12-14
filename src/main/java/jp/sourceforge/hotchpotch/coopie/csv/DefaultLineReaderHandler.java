@@ -5,9 +5,9 @@ import java.io.IOException;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
-public class PassThroughLineReaderHandler implements LineReaderHandler {
+public class DefaultLineReaderHandler implements LineReaderHandler {
 
-    private static final LineReaderHandler INSTANCE = new PassThroughLineReaderHandler();
+    private static final LineReaderHandler INSTANCE = new DefaultLineReaderHandler();
 
     public static LineReaderHandler getInstance() {
         return INSTANCE;

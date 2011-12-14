@@ -648,7 +648,9 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
                 .getInstance(AaaBean.class);
-        layout.setReadEditor(new TestReadEditor());
+        final TestReadEditor elementReaderHandler = new TestReadEditor();
+        layout.setElementReaderHandler(elementReaderHandler);
+        layout.setLineReaderHandler(elementReaderHandler);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -1124,7 +1126,7 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
                 .getInstance(AaaBean.class);
-        layout.setReadEditor(new SkipEmptyLineReadEditor());
+        layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -1149,7 +1151,9 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
-    public static class SkipEmptyLineReadEditor extends DefaultReadEditor {
+    public static class SkipEmptyLineReadEditor extends
+            DefaultLineReaderHandler {
+
         @Override
         public boolean acceptLine(final Line line,
                 final ElementParserContext parserContext) {
@@ -1160,6 +1164,7 @@ public class BeanCsvReaderTest {
             }
             return super.acceptLine(line, parserContext);
         }
+
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
