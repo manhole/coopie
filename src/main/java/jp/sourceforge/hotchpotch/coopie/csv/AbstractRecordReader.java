@@ -27,7 +27,9 @@ public abstract class AbstractRecordReader<T> implements Closable,
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
     private ElementReader elementReader_;
-    private ReadEditor readEditor_ = DefaultReadEditor.getInstance();
+    private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
+            .getInstance();
+
     private boolean withHeader_;
 
     private Boolean hasNext_;
@@ -68,15 +70,16 @@ public abstract class AbstractRecordReader<T> implements Closable,
     }
 
     protected String[] readLine() {
-        final String[] line = readEditor_.readRecord(elementReader_);
-        if (line != null && elementEditor_ != null) {
-            for (int i = 0; i < line.length; i++) {
-                final String elem = line[i];
+        final String[] elements = elementReaderHandler_
+                .readRecord(elementReader_);
+        if (elements != null && elementEditor_ != null) {
+            for (int i = 0; i < elements.length; i++) {
+                final String elem = elements[i];
                 final String edited = elementEditor_.edit(elem);
-                line[i] = edited;
+                elements[i] = edited;
             }
         }
-        return line;
+        return elements;
     }
 
     @Override
@@ -152,12 +155,13 @@ public abstract class AbstractRecordReader<T> implements Closable,
         withHeader_ = withHeader;
     }
 
-    protected ReadEditor getReadEditor() {
-        return readEditor_;
+    protected ElementReaderHandler getElementReaderHandler() {
+        return elementReaderHandler_;
     }
 
-    public void setReadEditor(final ReadEditor readEditor) {
-        readEditor_ = readEditor;
+    public void setElementReaderHandler(
+            final ElementReaderHandler elementReaderHandler) {
+        elementReaderHandler_ = elementReaderHandler;
     }
 
     public void setElementEditor(final ElementEditor elementEditor) {

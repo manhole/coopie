@@ -570,7 +570,7 @@ public class BeanFixedLengthReaderTest {
         });
         layout.setWithHeader(true);
 
-        layout.setReadEditor(new SkipEmptyLineReadEditor());
+        layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);

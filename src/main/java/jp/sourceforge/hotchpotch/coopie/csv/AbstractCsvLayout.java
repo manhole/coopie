@@ -12,7 +12,10 @@ abstract class AbstractCsvLayout<T> {
     private static final Logger logger = LoggerFactory.getLogger();
     private RecordDesc<T> recordDesc_;
     private boolean withHeader_ = true;
-    private ReadEditor readEditor_ = DefaultReadEditor.getInstance();
+    private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
+            .getInstance();
+    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
+            .getInstance();
     private ElementEditor elementEditor_;
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
@@ -30,13 +33,21 @@ abstract class AbstractCsvLayout<T> {
     public void setWithHeader(final boolean withHeader) {
         withHeader_ = withHeader;
     }
-
-    protected ReadEditor getReadEditor() {
-        return readEditor_;
+    protected ElementReaderHandler getElementReaderHandler() {
+        return elementReaderHandler_;
     }
 
-    public void setReadEditor(final ReadEditor readEditor) {
-        readEditor_ = readEditor;
+    public void setElementReaderHandler(
+            final ElementReaderHandler elementReaderHandler) {
+        elementReaderHandler_ = elementReaderHandler;
+    }
+
+    protected LineReaderHandler getLineReaderHandler() {
+        return lineReaderHandler_;
+    }
+
+    public void setLineReaderHandler(final LineReaderHandler lineReaderHandler) {
+        lineReaderHandler_ = lineReaderHandler;
     }
 
     protected RecordDesc<T> getRecordDesc() {

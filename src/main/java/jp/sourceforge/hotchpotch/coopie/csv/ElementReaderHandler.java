@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface ReadEditor extends LineReaderHandler {
+public interface ElementReaderHandler {
 
     /**
      * 1行読むタイミングで呼ばれます。

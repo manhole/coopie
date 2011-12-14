@@ -5,28 +5,34 @@ import java.io.IOException;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
-public class DefaultReadEditor implements ReadEditor {
+public class DefaultReadEditor implements ElementReaderHandler,
+        LineReaderHandler {
 
     private static final DefaultReadEditor INSTANCE = new DefaultReadEditor();
 
-    public static ReadEditor getInstance() {
+    public static DefaultReadEditor getInstance() {
         return INSTANCE;
     }
+
+    private final LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
+            .getInstance();
+    private final ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
+            .getInstance();
 
     @Override
     public boolean acceptLine(final Line line,
             final ElementParserContext parserContext) {
-        return true;
+        return lineReaderHandler_.acceptLine(line, parserContext);
     }
 
     @Override
     public Line readLine(final LineReader lineReader) throws IOException {
-        return lineReader.readLine();
+        return lineReaderHandler_.readLine(lineReader);
     }
 
     @Override
     public String[] readRecord(final ElementReader elementReader) {
-        return elementReader.readRecord();
+        return elementReaderHandler_.readRecord(elementReader);
     }
 
 }

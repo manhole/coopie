@@ -370,7 +370,7 @@ public class MapFixedLengthReaderTest {
         });
         layout.setWithHeader(true);
 
-        layout.setReadEditor(new SkipEmptyLineReadEditor());
+        layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout

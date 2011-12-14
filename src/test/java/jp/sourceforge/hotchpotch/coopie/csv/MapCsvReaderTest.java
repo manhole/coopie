@@ -629,7 +629,9 @@ public class MapCsvReaderTest {
         final Reader r = getResourceAsReader("-7", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setReadEditor(new TestReadEditor());
+        final TestReadEditor elementReaderHandler = new TestReadEditor();
+        layout.setElementReaderHandler(elementReaderHandler);
+        layout.setLineReaderHandler(elementReaderHandler);
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -866,7 +868,7 @@ public class MapCsvReaderTest {
         final Reader r = getResourceAsReader("-11", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        layout.setReadEditor(new SkipEmptyLineReadEditor());
+        layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
