@@ -53,7 +53,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         final List<CsvColumnValue<T>> list = CollectionsUtil.newArrayList();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
-            final CsvColumn column = getCsvColumnAnnotation(pd);
+            final CsvColumn column = Annotations.getAnnotation(pd,
+                    CsvColumn.class);
             if (column == null) {
                 continue;
             }
@@ -142,10 +143,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             return ret;
         }
 
-    }
-
-    private CsvColumn getCsvColumnAnnotation(final PropertyDesc<?> propertyDesc) {
-        return Annotations.getAnnotation(propertyDesc, CsvColumn.class);
     }
 
     static class BeanCsvRecordDescSetup<T> extends
