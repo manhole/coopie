@@ -1,8 +1,10 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.io.Closeable;
 import java.io.IOException;
 
+import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 

@@ -1,4 +1,4 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.fl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;

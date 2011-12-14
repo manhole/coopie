@@ -1,7 +1,18 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.io.IOException;
 import java.util.List;
+
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementSetting;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
+import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
+import jp.sourceforge.hotchpotch.coopie.csv.SimpleColumnName;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;

@@ -10,7 +10,7 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 
-class DefaultRecordDesc<T> implements RecordDesc<T> {
+public class DefaultRecordDesc<T> implements RecordDesc<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
@@ -19,7 +19,7 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
     private final RecordType<T> recordType_;
     private ColumnDesc<T>[] ignoredColumnDescs_ = ColumnDescs.newColumnDescs(0);
 
-    protected DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
+    public DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
             final OrderSpecified orderSpecified, final RecordType<T> recordType) {
         columnDescs_ = columnDescs;
         orderSpecified_ = orderSpecified;

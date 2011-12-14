@@ -2,7 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import org.t2framework.commons.meta.BeanDesc;
 
-class BeanRecordType<T> implements RecordType<T> {
+public class BeanRecordType<T> implements RecordType<T> {
 
     private final BeanDesc<T> beanDesc_;
 

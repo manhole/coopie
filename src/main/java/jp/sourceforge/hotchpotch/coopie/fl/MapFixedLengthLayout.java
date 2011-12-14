@@ -1,7 +1,19 @@
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.util.List;
 import java.util.Map;
+
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractMapCsvLayout;
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementSetting;
+import jp.sourceforge.hotchpotch.coopie.csv.MapRecordType;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
 public class MapFixedLengthLayout extends
         AbstractFixedLengthLayout<Map<String, String>> implements
