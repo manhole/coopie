@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
-public interface FixedLengthColumnDesc {
+public interface FixedLengthElementDesc {
 
     /**
      * 1行の文字列から、当カラムぶんのデータを読みます。
