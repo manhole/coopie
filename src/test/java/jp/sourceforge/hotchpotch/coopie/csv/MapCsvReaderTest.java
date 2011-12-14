@@ -812,7 +812,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setElementSeparator(CsvSetting.COMMA);
-        layout.setElementEditor(ElementEditors.TRIM);
+        layout.setElementEditor(ElementEditors.trim());
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -838,7 +838,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setElementSeparator(CsvSetting.COMMA);
-        layout.setElementEditor(ElementEditors.TRIM_WHITESPACE);
+        layout.setElementEditor(ElementEditors.trimWhitespace());
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout

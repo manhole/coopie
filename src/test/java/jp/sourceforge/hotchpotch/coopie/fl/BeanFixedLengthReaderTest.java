@@ -497,7 +497,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("ccc", 6, 9);
             }
         });
-        layout.setElementEditor(ElementEditors.TRIM);
+        layout.setElementEditor(ElementEditors.trim());
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -531,7 +531,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("ccc", 6, 9);
             }
         });
-        layout.setElementEditor(ElementEditors.TRIM_WHITESPACE);
+        layout.setElementEditor(ElementEditors.trimWhitespace());
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
