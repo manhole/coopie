@@ -13,6 +13,7 @@
 - slf4jとlogbackのバージョンを、それぞれ 1.6.4と1.0.0へバージョンアップしました。
 - rename: ElementSetting -> ElementStream
 - rename: FixedLengthColumnDesc -> FixedLengthElementDesc
+- add: RecordReader#getRecordNumber()
 
 0.1.7 2011/11/15
 

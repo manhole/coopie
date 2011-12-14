@@ -32,6 +32,7 @@ public abstract class AbstractRecordReader<T> implements Closable,
 
     private Boolean hasNext_;
     private String[] nextLine_;
+    private int recordNo_;
 
     private ElementEditor elementEditor_;
 
@@ -54,6 +55,7 @@ public abstract class AbstractRecordReader<T> implements Closable,
         }
 
         recordDesc_.setValues(bean, line);
+        recordNo_++;
     }
 
     @Override
@@ -119,6 +121,11 @@ public abstract class AbstractRecordReader<T> implements Closable,
                 throw new IllegalStateException("no column order set");
             }
         }
+    }
+
+    @Override
+    public int getRecordNumber() {
+        return recordNo_;
     }
 
     @Override

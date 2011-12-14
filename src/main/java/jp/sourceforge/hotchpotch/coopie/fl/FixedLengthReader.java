@@ -27,7 +27,7 @@ public class FixedLengthReader implements ElementReader {
     }
 
     @Override
-    public int getRecordNo() {
+    public int getRecordNumber() {
         return lineNo_;
     }
 
