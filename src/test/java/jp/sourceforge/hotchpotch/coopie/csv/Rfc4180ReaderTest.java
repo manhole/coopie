@@ -17,6 +17,8 @@ public class Rfc4180ReaderTest {
     static final String CRLF = CR + LF;
 
     /*
+     * ＜RFC＞
+     * 
      * 各レコードは、改行(CRLF)を区切りとする、分割された行に配置される
      * 
      * aaa,bbb,ccc CRLF
@@ -39,6 +41,8 @@ public class Rfc4180ReaderTest {
     }
 
     /*
+     * ＜RFC＞
+     * 
      * 末端のCRLFはあってもなくても良い
      * 
      * aaa,bbb,ccc CRLF
@@ -62,6 +66,8 @@ public class Rfc4180ReaderTest {
     }
 
     /*
+     * ＜RFC＞
+     * 
      * スペースはデータの一部。無視してはいけない。
      * 
      * aaa,bbb , ccc
@@ -78,6 +84,8 @@ public class Rfc4180ReaderTest {
     }
 
     /*
+     * ＜RFC＞
+     * 
      * 各フィールドは、それぞれダブルクォーテーションで囲んでも囲わなくてもよい
      * 
      * "aaa","bbb","ccc" CRLF
@@ -97,6 +105,8 @@ public class Rfc4180ReaderTest {
     }
 
     /*
+     * ＜RFC＞
+     * 
      * 改行(CRLF)、ダブルクォーテーション、カンマを含むフィールドは、ダブルクォーテーションで囲むべき
      * 
      * "aaa","b CRLF
@@ -117,6 +127,8 @@ public class Rfc4180ReaderTest {
     }
 
     /*
+     * ＜RFC＞
+     * 
      * 改行(CRLF)、ダブルクォーテーション、カンマを含むフィールドは、ダブルクォーテーションで囲むべき
      * 
      * "aa,a","b CRLF
@@ -137,6 +149,8 @@ public class Rfc4180ReaderTest {
     }
 
     /*
+     * ＜RFC＞
+     * 
      * フィールドがダブルクォーテーションで囲まれている場合、フィールドの値に含まれるダブルクォーテーションは、
      * その直前にひとつダブルクォーテーションを付加して、エスケープしなければならない
      * 
@@ -192,7 +206,7 @@ public class Rfc4180ReaderTest {
     /*
      * ＜RFC拡張＞
      * 
-     * 要素の区切り文字を、カンマではなくTABにも指定できる。
+     * 要素の区切り文字に、カンマではなくTABを使用できる。
      * 
      * aaa TAB bbb TAB ccc CRLF
      * zzz TAB yyy TAB xxx CRLF
@@ -268,7 +282,7 @@ public class Rfc4180ReaderTest {
     }
 
     /*
-     * データ中の空要素は""にすること。
+     * データ中の空要素は""として読むこと。
      */
     @Test
     public void empty_element() throws Throwable {
@@ -293,6 +307,35 @@ public class Rfc4180ReaderTest {
         // ## Act ##
         // ## Assert ##
         assertArrayEquals(a("a", "b"), reader.readRecord());
+        assertNull(reader.readRecord());
+    }
+
+    @Test
+    public void only_quote_record() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("\"");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("\""), reader.readRecord());
+        assertNull(reader.readRecord());
+    }
+
+    /*
+     * 不正データ
+     * 
+     * クォートされた要素内で、EOFになった場合
+     * 
+     * 途切れた要素を、1要素として読み込む
+     */
+    @Test
+    public void eof_inQuotedElement() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("\"aaa\",\"bbb\",\"cc");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("aaa", "bbb", "cc"), reader.readRecord());
         assertNull(reader.readRecord());
     }
 

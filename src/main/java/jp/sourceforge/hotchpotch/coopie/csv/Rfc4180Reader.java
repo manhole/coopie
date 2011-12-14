@@ -60,20 +60,21 @@ public class Rfc4180Reader implements ElementReader {
                 case INITIAL:
                     if (c == quoteMark_) {
                         state = State.QUOTED_ELEMENT;
+                        rb.startRecord();
                         rb.startElement();
                     } else if (c == elementSeparator_) {
                         state = State.BEGIN_ELEMENT;
+                        rb.startRecord();
                         rb.startElement();
                         rb.endElement();
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
-                        rb.endRecord();
                         break read_loop;
                     } else if (c == LF) {
-                        rb.endRecord();
                         break read_loop;
                     } else {
                         state = State.UNQUOTED_ELEMENT;
+                        rb.startRecord();
                         rb.startElement();
                         rb.append(c);
                     }
@@ -89,9 +90,11 @@ public class Rfc4180Reader implements ElementReader {
                     } else if (c == CR) {
                         consumeFollowLfIfPossible();
                         rb.endRecord();
+                        state = State.INITIAL;
                         break read_loop;
                     } else if (c == LF) {
                         rb.endRecord();
+                        state = State.INITIAL;
                         break read_loop;
                     } else {
                         state = State.UNQUOTED_ELEMENT;
@@ -110,10 +113,12 @@ public class Rfc4180Reader implements ElementReader {
                         consumeFollowLfIfPossible();
                         rb.endElement();
                         rb.endRecord();
+                        state = State.INITIAL;
                         break read_loop;
                     } else if (c == LF) {
                         rb.endElement();
                         rb.endRecord();
+                        state = State.INITIAL;
                         break read_loop;
                     } else {
                         rb.append(c);
@@ -139,10 +144,12 @@ public class Rfc4180Reader implements ElementReader {
                         consumeFollowLfIfPossible();
                         rb.endElement();
                         rb.endRecord();
+                        state = State.INITIAL;
                         break read_loop;
                     } else if (c == LF) {
                         rb.endElement();
                         rb.endRecord();
+                        state = State.INITIAL;
                         break read_loop;
                     } else {
                         /*
@@ -178,22 +185,31 @@ public class Rfc4180Reader implements ElementReader {
             case BEGIN_ELEMENT:
                 rb.startElement();
                 rb.endElement();
+                rb.endRecord();
                 break;
             case UNQUOTED_ELEMENT:
                 if (rb.isInElement()) {
                     rb.endElement();
                 }
+                rb.endRecord();
                 break;
             case QUOTED_ELEMENT:
+                // クォート文字しかないrecordの場合
                 if (rb.isEmpty()) {
                     rb.append(quoteMark_);
                     rb.endElement();
                 }
+                // クォートされた要素の途中でEOFになった場合
+                if (rb.isInElement()) {
+                    rb.endElement();
+                }
+                rb.endRecord();
                 break;
             case QUOTE:
                 if (rb.isInElement()) {
                     rb.endElement();
                 }
+                rb.endRecord();
                 break;
             default:
                 throw new AssertionError();
@@ -256,8 +272,20 @@ public class Rfc4180Reader implements ElementReader {
         private final List<String> elems_ = CollectionsUtil.newArrayList();
         private final StringBuilder sb_ = new StringBuilder();
         private boolean inElement_;
+        private boolean inRecord_;
+
+        public void startRecord() {
+            if (inRecord_) {
+                throw new IllegalStateException("already started");
+            }
+            inRecord_ = true;
+        }
 
         public void endRecord() {
+            if (!inRecord_) {
+                throw new IllegalStateException("already ended");
+            }
+            inRecord_ = false;
         }
 
         public void startElement() {
@@ -305,6 +333,9 @@ public class Rfc4180Reader implements ElementReader {
         }
 
         public String[] toRecord() {
+            if (inRecord_) {
+                throw new IllegalStateException("not ended");
+            }
             return elems_.toArray(new String[elems_.size()]);
         }
 
