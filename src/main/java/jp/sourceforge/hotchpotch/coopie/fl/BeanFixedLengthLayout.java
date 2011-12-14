@@ -42,6 +42,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
         r.setWithHeader(isWithHeader());
         r.setElementSetting(es);
+        r.setElementEditor(getElementEditor());
         // TODO openで例外時にcloseすること
         r.open(readable);
         return r;

@@ -6,6 +6,7 @@ import java.util.List;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementSetting;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
@@ -23,6 +24,7 @@ abstract class AbstractFixedLengthLayout<T> {
     private boolean withHeader_ = false;
     private RecordDesc<T> recordDesc_;
     private ElementSetting elementSetting_;
+    private ElementEditor elementEditor_;
 
     protected abstract FixedLengthRecordDescSetup getRecordDescSetup();
 
@@ -51,6 +53,14 @@ abstract class AbstractFixedLengthLayout<T> {
 
     public void setWithHeader(final boolean withHeader) {
         withHeader_ = withHeader;
+    }
+
+    protected ElementEditor getElementEditor() {
+        return elementEditor_;
+    }
+
+    public void setElementEditor(final ElementEditor elementEditor) {
+        elementEditor_ = elementEditor;
     }
 
     protected static interface FixedLengthRecordDescSetup extends
