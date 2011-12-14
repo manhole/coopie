@@ -6,7 +6,7 @@ import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
 public class DefaultReaderHandler implements ElementReaderHandler,
-        LineReaderHandler {
+        LineReaderHandler, ElementEditor {
 
     private static final DefaultReaderHandler INSTANCE = new DefaultReaderHandler();
 
@@ -18,6 +18,7 @@ public class DefaultReaderHandler implements ElementReaderHandler,
             .getInstance();
     private final ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
             .getInstance();
+    private final ElementEditor elementEditor_ = ElementEditors.passThrough();
 
     @Override
     public boolean acceptLine(final Line line,
@@ -33,6 +34,11 @@ public class DefaultReaderHandler implements ElementReaderHandler,
     @Override
     public String[] readRecord(final ElementReader elementReader) {
         return elementReaderHandler_.readRecord(elementReader);
+    }
+
+    @Override
+    public String edit(final String element) {
+        return elementEditor_.edit(element);
     }
 
 }
