@@ -1,13 +1,17 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.Logger;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.logging.SimpleLog;
 import jp.sourceforge.hotchpotch.coopie.util.Closable;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.Line;
+import jp.sourceforge.hotchpotch.coopie.util.LineImpl;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 import jp.sourceforge.hotchpotch.coopie.util.LineSeparator;
 
@@ -53,14 +57,23 @@ public class Rfc4180Reader implements ElementReader {
         return reader_.getLineNumber();
     }
 
+    public RecordState getRecordState() {
+        return recordState_;
+    }
+
+    private RecordState recordState_;
+
     @Override
     public String[] readRecord() {
         if (isEof()) {
             return null;
         }
 
+        reader_.mark();
+        recordState_ = RecordState.OK;
         final RecordBuffer rb = new RecordBuffer();
         State state = State.INITIAL;
+
         try {
             read_loop: for (char c = next(); !isEof(); c = next()) {
                 switch (state) {
@@ -166,8 +179,22 @@ public class Rfc4180Reader implements ElementReader {
                          * だが、通常の文字が入力されてしまった。
                          * "abc"d" ... このような入力
                          */
-                        logger.warn("invalid record: recordNo={}, char={}",
-                                recordNo_, c);
+                        final SimpleLog log = new SimpleLog();
+                        log.append("invalid record: recordNo={}, ", recordNo_);
+                        final List<Line> lines = reader_.getMarkedLines();
+                        log.appendFormat("line=");
+                        boolean first = true;
+                        for (final Line line : lines) {
+                            if (first) {
+                                first = !first;
+                            } else {
+                                log.appendFormat(",");
+                            }
+                            log.append("{}[{}]", line.getNumber(),
+                                    line.getBody());
+                        }
+                        logger.warn(log);
+                        recordState_ = RecordState.INVALID;
                         /*
                          * ここでは、エスケープ文字と続く不正文字を、通常の文字として扱うことにする。
                          * つまり、"abc"d" このような入力を、"abc""d" とみなすということ。
@@ -402,9 +429,26 @@ public class Rfc4180Reader implements ElementReader {
         private boolean closed_;
         @SuppressWarnings("unused")
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
+        private String line_;
+        private Marker marker_;
 
         CharacterReadable(final Readable readable) {
             reader_ = new LineReadable(readable);
+        }
+
+        /*
+         * mark可能なのは、行の境目だけ。
+         */
+        public void mark() {
+            marker_ = new Marker();
+        }
+
+        public void clearMark() {
+            marker_ = null;
+        }
+
+        public List<Line> getMarkedLines() {
+            return marker_.getMarkedLines();
         }
 
         public boolean isEof() {
@@ -432,20 +476,25 @@ public class Rfc4180Reader implements ElementReader {
 
         protected void readNextIfNeed() throws IOException {
             while (!eof_ && chars_.length <= pos_) {
-                final String line = reader_.readLine();
-                if (line == null) {
+                line_ = reader_.readLine();
+                if (line_ == null) {
                     eof_ = true;
                     return;
                 }
                 final LineSeparator sep = reader_.getLineSeparator();
                 final String end = sep.getSeparator();
-                chars_ = (line + end).toCharArray();
+                chars_ = (line_ + end).toCharArray();
                 pos_ = 0;
+                marker_.mark(reader_.getLineNumber(), line_);
             }
         }
 
         public int getLineNumber() {
             return reader_.getLineNumber();
+        }
+
+        public String getCurrentLine() {
+            return line_;
         }
 
         @Override
@@ -459,6 +508,36 @@ public class Rfc4180Reader implements ElementReader {
             CloseableUtil.closeNoException(reader_);
         }
 
+        private static class Marker {
+
+            private int beginLineNumber_ = -1;
+            private List<String> lines_;
+
+            public void mark(final int lineNumber, final String line) {
+                if (lines_ == null) {
+                    beginLineNumber_ = lineNumber;
+                    lines_ = new LinkedList<String>();
+                }
+                lines_.add(line);
+            }
+
+            public List<Line> getMarkedLines() {
+                int num = beginLineNumber_;
+                final LinkedList<Line> lines = new LinkedList<Line>();
+                for (final String s : lines_) {
+                    final Line l = new LineImpl(num, s, null);
+                    lines.add(l);
+                    num++;
+                }
+                return lines;
+            }
+
+        }
+
+    }
+
+    public enum RecordState {
+        OK, INVALID
     }
 
 }

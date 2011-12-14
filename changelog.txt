@@ -15,6 +15,7 @@
 - rename: FixedLengthColumnDesc -> FixedLengthElementDesc
 - add: RecordReader#getRecordNumber()
 - add: ElementReader#getLineNumber()
+- CSV parse時に問題のあった行について、warnへ詳しいログを出力するようにしました。
 
 0.1.7 2011/11/15
 
