@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.TreeMap;
@@ -109,10 +110,8 @@ public class MapCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final Reader r = getResourceAsReader("-1", "tsv");
+        final String expected = ReaderUtil.readText(r);
         assertEquals(expected, actual);
     }
 
@@ -156,10 +155,8 @@ public class MapCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
-                "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final Reader r = getResourceAsReader("-2", "tsv");
+        final String expected = ReaderUtil.readText(r);
         assertEquals(expected, actual);
     }
 
@@ -194,10 +191,8 @@ public class MapCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
-                "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final Reader r = getResourceAsReader("-4", "tsv");
+        final String expected = ReaderUtil.readText(r);
         assertEquals(expected, actual);
     }
 
@@ -242,10 +237,8 @@ public class MapCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
-                "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final Reader r = getResourceAsReader("-3", "tsv");
+        final String expected = ReaderUtil.readText(r);
         assertEquals(expected, actual);
     }
 
@@ -380,6 +373,12 @@ public class MapCsvWriterTest {
         bean.put("aaa", a);
         bean.put("bbb", b);
         bean.put("ccc", c);
+    }
+
+    static Reader getResourceAsReader(final String suffix, final String ext) {
+        final Reader reader = BeanCsvReaderTest
+                .getResourceAsReader(suffix, ext);
+        return reader;
     }
 
 }
