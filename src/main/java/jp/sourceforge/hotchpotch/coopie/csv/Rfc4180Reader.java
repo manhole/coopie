@@ -562,8 +562,9 @@ public class Rfc4180Reader implements ElementReader {
     private static class CharacterReadable implements Closable {
 
         private static final char NULL_CHAR = '\u0000';
+        private static final char[] EMPTY_CHARS = new char[] {};
         private final LineReadable reader_;
-        private char[] chars_ = new char[] {};
+        private char[] chars_ = EMPTY_CHARS;
         private int pos_;
         private boolean eof_;
 

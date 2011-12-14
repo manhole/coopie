@@ -47,13 +47,11 @@ public abstract class AbstractRecordReader<T> implements Closable,
         }
         hasNext_ = null;
 
-        final String[] line;
-        if (nextLine_ != null) {
-            line = nextLine_;
-        } else {
+        if (nextLine_ == null) {
             throw new AssertionError();
         }
 
+        final String[] line = nextLine_;
         recordDesc_.setValues(bean, line);
         recordNo_++;
     }
@@ -154,10 +152,11 @@ public abstract class AbstractRecordReader<T> implements Closable,
         withHeader_ = withHeader;
     }
 
+    protected ReadEditor getReadEditor() {
+        return readEditor_;
+    }
+
     public void setReadEditor(final ReadEditor readEditor) {
-        if (readEditor == null) {
-            throw new NullPointerException("readEditor");
-        }
         readEditor_ = readEditor;
     }
 
