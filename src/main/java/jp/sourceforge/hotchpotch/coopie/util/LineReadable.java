@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
 
-public class LineReadable implements Closable {
+public class LineReadable implements LineReader, Closable {
 
     private static final char CR = IOUtil.CR;
     private static final char LF = IOUtil.LF;
@@ -27,6 +27,7 @@ public class LineReadable implements Closable {
         return line_;
     }
 
+    @Override
     public Line readLine() throws IOException {
         read0();
         if (line_ == null) {
@@ -116,6 +117,7 @@ public class LineReadable implements Closable {
      * 初期値は"0"。
      * 1行目を読み終えたら"1"。
      */
+    @Override
     public int getLineNumber() {
         return lineNumber_;
     }
