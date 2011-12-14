@@ -336,6 +336,60 @@ public class Rfc4180ReaderTest {
     }
 
     /*
+     * ＜RFC拡張＞
+     * 
+     * 要素がクォートされている場合、区切り文字と要素との間にあるスペースは無視する。
+     * 
+     * aaa, "bbb" ,ccc
+     */
+    @Test
+    public void space1() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("aaa , \"bbb\" , ccc , ,");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("aaa ", "bbb", " ccc ", " ", ""),
+                reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    @Test
+    public void space2() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("\"bbb\" ");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("bbb"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    @Test
+    public void space3() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("\"a\" \r" + " \"b\" \n"
+                + " \"c\" \r\n" + " \"d\" ");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertArrayEquals(a("b"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertArrayEquals(a("c"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertArrayEquals(a("d"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
      * データ中にnull文字があっても、扱えること。
      */
     @Test
