@@ -4,19 +4,20 @@ import java.io.Writer;
 
 class DefaultRecordWriter<T> extends AbstractRecordWriter<T> {
 
-    private ElementSetting elementSetting;
+    private ElementSetting elementSetting_;
 
     public DefaultRecordWriter(final RecordDesc<T> recordDesc) {
         super(recordDesc);
     }
 
     public void setElementSetting(final ElementSetting elementSetting) {
-        this.elementSetting = elementSetting;
+        elementSetting_ = elementSetting;
     }
 
     public void open(final Writer writer) {
-        elementWriter = elementSetting.openWriter(writer);
-        closed = false;
+        final ElementWriter elementWriter = elementSetting_.openWriter(writer);
+        setElementWriter(elementWriter);
+        setClosed(false);
     }
 
 }

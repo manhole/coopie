@@ -84,19 +84,19 @@ public class ClosingGuardianTest {
 
     private static class Aaa implements Closable {
 
-        private boolean closed;
+        private boolean closed_;
 
         @SuppressWarnings("unused")
-        private final Object finalizerGuardian = new ClosingGuardian(this);
+        private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
         @Override
         public void close() throws IOException {
-            closed = true;
+            closed_ = true;
         }
 
         @Override
         public boolean isClosed() {
-            return closed;
+            return closed_;
         }
 
     }

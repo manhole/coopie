@@ -26,7 +26,7 @@ public class Rfc4180Reader implements ElementReader {
 
     protected boolean closed_ = true;
     @SuppressWarnings("unused")
-    private final Object finalizerGuardian = new ClosingGuardian(this);
+    private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
     private int recordNo_;
     private BufferedReadable br_;

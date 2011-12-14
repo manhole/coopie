@@ -10,29 +10,33 @@ import org.t2framework.commons.util.CollectionsUtil;
 
 abstract class AbstractFixedLengthLayout<T> {
 
-    protected boolean withHeader = true;
-    protected RecordDesc<T> recordDesc;
-    protected ElementSetting elementSetting;
+    private boolean withHeader_ = true;
+    private RecordDesc<T> recordDesc_;
+    private ElementSetting elementSetting_;
 
     protected abstract FixedLengthRecordDescSetup getRecordDescSetup();
 
     public void setupColumns(final SetupBlock<FixedLengthColumnSetup> block) {
         final FixedLengthRecordDescSetup setup = getRecordDescSetup();
         block.setup(setup);
-        recordDesc = setup.getRecordDesc();
-        elementSetting = setup.getElementSetting();
+        recordDesc_ = setup.getRecordDesc();
+        elementSetting_ = setup.getElementSetting();
     }
 
     protected RecordDesc<T> getRecordDesc() {
-        return recordDesc;
+        return recordDesc_;
     }
 
     protected ElementSetting getElementSetting() {
-        return elementSetting;
+        return elementSetting_;
+    }
+
+    protected boolean isWithHeader() {
+        return withHeader_;
     }
 
     public void setWithHeader(final boolean withHeader) {
-        this.withHeader = withHeader;
+        withHeader_ = withHeader;
     }
 
     protected static interface FixedLengthRecordDescSetup extends
@@ -46,30 +50,30 @@ abstract class AbstractFixedLengthLayout<T> {
 
     protected static class SimpleFixedLengthColumn implements FixedLengthColumn {
 
-        private final String propertyName;
-        private final int beginIndex;
-        private final int endIndex;
-        private final int length;
+        private final String propertyName_;
+        private final int beginIndex_;
+        private final int endIndex_;
+        private final int length_;
 
         SimpleFixedLengthColumn(final String propertyName,
                 final int beginIndex, final int endIndex) {
-            this.propertyName = propertyName;
-            this.beginIndex = beginIndex;
-            this.endIndex = endIndex;
-            length = endIndex - beginIndex;
+            propertyName_ = propertyName;
+            beginIndex_ = beginIndex;
+            endIndex_ = endIndex;
+            length_ = endIndex - beginIndex;
         }
 
         @Override
         public String getName() {
-            return propertyName;
+            return propertyName_;
         }
 
         public int getBeginIndex() {
-            return beginIndex;
+            return beginIndex_;
         }
 
         public int getEndIndex() {
-            return endIndex;
+            return endIndex_;
         }
 
         @Override
@@ -86,8 +90,8 @@ abstract class AbstractFixedLengthLayout<T> {
         @Override
         public String read(final String line) {
             final int len = length(line);
-            final int begin = Math.min(len, beginIndex);
-            final int end = Math.min(len, endIndex);
+            final int begin = Math.min(len, beginIndex_);
+            final int end = Math.min(len, endIndex_);
             final String s = line.substring(begin, end);
             final String trimmed = s.trim();
             return trimmed;
@@ -95,7 +99,7 @@ abstract class AbstractFixedLengthLayout<T> {
 
         @Override
         public void write(final String s, final Appendable appendable) {
-            final String elem = lpad(s, length, ' ');
+            final String elem = lpad(s, length_, ' ');
             try {
                 appendable.append(elem);
             } catch (final IOException e) {
@@ -127,7 +131,7 @@ abstract class AbstractFixedLengthLayout<T> {
     protected abstract static class AbstractFixedLengthRecordDescSetup<T>
             implements FixedLengthRecordDescSetup {
 
-        protected final List<FixedLengthColumn> columns = CollectionsUtil
+        protected final List<FixedLengthColumn> columns_ = CollectionsUtil
                 .newArrayList();
 
         @Override
@@ -135,7 +139,7 @@ abstract class AbstractFixedLengthLayout<T> {
                 final int endIndex) {
             final SimpleFixedLengthColumn c = new SimpleFixedLengthColumn(
                     propertyName, beginIndex, endIndex);
-            columns.add(c);
+            columns_.add(c);
         }
 
     }
@@ -143,42 +147,41 @@ abstract class AbstractFixedLengthLayout<T> {
     protected static class FixedLengthRecordDesc<T> implements RecordDesc<T>,
             ElementSetting {
 
-        protected ColumnDesc<T>[] columnDescs;
-        private final DefaultRecordDesc<T> delegate;
-        private final FixedLengthColumn[] columns;
+        private final DefaultRecordDesc<T> delegate_;
+        private final FixedLengthColumn[] columns_;
 
         protected FixedLengthRecordDesc(final ColumnDesc<T>[] columnDescs,
                 final RecordType<T> recordType,
                 final FixedLengthColumn[] columns) {
             // 固定長なので、常に指定した順序
-            delegate = new DefaultRecordDesc<T>(columnDescs,
+            delegate_ = new DefaultRecordDesc<T>(columnDescs,
                     OrderSpecified.SPECIFIED, recordType);
-            this.columns = columns;
+            columns_ = columns;
         }
 
         @Override
         public OrderSpecified getOrderSpecified() {
-            return delegate.getOrderSpecified();
+            return delegate_.getOrderSpecified();
         }
 
         @Override
         public String[] getValues(final T bean) {
-            return delegate.getValues(bean);
+            return delegate_.getValues(bean);
         }
 
         @Override
         public void setValues(final T bean, final String[] values) {
-            delegate.setValues(bean, values);
+            delegate_.setValues(bean, values);
         }
 
         @Override
         public RecordDesc<T> setupByBean(final T bean) {
-            return delegate.setupByBean(bean);
+            return delegate_.setupByBean(bean);
         }
 
         @Override
         public T newInstance() {
-            return delegate.newInstance();
+            return delegate_.newInstance();
         }
 
         @Override
@@ -195,12 +198,12 @@ abstract class AbstractFixedLengthLayout<T> {
 
         @Override
         public ElementWriter openWriter(final Writer writer) {
-            return new FixedLengthWriter(writer, columns);
+            return new FixedLengthWriter(writer, columns_);
         }
 
         @Override
         public ElementReader openReader(final Reader reader) {
-            return new FixedLengthReader(reader, columns);
+            return new FixedLengthReader(reader, columns_);
         }
 
     }

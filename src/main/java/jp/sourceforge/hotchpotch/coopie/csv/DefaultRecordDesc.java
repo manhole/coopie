@@ -14,20 +14,20 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
-    protected ColumnDesc<T>[] columnDescs;
-    protected OrderSpecified orderSpecified;
-    private final RecordType<T> recordType;
-    private ColumnDesc<T>[] ignoredColumnDescs = ColumnDescs.newColumnDescs(0);
+    private ColumnDesc<T>[] columnDescs_;
+    private final OrderSpecified orderSpecified_;
+    private final RecordType<T> recordType_;
+    private ColumnDesc<T>[] ignoredColumnDescs_ = ColumnDescs.newColumnDescs(0);
 
     protected DefaultRecordDesc(final ColumnDesc<T>[] columnDescs,
             final OrderSpecified orderSpecified, final RecordType<T> recordType) {
-        this.columnDescs = columnDescs;
-        this.orderSpecified = orderSpecified;
-        this.recordType = recordType;
+        columnDescs_ = columnDescs;
+        orderSpecified_ = orderSpecified;
+        recordType_ = recordType;
     }
 
     protected ColumnDesc<T>[] getColumnDescs() {
-        return columnDescs;
+        return columnDescs_;
     }
 
     @Override
@@ -48,7 +48,7 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
 
     @Override
     public OrderSpecified getOrderSpecified() {
-        return orderSpecified;
+        return orderSpecified_;
     }
 
     @Override
@@ -77,7 +77,7 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
             final ColumnDesc<T> cd = cds[i];
             cd.setValue(bean, value);
         }
-        for (final ColumnDesc<T> cd : ignoredColumnDescs) {
+        for (final ColumnDesc<T> cd : ignoredColumnDescs_) {
             cd.setValue(bean, null);
         }
     }
@@ -126,14 +126,14 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
 
         final DefaultRecordDesc<T> copy = createCopy();
 
-        copy.columnDescs = cds;
+        copy.columnDescs_ = cds;
 
         if (!tmpCds.isEmpty()) {
             logger.debug("remain ColumnDescs: {}", tmpCds.size());
             final ColumnDesc<T>[] newColumnDescs = ColumnDescs
                     .newColumnDescs(tmpCds.size());
             tmpCds.toArray(newColumnDescs);
-            copy.ignoredColumnDescs = newColumnDescs;
+            copy.ignoredColumnDescs_ = newColumnDescs;
         }
 
         return copy;
@@ -150,12 +150,12 @@ class DefaultRecordDesc<T> implements RecordDesc<T> {
 
     @Override
     public T newInstance() {
-        return recordType.newInstance();
+        return recordType_.newInstance();
     }
 
     private DefaultRecordDesc<T> createCopy() {
-        final DefaultRecordDesc<T> copy = new DefaultRecordDesc<T>(columnDescs,
-                orderSpecified, recordType);
+        final DefaultRecordDesc<T> copy = new DefaultRecordDesc<T>(
+                columnDescs_, orderSpecified_, recordType_);
         return copy;
     }
 

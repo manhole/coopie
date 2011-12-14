@@ -38,24 +38,24 @@ public class StdOutBlock {
 
     public static class Block implements TaskExecutable {
 
-        private PrintStream out = System.out;
-        private PrintStream err = System.err;
+        private PrintStream out_ = System.out;
+        private PrintStream err_ = System.err;
 
         public Block out(final OutputStream os) {
-            out = new PrintStream(os, true);
+            out_ = new PrintStream(os, true);
             return this;
         }
 
         public Block err(final OutputStream os) {
-            err = new PrintStream(os, true);
+            err_ = new PrintStream(os, true);
             return this;
         }
 
         @Override
         public <V, E extends Throwable> V execute(final Task<V, E> task)
                 throws E {
-            final PrintStream pOut = out;
-            final PrintStream pErr = err;
+            final PrintStream pOut = out_;
+            final PrintStream pErr = err_;
             try {
                 final V ret = trap(task, pOut, pErr);
                 return ret;

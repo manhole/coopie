@@ -8,13 +8,13 @@ import java.security.NoSuchAlgorithmException;
 
 public class Sha1 {
 
-    private final FileOperation files = new FileOperation();
+    private final FileOperation files_ = new FileOperation();
 
     public String digest(final File file) throws IOException {
         final MessageDigest md = getMessageDigest();
-        final BufferedInputStream is = files.openBufferedInputStream(file);
+        final BufferedInputStream is = files_.openBufferedInputStream(file);
         try {
-            final byte[] bytes = new byte[files.getBufferSize()];
+            final byte[] bytes = new byte[files_.getBufferSize()];
             while (true) {
                 final int len = is.read(bytes);
                 if (len == -1) {

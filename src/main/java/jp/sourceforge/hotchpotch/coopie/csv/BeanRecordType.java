@@ -4,15 +4,15 @@ import org.t2framework.commons.meta.BeanDesc;
 
 class BeanRecordType<T> implements RecordType<T> {
 
-    private final BeanDesc<T> beanDesc;
+    private final BeanDesc<T> beanDesc_;
 
     public BeanRecordType(final BeanDesc<T> beanDesc) {
-        this.beanDesc = beanDesc;
+        beanDesc_ = beanDesc;
     }
 
     @Override
     public T newInstance() {
-        return beanDesc.newInstance();
+        return beanDesc_.newInstance();
     }
 
 }

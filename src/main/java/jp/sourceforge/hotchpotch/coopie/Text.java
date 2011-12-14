@@ -13,23 +13,23 @@ import org.t2framework.commons.util.CollectionsUtil;
  */
 public class Text {
 
-    private final String rawText;
-    private String[] lines;
-    private String concated;
+    private final String rawText_;
+    private String[] lines_;
+    private String concated_;
 
     public Text(final String text) {
-        rawText = text;
+        rawText_ = text;
     }
 
     public String getRawText() {
-        return rawText;
+        return rawText_;
     }
 
     private String[] getLines() {
-        if (lines == null) {
-            lines = toLines(rawText);
+        if (lines_ == null) {
+            lines_ = toLines(rawText_);
         }
-        return lines;
+        return lines_;
     }
 
     private String[] toLines(final String s) {
@@ -63,17 +63,17 @@ public class Text {
     }
 
     public boolean containsText(final String s) {
-        if (concated == null) {
+        if (concated_ == null) {
             final StringBuilder sb = new StringBuilder();
             final String[] lines = getLines();
             for (final String line : lines) {
                 final String trimWhitespace = trimWhitespace0(line);
                 sb.append(trimWhitespace);
             }
-            concated = sb.toString();
+            concated_ = sb.toString();
         }
         final String trim = s.trim();
-        return concated.contains(trim);
+        return concated_.contains(trim);
     }
 
     public boolean containsLine(final String s) {
@@ -87,7 +87,7 @@ public class Text {
     }
 
     public Text trimWhitespace() {
-        final String trim = trimWhitespace0(rawText);
+        final String trim = trimWhitespace0(rawText_);
         return instantiate(trim);
     }
 
@@ -123,7 +123,7 @@ public class Text {
     }
 
     public Text deleteChar(final char del) {
-        final char[] chars = rawText.toCharArray();
+        final char[] chars = rawText_.toCharArray();
         final StringBuilder sb = new StringBuilder();
         for (final char c : chars) {
             if (c == del) {

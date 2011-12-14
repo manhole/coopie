@@ -14,7 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
 
-    private WriteEditor writeEditor = DefaultWriteEditor.getInstance();
+    private WriteEditor writeEditor_ = DefaultWriteEditor.getInstance();
 
     public DefaultExcelWriter(final RecordDesc<T> recordDesc) {
         super(recordDesc);
@@ -22,122 +22,122 @@ public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
 
     public void open(final OutputStream os) {
         final PoiWriter w = new PoiWriter(os);
-        w.setWriteEditor(writeEditor);
+        w.setWriteEditor(writeEditor_);
         w.open();
-        elementWriter = w;
-        closed = false;
+        setElementWriter(w);
+        setClosed(false);
     }
 
     public void openSheetWriter(final HSSFWorkbook workbook,
             final HSSFSheet sheet) {
         final PoiSheetWriter w = new PoiSheetWriter(workbook, sheet);
-        w.setWriteEditor(writeEditor);
+        w.setWriteEditor(writeEditor_);
         w.open();
-        elementWriter = w;
-        closed = false;
+        setElementWriter(w);
+        setClosed(false);
     }
 
     public void setWriteEditor(final WriteEditor writeEditor) {
-        this.writeEditor = writeEditor;
+        writeEditor_ = writeEditor;
     }
 
     static class PoiWriter implements ElementWriter {
 
-        private final OutputStream os;
-        private boolean closed = true;
+        private final OutputStream os_;
+        private boolean closed_ = true;
         @SuppressWarnings("unused")
-        private final Object finalizerGuardian = new ClosingGuardian(this);
+        private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-        private HSSFWorkbook workbook;
-        private PoiSheetWriter sheetWriter;
-        private WriteEditor writeEditor = DefaultWriteEditor.getInstance();
+        private HSSFWorkbook workbook_;
+        private PoiSheetWriter sheetWriter_;
+        private WriteEditor writeEditor_ = DefaultWriteEditor.getInstance();
 
         public PoiWriter(final OutputStream os) {
-            this.os = os;
+            os_ = os;
         }
 
         public void open() {
-            workbook = new HSSFWorkbook();
-            final HSSFSheet sheet = workbook.createSheet();
-            sheetWriter = new PoiSheetWriter(workbook, sheet);
-            sheetWriter.setWriteEditor(writeEditor);
-            sheetWriter.open();
-            closed = false;
+            workbook_ = new HSSFWorkbook();
+            final HSSFSheet sheet = workbook_.createSheet();
+            sheetWriter_ = new PoiSheetWriter(workbook_, sheet);
+            sheetWriter_.setWriteEditor(writeEditor_);
+            sheetWriter_.open();
+            closed_ = false;
         }
 
         @Override
         public void writeRecord(final String[] line) {
-            sheetWriter.writeRecord(line);
+            sheetWriter_.writeRecord(line);
         }
 
         @Override
         public boolean isClosed() {
-            return closed;
+            return closed_;
         }
 
         @Override
         public void close() throws IOException {
-            closed = true;
-            IOUtil.closeNoException(sheetWriter);
-            if (workbook != null) {
-                workbook.write(os);
-                workbook = null;
-                IOUtil.closeNoException(os);
+            closed_ = true;
+            IOUtil.closeNoException(sheetWriter_);
+            if (workbook_ != null) {
+                workbook_.write(os_);
+                workbook_ = null;
+                IOUtil.closeNoException(os_);
             }
         }
 
         public void setWriteEditor(final WriteEditor writeEditor) {
-            this.writeEditor = writeEditor;
+            writeEditor_ = writeEditor;
         }
 
     }
 
     static class PoiSheetWriter implements ElementWriter {
 
-        private boolean closed = true;
+        private boolean closed_ = true;
         @SuppressWarnings("unused")
-        private final Object finalizerGuardian = new ClosingGuardian(this);
+        private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-        private final HSSFWorkbook workbook;
-        private HSSFSheet sheet;
-        private int rowNum;
-        private WriteEditor writeEditor = DefaultWriteEditor.getInstance();
+        private final HSSFWorkbook workbook_;
+        private HSSFSheet sheet_;
+        private int rowNum_;
+        private WriteEditor writeEditor_ = DefaultWriteEditor.getInstance();
 
         public PoiSheetWriter(final HSSFWorkbook workbook, final HSSFSheet sheet) {
-            this.workbook = workbook;
-            this.sheet = sheet;
+            workbook_ = workbook;
+            sheet_ = sheet;
         }
 
         public void open() {
-            writeEditor.begin(workbook, sheet);
-            closed = false;
+            writeEditor_.begin(workbook_, sheet_);
+            closed_ = false;
         }
 
         @Override
         public void writeRecord(final String[] line) {
-            final HSSFRow row = writeEditor.createRow(rowNum);
-            rowNum++;
+            final HSSFRow row = writeEditor_.createRow(rowNum_);
+            rowNum_++;
 
             for (int i = 0; i < line.length; i++) {
                 final String s = line[i];
-                final HSSFCell cell = writeEditor.createCell(row, (short) i);
-                writeEditor.setCellValue(cell, s);
+                final HSSFCell cell = writeEditor_.createCell(row, (short) i);
+                writeEditor_.setCellValue(cell, s);
             }
         }
 
         @Override
         public boolean isClosed() {
-            return closed;
+            return closed_;
         }
 
         @Override
         public void close() throws IOException {
-            closed = true;
-            sheet = null;
+            closed_ = true;
+            sheet_ = null;
         }
 
         public void setWriteEditor(final WriteEditor writeEditor) {
-            this.writeEditor = writeEditor;
+            writeEditor_ = writeEditor;
         }
 
     }
@@ -158,8 +158,8 @@ public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
 
         private static final WriteEditor INSTANCE = new DefaultWriteEditor();
 
-        private HSSFWorkbook workbook;
-        private HSSFSheet sheet;
+        private HSSFWorkbook workbook_;
+        private HSSFSheet sheet_;
 
         static WriteEditor getInstance() {
             return INSTANCE;
@@ -167,13 +167,13 @@ public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
 
         @Override
         public void begin(final HSSFWorkbook workbook, final HSSFSheet sheet) {
-            this.workbook = workbook;
-            this.sheet = sheet;
+            workbook_ = workbook;
+            sheet_ = sheet;
         }
 
         @Override
         public HSSFRow createRow(final int rowNum) {
-            return sheet.createRow(rowNum);
+            return sheet_.createRow(rowNum);
         }
 
         @Override
@@ -187,11 +187,11 @@ public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
         }
 
         protected HSSFWorkbook getWorkbook() {
-            return workbook;
+            return workbook_;
         }
 
         protected HSSFSheet getSheet() {
-            return sheet;
+            return sheet_;
         }
 
     }

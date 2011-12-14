@@ -15,34 +15,34 @@ public class SimpleColumnName implements ColumnName {
     /**
      * オブジェクトのプロパティ名
      */
-    private String name;
+    private String name_;
 
     /**
      * CSVの項目名
      */
-    private String label;
+    private String label_;
 
     @Override
     public String getName() {
-        return name;
+        return name_;
     }
 
     public void setName(final String name) {
-        this.name = name;
+        name_ = name;
     }
 
     @Override
     public String getLabel() {
-        return label;
+        return label_;
     }
 
     public void setLabel(final String label) {
-        this.label = label;
+        label_ = label;
     }
 
     @Override
     public boolean labelEquals(final String label) {
-        return this.label.equals(label);
+        return label_.equals(label);
     }
 
     @Override
