@@ -12,6 +12,8 @@ public class MapExcelLayout extends AbstractMapCsvLayout implements
         final DefaultExcelReader<Map<String, String>> r = new DefaultExcelReader<Map<String, String>>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
+        r.setElementReaderHandler(getElementReaderHandler());
+
         // TODO openで例外時にcloseすること
         r.open(is);
         return r;
