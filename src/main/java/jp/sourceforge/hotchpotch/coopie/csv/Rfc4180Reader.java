@@ -165,10 +165,6 @@ public class Rfc4180Reader implements ElementReader {
                     }
                     break;
 
-                case INVALID:
-
-                    break;
-
                 default:
                     throw new AssertionError();
                 }
@@ -199,10 +195,6 @@ public class Rfc4180Reader implements ElementReader {
                     rb.endElement();
                 }
                 break;
-            case INVALID:
-
-                break;
-
             default:
                 throw new AssertionError();
             }
@@ -319,7 +311,7 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     static enum State {
-        INITIAL, BEGIN_ELEMENT, UNQUOTED_ELEMENT, QUOTED_ELEMENT, QUOTE, INVALID
+        INITIAL, BEGIN_ELEMENT, UNQUOTED_ELEMENT, QUOTED_ELEMENT, QUOTE
     }
 
     static class BufferedReadable implements Closeable {
