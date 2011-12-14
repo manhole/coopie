@@ -7,6 +7,7 @@
 - add: CsvColumn annotation
 - add: util package
 - add: Line, LineSeparator, LineReadable
+- Reader/Writerの替わりに、なるべくReadable/Appendableを扱うようにしました。
 
 0.1.7 2011/11/15
 

@@ -1,7 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.Writer;
-
 class DefaultRecordWriter<T> extends AbstractRecordWriter<T> {
 
     private ElementSetting elementSetting_;
@@ -14,8 +12,9 @@ class DefaultRecordWriter<T> extends AbstractRecordWriter<T> {
         elementSetting_ = elementSetting;
     }
 
-    public void open(final Writer writer) {
-        final ElementWriter elementWriter = elementSetting_.openWriter(writer);
+    public void open(final Appendable appendable) {
+        final ElementWriter elementWriter = elementSetting_
+                .openWriter(appendable);
         setElementWriter(elementWriter);
         setClosed(false);
     }
