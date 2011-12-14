@@ -11,7 +11,7 @@ import java.io.StringReader;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
-import jp.sourceforge.hotchpotch.coopie.csv.ElementEditor;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementEditors;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
@@ -471,7 +471,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("ccc", 6, 9);
             }
         });
-        layout.setElementEditor(ElementEditor.TRIM);
+        layout.setElementEditor(ElementEditors.TRIM);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
@@ -505,7 +505,7 @@ public class BeanFixedLengthReaderTest {
                 setup.column("ccc", 6, 9);
             }
         });
-        layout.setElementEditor(ElementEditor.TRIM_WHITESPACE);
+        layout.setElementEditor(ElementEditors.TRIM_WHITESPACE);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout
