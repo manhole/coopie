@@ -3,7 +3,6 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
@@ -67,15 +66,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             return null;
         }
 
-        Collections.sort(list, new Comparator<CsvColumnValue<T>>() {
-            @Override
-            public int compare(final CsvColumnValue<T> o1,
-                    final CsvColumnValue<T> o2) {
-                // orderが小さい方を左側に
-                final int ret = o1.getOrder() - o2.getOrder();
-                return ret;
-            }
-        });
+        Collections.sort(list);
 
         final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
         for (int i = 0; i < list.size(); i++) {
@@ -106,7 +97,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 new BeanRecordType<T>(beanDesc_));
     }
 
-    private static class CsvColumnValue<T> {
+    private static class CsvColumnValue<T> implements
+            Comparable<CsvColumnValue<T>> {
 
         private final PropertyDesc<T> propertyDesc_;
         private final CsvColumn column_;
@@ -142,6 +134,13 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         public PropertyDesc<T> getPropertyDesc() {
             return propertyDesc_;
+        }
+
+        @Override
+        public int compareTo(final CsvColumnValue<T> o) {
+            // orderが小さい方を左側に
+            final int ret = getOrder() - o.getOrder();
+            return ret;
         }
 
     }
