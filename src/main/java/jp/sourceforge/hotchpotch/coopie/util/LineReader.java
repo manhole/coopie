@@ -2,7 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.io.IOException;
 
-public interface LineReader {
+public interface LineReader extends Closable {
 
     int getLineNumber();
 

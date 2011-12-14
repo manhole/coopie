@@ -4,6 +4,10 @@ import java.io.IOException;
 
 public class FilterLineReader implements LineReader {
 
+    private boolean closed_;
+    @SuppressWarnings("unused")
+    private final Object finalizerGuardian_ = new ClosingGuardian(this);
+
     private final LineReader lineReader_;
     private final LineFilter lineFilter_;
 
@@ -29,6 +33,17 @@ public class FilterLineReader implements LineReader {
                 return line;
             }
         }
+    }
+
+    @Override
+    public boolean isClosed() {
+        return closed_;
+    }
+
+    @Override
+    public void close() throws IOException {
+        closed_ = true;
+        CloseableUtil.closeNoException(lineReader_);
     }
 
 }

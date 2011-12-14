@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
 
-public class LineReadable implements LineReader, Closable {
+public class LineReadable implements LineReader {
 
     private static final char CR = IOUtil.CR;
     private static final char LF = IOUtil.LF;

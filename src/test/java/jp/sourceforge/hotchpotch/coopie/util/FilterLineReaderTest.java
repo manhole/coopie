@@ -31,8 +31,7 @@ public class FilterLineReaderTest {
         assertEquals("a3", rr.readLine().getBody());
         assertEquals(6, rr.getLineNumber());
         assertEquals(null, rr.readLine());
-        // TODO LineReader#closeできた方が良い
-        r.close();
+        rr.close();
     }
 
     private LineReadable create(final String in) {
