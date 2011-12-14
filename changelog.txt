@@ -1,10 +1,10 @@
-0.2.0 2011/XX/XX
+0.2.0 2011/12/14
 
-- CsvAssertをtest→mainへ移動
+- CsvAssertをtest -> mainへ移動
 - rename: CsvReader/CsvWriter -> RecordReader/RecordWriter
 - rename (internal API): XxxColumnSetup -> XxxRecordDescSetup
 - add: Rfc4180Reader, Rfc4180Writer. instead of OpenCSV
-- add: CsvColumn annotation
+- add: CsvColumn annotation. アノテーションからRecordDescを構築できるようにしました。
 - add: util package
 - add: Line, LineSeparator, LineReadable
 - Reader/Writerの替わりに、なるべくReadable/Appendableを扱うようにしました。
