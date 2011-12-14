@@ -66,7 +66,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         }
 
         @Override
-        protected ColumnDesc<T>[] createColumnDesc(
+        protected ColumnDesc<T>[] createColumnDescs(
                 final List<ColumnName> columnNames) {
             final ColumnDesc<T>[] cds = AbstractBeanCsvLayout.toColumnDescs(
                     columnNames, beanDesc_);
