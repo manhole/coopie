@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.Map;
 
 public class MapExcelLayout extends AbstractMapCsvLayout implements
-        ExcelLayout<Map<String, String>> {
+        ExcelInOut<Map<String, String>> {
 
     @Override
     public RecordReader<Map<String, String>> openReader(final InputStream is) {
