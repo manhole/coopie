@@ -3,6 +3,7 @@
 - CsvAssertをtest→mainへ移動
 - rename: CsvReader/CsvWriter -> RecordReader/RecordWriter
 - rename (internal API): XxxColumnSetup -> XxxRecordDescSetup
+- add Rfc4180Reader, Rfc4180Writer. instead of OpenCSV
 
 0.1.7 2011/11/15
 
