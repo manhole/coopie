@@ -430,7 +430,8 @@ public class MapCsvReaderTest {
     }
 
     static void assertReadEmptyRow2(
-            final RecordReader<Map<String, String>> csvReader) throws IOException {
+            final RecordReader<Map<String, String>> csvReader)
+            throws IOException {
 
         {
             assertEquals(true, csvReader.hasNext());
@@ -581,7 +582,8 @@ public class MapCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -652,20 +654,96 @@ public class MapCsvReaderTest {
         assertReadCsv(csvReader, bean);
     }
 
-    static void assertReadCsv(final RecordReader<Map<String, String>> csvReader,
+    static void assertReadCsv(
+            final RecordReader<Map<String, String>> csvReader,
             final Map<String, String> bean) throws IOException {
-
+    
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         assertEquals("a1", bean.get("aaa"));
         assertEquals("b1", bean.get("bbb"));
         assertEquals("c1", bean.get("ccc"));
-
+    
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         assertEquals("a2", bean.get("aaa"));
         assertEquals("b2", bean.get("bbb"));
         assertEquals("c2", bean.get("ccc"));
+    
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    @Test
+    public void read_separator_comma() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader(
+                        BeanCsvWriterTest.V_WRITE_SEPARATOR_COMMA));
+
+        // ## Assert ##
+        _assert(csvReader);
+    }
+
+    @Test
+    public void read_separator_tab() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setElementSeparator(CsvSetting.TAB);
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader(
+                        BeanCsvWriterTest.V_WRITE_SEPARATOR_TAB));
+
+        // ## Assert ##
+        _assert(csvReader);
+    }
+
+    @Test
+    public void read_lineseparator_LF() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setLineSeparator("\n");
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader(
+                        BeanCsvWriterTest.V_WRITE_LINESEPARATOR_LF));
+
+        // ## Assert ##
+        _assert(csvReader);
+    }
+
+    @Test
+    public void read_quotechar_single() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setQuoteMark('\'');
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader(
+                        BeanCsvWriterTest.V_WRITE_QUOTECHAR_SINGLE));
+
+        // ## Assert ##
+        _assert(csvReader);
+    }
+
+    private void _assert(final RecordReader<Map<String, String>> csvReader)
+            throws IOException {
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a1", bean.get("a"));
+        assertEquals("b1", bean.get("b"));
+        assertEquals("c1", bean.get("c"));
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();

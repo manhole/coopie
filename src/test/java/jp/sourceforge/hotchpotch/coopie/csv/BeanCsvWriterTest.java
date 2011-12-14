@@ -335,10 +335,11 @@ public class BeanCsvWriterTest {
         assert_write_separator_comma(lines);
     }
 
+    static final String V_WRITE_SEPARATOR_COMMA = "\"a\",\"b\",\"c\"" + CRLF
+            + "\"a1\",\"b1\",\"c1\"" + CRLF;
+
     static void assert_write_separator_comma(final String lines) {
-        assertEquals(
-                "\"a\",\"b\",\"c\"" + CRLF + "\"a1\",\"b1\",\"c1\"" + CRLF,
-                lines);
+        assertEquals(V_WRITE_SEPARATOR_COMMA, lines);
     }
 
     @Test
@@ -364,9 +365,11 @@ public class BeanCsvWriterTest {
         assert_write_separator_tab(lines);
     }
 
+    static final String V_WRITE_SEPARATOR_TAB = "\"a\"\t\"b\"\t\"c\"" + CRLF
+            + "\"a1\"\t\"b1\"\t\"c1\"" + CRLF;
+
     static void assert_write_separator_tab(final String lines) {
-        assertEquals("\"a\"\t\"b\"\t\"c\"" + CRLF + "\"a1\"\t\"b1\"\t\"c1\""
-                + CRLF, lines);
+        assertEquals(V_WRITE_SEPARATOR_TAB, lines);
     }
 
     @Test
@@ -393,9 +396,11 @@ public class BeanCsvWriterTest {
         assert_write_lineseparator_LF(lines);
     }
 
+    static final String V_WRITE_LINESEPARATOR_LF = "\"a\",\"b\",\"c\"" + LF
+            + "\"a1\",\"b1\",\"c1\"" + LF;
+
     static void assert_write_lineseparator_LF(final String lines) {
-        assertEquals("\"a\",\"b\",\"c\"" + LF + "\"a1\",\"b1\",\"c1\"" + LF,
-                lines);
+        assertEquals(V_WRITE_LINESEPARATOR_LF, lines);
     }
 
     @Test
@@ -422,8 +427,11 @@ public class BeanCsvWriterTest {
         assert_write_quotechar_single(lines);
     }
 
+    static final String V_WRITE_QUOTECHAR_SINGLE = "'a','b','c'" + CRLF
+            + "'a1','b1','c1'" + CRLF;
+
     static void assert_write_quotechar_single(final String lines) {
-        assertEquals("'a','b','c'" + CRLF + "'a1','b1','c1'" + CRLF, lines);
+        assertEquals(V_WRITE_QUOTECHAR_SINGLE, lines);
     }
 
     private void setTo(final AaaBean bean, final String a, final String b,
