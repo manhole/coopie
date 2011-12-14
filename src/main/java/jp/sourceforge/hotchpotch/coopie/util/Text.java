@@ -174,6 +174,14 @@ public class Text {
         return count;
     }
 
+    public static String substring(final String str, final int beginIndex,
+            final int endIndex) {
+        final int actualBegin = str.offsetByCodePoints(0, beginIndex);
+        final int actualEnd = str.offsetByCodePoints(0, endIndex);
+        final String s = str.substring(actualBegin, actualEnd);
+        return s;
+    }
+
     public interface TrimStrategy {
 
         boolean isTrim(char c);
@@ -187,6 +195,7 @@ public class Text {
             return c <= ' ';
         }
     };
+
     public static TrimStrategy WHITESPACE = new TrimStrategy() {
         @Override
         public boolean isTrim(final char c) {
