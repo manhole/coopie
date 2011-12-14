@@ -5,7 +5,6 @@ import java.io.IOException;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
-import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
 import org.t2framework.commons.exception.IORuntimeException;
@@ -35,15 +34,14 @@ public class FixedLengthReader implements ElementReader {
     @Override
     public String[] readRecord() {
         try {
-            final Line line = reader_.readLine();
+            final String line = reader_.readLine();
             if (line == null) {
                 return null;
             }
             final String[] record = new String[columns_.length];
             for (int i = 0; i < columns_.length; i++) {
                 final FixedLengthColumnDesc column = columns_[i];
-                final String str = line.getBody();
-                final String elem = column.read(str);
+                final String elem = column.read(line);
                 record[i] = elem;
             }
             lineNo_++;
