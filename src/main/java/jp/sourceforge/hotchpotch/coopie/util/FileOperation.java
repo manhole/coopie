@@ -219,7 +219,7 @@ public class FileOperation {
     }
 
     private void closeNoException(final Closeable closeable) {
-        IOUtil.closeNoException(closeable);
+        CloseableUtil.closeNoException(closeable);
     }
 
     public String getExtension(final File file) {

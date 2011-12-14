@@ -5,8 +5,8 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 public class CsvAssert {
 
@@ -38,8 +38,8 @@ public class CsvAssert {
             final RecordReader<Map<String, String>> expectedCsvReader = openMapReader(expectedReader);
             assertCsvEquals(expectedCsvReader, actualCsvReader);
         } finally {
-            IOUtil.closeNoException(expectedReader);
-            IOUtil.closeNoException(actualReader);
+            CloseableUtil.closeNoException(expectedReader);
+            CloseableUtil.closeNoException(actualReader);
         }
     }
 
@@ -69,8 +69,8 @@ public class CsvAssert {
             throw new CsvAssertionError("different size");
         }
 
-        IOUtil.closeNoException(expectedCsvReader);
-        IOUtil.closeNoException(actualCsvReader);
+        CloseableUtil.closeNoException(expectedCsvReader);
+        CloseableUtil.closeNoException(actualCsvReader);
     }
 
     public void assertArrayEquals(final String[] expected, final String[] actual) {

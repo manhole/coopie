@@ -3,8 +3,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
@@ -78,11 +78,11 @@ public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
         @Override
         public void close() throws IOException {
             closed_ = true;
-            IOUtil.closeNoException(sheetWriter_);
+            CloseableUtil.closeNoException(sheetWriter_);
             if (workbook_ != null) {
                 workbook_.write(os_);
                 workbook_ = null;
-                IOUtil.closeNoException(os_);
+                CloseableUtil.closeNoException(os_);
             }
         }
 

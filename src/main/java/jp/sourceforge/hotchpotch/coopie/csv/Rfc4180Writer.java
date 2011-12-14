@@ -3,8 +3,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.Closeable;
 import java.io.IOException;
 
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -61,7 +61,7 @@ public class Rfc4180Writer implements ElementWriter {
         closed_ = true;
         if (appendable_ instanceof Closeable) {
             final Closeable closeable = Closeable.class.cast(appendable_);
-            IOUtil.closeNoException(closeable);
+            CloseableUtil.closeNoException(closeable);
         }
     }
 
