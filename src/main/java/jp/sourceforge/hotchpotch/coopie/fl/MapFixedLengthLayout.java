@@ -6,18 +6,18 @@ import java.util.Map;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractMapCsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
-import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.MapRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
 public class MapFixedLengthLayout extends
         AbstractFixedLengthLayout<Map<String, String>> implements
-        CsvLayout<Map<String, String>> {
+        RecordInOut<Map<String, String>> {
 
     @Override
     public RecordReader<Map<String, String>> openReader(final Readable readable) {

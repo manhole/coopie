@@ -7,11 +7,11 @@ import jp.sourceforge.hotchpotch.coopie.csv.Annotations;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
-import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
@@ -23,7 +23,7 @@ import org.t2framework.commons.meta.PropertyDesc;
 import org.t2framework.commons.util.CollectionsUtil;
 
 public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
-        implements CsvLayout<T> {
+        implements RecordInOut<T> {
 
     private final BeanDesc<T> beanDesc_;
 

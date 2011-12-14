@@ -6,7 +6,7 @@ import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FailureProtection;
 
 public class MapCsvLayout extends AbstractMapCsvLayout implements
-        CsvLayout<Map<String, String>> {
+        RecordInOut<Map<String, String>> {
 
     private final CsvSetting csvSetting_;
     private final ElementInOut elementInOut_;
