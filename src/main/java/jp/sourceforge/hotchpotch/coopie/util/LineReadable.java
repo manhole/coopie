@@ -1,6 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.io.IOException;
+import java.util.Deque;
+import java.util.LinkedList;
 
 public class LineReadable implements Closable {
 
@@ -14,6 +16,7 @@ public class LineReadable implements Closable {
     private LineSeparator lineSeparator_;
     private String line_;
     private int lineNumber_;
+    private final Deque<Line> buf_ = new LinkedList<Line>();
 
     public LineReadable(final Readable readable) {
         readable_ = new BufferedReadable(readable);
@@ -45,6 +48,14 @@ public class LineReadable implements Closable {
     }
 
     private void read0() throws IOException {
+        if (!buf_.isEmpty()) {
+            final Line line = buf_.pop();
+            line_ = line.getBody();
+            lineNumber_++;
+            lineSeparator_ = line.getSeparator();
+            return;
+        }
+
         if (readable_.isEof()) {
             line_ = null;
             lineSeparator_ = null;
@@ -80,6 +91,14 @@ public class LineReadable implements Closable {
         line_ = sb.toString();
         lineNumber_++;
         lineSeparator_ = sep;
+    }
+
+    public void pushback(final Line line) {
+        buf_.push(line);
+        lineNumber_--;
+        // XXX この時点では手前の行のことは忘れているため、わからない
+        line_ = null;
+        lineSeparator_ = null;
     }
 
     @Override
