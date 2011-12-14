@@ -5,12 +5,12 @@ import java.io.IOException;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
-public class DefaultReadEditor implements ElementReaderHandler,
+public class DefaultReaderHandler implements ElementReaderHandler,
         LineReaderHandler {
 
-    private static final DefaultReadEditor INSTANCE = new DefaultReadEditor();
+    private static final DefaultReaderHandler INSTANCE = new DefaultReaderHandler();
 
-    public static DefaultReadEditor getInstance() {
+    public static DefaultReaderHandler getInstance() {
         return INSTANCE;
     }
 
