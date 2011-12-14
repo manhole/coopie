@@ -667,7 +667,7 @@ public class BeanCsvReaderTest {
         assertRead1(csvReader, bean);
     }
 
-    static class TestReadEditor extends DefaultReadEditor {
+    static class TestReadEditor extends DefaultReaderHandler {
 
         @Override
         public Line readLine(final LineReader lineReader) throws IOException {
