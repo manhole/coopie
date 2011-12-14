@@ -6,7 +6,7 @@ import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {
 
-    private final CsvSetting csvSetting_ = new CsvSetting();
+    private final DefaultCsvSetting csvSetting_ = new DefaultCsvSetting();
 
     public BeanCsvLayout(final Class<T> beanClass) {
         super(beanClass);
