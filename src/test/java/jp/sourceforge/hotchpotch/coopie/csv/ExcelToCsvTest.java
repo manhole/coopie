@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import jp.sourceforge.hotchpotch.coopie.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
 
 import org.junit.After;
 import org.junit.Before;

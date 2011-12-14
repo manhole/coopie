@@ -2,8 +2,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
 
-import jp.sourceforge.hotchpotch.coopie.Closable;
-import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.Closable;
+import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 public class AbstractRecordWriter<T> implements Closable, RecordWriter<T> {
 

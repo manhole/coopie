@@ -5,9 +5,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.IOUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;

@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.ClosingGuardian;
-import jp.sourceforge.hotchpotch.coopie.IOUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.Logger;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;

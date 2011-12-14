@@ -7,7 +7,6 @@ import java.io.StringReader;
 
 import jp.sourceforge.hotchpotch.coopie.csv.Rfc4180Reader.BufferedReadable;
 
-
 import org.junit.Test;
 
 public class BufferedReadableTest {
