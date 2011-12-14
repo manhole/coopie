@@ -739,6 +739,83 @@ public class MapCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * デフォルトではtrimしない。
+     */
+    @Test
+    public void read_trim_off() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setElementSeparator(CsvSetting.COMMA);
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b , \n"));
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("  ", bean.get("aaa"));
+        assertEquals(" b ", bean.get("bbb"));
+        assertEquals(" ", bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 要素をtrimするオプション
+     */
+    @Test
+    public void read_trim_all() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setElementEditor(ElementEditor.TRIM);
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals(null, bean.get("aaa"));
+        assertEquals("b　", bean.get("bbb"));
+        assertEquals(null, bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 全角スペースもtrim対象とするオプション
+     */
+    @Test
+    public void read_trim_all_whitespace() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setElementEditor(ElementEditor.TRIM_WHITESPACE);
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals(null, bean.get("aaa"));
+        assertEquals("b", bean.get("bbb"));
+        assertEquals(null, bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Reader reader = BeanCsvReaderTest
                 .getResourceAsReader(suffix, ext);

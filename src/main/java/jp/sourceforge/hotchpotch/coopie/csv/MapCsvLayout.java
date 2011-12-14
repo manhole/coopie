@@ -26,6 +26,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
         r.setElementSetting(elementSetting_);
+        r.setElementEditor(getElementEditor());
         new FailureProtection<RuntimeException>() {
 
             @Override
