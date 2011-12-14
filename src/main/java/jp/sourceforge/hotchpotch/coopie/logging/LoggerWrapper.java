@@ -19,6 +19,15 @@ public class LoggerWrapper implements Logger {
         logger_.debug(log.getFormat(), log.getArgs());
     }
 
+    @Override
+    public void warn(final Log log) {
+        if (log == null) {
+            logger_.debug((String) null);
+            return;
+        }
+        logger_.warn(log.getFormat(), log.getArgs());
+    }
+
     // ==== delegate methods ====
 
     @Override

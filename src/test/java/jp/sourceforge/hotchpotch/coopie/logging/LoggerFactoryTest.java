@@ -162,6 +162,48 @@ public class LoggerFactoryTest {
         assertThat(ret, containsString("foo bar, baz"));
     }
 
+    @Test
+    public void warn_log1() {
+        // ## Arrange ##
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // ## Act ##
+        StdOutBlock.out(baos).execute(new EasyTask<Void>() {
+            @Override
+            public Void execute() throws RuntimeException {
+                final Logger logger = LoggerFactory.getLogger();
+                logger.warn(new AaaLog("foooo", null));
+                return null;
+            }
+        });
+
+        // ## Assert ##
+        final String ret = baos.toString();
+        logger.debug("[[{}]]", ret);
+        assertThat(ret, containsString("foooo"));
+    }
+
+    @Test
+    public void warn_log2() {
+        // ## Arrange ##
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // ## Act ##
+        StdOutBlock.out(baos).execute(new EasyTask<Void>() {
+            @Override
+            public Void execute() throws RuntimeException {
+                final Logger logger = LoggerFactory.getLogger();
+                logger.warn(new AaaLog("foo {}, {}", a("bar", "baz")));
+                return null;
+            }
+        });
+
+        // ## Assert ##
+        final String ret = baos.toString();
+        logger.debug("[[{}]]", ret);
+        assertThat(ret, containsString("foo bar, baz"));
+    }
+
     private static class AaaLog implements Log {
 
         private final Object[] args_;
