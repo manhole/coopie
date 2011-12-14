@@ -69,26 +69,27 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         @Override
-        public String read(final String line) {
+        public String read(final CharSequence line) {
             final int len = length(line);
             final int begin = Math.min(len, beginIndex_);
             final int end = Math.min(len, endIndex_);
-            final String s = line.substring(begin, end);
-            final String trimmed = s.trim();
+            final CharSequence s = line.subSequence(begin, end);
+            final String trimmed = s.toString().trim();
             return trimmed;
         }
 
         @Override
-        public void write(final String s, final Appendable appendable) {
-            final String elem = lpad(s, length_, ' ');
+        public void write(final CharSequence elem, final Appendable appendable) {
+            final CharSequence padded = lpad(elem, length_, ' ');
             try {
-                appendable.append(elem);
+                appendable.append(padded);
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             }
         }
 
-        private String lpad(final String str, final int len, final char pad) {
+        private CharSequence lpad(final CharSequence str, final int len,
+                final char pad) {
             final StringBuilder sb = new StringBuilder();
             final int padlen = len - length(str);
             for (int i = 0; i < padlen; i++) {
@@ -100,7 +101,7 @@ abstract class AbstractFixedLengthLayout<T> {
             return sb.toString();
         }
 
-        private int length(final String str) {
+        private int length(final CharSequence str) {
             if (str == null) {
                 return 0;
             }
