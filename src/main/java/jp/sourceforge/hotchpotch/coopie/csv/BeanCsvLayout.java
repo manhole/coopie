@@ -4,7 +4,7 @@ import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FailureProtection;
 
 public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
-        CsvLayout<T> {
+        RecordInOut<T> {
 
     private final CsvSetting csvSetting_;
     private final ElementInOut elementInOut_;

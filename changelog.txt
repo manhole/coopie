@@ -18,6 +18,7 @@
 - 固定長入出力で指定する文字数が、サロゲートペアを考慮するようにしました。
   (charとしては2つでも、1文字としてカウントできるように)
 - rename: ElementSetting -> ElementInOut
+- rename: CsvLayout -> RecordInOut
 
 0.1.7 2011/11/15
 
