@@ -1,8 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.Reader;
-import java.io.Writer;
-
 import jp.sourceforge.hotchpotch.coopie.util.FailureProtection;
 import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
 
@@ -16,9 +13,9 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
     }
 
     @Override
-    public RecordReader<T> openReader(final Reader reader) {
-        if (reader == null) {
-            throw new NullPointerException("reader");
+    public RecordReader<T> openReader(final Readable readable) {
+        if (readable == null) {
+            throw new NullPointerException("readable");
         }
 
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(
@@ -33,7 +30,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
 
             @Override
             protected void protect() {
-                r.open(reader);
+                r.open(readable);
             }
 
             @Override
@@ -46,9 +43,9 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
     }
 
     @Override
-    public RecordWriter<T> openWriter(final Writer writer) {
-        if (writer == null) {
-            throw new NullPointerException("writer");
+    public RecordWriter<T> openWriter(final Appendable appendable) {
+        if (appendable == null) {
+            throw new NullPointerException("appendable");
         }
 
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(
@@ -56,7 +53,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         w.setWithHeader(isWithHeader());
         w.setElementSetting(csvSetting_);
         // TODO openで例外時にcloseすること
-        w.open(writer);
+        w.open(appendable);
         return w;
     }
 

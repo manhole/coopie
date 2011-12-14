@@ -1,7 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.Reader;
-
 class DefaultRecordReader<T> extends AbstractRecordReader<T> {
 
     private ElementSetting elementSetting_;
@@ -14,8 +12,9 @@ class DefaultRecordReader<T> extends AbstractRecordReader<T> {
         elementSetting_ = elementSetting;
     }
 
-    public void open(final Reader reader) {
-        final ElementReader elementReader = elementSetting_.openReader(reader);
+    public void open(final Readable readable) {
+        final ElementReader elementReader = elementSetting_
+                .openReader(readable);
         setElementReader(elementReader);
         setClosed(false);
 
