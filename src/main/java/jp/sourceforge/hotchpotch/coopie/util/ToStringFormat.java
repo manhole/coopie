@@ -18,6 +18,7 @@ import org.t2framework.commons.meta.BeanDescFactory;
 public class ToStringFormat {
 
     private static final String NULL = "<null>";
+    private static final String EMPTY = "<empty>";
 
     private static final ThreadLocal<Context> threadLocal = new ThreadLocal<Context>() {
         @Override
@@ -45,8 +46,13 @@ public class ToStringFormat {
 
     private <T> void append(final Appendable out, final T obj,
             final Context context) throws IOException {
+
         if (obj == null) {
             out.append(NULL);
+            return;
+        }
+        if ("".equals(obj)) {
+            out.append(EMPTY);
             return;
         }
 
