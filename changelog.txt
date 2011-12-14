@@ -19,6 +19,7 @@
   (charとしては2つでも、1文字としてカウントできるように)
 - rename: ElementSetting -> ElementInOut
 - rename: CsvLayout -> RecordInOut
+- rename: ExcelLayout -> ExcelInOut
 
 0.1.7 2011/11/15
 

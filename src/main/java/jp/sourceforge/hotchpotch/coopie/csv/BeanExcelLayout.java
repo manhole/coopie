@@ -7,7 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
-        ExcelLayout<T> {
+        ExcelInOut<T> {
 
     private DefaultExcelWriter.WriteEditor writeEditor_;
 
