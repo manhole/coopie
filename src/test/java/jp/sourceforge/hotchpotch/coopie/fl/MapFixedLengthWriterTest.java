@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Map;
 
@@ -110,10 +111,8 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-1",
+                "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -158,10 +157,8 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-4-2", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-4-2",
+                "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -204,15 +201,22 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-3", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-3",
+                "tsv"));
         assertEquals(expected, actual);
     }
 
     /*
      * TODO 定義した長さよりも実際のデータが長い場合
      */
+
+    static Reader getResourceAsReader(final String suffix, final String ext) {
+        return BeanFixedLengthReaderTest.getResourceAsReader(suffix, ext);
+    }
+
+    static InputStream getResourceAsStream(final String suffix, final String ext) {
+        return ResourceUtil.getResourceAsStream(
+                BeanFixedLengthWriterTest.class.getName() + suffix, ext);
+    }
 
 }
