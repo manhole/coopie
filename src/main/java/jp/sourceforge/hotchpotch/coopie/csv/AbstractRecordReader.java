@@ -152,25 +152,4 @@ public abstract class AbstractRecordReader<T> implements Closable,
         elementReader_ = elementReader;
     }
 
-    public static interface ReadEditor {
-
-        String[] readRecord(ElementReader elementReader);
-
-    }
-
-    private static class DefaultReadEditor implements ReadEditor {
-
-        private static final DefaultReadEditor INSTANCE = new DefaultReadEditor();
-
-        static ReadEditor getInstance() {
-            return INSTANCE;
-        }
-
-        @Override
-        public String[] readRecord(final ElementReader elementReader) {
-            return elementReader.readRecord();
-        }
-
-    }
-
 }
