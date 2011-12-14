@@ -612,6 +612,26 @@ public class Rfc4180ReaderTest {
         reader.close();
     }
 
+    /*
+     * 不正データ
+     * 
+     * 先頭に不正データが登場するパターン
+     */
+    @Test
+    public void invalid_quote5() throws Throwable {
+        // ## Arrange ##
+        final String in = "\"b\" \"\"";
+        System.out.println(in);
+        final Rfc4180Reader reader = open(in);
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("\"b\" \"\""), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
     protected Rfc4180Reader open(final String text) {
         return open(text, null);
     }

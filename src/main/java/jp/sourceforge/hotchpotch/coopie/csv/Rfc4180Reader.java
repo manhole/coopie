@@ -136,12 +136,12 @@ public class Rfc4180Reader implements ElementReader {
                         state = State.UNQUOTED_ELEMENT;
                         rb.startElement();
                         rb.append(c);
-                        rb.appendPlain(c);
+                        //rb.appendPlain(c);
                     }
                     break;
 
                 case UNQUOTED_ELEMENT:
-                    rb.appendPlain(c);
+                    //rb.appendPlain(c);
                     if (c == quoteMark_) {
                         rb.append(c);
                     } else if (c == elementSeparator_) {
