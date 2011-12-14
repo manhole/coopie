@@ -648,9 +648,8 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
                 .getInstance(AaaBean.class);
-        final TestReadEditor elementReaderHandler = new TestReadEditor();
-        layout.setElementReaderHandler(elementReaderHandler);
-        layout.setLineReaderHandler(elementReaderHandler);
+        final TestReadEditor readEditor = new TestReadEditor();
+        layout.setReaderHandler(readEditor);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(r);
@@ -1165,6 +1164,25 @@ public class BeanCsvReaderTest {
             return super.acceptLine(line, parserContext);
         }
 
+    }
+
+    /**
+     * setReaderHandlerではLineReaderHandlerなど何らかのinterfaceをimplしているべき。
+     */
+    @Test
+    public void setup_invalid_readeditor() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setReaderHandler(new Object());
+            fail();
+        } catch (final IllegalArgumentException e) {
+            logger.debug(e.getMessage());
+        }
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {

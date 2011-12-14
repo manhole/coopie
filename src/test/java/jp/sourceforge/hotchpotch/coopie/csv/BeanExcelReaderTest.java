@@ -2,6 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -258,9 +259,8 @@ public class BeanExcelReaderTest {
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
                 AaaBean.class);
-        final TestReadEditor elementReaderHandler = new TestReadEditor();
-        layout.setElementReaderHandler(elementReaderHandler);
-        layout.setLineReaderHandler(elementReaderHandler);
+        final TestReadEditor readEditor = new TestReadEditor();
+        layout.setReaderHandler(readEditor);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(is);
@@ -365,6 +365,25 @@ public class BeanExcelReaderTest {
 
             assertEquals(false, csvReader.hasNext());
             csvReader.close();
+        }
+    }
+
+    /**
+     * setReaderHandlerではLineReaderHandlerなど何らかのinterfaceをimplしているべき。
+     */
+    @Test
+    public void setup_invalid_readeditor() throws Throwable {
+        // ## Arrange ##
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setReaderHandler(new Object());
+            fail();
+        } catch (final IllegalArgumentException e) {
+            logger.debug(e.getMessage());
         }
     }
 

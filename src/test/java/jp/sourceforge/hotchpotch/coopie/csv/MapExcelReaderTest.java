@@ -1,6 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -244,6 +245,24 @@ public class MapExcelReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    /**
+     * setReaderHandlerではLineReaderHandlerなど何らかのinterfaceをimplしているべき。
+     */
+    @Test
+    public void setup_invalid_readeditor() throws Throwable {
+        // ## Arrange ##
+        final MapExcelLayout layout = new MapExcelLayout();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setReaderHandler(new Object());
+            fail();
+        } catch (final IllegalArgumentException e) {
+            logger.debug(e.getMessage());
+        }
     }
 
 }

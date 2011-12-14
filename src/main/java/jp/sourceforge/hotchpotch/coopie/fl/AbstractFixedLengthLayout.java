@@ -60,6 +60,14 @@ abstract class AbstractFixedLengthLayout<T> {
         withHeader_ = withHeader;
     }
 
+    protected LineReaderHandler getLineReaderHandler() {
+        return lineReaderHandler_;
+    }
+
+    public void setLineReaderHandler(final LineReaderHandler lineReaderHandler) {
+        lineReaderHandler_ = lineReaderHandler;
+    }
+
     protected ElementReaderHandler getElementReaderHandler() {
         return elementReaderHandler_;
     }
@@ -67,14 +75,6 @@ abstract class AbstractFixedLengthLayout<T> {
     public void setElementReaderHandler(
             final ElementReaderHandler elementReaderHandler) {
         elementReaderHandler_ = elementReaderHandler;
-    }
-
-    protected LineReaderHandler getLineReaderHandler() {
-        return lineReaderHandler_;
-    }
-
-    public void setLineReaderHandler(final LineReaderHandler lineReaderHandler) {
-        lineReaderHandler_ = lineReaderHandler;
     }
 
     protected ElementEditor getElementEditor() {
@@ -87,6 +87,40 @@ abstract class AbstractFixedLengthLayout<T> {
 
     protected FixedLengthElementDesc[] getFixedLengthElementDescs() {
         return fixedLengthElementDescs_;
+    }
+
+    /**
+     * カスタマイズ用hander実装をまとめて登録する、コンビニエンスメソッドです。
+     * 
+     * @param handler {@link LineReaderHandler} {@link ElementReaderHandler}
+     *  {@link ElementEditor} の1つ以上をimplementsしたインスタンス
+     * @exception IllegalArgumentException 上記インタフェースを1つもimplementsしていない場合
+     * 
+     * @see #setLineReaderHandler(LineReaderHandler)
+     * @see #setElementReaderHandler(ElementReaderHandler)
+     * @see #setElementEditor(ElementEditor)
+     */
+    public void setReaderHandler(final Object handler) {
+        int assigned = 0;
+        if (handler instanceof LineReaderHandler) {
+            setLineReaderHandler(LineReaderHandler.class.cast(handler));
+            assigned++;
+        }
+        if (handler instanceof ElementReaderHandler) {
+            setElementReaderHandler(ElementReaderHandler.class.cast(handler));
+            assigned++;
+        }
+        if (handler instanceof ElementEditor) {
+            setElementEditor(ElementEditor.class.cast(handler));
+            assigned++;
+        }
+
+        /*
+         * いずれもsetできない場合は例外にする。
+         */
+        if (assigned == 0) {
+            throw new IllegalArgumentException("no suitable");
+        }
     }
 
     protected ElementInOut createElementInOut() {

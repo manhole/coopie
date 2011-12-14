@@ -396,6 +396,24 @@ public class MapFixedLengthReaderTest {
         csvReader.close();
     }
 
+    /**
+     * setReaderHandlerではLineReaderHandlerなど何らかのinterfaceをimplしているべき。
+     */
+    @Test
+    public void setup_invalid_readeditor() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setReaderHandler(new Object());
+            fail();
+        } catch (final IllegalArgumentException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         return BeanFixedLengthReaderTest.getResourceAsReader(suffix, ext);
     }

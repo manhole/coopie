@@ -26,20 +26,20 @@ abstract class AbstractCsvLayout<T> {
 
     protected abstract CsvRecordDescSetup<T> getRecordDescSetup();
 
+    protected RecordDesc<T> getRecordDesc() {
+        return recordDesc_;
+    }
+
+    protected void setRecordDesc(final RecordDesc<T> recordDesc) {
+        recordDesc_ = recordDesc;
+    }
+
     protected boolean isWithHeader() {
         return withHeader_;
     }
 
     public void setWithHeader(final boolean withHeader) {
         withHeader_ = withHeader;
-    }
-    protected ElementReaderHandler getElementReaderHandler() {
-        return elementReaderHandler_;
-    }
-
-    public void setElementReaderHandler(
-            final ElementReaderHandler elementReaderHandler) {
-        elementReaderHandler_ = elementReaderHandler;
     }
 
     protected LineReaderHandler getLineReaderHandler() {
@@ -50,12 +50,13 @@ abstract class AbstractCsvLayout<T> {
         lineReaderHandler_ = lineReaderHandler;
     }
 
-    protected RecordDesc<T> getRecordDesc() {
-        return recordDesc_;
+    protected ElementReaderHandler getElementReaderHandler() {
+        return elementReaderHandler_;
     }
 
-    protected void setRecordDesc(final RecordDesc<T> recordDesc) {
-        recordDesc_ = recordDesc;
+    public void setElementReaderHandler(
+            final ElementReaderHandler elementReaderHandler) {
+        elementReaderHandler_ = elementReaderHandler;
     }
 
     protected ElementEditor getElementEditor() {
@@ -64,6 +65,40 @@ abstract class AbstractCsvLayout<T> {
 
     public void setElementEditor(final ElementEditor elementEditor) {
         elementEditor_ = elementEditor;
+    }
+
+    /**
+     * カスタマイズ用hander実装をまとめて登録する、コンビニエンスメソッドです。
+     * 
+     * @param handler {@link LineReaderHandler} {@link ElementReaderHandler}
+     *  {@link ElementEditor} の1つ以上をimplementsしたインスタンス
+     * @exception IllegalArgumentException 上記インタフェースを1つもimplementsしていない場合
+     * 
+     * @see #setLineReaderHandler(LineReaderHandler)
+     * @see #setElementReaderHandler(ElementReaderHandler)
+     * @see #setElementEditor(ElementEditor)
+     */
+    public void setReaderHandler(final Object handler) {
+        int assigned = 0;
+        if (handler instanceof LineReaderHandler) {
+            setLineReaderHandler(LineReaderHandler.class.cast(handler));
+            assigned++;
+        }
+        if (handler instanceof ElementReaderHandler) {
+            setElementReaderHandler(ElementReaderHandler.class.cast(handler));
+            assigned++;
+        }
+        if (handler instanceof ElementEditor) {
+            setElementEditor(ElementEditor.class.cast(handler));
+            assigned++;
+        }
+
+        /*
+         * いずれもsetできない場合は例外にする。
+         */
+        if (assigned == 0) {
+            throw new IllegalArgumentException("no suitable");
+        }
     }
 
     protected static interface CsvRecordDescSetup<T> extends CsvColumnSetup {
