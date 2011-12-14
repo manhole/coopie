@@ -9,7 +9,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
-import jp.sourceforge.hotchpotch.coopie.csv.ElementSetting;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementStream;
 import jp.sourceforge.hotchpotch.coopie.csv.MapRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
@@ -22,11 +22,11 @@ public class MapFixedLengthLayout extends
     @Override
     public RecordReader<Map<String, String>> openReader(final Readable readable) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
-        final ElementSetting es = getElementSetting();
+        final ElementStream es = getElementStream();
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 rd);
         r.setWithHeader(isWithHeader());
-        r.setElementSetting(es);
+        r.setElementStream(es);
         // TODO openで例外時にcloseすること
         r.open(readable);
         return r;
@@ -36,11 +36,11 @@ public class MapFixedLengthLayout extends
     public RecordWriter<Map<String, String>> openWriter(
             final Appendable appendable) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
-        final ElementSetting es = getElementSetting();
+        final ElementStream es = getElementStream();
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 rd);
         w.setWithHeader(isWithHeader());
-        w.setElementSetting(es);
+        w.setElementStream(es);
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;

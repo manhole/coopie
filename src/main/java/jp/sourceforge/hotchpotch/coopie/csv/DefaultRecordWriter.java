@@ -2,18 +2,18 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 public class DefaultRecordWriter<T> extends AbstractRecordWriter<T> {
 
-    private ElementSetting elementSetting_;
+    private ElementStream elementStream_;
 
     public DefaultRecordWriter(final RecordDesc<T> recordDesc) {
         super(recordDesc);
     }
 
-    public void setElementSetting(final ElementSetting elementSetting) {
-        elementSetting_ = elementSetting;
+    public void setElementStream(final ElementStream elementStream) {
+        elementStream_ = elementStream;
     }
 
     public void open(final Appendable appendable) {
-        final ElementWriter elementWriter = elementSetting_
+        final ElementWriter elementWriter = elementStream_
                 .openWriter(appendable);
         setElementWriter(elementWriter);
         setClosed(false);

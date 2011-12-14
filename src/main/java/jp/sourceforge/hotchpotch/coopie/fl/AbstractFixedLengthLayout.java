@@ -8,7 +8,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
-import jp.sourceforge.hotchpotch.coopie.csv.ElementSetting;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementStream;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
@@ -23,7 +23,7 @@ abstract class AbstractFixedLengthLayout<T> {
     // 固定長ファイルでは「ヘッダ無し」をデフォルトにする。
     private boolean withHeader_ = false;
     private RecordDesc<T> recordDesc_;
-    private ElementSetting elementSetting_;
+    private ElementStream elementStream_;
     private ElementEditor elementEditor_;
 
     protected abstract FixedLengthRecordDescSetup getRecordDescSetup();
@@ -32,7 +32,7 @@ abstract class AbstractFixedLengthLayout<T> {
         final FixedLengthRecordDescSetup setup = getRecordDescSetup();
         block.setup(setup);
         recordDesc_ = setup.getRecordDesc();
-        elementSetting_ = setup.getElementSetting();
+        elementStream_ = setup.getElementStream();
     }
 
     protected RecordDesc<T> getRecordDesc() {
@@ -43,8 +43,8 @@ abstract class AbstractFixedLengthLayout<T> {
         recordDesc_ = recordDesc;
     }
 
-    protected ElementSetting getElementSetting() {
-        return elementSetting_;
+    protected ElementStream getElementStream() {
+        return elementStream_;
     }
 
     protected boolean isWithHeader() {
@@ -68,7 +68,7 @@ abstract class AbstractFixedLengthLayout<T> {
 
         <T> RecordDesc<T> getRecordDesc();
 
-        ElementSetting getElementSetting();
+        ElementStream getElementStream();
 
     }
 
@@ -152,7 +152,7 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
-        private FixedLengthElementSetting fixedLengthElementSetting_;
+        private FixedLengthElementStream fixedLengthElementStream_;
 
         @Override
         public RecordDesc<T> getRecordDesc() {
@@ -161,9 +161,9 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         @Override
-        public ElementSetting getElementSetting() {
+        public ElementStream getElementStream() {
             buildIfNeed();
-            return fixedLengthElementSetting_;
+            return fixedLengthElementStream_;
         }
 
         private void buildIfNeed() {
@@ -189,7 +189,7 @@ abstract class AbstractFixedLengthLayout<T> {
             final ColumnDesc<T>[] cds = createColumnDescs(columnNames);
             fixedLengthRecordDesc_ = new FixedLengthRecordDesc<T>(cds,
                     getRecordType());
-            fixedLengthElementSetting_ = new FixedLengthElementSetting(
+            fixedLengthElementStream_ = new FixedLengthElementStream(
                     flColumnDescs);
         }
 
@@ -213,12 +213,11 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    protected static class FixedLengthElementSetting implements ElementSetting {
+    protected static class FixedLengthElementStream implements ElementStream {
 
         private final FixedLengthColumnDesc[] columns_;
 
-        protected FixedLengthElementSetting(
-                final FixedLengthColumnDesc[] columns) {
+        protected FixedLengthElementStream(final FixedLengthColumnDesc[] columns) {
             columns_ = columns;
         }
 
