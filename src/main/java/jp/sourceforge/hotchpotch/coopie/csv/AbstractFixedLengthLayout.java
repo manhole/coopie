@@ -26,6 +26,10 @@ abstract class AbstractFixedLengthLayout<T> {
         return recordDesc_;
     }
 
+    protected void setRecordDesc(final RecordDesc<T> recordDesc) {
+        recordDesc_ = recordDesc;
+    }
+
     protected ElementSetting getElementSetting() {
         return elementSetting_;
     }

@@ -1,6 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -146,21 +145,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private CsvColumn getCsvColumnAnnotation(final PropertyDesc<?> propertyDesc) {
-        if (propertyDesc.isReadable()) {
-            final Method reader = propertyDesc.getReadMethod();
-            final CsvColumn annotation = reader.getAnnotation(CsvColumn.class);
-            if (annotation != null) {
-                return annotation;
-            }
-        }
-        if (propertyDesc.isWritable()) {
-            final Method writer = propertyDesc.getWriteMethod();
-            final CsvColumn annotation = writer.getAnnotation(CsvColumn.class);
-            if (annotation != null) {
-                return annotation;
-            }
-        }
-        return null;
+        return Annotations.getAnnotation(propertyDesc, CsvColumn.class);
     }
 
     static class BeanCsvRecordDescSetup<T> extends

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
+import org.t2framework.commons.meta.PropertyDesc;
+import org.t2framework.commons.util.CollectionsUtil;
 
 public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         implements CsvLayout<T> {
@@ -49,6 +51,77 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     @Override
     protected FixedLengthRecordDescSetup getRecordDescSetup() {
         return new BeanFixedLengthRecordDescSetup<T>(beanDesc_);
+    }
+
+    @Override
+    protected RecordDesc<T> getRecordDesc() {
+        if (super.getRecordDesc() == null) {
+            /*
+             * アノテーションが付いている場合は、アノテーションから構築する
+             */
+            setupByAnnotation();
+        }
+        return super.getRecordDesc();
+    }
+
+    @Override
+    protected ElementSetting getElementSetting() {
+        if (super.getElementSetting() == null) {
+            setupByAnnotation();
+        }
+        return super.getElementSetting();
+    }
+
+    private void setupByAnnotation() {
+        final List<PdAndColumn<T>> cols = CollectionsUtil.newArrayList();
+        final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
+        for (final PropertyDesc<T> pd : pds) {
+            final FixedLengthColumn column = Annotations.getAnnotation(pd,
+                    FixedLengthColumn.class);
+            if (column == null) {
+                continue;
+            }
+            cols.add(new PdAndColumn<T>(pd, column));
+        }
+
+        if (cols.isEmpty()) {
+            return;
+        }
+
+        setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                for (final PdAndColumn<T> col : cols) {
+                    setup.column(col.getPropertyName(), col.getBeginIndex(),
+                            col.getEndIndex());
+                }
+            }
+        });
+    }
+
+    private static class PdAndColumn<T> {
+
+        private final PropertyDesc<T> desc_;
+        private final FixedLengthColumn column_;
+
+        public PdAndColumn(final PropertyDesc<T> desc,
+                final FixedLengthColumn column) {
+            desc_ = desc;
+            column_ = column;
+        }
+
+        public String getPropertyName() {
+            return desc_.getPropertyName();
+        }
+
+        public int getBeginIndex() {
+            return column_.beginIndex();
+        }
+
+        public int getEndIndex() {
+            return column_.endIndex();
+        }
+
     }
 
     private static class BeanFixedLengthRecordDescSetup<T> extends
