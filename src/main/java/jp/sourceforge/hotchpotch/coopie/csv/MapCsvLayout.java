@@ -13,7 +13,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
     private final CsvSetting csvSetting = new CsvSetting();
 
     @Override
-    public CsvReader<Map<String, String>> openReader(final Reader reader) {
+    public RecordReader<Map<String, String>> openReader(final Reader reader) {
         if (reader == null) {
             throw new NullPointerException("reader");
         }
@@ -39,7 +39,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
     }
 
     @Override
-    public CsvWriter<Map<String, String>> openWriter(final Writer writer) {
+    public RecordWriter<Map<String, String>> openWriter(final Writer writer) {
         if (writer == null) {
             throw new NullPointerException("writer");
         }

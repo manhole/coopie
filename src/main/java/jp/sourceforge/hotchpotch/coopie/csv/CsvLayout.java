@@ -5,8 +5,8 @@ import java.io.Writer;
 
 public interface CsvLayout<T> {
 
-    CsvReader<T> openReader(Reader reader);
+    RecordReader<T> openReader(Reader reader);
 
-    CsvWriter<T> openWriter(Writer writer);
+    RecordWriter<T> openWriter(Writer writer);
 
 }

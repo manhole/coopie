@@ -9,7 +9,7 @@ public class MapFixedLengthLayout extends
         CsvLayout<Map<String, String>> {
 
     @Override
-    public CsvReader<Map<String, String>> openReader(final Reader reader) {
+    public RecordReader<Map<String, String>> openReader(final Reader reader) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultCsvReader<Map<String, String>> r = new DefaultCsvReader<Map<String, String>>(
@@ -22,7 +22,7 @@ public class MapFixedLengthLayout extends
     }
 
     @Override
-    public CsvWriter<Map<String, String>> openWriter(final Writer writer) {
+    public RecordWriter<Map<String, String>> openWriter(final Writer writer) {
         final RecordDesc<Map<String, String>> rd = getRecordDesc();
         final ElementSetting es = getElementSetting();
         final DefaultCsvWriter<Map<String, String>> w = new DefaultCsvWriter<Map<String, String>>(

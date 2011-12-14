@@ -34,8 +34,8 @@ public class CsvAssert {
         }
 
         try {
-            final CsvReader<Map<String, String>> actualCsvReader = openMapReader(actualReader);
-            final CsvReader<Map<String, String>> expectedCsvReader = openMapReader(expectedReader);
+            final RecordReader<Map<String, String>> actualCsvReader = openMapReader(actualReader);
+            final RecordReader<Map<String, String>> expectedCsvReader = openMapReader(expectedReader);
             assertCsvEquals(expectedCsvReader, actualCsvReader);
         } finally {
             IOUtil.closeNoException(expectedReader);
@@ -43,19 +43,19 @@ public class CsvAssert {
         }
     }
 
-    private CsvReader<Map<String, String>> openMapReader(
+    private RecordReader<Map<String, String>> openMapReader(
             final Reader actualReader) {
         final MapCsvLayout layout = new MapCsvLayout();
         layout.setWithHeader(true);
         layout.setElementSeparator(elementSeparator_);
-        final CsvReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, String>> csvReader = layout
                 .openReader(actualReader);
         return csvReader;
     }
 
     private void assertCsvEquals(
-            final CsvReader<Map<String, String>> expectedCsvReader,
-            final CsvReader<Map<String, String>> actualCsvReader) {
+            final RecordReader<Map<String, String>> expectedCsvReader,
+            final RecordReader<Map<String, String>> actualCsvReader) {
 
         while (expectedCsvReader.hasNext() && actualCsvReader.hasNext()) {
             final Map<String, String> exp = expectedCsvReader.read();

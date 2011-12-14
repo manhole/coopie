@@ -38,7 +38,7 @@ public class BeanFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -81,7 +81,7 @@ public class BeanFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -133,7 +133,7 @@ public class BeanFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -180,7 +180,7 @@ public class BeanFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final CsvWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");

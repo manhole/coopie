@@ -66,7 +66,7 @@ public class BeanCsvReaderTest {
                 AaaBean.class);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -74,7 +74,7 @@ public class BeanCsvReaderTest {
         assertRead1(csvReader, bean);
     }
 
-    public static void assertRead1(final CsvReader<AaaBean> csvReader,
+    public static void assertRead1(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -123,7 +123,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -169,7 +169,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -191,7 +191,7 @@ public class BeanCsvReaderTest {
 
     }
 
-    public static void assertRead2(final CsvReader<AaaBean> csvReader,
+    public static void assertRead2(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -226,7 +226,7 @@ public class BeanCsvReaderTest {
                 AaaBean.class);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -234,7 +234,7 @@ public class BeanCsvReaderTest {
         assertRead3(csvReader, bean);
     }
 
-    public static void assertRead3(final CsvReader<AaaBean> csvReader,
+    public static void assertRead3(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -267,7 +267,7 @@ public class BeanCsvReaderTest {
                 AaaBean.class);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -317,7 +317,7 @@ public class BeanCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -325,7 +325,7 @@ public class BeanCsvReaderTest {
         assertReadNoheader(csvReader, bean);
     }
 
-    static void assertReadNoheader(final CsvReader<AaaBean> csvReader,
+    static void assertReadNoheader(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
         /*
          * データはread2のテストと同じなので。
@@ -367,7 +367,7 @@ public class BeanCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new StringReader(""));
 
         // ## Assert ##
@@ -390,7 +390,7 @@ public class BeanCsvReaderTest {
                 AaaBean.class);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -398,7 +398,7 @@ public class BeanCsvReaderTest {
         assertReadEmptyRow(csvReader, bean);
     }
 
-    static void assertReadEmptyRow(final CsvReader<AaaBean> csvReader,
+    static void assertReadEmptyRow(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -442,14 +442,14 @@ public class BeanCsvReaderTest {
                 AaaBean.class);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
         assertReadEmptyRow2(csvReader);
     }
 
-    static void assertReadEmptyRow2(final CsvReader<AaaBean> csvReader)
+    static void assertReadEmptyRow2(final RecordReader<AaaBean> csvReader)
             throws IOException {
 
         {
@@ -502,7 +502,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -510,7 +510,7 @@ public class BeanCsvReaderTest {
         assertRead4(csvReader, bean);
     }
 
-    public static void assertRead4(final CsvReader<AaaBean> csvReader,
+    public static void assertRead4(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -550,7 +550,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -558,7 +558,7 @@ public class BeanCsvReaderTest {
         assertRead5(csvReader, bean);
     }
 
-    public static void assertRead5(final CsvReader<AaaBean> csvReader,
+    public static void assertRead5(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -601,14 +601,14 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         assertReadSmallColumns(csvReader, bean);
     }
 
-    static void assertReadSmallColumns(final CsvReader<AaaBean> csvReader,
+    static void assertReadSmallColumns(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -651,7 +651,7 @@ public class BeanCsvReaderTest {
         layout.setReadEditor(new TestReadEditor());
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -660,7 +660,7 @@ public class BeanCsvReaderTest {
     }
 
     public static void assertReadCustomLayout(
-            final CsvReader<AaaBean> csvReader, final AaaBean bean)
+            final RecordReader<AaaBean> csvReader, final AaaBean bean)
             throws IOException {
         // tsvデータ部分は1と同じ
         assertRead1(csvReader, bean);
@@ -758,7 +758,7 @@ public class BeanCsvReaderTest {
                 bean);
     }
 
-    private void assertRead9_1(final CsvReader<AaaBean> csvReader,
+    private void assertRead9_1(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -786,7 +786,7 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
-    private void assertRead9_2(final CsvReader<AaaBean> csvReader,
+    private void assertRead9_2(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -814,7 +814,7 @@ public class BeanCsvReaderTest {
                 AaaBean.class);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is1, "UTF-8"));
         //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
 
@@ -854,7 +854,7 @@ public class BeanCsvReaderTest {
                 AaaBean.class);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout
+        final RecordReader<AaaBean> csvReader = layout
                 .openReader(new InputStreamReader(is, "UTF-8"));
 
         // ## Assert ##
@@ -862,7 +862,7 @@ public class BeanCsvReaderTest {
         assertReadAfterLast(csvReader, bean);
     }
 
-    public static <T> void assertReadAfterLast(final CsvReader<T> csvReader,
+    public static <T> void assertReadAfterLast(final RecordReader<T> csvReader,
             final T bean) throws Throwable {
         csvReader.read(bean);
         csvReader.read(bean);
@@ -887,14 +887,14 @@ public class BeanCsvReaderTest {
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
-        final CsvReader<AaaBean> csvReader = layout.openReader(reader);
+        final RecordReader<AaaBean> csvReader = layout.openReader(reader);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         assertReadCsv(csvReader, bean);
     }
 
-    static void assertReadCsv(final CsvReader<AaaBean> csvReader,
+    static void assertReadCsv(final RecordReader<AaaBean> csvReader,
             final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());

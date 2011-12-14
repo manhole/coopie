@@ -27,7 +27,7 @@ public class MapExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(baos);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -75,7 +75,7 @@ public class MapExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final CsvWriter<Map<String, String>> csvWriter = layout
+        final RecordWriter<Map<String, String>> csvWriter = layout
                 .openWriter(baos);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
