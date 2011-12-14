@@ -294,6 +294,28 @@ public class ToStringFormatTest {
     }
 
     @Test
+    public void formatUnprintableString1() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format("aaa\r\nbbb");
+
+        // ## Assert ##
+        assertEquals("aaa<CR><LF>bbb", actual);
+    }
+
+    @Test
+    public void formatUnprintableString2() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        final ToStringFormat format = new ToStringFormat();
+        final String actual = format.format("\tat");
+
+        // ## Assert ##
+        assertEquals("<TAB>at", actual);
+    }
+
+    @Test
     public void composit1() throws Throwable {
         // ## Arrange ##
         final Composit c1 = new Composit("c1");
