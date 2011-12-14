@@ -12,9 +12,11 @@ public class CsvSetting implements ElementSetting {
     public static final char TAB = '\t';
     public static final char COMMA = ',';
     public static final char DOUBLE_QUOTE = '\"';
-    public static final String CR = "\r";
-    public static final String LF = "\n";
-    public static final String CRLF = "\r\n";
+    public static final char CR = '\r';
+    public static final char LF = '\n';
+    public static final String CR_S = Character.toString(CR);
+    public static final String LF_S = Character.toString(LF);
+    public static final String CRLF = CR_S + LF_S;
 
     /**
      * 要素区切り文字。

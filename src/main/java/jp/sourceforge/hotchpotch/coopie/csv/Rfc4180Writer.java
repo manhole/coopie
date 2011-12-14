@@ -10,6 +10,9 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 public class Rfc4180Writer implements ElementWriter {
 
+    private static final char CR = CsvSetting.CR;
+    private static final char LF = CsvSetting.LF;
+
     protected boolean closed_ = true;
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
@@ -21,8 +24,6 @@ public class Rfc4180Writer implements ElementWriter {
     private String lineSeparator_ = CsvSetting.CRLF;
     private QuoteMode quoteMode_ = QuoteMode.MINIMUM;
     private ElementWriteStrategy elementWriteStrategy_;
-    private final char CR = '\r';
-    private final char LF = '\n';
 
     public void open(final Appendable appendable) {
         appendable_ = appendable;
