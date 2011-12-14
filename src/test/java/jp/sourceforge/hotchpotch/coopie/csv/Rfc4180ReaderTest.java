@@ -62,7 +62,7 @@ public class Rfc4180ReaderTest {
      * zzz,yyy,xxx
      */
     @Test
-    public void rfc2() throws Throwable {
+    public void rfc2_no_lastCRLF() throws Throwable {
         // ## Arrange ##
         //final InputStream is = getResourceAsStream("-1", "tsv");
 
@@ -87,13 +87,49 @@ public class Rfc4180ReaderTest {
      * aaa,bbb , ccc
      */
     @Test
-    public void rfc3() throws Throwable {
+    public void rfc3_space1() throws Throwable {
         // ## Arrange ##
         final Rfc4180Reader reader = open(" aaa,bbb , ccc  ");
 
         // ## Act ##
         // ## Assert ##
         assertArrayEquals(a(" aaa", "bbb ", " ccc  "), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    @Test
+    public void rfc3_space2() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open(" ,a ,");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a(" ", "a ", ""), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    @Test
+    public void rfc3_space3() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open(", a , ");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("", " a ", " "), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    @Test
+    public void rfc3_space4() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open(", a , \n");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("", " a ", " "), reader.readRecord());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -107,7 +143,7 @@ public class Rfc4180ReaderTest {
      * 123,yyy,xxx
      */
     @Test
-    public void rfc4() throws Throwable {
+    public void rfc4_quote() throws Throwable {
         // ## Arrange ##
         final Rfc4180Reader reader = open("\"aaa\",\"bbb\",\"ccc\"" + CRLF
                 + "123,yyy,xxx");
@@ -184,7 +220,7 @@ public class Rfc4180ReaderTest {
      * "aaa","b""bb","ccc"
      */
     @Test
-    public void rfc7_quote() throws Throwable {
+    public void rfc7_escape_quote() throws Throwable {
         // ## Arrange ##
         final Rfc4180Reader reader = open("\"aaa\",\"b\"\"bb\",\"ccc\"");
 
