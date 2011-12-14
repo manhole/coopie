@@ -17,6 +17,7 @@ import org.t2framework.commons.util.CollectionsUtil;
  * 
  * http://www.rfc-editor.org/rfc/rfc4180.txt
  * http://www.kasai.fm/wiki/rfc4180jp (日本語訳)
+ * 
  * @author manhole
  */
 public class Rfc4180Reader implements ElementReader {
@@ -354,7 +355,33 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     static enum State {
-        INITIAL, BEGIN_ELEMENT, UNQUOTED_ELEMENT, QUOTED_ELEMENT, QUOTE
+
+        /**
+         * 行を開始する前の状態
+         */
+        INITIAL,
+
+        /**
+         * 要素を開始した状態。
+         * 要素が区切り文字で終了した直後もこの状態となる。(区切り文字の直後は次の要素の開始であるため)
+         */
+        BEGIN_ELEMENT,
+
+        /**
+         * クォートされていない要素の最中
+         */
+        UNQUOTED_ELEMENT,
+
+        /**
+         * クォートされている要素の最中
+         */
+        QUOTED_ELEMENT,
+
+        /**
+         * クォートされている要素の中でクォート文字が登場した状態
+         */
+        QUOTE
+
     }
 
 }

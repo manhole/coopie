@@ -199,7 +199,6 @@ public abstract class AbstractMapCsvLayout extends
 
         @Override
         public Map<String, String> newInstance() {
-            // これで良いのだっけ?
             throw new AssertionError();
         }
 

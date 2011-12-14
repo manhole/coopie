@@ -18,6 +18,9 @@ public interface RecordDesc<T> {
      */
     String[] getHeaderValues();
 
+    /**
+     * 列順が指定されているかどうかを返します。
+     */
     OrderSpecified getOrderSpecified();
 
     /**
@@ -30,6 +33,9 @@ public interface RecordDesc<T> {
      */
     RecordDesc<T> setupByBean(T bean);
 
+    /**
+     * 1レコードぶんのオブジェクトを生成します。
+     */
     T newInstance();
 
     public enum OrderSpecified {

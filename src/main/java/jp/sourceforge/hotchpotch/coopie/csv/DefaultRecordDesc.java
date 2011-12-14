@@ -118,6 +118,9 @@ public class DefaultRecordDesc<T> implements RecordDesc<T> {
                     continue HEADER;
                 }
             }
+            /*
+             * ヘッダ行に存在しない列は無視する
+             */
             //throw new RuntimeException("headerElem=" + headerElem);
             logger.debug("ignore column=[{}]", headerElem);
             cds[i] = new DefaultRecordDesc.IgnoreColumnDesc<T>();
