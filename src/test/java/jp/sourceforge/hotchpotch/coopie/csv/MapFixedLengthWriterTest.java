@@ -35,6 +35,7 @@ public class MapFixedLengthWriterTest {
                 setup.column("ccc", 12, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -79,6 +80,7 @@ public class MapFixedLengthWriterTest {
                 setup.column("bbb", 12, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -131,6 +133,7 @@ public class MapFixedLengthWriterTest {
                 setup.column("ccc", 14, 20);
             }
         });
+        layout.setWithHeader(true);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -177,7 +180,6 @@ public class MapFixedLengthWriterTest {
                 setup.column("bbb", 12, 20);
             }
         });
-        layout.setWithHeader(false);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
