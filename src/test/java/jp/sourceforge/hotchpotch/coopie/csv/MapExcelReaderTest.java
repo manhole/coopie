@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.io.InputStream;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
@@ -187,6 +188,26 @@ public class MapExcelReaderTest {
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         MapCsvReaderTest.assertRead5(csvReader, bean);
+    }
+
+    @Test
+    public void read_customLayout() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-7",
+                "xls");
+
+        final MapExcelLayout layout = new MapExcelLayout();
+
+        final TestReadEditor readEditor = new TestReadEditor();
+        layout.setReaderHandler(readEditor);
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(is);
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        MapCsvReaderTest.assertReadCustomLayout(csvReader, bean);
     }
 
     /**
