@@ -9,6 +9,7 @@ import java.io.StringReader;
 import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.SkipEmptyLineReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.MapCsvReaderTest;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
@@ -323,6 +324,52 @@ public class MapFixedLengthReaderTest {
         assertEquals("666", bean.get("aaa"));
         assertEquals("777", bean.get("bbb"));
         assertEquals("888", bean.get("ccc"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 空行をskipして読めること。
+     * 
+     */
+    @Test
+    public void read_skip_emptyline() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-5", "tsv");
+
+        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 7);
+                setup.column("ccc", 7, 14);
+                setup.column("bbb", 14, 20);
+            }
+        });
+        layout.setWithHeader(true);
+
+        layout.setReadEditor(new SkipEmptyLineReadEditor());
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader = layout
+                .openReader(r);
+
+        // ## Assert ##
+        final Map<String, String> bean = CollectionsUtil.newHashMap();
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ1", bean.get("aaa"));
+        assertEquals("い1", bean.get("bbb"));
+        assertEquals("う1", bean.get("ccc"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug(bean.toString());
+        assertEquals("あ3", bean.get("aaa"));
+        assertEquals("い3", bean.get("bbb"));
+        assertEquals("う3", bean.get("ccc"));
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();

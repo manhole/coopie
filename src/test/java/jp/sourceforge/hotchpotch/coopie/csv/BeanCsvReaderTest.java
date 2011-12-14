@@ -1149,7 +1149,7 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
-    static class SkipEmptyLineReadEditor extends DefaultReadEditor {
+    public static class SkipEmptyLineReadEditor extends DefaultReadEditor {
         @Override
         public boolean acceptLine(final Line line,
                 final ElementParserContext parserContext) {
