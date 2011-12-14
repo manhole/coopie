@@ -6,6 +6,7 @@
 - add: Rfc4180Reader, Rfc4180Writer. instead of OpenCSV
 - add: CsvColumn annotation
 - add: util package
+- add: Line, LineSeparator, LineReadable
 
 0.1.7 2011/11/15
 
