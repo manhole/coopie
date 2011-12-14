@@ -629,9 +629,8 @@ public class MapCsvReaderTest {
         final Reader r = getResourceAsReader("-7", "tsv");
 
         final MapCsvLayout layout = new MapCsvLayout();
-        final TestReadEditor elementReaderHandler = new TestReadEditor();
-        layout.setElementReaderHandler(elementReaderHandler);
-        layout.setLineReaderHandler(elementReaderHandler);
+        final TestReadEditor readEditor = new TestReadEditor();
+        layout.setReaderHandler(readEditor);
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout
@@ -892,6 +891,24 @@ public class MapCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    /**
+     * setReaderHandlerではLineReaderHandlerなど何らかのinterfaceをimplしているべき。
+     */
+    @Test
+    public void setup_invalid_readeditor() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout layout = new MapCsvLayout();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setReaderHandler(Integer.valueOf(123));
+            fail();
+        } catch (final IllegalArgumentException e) {
+            logger.debug(e.getMessage());
+        }
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {

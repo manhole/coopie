@@ -595,6 +595,25 @@ public class BeanFixedLengthReaderTest {
         csvReader.close();
     }
 
+    /**
+     * setReaderHandlerではLineReaderHandlerなど何らかのinterfaceをimplしているべき。
+     */
+    @Test
+    public void setup_invalid_readeditor() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setReaderHandler(new Object());
+            fail();
+        } catch (final IllegalArgumentException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Charset charset = Charset.forName("UTF-8");
         final Reader reader = getResourceAsReader(suffix, ext, charset);
