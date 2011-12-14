@@ -22,7 +22,8 @@ public class FixedLengthWriterTest {
         final StringWriter sw = new StringWriter();
 
         // ## Act ##
-        final FixedLengthWriter writer = new FixedLengthWriter(sw, descs);
+        final FixedLengthWriter writer = new FixedLengthWriter(descs);
+        writer.open(sw);
         writer.writeRecord(a("aaa", "ccc", "bbb"));
         writer.writeRecord(a("あ1", "う1", "い1"));
         writer.writeRecord(a("あ2", "う2", "い2"));

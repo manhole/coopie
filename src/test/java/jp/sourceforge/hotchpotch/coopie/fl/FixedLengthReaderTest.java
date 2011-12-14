@@ -18,8 +18,8 @@ public class FixedLengthReaderTest extends ElementReaderTest {
                 col(0, 5), col(5, 12), col(12, 20) };
 
         // ## Act ##
-        final FixedLengthReader reader = new FixedLengthReader(
-                new InputStreamReader(is, Charset.forName("UTF-8")), descs);
+        final FixedLengthReader reader = new FixedLengthReader(descs);
+        reader.open(new InputStreamReader(is, Charset.forName("UTF-8")));
         return reader;
     }
 
