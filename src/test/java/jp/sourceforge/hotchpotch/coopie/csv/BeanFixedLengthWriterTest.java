@@ -38,6 +38,26 @@ public class BeanFixedLengthWriterTest {
     }
 
     /**
+     * setupしないでopenしようとしたら、エラーにする。
+     */
+    @Test
+    public void write_nosetup() throws Throwable {
+        // ## Arrange ##
+
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openWriter(new StringWriter());
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
+    /**
      * 出力できること。
      * データは右側に寄っていること。
      */
