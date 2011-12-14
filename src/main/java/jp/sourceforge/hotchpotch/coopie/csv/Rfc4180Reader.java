@@ -219,30 +219,30 @@ public class Rfc4180Reader implements ElementReader {
                                     line.getBody());
                         }
 
+                        /*
+                         * 先頭のスペースを除いた、クォートされた要素の場合は、
+                         * クォートされない要素として読み直す。
+                         * 
+                         * 先頭ではなく末尾にスペースを持つ要素の場合は、INVALIDにはしない。
+                         * (グレーだけれど)
+                         */
                         if (rb.isDiscardedHeadingSpace()) {
                             logger.debug(log);
-                            /*
-                             * ここでは、要素自体がクォートされていないものとして扱うことにする。
-                             * つまり、"abc"d" このような入力を、"abc"d" そのものとみなすということ。
-                             * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
-                             * (見直す可能性アリ)
-                             */
-                            pushback_ = new BufferedReadable(new StringReader(
-                                    rb.getPlain()));
-                            rb.clearElement();
-                            state = State.UNQUOTED_ELEMENT;
                         } else {
                             logger.warn(log);
                             recordState_ = RecordState.INVALID;
-                            /*
-                             * ここでは、エスケープ文字と続く不正文字を、通常の文字として扱うことにする。
-                             * つまり、"abc"d" このような入力を、"abc""d" とみなすということ。
-                             * (見直す可能性アリ)
-                             */
-                            rb.append(quoteMark_);
-                            rb.append(c);
-                            state = State.QUOTED_ELEMENT;
                         }
+
+                        /*
+                         * ここでは、要素自体がクォートされていないものとして扱うことにする。
+                         * つまり、"abc"d" このような入力を、"abc"d" そのものとみなすということ。
+                         * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
+                         * (見直す可能性アリ)
+                         */
+                        pushback_ = new BufferedReadable(new StringReader(
+                                rb.getPlain()));
+                        rb.clearElement();
+                        state = State.UNQUOTED_ELEMENT;
                     }
                     break;
 
