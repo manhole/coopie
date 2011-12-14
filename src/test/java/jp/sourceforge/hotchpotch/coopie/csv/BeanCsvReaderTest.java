@@ -13,7 +13,7 @@ import java.nio.charset.Charset;
 import java.util.NoSuchElementException;
 
 import jp.sourceforge.hotchpotch.coopie.ToStringFormat;
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvReader.ReadEditor;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractRecordReader.ReadEditor;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Ignore;
