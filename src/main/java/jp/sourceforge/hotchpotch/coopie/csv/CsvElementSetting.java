@@ -30,7 +30,7 @@ public class CsvElementSetting implements ElementSetting {
         writer.setElementSeparator(csvSetting_.getElementSeparator());
         writer.setLineSeparator(csvSetting_.getLineSeparator());
         writer.setQuoteMark(csvSetting_.getQuoteMark());
-        writer.setQuoteMode(QuoteMode.ALWAYS_EXCEPT_NULL);
+        writer.setQuoteMode(csvSetting_.getQuoteMode());
         return writer;
     }
 
