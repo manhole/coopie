@@ -36,6 +36,8 @@ public class BufferedReadableTest {
         assertEquals(0, cs.readChar());
         assertEquals(0, cs.readChar());
         assertEquals(true, cs.isEof());
+
+        cs.close();
     }
 
     @Test
@@ -72,6 +74,8 @@ public class BufferedReadableTest {
         assertEquals(0, cs.peekChar());
         assertEquals(0, cs.readChar());
         assertEquals(true, cs.isEof());
+
+        cs.close();
     }
 
     @Test
@@ -102,6 +106,8 @@ public class BufferedReadableTest {
         assertEquals(0, cs.readChar());
         assertEquals(0, cs.readChar());
         assertEquals(true, cs.isEof());
+
+        cs.close();
     }
 
     @Test
@@ -128,6 +134,8 @@ public class BufferedReadableTest {
         assertEquals(0, cs.readChar());
         assertEquals(0, cs.readChar());
         assertEquals(true, cs.isEof());
+
+        cs.close();
     }
 
     private BufferedReadable create(final String in) {
