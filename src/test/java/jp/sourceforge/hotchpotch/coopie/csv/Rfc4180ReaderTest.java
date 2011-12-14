@@ -38,14 +38,17 @@ public class Rfc4180ReaderTest {
         assertArrayEquals(a("aaa", "bbb", "ccc"), reader.readRecord());
         assertEquals(1, reader.getRecordNumber());
         assertEquals(1, reader.getLineNumber());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
 
         assertArrayEquals(a("zzz", "yyy", "xxx"), reader.readRecord());
         assertEquals(2, reader.getRecordNumber());
         assertEquals(2, reader.getLineNumber());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
 
         assertNull(reader.readRecord());
         assertEquals(2, reader.getRecordNumber());
         assertEquals(2, reader.getLineNumber());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
 
         reader.close();
     }
@@ -370,6 +373,70 @@ public class Rfc4180ReaderTest {
         // ## Act ##
         // ## Assert ##
         assertArrayEquals(a("aaa", "bbb", "cc"), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
+     * 不正データ
+     * 
+     * 余分なクォートがある場合に、どう振る舞うのが良いか。。
+     * 
+     * a,"b"","c" CRLF
+     * A,"B",C
+     * 
+     * 1行目が不正
+     */
+    @Test
+    public void invalid_quote1() throws Throwable {
+        // ## Arrange ##
+        final String in = "a,\"b\"\",\"c\"" + "\r\n" + "A,\"B\",C";
+        final Rfc4180Reader reader = open(in);
+
+        // ## Act ##
+        // ## Assert ##
+        /*
+         * readした後に、stateがINVALIDかどうかを見れるようにした。
+         */
+        assertArrayEquals(a("a", "b\",\"c"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertArrayEquals(a("A", "B", "C"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
+     * 不正データ
+     * 
+     * 余分なクォートがある場合に、どう振る舞うのが良いか。。
+     * 
+     * a,"b"",c CRLF
+     * A,"B",C CRLF
+     * D, E, F
+     * 
+     * 1行目だけが不正
+     */
+    @Test
+    public void invalid_quote2() throws Throwable {
+        // ## Arrange ##
+        final String in = "a,\"b\"\",c" + "\r\n" + "A,\"B\",C" + "\r\n"
+                + "D,E,F";
+        final Rfc4180Reader reader = open(in);
+
+        // ## Act ##
+        // ## Assert ##
+        /*
+         * ここでは、クォートが再度登場するまで食べに行く実装にした。
+         * 
+         * クォートが正しく登場すれば「何かおかしい」ことに気づける。
+         * クォートが登場しない場合は、最後まで食べに行ってしまう。
+         * 「前行に比べてデータ量がやけに多い」という判別くらいしかできなそう。。
+         */
+        assertArrayEquals(a("a", "b\",c\r\nA,\"B", "C"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertArrayEquals(a("D", "E", "F"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }
