@@ -4,10 +4,22 @@ import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 public class ElementEditors {
 
+    public static ElementEditor passThrough() {
+        return PASS_THROUGH;
+    }
+
+    public static ElementEditor trim() {
+        return TRIM;
+    }
+
+    public static ElementEditor trimWhitespace() {
+        return TRIM_WHITESPACE;
+    }
+
     /**
      * 何もしません。
      */
-    public static final ElementEditor NO_EDIT = new ElementEditor() {
+    private static final ElementEditor PASS_THROUGH = new ElementEditor() {
         @Override
         public String edit(final String element) {
             return element;
@@ -17,7 +29,7 @@ public class ElementEditors {
     /**
      * {@link String#trim()}します。
      */
-    public static final ElementEditor TRIM = new ElementEditor() {
+    private static final ElementEditor TRIM = new ElementEditor() {
         @Override
         public String edit(final String element) {
             return element.trim();
@@ -27,7 +39,7 @@ public class ElementEditors {
     /**
      * {@link Character#isWhitespace(char)}である文字をtrimします。
      */
-    public static final ElementEditor TRIM_WHITESPACE = new ElementEditor() {
+    private static final ElementEditor TRIM_WHITESPACE = new ElementEditor() {
         @Override
         public String edit(final String element) {
             return Text.trimWhitespace(element);
