@@ -5,9 +5,11 @@ import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.Logger;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
-import jp.sourceforge.hotchpotch.coopie.util.BufferedReadable;
+import jp.sourceforge.hotchpotch.coopie.util.Closable;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
+import jp.sourceforge.hotchpotch.coopie.util.LineSeparator;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
@@ -31,19 +33,24 @@ public class Rfc4180Reader implements ElementReader {
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
     private int recordNo_;
-    private BufferedReadable br_;
+    private CharacterReadable reader_;
 
     private char elementSeparator_ = CsvSetting.COMMA;
     private char quoteMark_ = CsvSetting.DOUBLE_QUOTE;
 
     public void open(final Readable readable) {
-        br_ = new BufferedReadable(readable);
+        reader_ = new CharacterReadable(readable);
         closed_ = false;
     }
 
     @Override
     public int getRecordNumber() {
         return recordNo_;
+    }
+
+    @Override
+    public int getLineNumber() {
+        return reader_.getLineNumber();
     }
 
     @Override
@@ -234,18 +241,18 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     private char peek() throws IOException {
-        return br_.peekChar();
+        return reader_.peekChar();
     }
 
     private char next() throws IOException {
-        return br_.readChar();
+        return reader_.readChar();
     }
 
     /*
      * EOF
      */
     private boolean isEof() {
-        return br_.isEof();
+        return reader_.isEof();
     }
 
     @Override
@@ -256,7 +263,7 @@ public class Rfc4180Reader implements ElementReader {
     @Override
     public void close() throws IOException {
         closed_ = true;
-        CloseableUtil.closeNoException(br_);
+        CloseableUtil.closeNoException(reader_);
     }
 
     public void setElementSeparator(final char elementSeparator) {
@@ -381,6 +388,76 @@ public class Rfc4180Reader implements ElementReader {
          * クォートされている要素の中でクォート文字が登場した状態
          */
         QUOTE
+
+    }
+
+    private static class CharacterReadable implements Closable {
+
+        private static final char NULL_CHAR = '\u0000';
+        private final LineReadable reader_;
+        private char[] chars_ = new char[] {};
+        private int pos_;
+        private boolean eof_;
+
+        private boolean closed_;
+        @SuppressWarnings("unused")
+        private final Object finalizerGuardian_ = new ClosingGuardian(this);
+
+        CharacterReadable(final Readable readable) {
+            reader_ = new LineReadable(readable);
+        }
+
+        public boolean isEof() {
+            return eof_;
+        }
+
+        public char readChar() throws IOException {
+            readNextIfNeed();
+            if (eof_) {
+                return NULL_CHAR;
+            }
+            final char c = chars_[pos_];
+            pos_++;
+            return c;
+        }
+
+        public char peekChar() throws IOException {
+            readNextIfNeed();
+            if (eof_) {
+                return NULL_CHAR;
+            }
+            final char c = chars_[pos_];
+            return c;
+        }
+
+        protected void readNextIfNeed() throws IOException {
+            while (!eof_ && chars_.length <= pos_) {
+                final String line = reader_.readLine();
+                if (line == null) {
+                    eof_ = true;
+                    return;
+                }
+                final LineSeparator sep = reader_.getLineSeparator();
+                final String end = sep.getSeparator();
+                chars_ = (line + end).toCharArray();
+                pos_ = 0;
+            }
+        }
+
+        public int getLineNumber() {
+            return reader_.getLineNumber();
+        }
+
+        @Override
+        public boolean isClosed() {
+            return closed_;
+        }
+
+        @Override
+        public void close() throws IOException {
+            closed_ = true;
+            CloseableUtil.closeNoException(reader_);
+        }
 
     }
 

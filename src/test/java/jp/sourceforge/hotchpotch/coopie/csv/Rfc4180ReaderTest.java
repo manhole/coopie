@@ -33,11 +33,20 @@ public class Rfc4180ReaderTest {
         // ## Act ##
         // ## Assert ##
         assertEquals(0, reader.getRecordNumber());
+        assertEquals(0, reader.getLineNumber());
+
         assertArrayEquals(a("aaa", "bbb", "ccc"), reader.readRecord());
         assertEquals(1, reader.getRecordNumber());
+        assertEquals(1, reader.getLineNumber());
+
         assertArrayEquals(a("zzz", "yyy", "xxx"), reader.readRecord());
         assertEquals(2, reader.getRecordNumber());
+        assertEquals(2, reader.getLineNumber());
+
         assertNull(reader.readRecord());
+        assertEquals(2, reader.getRecordNumber());
+        assertEquals(2, reader.getLineNumber());
+
         reader.close();
     }
 
@@ -125,8 +134,17 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
+        assertEquals(0, reader.getRecordNumber());
+        assertEquals(0, reader.getLineNumber());
+
         assertArrayEquals(a("aaa", "b\r\nbb", "ccc"), reader.readRecord());
+        assertEquals(1, reader.getRecordNumber());
+        assertEquals(2, reader.getLineNumber());
+
         assertArrayEquals(a("123", "yyy", "xxx"), reader.readRecord());
+        assertEquals(2, reader.getRecordNumber());
+        assertEquals(3, reader.getLineNumber());
+
         assertNull(reader.readRecord());
         reader.close();
     }
