@@ -39,7 +39,7 @@ public class FixedLengthReader implements ElementReader {
     @Override
     public String[] readRecord() {
         try {
-            final String line = reader_.readLine();
+            final String line = reader_.readLineBody();
             if (line == null) {
                 return null;
             }

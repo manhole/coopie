@@ -19,9 +19,19 @@ public class LineReadable implements Closable {
         readable_ = new BufferedReadable(readable);
     }
 
-    public String readLine() throws IOException {
+    public String readLineBody() throws IOException {
         read0();
         return line_;
+    }
+
+    public Line readLine() throws IOException {
+        read0();
+        if (line_ == null) {
+            return null;
+        }
+
+        final Line line = new LineImpl(line_, lineNumber_, lineSeparator_);
+        return line;
     }
 
     public boolean readLine(final Line line) throws IOException {
