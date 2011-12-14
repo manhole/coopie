@@ -17,7 +17,7 @@ public abstract class AbstractMapCsvLayout extends
 
     @Override
     protected AbstractCsvRecordDescSetup<Map<String, String>> getRecordDescSetup() {
-        return new MapColumnSetup();
+        return new MapCsvRecordDescSetup();
     }
 
     protected RecordDesc<Map<String, String>> getRecordDesc() {
@@ -40,7 +40,7 @@ public abstract class AbstractMapCsvLayout extends
         return cd;
     }
 
-    static class MapColumnSetup extends
+    static class MapCsvRecordDescSetup extends
             AbstractCsvRecordDescSetup<Map<String, String>> {
 
         @Override

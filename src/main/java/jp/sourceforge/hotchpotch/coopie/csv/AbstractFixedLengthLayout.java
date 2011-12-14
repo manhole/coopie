@@ -124,7 +124,7 @@ abstract class AbstractFixedLengthLayout<T> extends AbstractLayout<T> {
 
     }
 
-    protected abstract static class AbstractFixedLengthColumnSetup<T>
+    protected abstract static class AbstractFixedLengthRecordDescSetup<T>
             implements FixedLengthRecordDescSetup {
 
         protected final List<FixedLengthColumn> columns = CollectionsUtil

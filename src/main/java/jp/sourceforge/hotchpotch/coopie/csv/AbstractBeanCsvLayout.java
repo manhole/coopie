@@ -19,7 +19,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     @Override
     protected CsvRecordDescSetup<T> getRecordDescSetup() {
-        return new BeanColumnSetup<T>(beanDesc);
+        return new BeanCsvRecordDescSetup<T>(beanDesc);
     }
 
     protected RecordDesc<T> getRecordDesc() {
@@ -44,11 +44,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return recordDesc;
     }
 
-    static class BeanColumnSetup<T> extends AbstractCsvRecordDescSetup<T> {
+    static class BeanCsvRecordDescSetup<T> extends AbstractCsvRecordDescSetup<T> {
 
         private final BeanDesc<T> beanDesc;
 
-        BeanColumnSetup(final BeanDesc<T> beanDesc) {
+        BeanCsvRecordDescSetup(final BeanDesc<T> beanDesc) {
             this.beanDesc = beanDesc;
         }
 

@@ -41,15 +41,15 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
     @Override
     protected FixedLengthRecordDescSetup getRecordDescSetup() {
-        return new BeanFixedLengthColumnSetup<T>(beanDesc);
+        return new BeanFixedLengthRecordDescSetup<T>(beanDesc);
     }
 
-    private static class BeanFixedLengthColumnSetup<T> extends
-            AbstractFixedLengthColumnSetup<T> {
+    private static class BeanFixedLengthRecordDescSetup<T> extends
+            AbstractFixedLengthRecordDescSetup<T> {
 
         private final BeanDesc<T> beanDesc;
 
-        BeanFixedLengthColumnSetup(final BeanDesc<T> beanDesc) {
+        BeanFixedLengthRecordDescSetup(final BeanDesc<T> beanDesc) {
             this.beanDesc = beanDesc;
         }
 
