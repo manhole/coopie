@@ -36,7 +36,12 @@ public class CsvAssert {
         try {
             final RecordReader<Map<String, String>> actualCsvReader = openMapReader(actualReader);
             final RecordReader<Map<String, String>> expectedCsvReader = openMapReader(expectedReader);
-            assertCsvEquals(expectedCsvReader, actualCsvReader);
+            try {
+                assertCsvEquals(expectedCsvReader, actualCsvReader);
+            } finally {
+                CloseableUtil.closeNoException(actualCsvReader);
+                CloseableUtil.closeNoException(expectedCsvReader);
+            }
         } finally {
             CloseableUtil.closeNoException(expectedReader);
             CloseableUtil.closeNoException(actualReader);
