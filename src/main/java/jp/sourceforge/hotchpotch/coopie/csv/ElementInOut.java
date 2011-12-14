@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface ElementStream {
+public interface ElementInOut {
 
     ElementWriter openWriter(Appendable appendable);
 

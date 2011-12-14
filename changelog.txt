@@ -11,13 +11,13 @@
 - 固定長ファイル関連クラスをflパッケージへ移動しました。
 - add: ElementEditor. 読んだ要素を編集(trimなど)できるようにしました。
 - slf4jとlogbackのバージョンを、それぞれ 1.6.4と1.0.0へバージョンアップしました。
-- rename: ElementSetting -> ElementStream
 - rename: FixedLengthColumnDesc -> FixedLengthElementDesc
 - add: RecordReader#getRecordNumber()
 - add: ElementReader#getLineNumber()
 - CSV parse時に問題のあった行について、warnへ詳しいログを出力するようにしました。
 - 固定長入出力で指定する文字数が、サロゲートペアを考慮するようにしました。
   (charとしては2つでも、1文字としてカウントできるように)
+- rename: ElementSetting -> ElementInOut
 
 0.1.7 2011/11/15
 

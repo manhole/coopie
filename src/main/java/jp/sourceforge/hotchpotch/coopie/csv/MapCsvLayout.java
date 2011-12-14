@@ -9,11 +9,11 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         CsvLayout<Map<String, String>> {
 
     private final CsvSetting csvSetting_;
-    private final ElementStream elementStream_;
+    private final ElementInOut elementInOut_;
 
     public MapCsvLayout() {
         csvSetting_ = new DefaultCsvSetting();
-        elementStream_ = new CsvElementStream(csvSetting_);
+        elementInOut_ = new CsvElementInOut(csvSetting_);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
-        r.setElementStream(elementStream_);
+        r.setElementInOut(elementInOut_);
         r.setElementEditor(getElementEditor());
         new FailureProtection<RuntimeException>() {
 
@@ -53,7 +53,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
-        w.setElementStream(elementStream_);
+        w.setElementInOut(elementInOut_);
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;
