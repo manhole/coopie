@@ -1,7 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import jp.sourceforge.hotchpotch.coopie.csv.Rfc4180Writer.QuoteMode;
-
 public class CsvElementSetting implements ElementSetting {
 
     private final CsvSetting csvSetting_;
