@@ -15,6 +15,7 @@ import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineImpl;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
+import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 import jp.sourceforge.hotchpotch.coopie.util.LineSeparator;
 
 import org.t2framework.commons.exception.IORuntimeException;
@@ -41,12 +42,14 @@ public class Rfc4180Reader implements ElementReader {
 
     private int recordNo_;
     private CharacterReadable reader_;
+    private LineReaderHandler lineReaderHandler_ = PassThroughHandler
+            .getInstance();
 
     private char elementSeparator_ = CsvSetting.COMMA;
     private char quoteMark_ = CsvSetting.DOUBLE_QUOTE;
 
     public void open(final Readable readable) {
-        reader_ = new CharacterReadable(readable);
+        reader_ = new CharacterReadable(readable, lineReaderHandler_);
         closed_ = false;
     }
 
@@ -362,6 +365,10 @@ public class Rfc4180Reader implements ElementReader {
         quoteMark_ = quoteMark;
     }
 
+    public void setLineReaderHandler(final LineReaderHandler lineReaderHandler) {
+        lineReaderHandler_ = lineReaderHandler;
+    }
+
     private static void clearBuffer(final StringBuilder sb) {
         if (sb != null) {
             sb.setLength(0);
@@ -564,6 +571,7 @@ public class Rfc4180Reader implements ElementReader {
         private static final char NULL_CHAR = '\u0000';
         private static final char[] EMPTY_CHARS = new char[] {};
         private final LineReadable reader_;
+        private final LineReaderHandler lineReaderHandler_;
         private char[] chars_ = EMPTY_CHARS;
         private int pos_;
         private boolean eof_;
@@ -574,8 +582,10 @@ public class Rfc4180Reader implements ElementReader {
         private String line_;
         private Marker marker_;
 
-        CharacterReadable(final Readable readable) {
+        CharacterReadable(final Readable readable,
+                final LineReaderHandler lineReaderHandler) {
             reader_ = new LineReadable(readable);
+            lineReaderHandler_ = lineReaderHandler;
         }
 
         /*
@@ -583,10 +593,6 @@ public class Rfc4180Reader implements ElementReader {
          */
         public void mark() {
             marker_ = new Marker();
-        }
-
-        public void clearMark() {
-            marker_ = null;
         }
 
         public List<Line> getMarkedLines() {
@@ -618,12 +624,13 @@ public class Rfc4180Reader implements ElementReader {
 
         protected void readNextIfNeed() throws IOException {
             while (!eof_ && chars_.length <= pos_) {
-                line_ = reader_.readLineBody();
-                if (line_ == null) {
+                final Line line = lineReaderHandler_.readLine(reader_);
+                if (line == null) {
                     eof_ = true;
                     return;
                 }
-                final LineSeparator sep = reader_.getLineSeparator();
+                line_ = line.getBody();
+                final LineSeparator sep = line.getSeparator();
                 final String end = sep.getSeparator();
                 chars_ = (line_ + end).toCharArray();
                 pos_ = 0;
@@ -633,10 +640,6 @@ public class Rfc4180Reader implements ElementReader {
 
         public int getLineNumber() {
             return reader_.getLineNumber();
-        }
-
-        public String getCurrentLine() {
-            return line_;
         }
 
         @Override
@@ -680,6 +683,21 @@ public class Rfc4180Reader implements ElementReader {
 
     public enum RecordState {
         OK, INVALID
+    }
+
+    private static class PassThroughHandler implements LineReaderHandler {
+
+        private static final LineReaderHandler INSTANCE = new PassThroughHandler();
+
+        public static LineReaderHandler getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public Line readLine(final LineReader reader) throws IOException {
+            return reader.readLine();
+        }
+
     }
 
 }
