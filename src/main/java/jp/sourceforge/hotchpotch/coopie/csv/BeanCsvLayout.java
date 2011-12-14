@@ -7,7 +7,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         CsvLayout<T> {
 
     private final CsvSetting csvSetting_;
-    private final ElementStream elementStream_;
+    private final ElementInOut elementInOut_;
 
     public static <T> BeanCsvLayout<T> getInstance(final Class<T> beanClass) {
         final BeanCsvLayout<T> instance = new BeanCsvLayout<T>(beanClass);
@@ -17,7 +17,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
     public BeanCsvLayout(final Class<T> beanClass) {
         super(beanClass);
         csvSetting_ = new DefaultCsvSetting();
-        elementStream_ = new CsvElementStream(csvSetting_);
+        elementInOut_ = new CsvElementInOut(csvSetting_);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
-        r.setElementStream(elementStream_);
+        r.setElementInOut(elementInOut_);
         r.setReadEditor(getReadEditor());
         r.setElementEditor(getElementEditor());
 
@@ -58,7 +58,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
-        w.setElementStream(elementStream_);
+        w.setElementInOut(elementInOut_);
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;

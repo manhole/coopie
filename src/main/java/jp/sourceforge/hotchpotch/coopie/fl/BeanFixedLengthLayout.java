@@ -10,7 +10,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
-import jp.sourceforge.hotchpotch.coopie.csv.ElementStream;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
@@ -45,10 +45,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         }
 
         final RecordDesc<T> rd = getRecordDesc();
-        final ElementStream es = getElementStream();
+        final ElementInOut es = getElementInOut();
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
         r.setWithHeader(isWithHeader());
-        r.setElementStream(es);
+        r.setElementInOut(es);
         r.setElementEditor(getElementEditor());
         // TODO openで例外時にcloseすること
         r.open(readable);
@@ -62,10 +62,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         }
 
         final RecordDesc<T> rd = getRecordDesc();
-        final ElementStream es = getElementStream();
+        final ElementInOut es = getElementInOut();
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(rd);
         w.setWithHeader(isWithHeader());
-        w.setElementStream(es);
+        w.setElementInOut(es);
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;
@@ -93,16 +93,16 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     }
 
     @Override
-    protected ElementStream getElementStream() {
-        if (super.getElementStream() == null) {
+    protected ElementInOut getElementInOut() {
+        if (super.getElementInOut() == null) {
             setupByAnnotation();
         }
 
-        final ElementStream elementStream = super.getElementStream();
-        if (elementStream == null) {
-            throw new IllegalStateException("elementStream");
+        final ElementInOut elementInOut = super.getElementInOut();
+        if (elementInOut == null) {
+            throw new IllegalStateException("elementInOut");
         }
-        return elementStream;
+        return elementInOut;
     }
 
     private void setupByAnnotation() {
