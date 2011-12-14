@@ -1,12 +1,10 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.IOException;
-import java.io.Writer;
 
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.IOUtil;
-import jp.sourceforge.hotchpotch.coopie.util.WriterUtil;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.StringUtil;
@@ -17,13 +15,13 @@ public class FixedLengthWriter implements ElementWriter {
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    private final BufferedWriter writer_;
+    private final Appendable appendable_;
     private final FixedLengthColumn[] columns_;
     private String lineSeparator_ = CsvSetting.CRLF;
 
-    public FixedLengthWriter(final Writer writer,
+    public FixedLengthWriter(final Appendable appendable,
             final FixedLengthColumn[] columns) {
-        writer_ = WriterUtil.toBufferedWriter(writer);
+        appendable_ = appendable;
         columns_ = columns;
         closed_ = false;
     }
@@ -35,9 +33,9 @@ public class FixedLengthWriter implements ElementWriter {
             for (int i = 0; i < len; i++) {
                 final String s = line[i];
                 final FixedLengthColumn column = columns_[i];
-                column.write(s, writer_);
+                column.write(s, appendable_);
             }
-            writer_.write(getLineSeparator());
+            appendable_.append(getLineSeparator());
         } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
@@ -51,7 +49,10 @@ public class FixedLengthWriter implements ElementWriter {
     @Override
     public void close() throws IOException {
         closed_ = true;
-        IOUtil.closeNoException(writer_);
+        if (appendable_ instanceof Closeable) {
+            final Closeable closeable = Closeable.class.cast(appendable_);
+            IOUtil.closeNoException(closeable);
+        }
     }
 
     public String getLineSeparator() {
