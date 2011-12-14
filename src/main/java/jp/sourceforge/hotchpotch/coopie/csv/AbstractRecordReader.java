@@ -32,6 +32,8 @@ public abstract class AbstractRecordReader<T> implements Closable,
     private Boolean hasNext_;
     private String[] nextLine_;
 
+    private ElementEditor elementEditor_;
+
     public AbstractRecordReader(final RecordDesc<T> recordDesc) {
         recordDesc_ = recordDesc;
     }
@@ -66,6 +68,13 @@ public abstract class AbstractRecordReader<T> implements Closable,
 
     protected String[] readLine() {
         final String[] line = readEditor_.readRecord(elementReader_);
+        if (line != null && elementEditor_ != null) {
+            for (int i = 0; i < line.length; i++) {
+                final String elem = line[i];
+                final String edited = elementEditor_.edit(elem);
+                line[i] = edited;
+            }
+        }
         return line;
     }
 
@@ -142,6 +151,10 @@ public abstract class AbstractRecordReader<T> implements Closable,
             throw new NullPointerException("readEditor");
         }
         readEditor_ = readEditor;
+    }
+
+    public void setElementEditor(final ElementEditor elementEditor) {
+        elementEditor_ = elementEditor;
     }
 
     protected ElementReader getElementReader() {
