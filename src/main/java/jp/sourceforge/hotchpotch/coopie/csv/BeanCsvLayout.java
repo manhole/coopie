@@ -64,4 +64,12 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
         csvSetting.setElementSeparator(elementSeparator);
     }
 
+    public void setLineSeparator(final String lineSeparator) {
+        csvSetting.setLineSeparator(lineSeparator);
+    }
+
+    public void setQuoteMark(final char quoteMark) {
+        csvSetting.setQuoteMark(quoteMark);
+    }
+
 }
