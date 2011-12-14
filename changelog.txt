@@ -9,6 +9,7 @@
 - add: Line, LineSeparator, LineReadable
 - Reader/Writerの替わりに、なるべくReadable/Appendableを扱うようにしました。
 - 固定長ファイル関連クラスをflパッケージへ移動しました。
+- add: ElementEditor. 読んだ要素を編集(trimなど)できるようにしました。
 
 0.1.7 2011/11/15
 
