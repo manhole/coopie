@@ -21,7 +21,7 @@ public class MapFixedLengthLayout extends
 
     @Override
     public RecordReader<Map<String, String>> openReader(final Readable readable) {
-        final RecordDesc<Map<String, String>> rd = getRecordDesc();
+        final RecordDesc<Map<String, String>> rd = myRecordDesc();
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 rd);
         r.setWithHeader(isWithHeader());
@@ -34,7 +34,7 @@ public class MapFixedLengthLayout extends
     @Override
     public RecordWriter<Map<String, String>> openWriter(
             final Appendable appendable) {
-        final RecordDesc<Map<String, String>> rd = getRecordDesc();
+        final RecordDesc<Map<String, String>> rd = myRecordDesc();
         final ElementInOut es = createElementInOut();
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 rd);
@@ -43,6 +43,15 @@ public class MapFixedLengthLayout extends
         // TODO openで例外時にcloseすること
         w.open(appendable);
         return w;
+    }
+
+    protected RecordDesc<Map<String, String>> myRecordDesc() {
+        final RecordDesc<Map<String, String>> recordDesc = super
+                .getRecordDesc();
+        if (recordDesc == null) {
+            throw new IllegalStateException("recordDesc");
+        }
+        return recordDesc;
     }
 
     @Override

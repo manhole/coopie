@@ -1,6 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,6 +22,24 @@ import org.t2framework.commons.util.ResourceUtil;
 public class MapFixedLengthWriterTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
+
+    /**
+     * setupしないでopenしようとしたら、エラーにする。
+     */
+    @Test
+    public void read_nosetup() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openWriter(new StringWriter());
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
 
     /**
      * 出力できること。
