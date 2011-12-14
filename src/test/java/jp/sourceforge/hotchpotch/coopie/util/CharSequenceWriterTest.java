@@ -18,6 +18,8 @@ public class CharSequenceWriterTest {
 
         // ## Assert ##
         assertEquals("", writer.toString());
+
+        writer.close();
     }
 
     /**
@@ -35,6 +37,8 @@ public class CharSequenceWriterTest {
 
         // ## Assert ##
         assertEquals("abbccc", writer.toString());
+
+        writer.close();
     }
 
     /**
@@ -54,6 +58,8 @@ public class CharSequenceWriterTest {
         assertEquals("abb" + writer.getLineSeparator() + "ccc",
                 writer.toString());
         assertEquals(false, "abbccc".equals(writer.toString()));
+
+        writer.close();
     }
 
     @Test
@@ -69,6 +75,8 @@ public class CharSequenceWriterTest {
 
         // ## Assert ##
         assertEquals("abb_ccc", writer.toString());
+
+        writer.close();
     }
 
 }
