@@ -18,18 +18,16 @@ public abstract class AbstractMapCsvLayout extends
         return new MapCsvRecordDescSetup();
     }
 
-    @Override
-    protected RecordDesc<Map<String, String>> getRecordDesc() {
-        if (super.getRecordDesc() == null) {
+    protected void prepareOpen() {
+        if (getRecordDesc() == null) {
             /*
              * カラム名が設定されていない場合は、
              * Readの場合はヘッダから、
              * Writeの場合は1件目から、
              * カラム名を構築する。
              */
-            return new LazyMapRecordDesc(this);
+            setRecordDesc(new LazyMapRecordDesc(this));
         }
-        return super.getRecordDesc();
     }
 
     protected static ColumnDesc<Map<String, String>> newMapColumnDesc(

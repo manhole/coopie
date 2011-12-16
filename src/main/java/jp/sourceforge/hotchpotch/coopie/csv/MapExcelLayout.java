@@ -9,6 +9,7 @@ public class MapExcelLayout extends AbstractMapCsvLayout implements
 
     @Override
     public RecordReader<Map<String, String>> openReader(final InputStream is) {
+        prepareOpen();
         final DefaultExcelReader<Map<String, String>> r = new DefaultExcelReader<Map<String, String>>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
@@ -21,6 +22,7 @@ public class MapExcelLayout extends AbstractMapCsvLayout implements
 
     @Override
     public RecordWriter<Map<String, String>> openWriter(final OutputStream os) {
+        prepareOpen();
         final DefaultExcelWriter<Map<String, String>> w = new DefaultExcelWriter<Map<String, String>>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());

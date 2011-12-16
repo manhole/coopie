@@ -17,6 +17,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     @Override
     public RecordReader<T> openReader(final InputStream is) {
+        prepareOpen();
         final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
@@ -29,6 +30,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     @Override
     public RecordWriter<T> openWriter(final OutputStream os) {
+        prepareOpen();
         final DefaultExcelWriter<T> w = new DefaultExcelWriter<T>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
@@ -41,6 +43,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
     }
 
     public RecordReader<T> openSheetReader(final HSSFSheet sheet) {
+        prepareOpen();
         final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
@@ -53,6 +56,7 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     public RecordWriter<T> openSheetWriter(final HSSFWorkbook workbook,
             final HSSFSheet sheet) {
+        prepareOpen();
         final DefaultExcelWriter<T> w = new DefaultExcelWriter<T>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
