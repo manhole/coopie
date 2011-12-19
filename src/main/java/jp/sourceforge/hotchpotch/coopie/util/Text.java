@@ -56,6 +56,12 @@ public class Text {
         return ls.length;
     }
 
+    public Line getLine(final int lineNo) {
+        final Line[] ls = getLines();
+        final Line l = ls[lineNo];
+        return l;
+    }
+
     public Text getLineAsText(final int lineNo) {
         final Line[] ls = getLines();
         final Line l = ls[lineNo];

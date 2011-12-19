@@ -81,6 +81,31 @@ public class TextTest {
     }
 
     @Test
+    public void getLine() throws Throwable {
+        // ## Arrange ##
+        // ## Act ##
+        // ## Assert ##
+        {
+            final Text text = new Text("1234");
+            assertEquals(1, text.getLineSize());
+            assertEquals("1234", text.getLine(0).getBody());
+        }
+        {
+            final Text text = new Text("1234\n56");
+            assertEquals(2, text.getLineSize());
+            assertEquals("1234", text.getLine(0).getBody());
+            assertEquals("56", text.getLine(1).getBody());
+        }
+        {
+            final Text text = new Text("1234\n\n56");
+            assertEquals(3, text.getLineSize());
+            assertEquals("1234", text.getLine(0).getBody());
+            assertEquals("", text.getLine(1).getBody());
+            assertEquals("56", text.getLine(2).getBody());
+        }
+    }
+
+    @Test
     public void getLineAsText() throws Throwable {
         // ## Arrange ##
         // ## Act ##
