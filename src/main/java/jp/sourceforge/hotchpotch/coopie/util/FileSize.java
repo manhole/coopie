@@ -39,6 +39,14 @@ public class FileSize {
         return size_;
     }
 
+    public String toHumanReadableString() {
+        final long size = getSize();
+        final FileSizeUnit unit = detectUnit(size);
+        final StringBuilder sb = new StringBuilder();
+        appendTo(unit, size, sb);
+        return sb.toString();
+    }
+
     @Override
     public String toString() {
         final long size = getSize();

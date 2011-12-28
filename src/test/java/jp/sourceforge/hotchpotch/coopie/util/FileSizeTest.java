@@ -14,6 +14,7 @@ public class FileSizeTest {
         // ## Act ##
         // ## Assert ##
         assertEquals("123", fileSize.toString());
+        assertEquals("123", fileSize.toHumanReadableString());
     }
 
     @Test
@@ -24,6 +25,7 @@ public class FileSizeTest {
         // ## Act ##
         // ## Assert ##
         assertEquals("530.48 KB (543,210)", fileSize.toString());
+        assertEquals("530.48 KB", fileSize.toHumanReadableString());
     }
 
     @Test
@@ -35,6 +37,7 @@ public class FileSizeTest {
         // ## Assert ##
         // 72.99729347229004
         assertEquals("73.00 MB (76,543,210)", fileSize.toString());
+        assertEquals("73.00 MB", fileSize.toHumanReadableString());
     }
 
     @Test
@@ -46,6 +49,7 @@ public class FileSizeTest {
         // ## Assert ##
         // 9.198247650638223
         assertEquals("9.20 GB (9,876,543,210)", fileSize.toString());
+        assertEquals("9.20 GB", fileSize.toHumanReadableString());
     }
 
 }
