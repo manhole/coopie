@@ -52,4 +52,16 @@ public class FileSizeTest {
         assertEquals("9.20 GB", fileSize.toHumanReadableString());
     }
 
+    @Test
+    public void asTeraByte() throws Throwable {
+        // ## Arrange ##
+        final FileSize fileSize = new FileSize(98765432101234L);
+
+        // ## Act ##
+        // ## Assert ##
+        // 89.82663721438621
+        assertEquals("89.83 TB (98,765,432,101,234)", fileSize.toString());
+        assertEquals("89.83 TB", fileSize.toHumanReadableString());
+    }
+
 }

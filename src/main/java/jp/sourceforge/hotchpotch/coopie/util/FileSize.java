@@ -5,9 +5,10 @@ import java.text.NumberFormat;
 
 public class FileSize {
 
-    private static final int K = 1024;
-    private static final int M = K * 1024;
-    private static final int G = M * 1024;
+    private static final long K = 1024;
+    private static final long M = K * 1024;
+    private static final long G = M * 1024;
+    private static final long T = G * 1024;
 
     private static final FileSizeUnit B = new SimpleFileSizeUnit("B", 0) {
 
@@ -25,9 +26,11 @@ public class FileSize {
         }
 
     };
+
     private static final FileSizeUnit KB = new SimpleFileSizeUnit("KB", K);
     private static final FileSizeUnit MB = new SimpleFileSizeUnit("MB", M);
     private static final FileSizeUnit GB = new SimpleFileSizeUnit("GB", G);
+    private static final FileSizeUnit TB = new SimpleFileSizeUnit("TB", T);
 
     private final long size_;
 
@@ -80,8 +83,10 @@ public class FileSize {
             return KB;
         } else if (GB.lessThan(size)) {
             return MB;
+        } else if (TB.lessThan(size)) {
+            return GB;
         }
-        return GB;
+        return TB;
     }
 
     public interface FileSizeUnit {
@@ -97,10 +102,10 @@ public class FileSize {
     private static class SimpleFileSizeUnit implements FileSizeUnit {
 
         private final String label_;
-        private final int coefficient_;
+        private final long coefficient_;
         private final NumberFormat format_;
 
-        SimpleFileSizeUnit(final String label, final int coefficient) {
+        SimpleFileSizeUnit(final String label, final long coefficient) {
             label_ = label;
             coefficient_ = coefficient;
             format_ = NumberFormat.getNumberInstance();

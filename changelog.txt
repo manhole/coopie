@@ -5,6 +5,7 @@
 - setupで指定したプロパティ名がBeanに無い場合は、PropertyNotFoundExceptionを投げるようにしました。
 - add: Duration
 - add: FileSize#toHumanReadableString
+- FileSize: テラバイトに対応
 
 0.2.0 2011/12/14
 
