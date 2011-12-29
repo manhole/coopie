@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -13,7 +14,6 @@ import java.util.List;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation.DeleteResult;
 import junit.framework.Assert;
-import junitx.framework.ArrayAssert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -239,7 +239,7 @@ public class FileOperationTest {
 
         public void assertEquals(final String name, final Object... args) {
             Assert.assertEquals(name, this.name);
-            ArrayAssert.assertEquals(args, this.args);
+            assertArrayEquals(args, this.args);
         }
 
     }
