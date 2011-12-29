@@ -694,14 +694,15 @@ public class BeanCsvReaderTest {
     static class TestReadEditor extends DefaultReaderHandler {
 
         @Override
-        public Line readLine(final LineReader lineReader) throws IOException {
+        public Line readLine(final LineReader lineReader,
+                final Line reusableLine) throws IOException {
             if (lineReader.getLineNumber() == 0) {
                 // 3行あるheader部をskip
                 lineReader.readLine();
                 lineReader.readLine();
                 lineReader.readLine();
             }
-            final Line line = super.readLine(lineReader);
+            final Line line = super.readLine(lineReader, reusableLine);
             return line;
         }
 

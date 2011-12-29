@@ -592,7 +592,8 @@ public class Rfc4180Reader implements ElementReader {
         private boolean closed_;
         @SuppressWarnings("unused")
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
-        private String line_;
+        private String lineBody_;
+        private final Line line_ = new LineImpl();
         private Marker marker_;
         private final ElementParserContext parserContext_;
 
@@ -639,8 +640,13 @@ public class Rfc4180Reader implements ElementReader {
         }
 
         protected void readNextIfNeed() throws IOException {
-            while (!eof_ && chars_.length <= pos_) {
-                final Line line = lineReaderHandler_.readLine(reader_);
+            if (eof_) {
+                return;
+            }
+
+            int len = chars_.length;
+            while (len <= pos_) {
+                final Line line = lineReaderHandler_.readLine(reader_, line_);
                 if (line == null) {
                     eof_ = true;
                     return;
@@ -649,12 +655,13 @@ public class Rfc4180Reader implements ElementReader {
                     continue;
                 }
 
-                line_ = line.getBody();
+                lineBody_ = line.getBody();
                 final LineSeparator sep = line.getSeparator();
                 final String end = sep.getSeparator();
-                chars_ = (line_ + end).toCharArray();
+                chars_ = (lineBody_ + end).toCharArray();
+                len = chars_.length;
                 pos_ = 0;
-                marker_.mark(reader_.getLineNumber(), line_);
+                marker_.mark(reader_.getLineNumber(), lineBody_);
             }
         }
 

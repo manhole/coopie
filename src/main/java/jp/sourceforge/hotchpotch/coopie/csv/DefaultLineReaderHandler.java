@@ -20,8 +20,10 @@ public class DefaultLineReaderHandler implements LineReaderHandler {
     }
 
     @Override
-    public Line readLine(final LineReader reader) throws IOException {
-        return reader.readLine();
+    public Line readLine(final LineReader lineReader, final Line reusableLine)
+            throws IOException {
+        final Line line = lineReader.readLine(reusableLine);
+        return line;
     }
 
 }
