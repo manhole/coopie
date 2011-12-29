@@ -30,21 +30,19 @@ public class LineReadable implements LineReader {
     @Override
     public Line readLine() throws IOException {
         final Line line = createLine();
-        final boolean read = readLine(line);
-        if (read) {
-            return line;
-        }
-        return null;
+        final Line read = readLine(line);
+        return read;
     }
 
-    public boolean readLine(final Line line) throws IOException {
+    @Override
+    public Line readLine(final Line reusableLine) throws IOException {
         read0();
         if (line_ == null) {
-            return false;
+            return null;
         }
 
-        line.reinit(line_, lineNumber_, lineSeparator_);
-        return true;
+        reusableLine.reinit(line_, lineNumber_, lineSeparator_);
+        return reusableLine;
     }
 
     protected Line createLine() {

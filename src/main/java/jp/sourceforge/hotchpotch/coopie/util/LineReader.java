@@ -8,4 +8,6 @@ public interface LineReader extends Closable {
 
     Line readLine() throws IOException;
 
+    Line readLine(Line reusableLine) throws IOException;
+
 }
