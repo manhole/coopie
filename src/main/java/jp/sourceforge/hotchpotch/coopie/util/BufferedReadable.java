@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.CharBuffer;
+import java.util.Arrays;
 
 public class BufferedReadable implements Closable {
 
@@ -94,6 +95,31 @@ public class BufferedReadable implements Closable {
         // ポインタを次へ進めない
         final char c = charBuffer_.get(charBuffer_.position());
         return c;
+    }
+
+    public char[] readChars() throws IOException {
+        if (eof_) {
+            return null;
+        }
+
+        // bufferの最後まで使った or 初回
+        if (charBuffer_.position() == readSize_) {
+            charBuffer_.position(0);
+            readSize_ = readable_.read(charBuffer_);
+            if (readSize_ == -1) {
+                eof_ = true;
+                return null;
+            }
+            final char[] array = charBuffer_.array();
+            if (readSize_ == array.length) {
+                return array;
+            }
+            final char[] lastRecord = Arrays.copyOfRange(array, 0, readSize_);
+            return lastRecord;
+        }
+
+        // TODO
+        throw new IllegalStateException();
     }
 
     public boolean isEof() {
