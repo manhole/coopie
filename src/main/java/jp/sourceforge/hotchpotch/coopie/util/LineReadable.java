@@ -16,7 +16,11 @@ public class LineReadable implements LineReader {
     private LineSeparator lineSeparator_;
     private String line_;
     private int lineNumber_;
-    private final Deque<Line> buf_ = new LinkedList<Line>();
+    private Deque<Line> pushback_;
+    private boolean eof_;
+    private char[] buffer_ = new char[0];
+    private int pos_;
+    private int length_;
 
     public LineReadable(final Readable readable) {
         readable_ = new BufferedReadable(readable);
@@ -50,53 +54,114 @@ public class LineReadable implements LineReader {
     }
 
     private void read0() throws IOException {
-        if (!buf_.isEmpty()) {
-            final Line line = buf_.pop();
+        if (pushback_ != null) {
+            final Line line = pushback_.pop();
             line_ = line.getBody();
             lineNumber_++;
             lineSeparator_ = line.getSeparator();
+            if (pushback_.isEmpty()) {
+                pushback_ = null;
+            }
             return;
         }
 
-        if (readable_.isEof()) {
+        if (eof_) {
             line_ = null;
             lineSeparator_ = null;
             return;
         }
 
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder bodyBuff = null;
+        int bodyStartPos = pos_;
+        int bodyLength = 0;
         LineSeparator sep = LineSeparator.NONE;
-        for (char c = readable_.readChar(); !readable_.isEof(); c = readable_
-                .readChar()) {
-            if (c == CR) {
-                if (readable_.peekChar() == LF) {
-                    readable_.readChar();
-                    sep = LineSeparator.CRLF;
-                } else {
-                    sep = LineSeparator.CR;
+        read_loop: while (true) {
+            if (length_ <= pos_) {
+                if (0 < bodyLength) {
+                    if (bodyBuff == null) {
+                        bodyBuff = new StringBuilder();
+                    }
+                    bodyBuff.append(buffer_, bodyStartPos, bodyLength);
                 }
-                break;
-            } else if (c == LF) {
-                sep = LineSeparator.LF;
-                break;
-            } else {
-                sb.append(c);
+                fill();
+                if (eof_) {
+                    break read_loop;
+                }
+                bodyStartPos = pos_;
+                bodyLength = 0;
+            }
+
+            for (; pos_ < length_;) {
+                final char c = buffer_[pos_];
+                pos_++;
+                if (c == CR) {
+                    if (length_ <= pos_) {
+                        if (0 < bodyLength) {
+                            if (bodyBuff == null) {
+                                bodyBuff = new StringBuilder();
+                            }
+                            bodyBuff.append(buffer_, bodyStartPos, bodyLength);
+                        }
+                        fill();
+                        if (eof_) {
+                            sep = LineSeparator.CR;
+                            break read_loop;
+                        }
+                        bodyStartPos = pos_;
+                        bodyLength = 0;
+                    }
+                    if (buffer_[pos_] == LF) {
+                        sep = LineSeparator.CRLF;
+                        pos_++;
+                    } else {
+                        sep = LineSeparator.CR;
+                    }
+                    break read_loop;
+                } else if (c == LF) {
+                    sep = LineSeparator.LF;
+                    break read_loop;
+                } else {
+                    bodyLength++;
+                }
             }
         }
 
-        if (readable_.isEof() && sb.length() == 0) {
+        if (eof_ && bodyBuff == null && bodyLength == 0) {
             line_ = null;
             lineSeparator_ = null;
             return;
         }
 
-        line_ = sb.toString();
+        if (bodyBuff == null) {
+            line_ = new String(buffer_, bodyStartPos, bodyLength);
+        } else {
+            if (eof_) {
+            } else {
+                bodyBuff.append(buffer_, bodyStartPos, bodyLength);
+            }
+            line_ = bodyBuff.toString();
+        }
+
         lineNumber_++;
         lineSeparator_ = sep;
     }
 
+    protected void fill() throws IOException {
+        final char[] chars = readable_.readChars();
+        if (chars == null) {
+            eof_ = true;
+        } else {
+            pos_ = 0;
+            buffer_ = chars;
+            length_ = chars.length;
+        }
+    }
+
     public void pushback(final Line line) {
-        buf_.push(line);
+        if (pushback_ == null) {
+            pushback_ = new LinkedList<Line>();
+        }
+        pushback_.push(line);
         lineNumber_--;
         // XXX この時点では手前の行のことは忘れているため、わからない
         line_ = null;
