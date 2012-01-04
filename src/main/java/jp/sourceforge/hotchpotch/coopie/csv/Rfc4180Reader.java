@@ -2,6 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -114,7 +115,6 @@ public class Rfc4180Reader implements ElementReader {
                             rb_.startElement();
                             fromPos = beginPos = i + 1;
                             elemBeginPlain = i;
-                            rb_.appendPlain(c);
                         } else if (c == elementSeparator_) {
                             state = State.BEGIN_ELEMENT;
                             rb_.startRecord();
@@ -124,7 +124,6 @@ public class Rfc4180Reader implements ElementReader {
                         } else if (c == SP) {
                             state = State.BEGIN_ELEMENT;
                             rb_.startRecord();
-                            rb_.appendPlain(c);
                         } else {
                             state = State.UNQUOTED_ELEMENT;
                             rb_.startRecord();
@@ -140,7 +139,6 @@ public class Rfc4180Reader implements ElementReader {
                             // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
                             rb_.startElement();
                             fromPos = beginPos = i + 1;
-                            rb_.appendPlain(c);
                         } else if (c == elementSeparator_) {
                             rb_.startElement();
                             if (elemBeginPlain != i) {
@@ -153,7 +151,6 @@ public class Rfc4180Reader implements ElementReader {
                             rb_.endElement(elem);
                             elemBeginPlain = i + 1;
                         } else if (c == SP) {
-                            rb_.appendPlain(c);
                         } else {
                             state = State.UNQUOTED_ELEMENT;
                             rb_.startElement();
@@ -175,21 +172,17 @@ public class Rfc4180Reader implements ElementReader {
                             rb_.endElement(elem);
                             elemBeginPlain = i + 1;
                             state = State.BEGIN_ELEMENT;
-                        } else {
                         }
                         break;
 
                     case QUOTED_ELEMENT:
-                        rb_.appendPlain(c);
                         if (c == quoteMark_) {
                             elemEnd = i;
                             state = State.QUOTE;
-                        } else {
                         }
                         break;
 
                     case QUOTE:
-                        rb_.appendPlain(c);
                         if (c == quoteMark_ && elemEnd + 1 == i) {
                             if (elemBuff == null) {
                                 elemBuff = new StringBuilder();
@@ -260,13 +253,17 @@ public class Rfc4180Reader implements ElementReader {
                              * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
                              * (見直す可能性アリ)
                              */
-                            final int nextPos = i + 1;
+                            final Iterator<Line> it = lines.iterator();
+                            final StringBuilder sb = new StringBuilder();
+                            final Line line1 = it.next();
+                            sb.append(line1.getBodyAndSeparator().substring(
+                                    elemBeginPlain));
+                            while (it.hasNext()) {
+                                final Line l = it.next();
+                                sb.append(l.getBodyAndSeparator());
+                            }
                             pushback_ = new LineReadable(new StringReader(
-                                    rb_.getPlain()
-                                            + new String(bodyChars, nextPos,
-                                                    bodyChars.length - nextPos)
-                                            + separator));
-                            rb_.clearElement();
+                                    sb.toString()));
                             state = State.UNQUOTED_ELEMENT;
                             elemBuff = null;
                             continue read_loop;
@@ -281,9 +278,6 @@ public class Rfc4180Reader implements ElementReader {
                 /* body終了 */
                 if (state == State.QUOTED_ELEMENT) {
                     // 改行を含む要素
-                    for (final char c : endChars) {
-                        rb_.appendPlain(c);
-                    }
                     if (elemBuff == null) {
                         elemBuff = new StringBuilder();
                     }
@@ -404,12 +398,6 @@ public class Rfc4180Reader implements ElementReader {
         lineReaderHandler_ = lineReaderHandler;
     }
 
-    private static void clearBuffer(final StringBuilder sb) {
-        if (sb != null) {
-            sb.setLength(0);
-        }
-    }
-
     static class RecordBuffer implements ElementParserContext {
 
         private final List<String> elems_ = CollectionsUtil.newArrayList();
@@ -417,13 +405,11 @@ public class Rfc4180Reader implements ElementReader {
          * クォートされた要素がパースエラーだった場合に使用する。
          * 要素区切り文字の次の文字から、その要素を終える区切り文字(or 改行)の手前までを持つ。
          */
-        private StringBuilder plainElement_;
         private boolean inElement_;
         private boolean inRecord_;
 
         public void clear() {
             elems_.clear();
-            clearBuffer(plainElement_);
             inElement_ = false;
             inRecord_ = false;
         }
@@ -450,7 +436,6 @@ public class Rfc4180Reader implements ElementReader {
             assertInElement();
             //elems_.add(bufferString());
             inElement_ = false;
-            clearBuffer(plainElement_);
         }
 
         public void endElement(final String elem) {
@@ -458,23 +443,11 @@ public class Rfc4180Reader implements ElementReader {
             assertInElement();
             elems_.add(elem);
             inElement_ = false;
-            clearBuffer(plainElement_);
         }
 
         @Override
         public boolean isInElement() {
             return inElement_;
-        }
-
-        public void appendPlain(final char c) {
-            if (plainElement_ == null) {
-                plainElement_ = new StringBuilder();
-            }
-            plainElement_.append(c);
-        }
-
-        public void clearElement() {
-            clearBuffer(plainElement_);
         }
 
         public boolean isEmpty() {
@@ -508,10 +481,6 @@ public class Rfc4180Reader implements ElementReader {
             if (isInElement()) {
                 throw new IllegalStateException("already started");
             }
-        }
-
-        public String getPlain() {
-            return plainElement_.toString();
         }
 
     }
@@ -584,7 +553,7 @@ public class Rfc4180Reader implements ElementReader {
                     return null;
                 }
                 if (lineReaderHandler_.acceptLine(line, parserContext_)) {
-                    marker_.mark(line.getNumber(), line.getBody());
+                    marker_.mark(line);
                     return line;
                 }
             }
@@ -607,31 +576,22 @@ public class Rfc4180Reader implements ElementReader {
 
         private static class Marker {
 
-            private int beginLineNumber_ = -1;
-            private List<String> lines_;
+            private final List<Line> lines_ = CollectionsUtil.newLinkedList();
 
-            public void mark(final int lineNumber, final String line) {
-                if (lines_ == null) {
-                    beginLineNumber_ = lineNumber;
-                    lines_ = new LinkedList<String>();
-                }
-                lines_.add(line);
+            public void mark(final Line line) {
+                final Line l = new LineImpl(line.getBody(), line.getNumber(),
+                        line.getSeparator());
+                lines_.add(l);
             }
 
             public List<Line> getMarkedLines() {
-                int num = beginLineNumber_;
                 final LinkedList<Line> lines = new LinkedList<Line>();
-                for (final String s : lines_) {
-                    final Line l = new LineImpl(s, num, null);
-                    lines.add(l);
-                    num++;
-                }
+                lines.addAll(lines_);
                 return lines;
             }
 
             public void clear() {
-                beginLineNumber_ = -1;
-                lines_ = null;
+                lines_.clear();
             }
 
         }
