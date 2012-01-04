@@ -131,7 +131,6 @@ public class Rfc4180Reader implements ElementReader {
                             rb_.startElement();
                             fromPos = beginPos = i;
                             elemBeginPlain = i;
-                            rb_.append(c);
                         }
                         break;
 
@@ -163,7 +162,6 @@ public class Rfc4180Reader implements ElementReader {
                             } else {
                                 fromPos = beginPos = i;
                             }
-                            rb_.append(c);
                             //rb.appendPlain(c);
                         }
                         break;
@@ -171,7 +169,6 @@ public class Rfc4180Reader implements ElementReader {
                     case UNQUOTED_ELEMENT:
                         //rb.appendPlain(c);
                         if (c == quoteMark_) {
-                            rb_.append(c);
                         } else if (c == elementSeparator_) {
                             final String elem = new String(bodyChars, fromPos,
                                     i - fromPos);
@@ -179,7 +176,6 @@ public class Rfc4180Reader implements ElementReader {
                             elemBeginPlain = i + 1;
                             state = State.BEGIN_ELEMENT;
                         } else {
-                            rb_.append(c);
                         }
                         break;
 
@@ -189,14 +185,12 @@ public class Rfc4180Reader implements ElementReader {
                             elemEnd = i;
                             state = State.QUOTE;
                         } else {
-                            rb_.append(c);
                         }
                         break;
 
                     case QUOTE:
                         rb_.appendPlain(c);
                         if (c == quoteMark_ && elemEnd + 1 == i) {
-                            rb_.append(c);
                             if (elemBuff == null) {
                                 elemBuff = new StringBuilder();
                             }
@@ -289,7 +283,6 @@ public class Rfc4180Reader implements ElementReader {
                     // 改行を含む要素
                     for (final char c : endChars) {
                         rb_.appendPlain(c);
-                        rb_.append(c);
                     }
                     if (elemBuff == null) {
                         elemBuff = new StringBuilder();
@@ -420,7 +413,6 @@ public class Rfc4180Reader implements ElementReader {
     static class RecordBuffer implements ElementParserContext {
 
         private final List<String> elems_ = CollectionsUtil.newArrayList();
-        private final StringBuilder sb_ = new StringBuilder();
         /*
          * クォートされた要素がパースエラーだった場合に使用する。
          * 要素区切り文字の次の文字から、その要素を終える区切り文字(or 改行)の手前までを持つ。
@@ -431,7 +423,6 @@ public class Rfc4180Reader implements ElementReader {
 
         public void clear() {
             elems_.clear();
-            clearBuffer(sb_);
             clearBuffer(plainElement_);
             inElement_ = false;
             inRecord_ = false;
@@ -475,18 +466,6 @@ public class Rfc4180Reader implements ElementReader {
             return inElement_;
         }
 
-        public boolean isBufferEmpty() {
-            if (sb_ == null || sb_.length() == 0) {
-                return true;
-            }
-            return false;
-        }
-
-        public void append(final char c) {
-            assertInElement();
-            sb_.append(c);
-        }
-
         public void appendPlain(final char c) {
             if (plainElement_ == null) {
                 plainElement_ = new StringBuilder();
@@ -495,7 +474,6 @@ public class Rfc4180Reader implements ElementReader {
         }
 
         public void clearElement() {
-            clearBuffer(sb_);
             clearBuffer(plainElement_);
         }
 
