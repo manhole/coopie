@@ -330,8 +330,8 @@ public class Rfc4180Reader implements ElementReader {
             case QUOTED_ELEMENT:
                 // クォート文字しかないrecordの場合
                 if (rb_.isEmpty()) {
-                    rb_.append(quoteMark_);
-                    rb_.endElement();
+                    //rb_.append(quoteMark_);
+                    rb_.endElement(String.valueOf(quoteMark_));
                 }
                 // クォートされた要素の途中でEOFになった場合
                 if (rb_.isInElement()) {
@@ -462,13 +462,12 @@ public class Rfc4180Reader implements ElementReader {
             assertInRecord();
             assertNotInElement();
             inElement_ = true;
-            flushPending();
         }
 
         public void endElement() {
             assertInRecord();
             assertInElement();
-            elems_.add(bufferString());
+            //elems_.add(bufferString());
             inElement_ = false;
             clearBuffer(plainElement_);
         }
@@ -538,22 +537,6 @@ public class Rfc4180Reader implements ElementReader {
                 return true;
             }
             return false;
-        }
-
-        private void flushPending() {
-            if (pending_ != null) {
-                final int len = pending_.length();
-                for (int i = 0; i < len; i++) {
-                    append(pending_.charAt(i));
-                }
-                pending_ = null;
-            }
-        }
-
-        private String bufferString() {
-            final String s = sb_.toString();
-            clearBuffer(sb_);
-            return s;
         }
 
         public boolean isEmpty() {
