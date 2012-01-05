@@ -671,7 +671,6 @@ public class Rfc4180ReaderTest {
     public void invalid_quote5() throws Throwable {
         // ## Arrange ##
         final String in = "\"b\" \"\"";
-        System.out.println(in);
         final Rfc4180Reader reader = open(in);
 
         // ## Act ##

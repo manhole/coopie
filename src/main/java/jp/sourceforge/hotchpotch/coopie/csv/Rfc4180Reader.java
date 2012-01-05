@@ -81,7 +81,10 @@ public class Rfc4180Reader implements ElementReader {
 
         // 要素区切り文字の次の位置
         int elemBeginPlain = 0;
-        // 要素開始位置
+        /*
+         * 要素開始位置。
+         * クォートされた要素の手前にスペースが登場したかの判定にだけ使用している
+         */
         int beginPos = -1;
         // substring用
         int fromPos = -1;
@@ -92,14 +95,14 @@ public class Rfc4180Reader implements ElementReader {
         List<Line> savedLines = null;
         try {
             read_loop: while (true) {
-                final Line currentLine = readLine();
-                if (currentLine == null) {
+                final Line line = readLine();
+                if (line == null) {
                     eof_ = true;
                     break read_loop;
                 }
                 fromPos = 0;
 
-                bodyChars = currentLine.getBody().toCharArray();
+                bodyChars = line.getBody().toCharArray();
                 i = 0;
                 body_loop: for (; i < bodyChars.length; i++) {
                     final char c = bodyChars[i];
@@ -213,14 +216,14 @@ public class Rfc4180Reader implements ElementReader {
 
                             boolean first = true;
                             if (savedLines != null) {
-                                for (final Line line : savedLines) {
+                                for (final Line l : savedLines) {
                                     if (first) {
                                         first = !first;
                                     } else {
                                         log.appendFormat(",");
                                     }
-                                    log.append("{}[{}]", line.getNumber(),
-                                            line.getBody());
+                                    log.append("{}[{}]", l.getNumber(),
+                                            l.getBody());
                                 }
                             }
                             if (first) {
@@ -228,8 +231,8 @@ public class Rfc4180Reader implements ElementReader {
                             } else {
                                 log.appendFormat(",");
                             }
-                            log.append("{}[{}]", currentLine.getNumber(),
-                                    currentLine.getBody());
+                            log.append("{}[{}]", line.getNumber(),
+                                    line.getBody());
 
                             /*
                              * 先頭のスペースを除いた、クォートされた要素の場合は、
@@ -269,7 +272,7 @@ public class Rfc4180Reader implements ElementReader {
                                     final Line l = it.next();
                                     sb.append(l.getBodyAndSeparator());
                                 }
-                                sb.append(currentLine.getBodyAndSeparator());
+                                sb.append(line.getBodyAndSeparator());
                                 pushback_ = new LineReadable(new StringReader(
                                         sb.toString()));
                                 savedLines = null;
@@ -294,14 +297,13 @@ public class Rfc4180Reader implements ElementReader {
                     }
                     elemBuff.append(bodyChars, fromPos, i - fromPos);
                     fromPos = i;
-                    final String separator = currentLine.getSeparator()
-                            .getSeparator();
+                    final String separator = line.getSeparator().getSeparator();
                     elemBuff.append(separator);
 
                     if (savedLines == null) {
                         savedLines = CollectionsUtil.newArrayList();
                     }
-                    savedLines.add(copyLine(currentLine));
+                    savedLines.add(copyLine(line));
                     continue read_loop;
                 }
                 break read_loop;
@@ -335,7 +337,6 @@ public class Rfc4180Reader implements ElementReader {
             case QUOTED_ELEMENT:
                 // クォート文字しかないrecordの場合
                 if (rb_.isEmpty()) {
-                    //rb_.append(quoteMark_);
                     rb_.endElement(String.valueOf(quoteMark_));
                 }
                 // クォートされた要素の途中でEOFになった場合
@@ -453,13 +454,6 @@ public class Rfc4180Reader implements ElementReader {
             assertInRecord();
             assertNotInElement();
             inElement_ = true;
-        }
-
-        public void endElement() {
-            assertInRecord();
-            assertInElement();
-            //elems_.add(bufferString());
-            inElement_ = false;
         }
 
         public void endElement(final String elem) {
