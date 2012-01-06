@@ -149,11 +149,8 @@ public class Rfc4180Reader implements ElementReader {
                         fromPos = beginPos = i + 1;
                     } else if (c == elementSeparator_) {
                         rb_.startElement();
-                        if (elemBeginPlain != i) {
-                            fromPos = beginPos = elemBeginPlain;
-                        } else {
-                            fromPos = beginPos = i;
-                        }
+                        // 空白だけの要素をフォロー
+                        fromPos = beginPos = elemBeginPlain;
                         final String elem = body.substring(fromPos, i);
                         rb_.endElement(elem);
                         elemBeginPlain = i + 1;
@@ -161,17 +158,13 @@ public class Rfc4180Reader implements ElementReader {
                     } else {
                         state = State.UNQUOTED_ELEMENT;
                         rb_.startElement();
-                        if (elemBeginPlain != i) {
-                            fromPos = beginPos = elemBeginPlain;
-                        } else {
-                            fromPos = beginPos = i;
-                        }
+                        // 要素先頭の空白を残す
+                        fromPos = beginPos = elemBeginPlain;
                     }
                     break;
 
                 case UNQUOTED_ELEMENT:
-                    if (c == quoteMark_) {
-                    } else if (c == elementSeparator_) {
+                    if (c == elementSeparator_) {
                         final String elem = body.substring(fromPos, i);
                         rb_.endElement(elem);
                         elemBeginPlain = i + 1;
@@ -318,13 +311,11 @@ public class Rfc4180Reader implements ElementReader {
             break;
         case BEGIN_ELEMENT:
             rb_.startElement();
-            if (elemBeginPlain != i) {
-                fromPos = beginPos = elemBeginPlain;
-                // 空白だけの要素で行が終わる場合も、ここでフォロー
+            fromPos = beginPos = elemBeginPlain;
+            // 空白だけの要素で行が終わる場合も、ここでフォロー
+            {
                 final String elem = body.substring(fromPos, i);
                 rb_.endElement(elem);
-            } else {
-                rb_.endElement(EMPTY_ELEM);
             }
             rb_.endRecord();
             break;
