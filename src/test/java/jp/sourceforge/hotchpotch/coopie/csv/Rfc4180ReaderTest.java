@@ -478,13 +478,67 @@ public class Rfc4180ReaderTest {
     }
 
     /**
+     * 空行は空配列として取得できること
+     */
+    @Test
+    public void empty_line1() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n"
+                + "\"b\r\n\r\n2\"");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a1"), reader.readRecord());
+        assertEquals(0, reader.readRecord().length);
+        assertArrayEquals(a("b\r\n\r\n2"), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /**
+     * 先頭の空行を空配列として取得できること
+     */
+    @Test
+    public void empty_line2() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("\r\n" + "\"a1\"\r\n"
+                + "\"b\r\n\r\n2\"");
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals(0, reader.readRecord().length);
+        assertArrayEquals(a("a1"), reader.readRecord());
+        assertArrayEquals(a("b\r\n\r\n2"), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /**
+     * 末尾の空行を空配列として取得できること
+     * ただし最終データ行にくっつく改行はデータ行側に含まれているため、改行+改行で終えている場合を対象とする。
+     */
+    @Test
+    public void empty_line3() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\"b\r\n\r\n2\""
+                + "\r\n" + "\r\n");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a1"), reader.readRecord());
+        assertArrayEquals(a("b\r\n\r\n2"), reader.readRecord());
+        assertEquals(0, reader.readRecord().length);
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /**
      * 空行をskipして読めること。
      * その際に、データ部の改行による空行を除かないこと。
      */
     @Test
     public void skip_emptyline() throws Throwable {
         // ## Arrange ##
-
         final LineReaderHandler lineReaderHandler = new LineReaderHandler() {
 
             @Override
