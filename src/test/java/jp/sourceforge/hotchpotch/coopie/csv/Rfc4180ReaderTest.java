@@ -466,7 +466,7 @@ public class Rfc4180ReaderTest {
      * クォートだけの入力は、クォート1文字だけの1要素とみなす。
      */
     @Test
-    public void only_quote_record() throws Throwable {
+    public void only_quote_record1() throws Throwable {
         // ## Arrange ##
         final Rfc4180Reader reader = open("\"");
 
@@ -528,6 +528,84 @@ public class Rfc4180ReaderTest {
         assertArrayEquals(a("a1"), reader.readRecord());
         assertArrayEquals(a("b\r\n\r\n2"), reader.readRecord());
         assertEquals(0, reader.readRecord().length);
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    @Test
+    public void only_quote_record2() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open(" \"");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a(" \""), reader.readRecord());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
+     * 不正データ
+     * 
+     * クォートされた要素が、閉じるクォートが無いまま終了してしまったケース
+     * 
+     * a,"b,c
+     * 
+     */
+    @Test
+    public void not_closed_quote1() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("a,\"b,c");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a", "\"b", "c"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
+     * 不正データ
+     * 
+     * クォートされた要素が、閉じるクォートが無いまま終了してしまったケース
+     * 
+     * a,"b,c CRLF
+     * 
+     */
+    @Test
+    public void not_closed_quote2() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("a,\"b,c" + CRLF);
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a", "\"b", "c"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertNull(reader.readRecord());
+        reader.close();
+    }
+
+    /*
+     * 不正データ
+     * 
+     * クォートされた要素が、閉じるクォートが無いまま終了してしまったケース
+     * 
+     * a,"b,c CRLF
+     * A,B,C
+     * 
+     */
+    @Test
+    public void not_closed_quote3() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("a,\"b,c" + CRLF + "A,B,C");
+
+        // ## Act ##
+        // ## Assert ##
+        assertArrayEquals(a("a", "\"b", "c"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
+        assertArrayEquals(a("A", "B", "C"), reader.readRecord());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -634,7 +712,8 @@ public class Rfc4180ReaderTest {
      * A,"B",C CRLF
      * D, E, F
      * 
-     * 1行目だけが不正
+     * 1行目だけが不正。
+     * 2行目が巻き込まれてしまうが、リカバリする。
      */
     @Test
     public void invalid_quote2() throws Throwable {

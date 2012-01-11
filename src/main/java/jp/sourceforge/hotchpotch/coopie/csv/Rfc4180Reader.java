@@ -247,7 +247,9 @@ public class Rfc4180Reader implements ElementReader {
             case QUOTED_ELEMENT:
                 // クォート文字しかないrecordの場合
                 if (rb_.isEmpty()) {
-                    rb_.endElement(String.valueOf(quoteMark_));
+                    // クォートの手前にspaceがある場合は、spaceも含める
+                    final String s = rc.body.substring(rc.elemBeginPlain, rc.i);
+                    rb_.endElement(s);
                 }
                 // クォートされた要素の途中でEOFになった場合
                 if (rb_.isInElement()) {
@@ -359,6 +361,9 @@ public class Rfc4180Reader implements ElementReader {
         pushback_ = new LineReadable(new StringReader(sb.toString()));
         rc.savedLines = null;
         rc.elemBuff = null;
+        if (eof_) {
+            eof_ = false;
+        }
     }
 
     private Line readLine() throws IOException {
