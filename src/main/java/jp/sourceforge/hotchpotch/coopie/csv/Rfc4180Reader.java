@@ -2,7 +2,6 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.Logger;
@@ -88,263 +87,193 @@ public class Rfc4180Reader implements ElementReader {
         final ReadContect rc = new ReadContect();
 
         read_loop: while (true) {
-            final Line line = readLine();
-            if (line == null) {
-                eof_ = true;
-                break read_loop;
-            }
-            rc.fromPos = 0;
+            line_loop: while (true) {
+                final Line line = readLine();
+                rc.line = line;
+                if (line == null) {
+                    eof_ = true;
+                    break line_loop;
+                }
+                rc.fromPos = 0;
 
-            rc.body = line.getBody();
-            final char[] bodyChars = rc.body.toCharArray();
-            final int length = bodyChars.length;
-            rc.i = 0;
-            body_loop: for (; rc.i < length; rc.i++) {
-                final char c = bodyChars[rc.i];
-                switch (rc.state) {
-                case INITIAL:
-                    if (c == quoteMark_) {
-                        rc.state = State.QUOTED_ELEMENT;
-                        rb_.startRecord();
-                        rb_.startElement();
-                        rc.fromPos = rc.beginPos = rc.i + 1;
-                        rc.elemBeginPlain = rc.i;
-                    } else if (c == elementSeparator_) {
-                        rc.state = State.BEGIN_ELEMENT;
-                        rb_.startRecord();
-                        rb_.startElement();
-                        rb_.endElement(EMPTY_ELEM);
-                        rc.elemBeginPlain = rc.i + 1;
-                    } else if (c == SP) {
-                        rc.state = State.BEGIN_ELEMENT;
-                        rb_.startRecord();
-                    } else {
-                        rc.state = State.UNQUOTED_ELEMENT;
-                        rb_.startRecord();
-                        rb_.startElement();
-                        rc.fromPos = rc.beginPos = rc.i;
-                        rc.elemBeginPlain = rc.i;
-                    }
-                    break;
-
-                case BEGIN_ELEMENT:
-                    if (c == quoteMark_) {
-                        rc.state = State.QUOTED_ELEMENT;
-                        // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
-                        rb_.startElement();
-                        rc.fromPos = rc.beginPos = rc.i + 1;
-                    } else if (c == elementSeparator_) {
-                        rb_.startElement();
-                        // 空白だけの要素をフォロー
-                        rc.fromPos = rc.beginPos = rc.elemBeginPlain;
-                        final String elem = rc.body.substring(rc.fromPos, rc.i);
-                        rb_.endElement(elem);
-                        rc.elemBeginPlain = rc.i + 1;
-                    } else if (c == SP) {
-                    } else {
-                        rc.state = State.UNQUOTED_ELEMENT;
-                        rb_.startElement();
-                        // 要素先頭の空白を残す
-                        rc.fromPos = rc.beginPos = rc.elemBeginPlain;
-                    }
-                    break;
-
-                case UNQUOTED_ELEMENT:
-                    if (c == elementSeparator_) {
-                        final String elem = rc.body.substring(rc.fromPos, rc.i);
-                        rb_.endElement(elem);
-                        rc.elemBeginPlain = rc.i + 1;
-                        rc.state = State.BEGIN_ELEMENT;
-                    }
-                    break;
-
-                case QUOTED_ELEMENT:
-                    if (c == quoteMark_) {
-                        rc.elemEnd = rc.i;
-                        rc.state = State.QUOTE;
-                    }
-                    break;
-
-                case QUOTE:
-                    if (c == quoteMark_ && rc.elemEnd + 1 == rc.i) {
-                        if (rc.elemBuff == null) {
-                            rc.elemBuff = new StringBuilder();
+                rc.body = line.getBody();
+                final char[] bodyChars = rc.body.toCharArray();
+                final int length = bodyChars.length;
+                rc.i = 0;
+                body_loop: for (; rc.i < length; rc.i++) {
+                    final char c = bodyChars[rc.i];
+                    switch (rc.state) {
+                    case INITIAL:
+                        if (c == quoteMark_) {
+                            rc.state = State.QUOTED_ELEMENT;
+                            rb_.startRecord();
+                            rb_.startElement();
+                            rc.fromPos = rc.beginPos = rc.i + 1;
+                            rc.elemBeginPlain = rc.i;
+                        } else if (c == elementSeparator_) {
+                            rc.state = State.BEGIN_ELEMENT;
+                            rb_.startRecord();
+                            rb_.startElement();
+                            rb_.endElement(EMPTY_ELEM);
+                            rc.elemBeginPlain = rc.i + 1;
+                        } else if (c == SP) {
+                            rc.state = State.BEGIN_ELEMENT;
+                            rb_.startRecord();
+                        } else {
+                            rc.state = State.UNQUOTED_ELEMENT;
+                            rb_.startRecord();
+                            rb_.startElement();
+                            rc.fromPos = rc.beginPos = rc.i;
+                            rc.elemBeginPlain = rc.i;
                         }
-                        rc.elemBuff.append(rc.body.substring(rc.fromPos, rc.i));
-                        rc.fromPos = rc.i + 1;
+                        break;
 
-                        rc.state = State.QUOTED_ELEMENT;
-                    } else if (c == SP) {
-                        // 要素より後のspaceを捨てるため
-                    } else if (c == elementSeparator_) {
-                        String elem = rc.body.substring(rc.fromPos, rc.elemEnd);
-                        if (rc.elemBuff != null) {
-                            rc.elemBuff.append(elem);
-                            elem = rc.elemBuff.toString();
-                            rc.elemBuff = null;
+                    case BEGIN_ELEMENT:
+                        if (c == quoteMark_) {
+                            rc.state = State.QUOTED_ELEMENT;
+                            // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
+                            rb_.startElement();
+                            rc.fromPos = rc.beginPos = rc.i + 1;
+                        } else if (c == elementSeparator_) {
+                            rb_.startElement();
+                            // 空白だけの要素をフォロー
+                            rc.fromPos = rc.beginPos = rc.elemBeginPlain;
+                            final String elem = rc.body.substring(rc.fromPos,
+                                    rc.i);
+                            rb_.endElement(elem);
+                            rc.elemBeginPlain = rc.i + 1;
+                        } else if (c == SP) {
+                        } else {
+                            rc.state = State.UNQUOTED_ELEMENT;
+                            rb_.startElement();
+                            // 要素先頭の空白を残す
+                            rc.fromPos = rc.beginPos = rc.elemBeginPlain;
                         }
-                        rb_.endElement(elem);
-                        rc.elemBeginPlain = rc.i + 1;
-                        rc.state = State.BEGIN_ELEMENT;
-                    } else {
-                        /*
-                         * クォートされた要素内にクォートが登場したら、
-                         * 続く文字はクォート(→エスケープされたクォート文字とみなす)か、改行(→レコードの終わりとみなす)
-                         * であるべき。
-                         * だが、通常の文字が入力されてしまった。
-                         * "abc"d" ... このような入力
-                         */
-                        final SimpleLog log = new SimpleLog();
-                        log.append("invalid record: recordNo={}, ", recordNo_);
-                        log.appendFormat("line=");
+                        break;
 
-                        boolean first = true;
-                        if (rc.savedLines != null) {
-                            for (final Line l : rc.savedLines) {
-                                if (first) {
-                                    first = !first;
-                                } else {
-                                    log.appendFormat(",");
-                                }
-                                log.append("{}[{}]", l.getNumber(), l.getBody());
+                    case UNQUOTED_ELEMENT:
+                        if (c == elementSeparator_) {
+                            final String elem = rc.body.substring(rc.fromPos,
+                                    rc.i);
+                            rb_.endElement(elem);
+                            rc.elemBeginPlain = rc.i + 1;
+                            rc.state = State.BEGIN_ELEMENT;
+                        }
+                        break;
+
+                    case QUOTED_ELEMENT:
+                        if (c == quoteMark_) {
+                            rc.elemEnd = rc.i;
+                            rc.state = State.QUOTE;
+                        }
+                        break;
+
+                    case QUOTE:
+                        if (c == quoteMark_ && rc.elemEnd + 1 == rc.i) {
+                            if (rc.elemBuff == null) {
+                                rc.elemBuff = new StringBuilder();
                             }
-                        }
-                        if (first) {
-                            first = !first;
+                            rc.elemBuff.append(rc.body.substring(rc.fromPos,
+                                    rc.i));
+                            rc.fromPos = rc.i + 1;
+
+                            rc.state = State.QUOTED_ELEMENT;
+                        } else if (c == SP) {
+                            // 要素より後のspaceを捨てるため
+                        } else if (c == elementSeparator_) {
+                            String elem = rc.body.substring(rc.fromPos,
+                                    rc.elemEnd);
+                            if (rc.elemBuff != null) {
+                                rc.elemBuff.append(elem);
+                                elem = rc.elemBuff.toString();
+                                rc.elemBuff = null;
+                            }
+                            rb_.endElement(elem);
+                            rc.elemBeginPlain = rc.i + 1;
+                            rc.state = State.BEGIN_ELEMENT;
                         } else {
-                            log.appendFormat(",");
+                            invalid(rc);
+                            continue line_loop;
                         }
-                        log.append("{}[{}]", line.getNumber(), rc.body);
+                        break;
 
-                        /*
-                         * 先頭のスペースを除いた、クォートされた要素の場合は、
-                         * クォートされない要素として読み直す。
-                         * 
-                         * 先頭ではなく末尾にスペースを持つ要素の場合は、INVALIDにはしない。
-                         * (グレーだけれど)
-                         */
-                        /*
-                         * と上のコメントに書いてあるが、
-                         * 先頭のスペースを捨てていた場合はINVALIDにしない、という動きをするように見える。
-                         */
-                        // クォート文字の1文字ぶん差がある
-                        if (rc.beginPos != rc.elemBeginPlain + 1) {
-                            logger.debug(log);
-                        } else {
-                            logger.warn(log);
-                            recordState_ = RecordState.INVALID;
-                        }
+                    default:
+                        throw new AssertionError();
+                    }
+                }
 
-                        /*
-                         * ここでは、要素自体がクォートされていないものとして扱うことにする。
-                         * つまり、"abc"d" このような入力を、"abc"d" そのものとみなすということ。
-                         * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
-                         * (見直す可能性アリ)
-                         */
+                /* body終了 */
+                if (rc.state == State.QUOTED_ELEMENT) {
+                    // 改行を含む要素
+                    if (rc.elemBuff == null) {
+                        rc.elemBuff = new StringBuilder();
+                    }
+                    rc.elemBuff.append(rc.body.substring(rc.fromPos, rc.i));
+                    rc.fromPos = rc.i;
+                    final String separator = rc.line.getSeparator()
+                            .getSeparator();
+                    rc.elemBuff.append(separator);
 
-                        rc.state = State.UNQUOTED_ELEMENT;
+                    if (rc.savedLines == null) {
+                        rc.savedLines = CollectionsUtil.newArrayList();
+                    }
+                    rc.savedLines.add(copyLine(line));
+                    continue line_loop;
+                }
+                break line_loop;
+            }
+
+            // 終了処理(行の終わり or EOF)
+            switch (rc.state) {
+            case INITIAL:
+                break;
+            case BEGIN_ELEMENT:
+                rb_.startElement();
+                rc.fromPos = rc.beginPos = rc.elemBeginPlain;
+                // 空白だけの要素で行が終わる場合も、ここでフォロー
+                {
+                    final String elem = rc.body.substring(rc.fromPos, rc.i);
+                    rb_.endElement(elem);
+                }
+                rb_.endRecord();
+                break;
+            case UNQUOTED_ELEMENT:
+                if (rb_.isInElement()) {
+                    final String elem = rc.body.substring(rc.fromPos, rc.i);
+                    rb_.endElement(elem);
+                }
+                rb_.endRecord();
+                break;
+            case QUOTED_ELEMENT:
+                // クォート文字しかないrecordの場合
+                if (rb_.isEmpty()) {
+                    rb_.endElement(String.valueOf(quoteMark_));
+                }
+                // クォートされた要素の途中でEOFになった場合
+                if (rb_.isInElement()) {
+                    invalid(rc);
+                    continue read_loop;
+                }
+                rb_.endRecord();
+                break;
+            case QUOTE:
+                if (rb_.isInElement()) {
+                    // クォートされていたら最後のスペースは除く
+                    String elem = rc.body.substring(rc.fromPos, rc.elemEnd);
+                    if (rc.elemBuff != null) {
+                        rc.elemBuff.append(elem);
+                        elem = rc.elemBuff.toString();
                         rc.elemBuff = null;
-                        if (rc.savedLines != null) {
-                            final Iterator<Line> it = rc.savedLines.iterator();
-                            final Line line1 = it.next();
-                            final StringBuilder sb = new StringBuilder();
-                            sb.append(line1.getBodyAndSeparator().substring(
-                                    rc.elemBeginPlain));
-                            while (it.hasNext()) {
-                                final Line l = it.next();
-                                sb.append(l.getBodyAndSeparator());
-                            }
-                            sb.append(line.getBodyAndSeparator());
-                            pushback_ = new LineReadable(new StringReader(
-                                    sb.toString()));
-                            rc.savedLines = null;
-                            continue read_loop;
-                        }
-                        rc.i = rc.elemBeginPlain - 1;
-                        rc.fromPos = rc.beginPos = rc.elemBeginPlain;
-                        continue body_loop;
                     }
-                    break;
-
-                default:
-                    throw new AssertionError();
+                    rb_.endElement(elem);
                 }
+                rb_.endRecord();
+                break;
+            default:
+                throw new AssertionError();
             }
 
-            /* body終了 */
-            if (rc.state == State.QUOTED_ELEMENT) {
-                // 改行を含む要素
-                if (rc.elemBuff == null) {
-                    rc.elemBuff = new StringBuilder();
-                }
-                rc.elemBuff.append(rc.body.substring(rc.fromPos, rc.i));
-                rc.fromPos = rc.i;
-                final String separator = line.getSeparator().getSeparator();
-                rc.elemBuff.append(separator);
-
-                if (rc.savedLines == null) {
-                    rc.savedLines = CollectionsUtil.newArrayList();
-                }
-                rc.savedLines.add(copyLine(line));
-                continue read_loop;
-            }
             break read_loop;
-        }
-
-        // 終了処理
-        switch (rc.state) {
-        case INITIAL:
-            break;
-        case BEGIN_ELEMENT:
-            rb_.startElement();
-            rc.fromPos = rc.beginPos = rc.elemBeginPlain;
-            // 空白だけの要素で行が終わる場合も、ここでフォロー
-            {
-                final String elem = rc.body.substring(rc.fromPos, rc.i);
-                rb_.endElement(elem);
-            }
-            rb_.endRecord();
-            break;
-        case UNQUOTED_ELEMENT:
-            if (rb_.isInElement()) {
-                final String elem = rc.body.substring(rc.fromPos, rc.i);
-                rb_.endElement(elem);
-            }
-            rb_.endRecord();
-            break;
-        case QUOTED_ELEMENT:
-            // クォート文字しかないrecordの場合
-            if (rb_.isEmpty()) {
-                rb_.endElement(String.valueOf(quoteMark_));
-            }
-            // クォートされた要素の途中でEOFになった場合
-            if (rb_.isInElement()) {
-                String elem = rc.body.substring(rc.fromPos, rc.i);
-                if (rc.elemBuff != null) {
-                    rc.elemBuff.append(elem);
-                    elem = rc.elemBuff.toString();
-                    rc.elemBuff = null;
-                }
-                rb_.endElement(elem);
-                recordState_ = RecordState.INVALID;
-            }
-            rb_.endRecord();
-            break;
-        case QUOTE:
-            if (rb_.isInElement()) {
-                // クォートされていたら最後のスペースは除く
-                String elem = rc.body.substring(rc.fromPos, rc.elemEnd);
-                if (rc.elemBuff != null) {
-                    rc.elemBuff.append(elem);
-                    elem = rc.elemBuff.toString();
-                    rc.elemBuff = null;
-                }
-                rb_.endElement(elem);
-            }
-            rb_.endRecord();
-            break;
-        default:
-            throw new AssertionError();
         }
 
         if (eof_ && rb_.isEmpty()) {
@@ -354,6 +283,82 @@ public class Rfc4180Reader implements ElementReader {
         recordNo_++;
         final String[] record = rb_.toRecord();
         return record;
+    }
+
+    private void invalid(final ReadContect rc) {
+        /*
+         * クォートされた要素内にクォートが登場したら、
+         * 続く文字はクォート(→エスケープされたクォート文字とみなす)か、改行(→レコードの終わりとみなす)
+         * であるべき。
+         * だが、通常の文字が入力されてしまった。
+         * "abc"d" ... このような入力
+         */
+        final SimpleLog log = new SimpleLog();
+        log.append("invalid record: recordNo={}, ", recordNo_);
+        log.appendFormat("line=");
+
+        final List<Line> readingLines = CollectionsUtil.newArrayList();
+        if (rc.savedLines != null) {
+            readingLines.addAll(rc.savedLines);
+        }
+        if (!eof_) {
+            readingLines.add(rc.line);
+        }
+
+        {
+            boolean first = true;
+            for (final Line l : readingLines) {
+                if (first) {
+                    first = false;
+                } else {
+                    log.appendFormat(",");
+                }
+                log.append("{}[{}]", l.getNumber(), l.getBody());
+            }
+        }
+
+        /*
+         * 先頭のスペースを除いた、クォートされた要素の場合は、
+         * クォートされない要素として読み直す。
+         * 
+         * 先頭ではなく末尾にスペースを持つ要素の場合は、INVALIDにはしない。
+         * (グレーだけれど)
+         */
+        /*
+         * と上のコメントに書いてあるが、
+         * 先頭のスペースを捨てていた場合はINVALIDにしない、という動きをするように見える。
+         */
+        // クォート文字の1文字ぶん差がある
+        if (rc.beginPos != rc.elemBeginPlain + 1) {
+            logger.debug(log);
+        } else {
+            logger.warn(log);
+            recordState_ = RecordState.INVALID;
+        }
+
+        /*
+         * ここでは、要素自体がクォートされていないものとして扱うことにする。
+         * つまり、"abc"d" このような入力を、"abc"d" そのものとみなすということ。
+         * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
+         * (見直す可能性アリ)
+         */
+
+        rc.state = State.UNQUOTED_ELEMENT;
+        rc.elemBuff = null;
+
+        final StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (final Line l : readingLines) {
+            if (first) {
+                first = false;
+                sb.append(l.getBodyAndSeparator().substring(rc.elemBeginPlain));
+            } else {
+                sb.append(l.getBodyAndSeparator());
+            }
+        }
+        pushback_ = new LineReadable(new StringReader(sb.toString()));
+        rc.savedLines = null;
+        rc.elemBuff = null;
     }
 
     private Line readLine() throws IOException {
@@ -398,6 +403,7 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     static class ReadContect {
+
         State state = State.INITIAL;
 
         // 要素区切り文字の次の位置
@@ -413,6 +419,7 @@ public class Rfc4180Reader implements ElementReader {
         int i = 0;
         StringBuilder elemBuff;
         List<Line> savedLines;
+        Line line;
         String body;
     }
 

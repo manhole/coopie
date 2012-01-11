@@ -578,7 +578,7 @@ public class Rfc4180ReaderTest {
      * 
      * "aaa","bbb","cc
      * 
-     * 途切れた要素を、1要素として読み込む
+     * 途切れた要素は、INVALID状態として、先頭のクォートを要素の文字として扱う。
      */
     @Test
     public void invalid_eof_inQuotedElement() throws Throwable {
@@ -587,7 +587,7 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertArrayEquals(a("aaa", "bbb", "cc"), reader.readRecord());
+        assertArrayEquals(a("aaa", "bbb", "\"cc"), reader.readRecord());
         // invalid扱いとしたい
         assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
         assertNull(reader.readRecord());
