@@ -29,8 +29,6 @@ import org.t2framework.commons.util.CollectionsUtil;
 public class Rfc4180Reader implements ElementReader {
 
     private static final Logger logger = LoggerFactory.getLogger();
-    private static final char CR = CsvSetting.CR;
-    private static final char LF = CsvSetting.LF;
     private static final char SP = ' ';
     private static final String EMPTY_ELEM = "";
 
@@ -84,11 +82,13 @@ public class Rfc4180Reader implements ElementReader {
 
         // 要素区切り文字の次の位置
         int elemBeginPlain = 0;
+        // 要素開始位置
         int beginPos = -1;
+        // substring用
+        int fromPos = -1;
         int elemEnd = -1;
         int i = 0;
         char[] bodyChars = null;
-        // 複数行にわたる要素を保持する
         StringBuilder elemBuff = null;
         try {
             read_loop: while (true) {
@@ -97,7 +97,7 @@ public class Rfc4180Reader implements ElementReader {
                     eof_ = true;
                     break read_loop;
                 }
-                beginPos = 0;
+                fromPos = 0;
 
                 bodyChars = currentLine.getBody().toCharArray();
                 final String separator = currentLine.getSeparator()
@@ -112,7 +112,7 @@ public class Rfc4180Reader implements ElementReader {
                             state = State.QUOTED_ELEMENT;
                             rb_.startRecord();
                             rb_.startElement();
-                            beginPos = i + 1;
+                            fromPos = beginPos = i + 1;
                             elemBeginPlain = i;
                             rb_.appendPlain(c);
                         } else if (c == elementSeparator_) {
@@ -124,13 +124,12 @@ public class Rfc4180Reader implements ElementReader {
                         } else if (c == SP) {
                             state = State.BEGIN_ELEMENT;
                             rb_.startRecord();
-                            rb_.pendingSpace(c);
                             rb_.appendPlain(c);
                         } else {
                             state = State.UNQUOTED_ELEMENT;
                             rb_.startRecord();
                             rb_.startElement();
-                            beginPos = i;
+                            fromPos = beginPos = i;
                             elemBeginPlain = i;
                             rb_.append(c);
                         }
@@ -140,32 +139,29 @@ public class Rfc4180Reader implements ElementReader {
                         if (c == quoteMark_) {
                             state = State.QUOTED_ELEMENT;
                             // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
-                            rb_.discardHeadingSpace();
                             rb_.startElement();
-                            beginPos = i + 1;
-                            elemBeginPlain = i;
+                            fromPos = beginPos = i + 1;
                             rb_.appendPlain(c);
                         } else if (c == elementSeparator_) {
                             rb_.startElement();
                             if (elemBeginPlain != i) {
-                                beginPos = elemBeginPlain;
+                                fromPos = beginPos = elemBeginPlain;
                             } else {
-                                beginPos = i;
+                                fromPos = beginPos = i;
                             }
-                            final String elem = new String(bodyChars, beginPos,
-                                    i - beginPos);
+                            final String elem = new String(bodyChars, fromPos,
+                                    i - fromPos);
                             rb_.endElement(elem);
                             elemBeginPlain = i + 1;
                         } else if (c == SP) {
-                            rb_.pendingSpace(c);
                             rb_.appendPlain(c);
                         } else {
                             state = State.UNQUOTED_ELEMENT;
                             rb_.startElement();
                             if (elemBeginPlain != i) {
-                                beginPos = elemBeginPlain;
+                                fromPos = beginPos = elemBeginPlain;
                             } else {
-                                beginPos = i;
+                                fromPos = beginPos = i;
                             }
                             rb_.append(c);
                             //rb.appendPlain(c);
@@ -177,8 +173,8 @@ public class Rfc4180Reader implements ElementReader {
                         if (c == quoteMark_) {
                             rb_.append(c);
                         } else if (c == elementSeparator_) {
-                            final String elem = new String(bodyChars, beginPos,
-                                    i - beginPos);
+                            final String elem = new String(bodyChars, fromPos,
+                                    i - fromPos);
                             rb_.endElement(elem);
                             elemBeginPlain = i + 1;
                             state = State.BEGIN_ELEMENT;
@@ -204,16 +200,15 @@ public class Rfc4180Reader implements ElementReader {
                             if (elemBuff == null) {
                                 elemBuff = new StringBuilder();
                             }
-                            elemBuff.append(bodyChars, beginPos, i - beginPos);
-                            beginPos = i + 1;
+                            elemBuff.append(bodyChars, fromPos, i - fromPos);
+                            fromPos = i + 1;
 
                             state = State.QUOTED_ELEMENT;
                         } else if (c == SP) {
                             // 要素より後のspaceを捨てるため
-                            rb_.pendingSpace(c);
                         } else if (c == elementSeparator_) {
-                            String elem = new String(bodyChars, beginPos,
-                                    elemEnd - beginPos);
+                            String elem = new String(bodyChars, fromPos,
+                                    elemEnd - fromPos);
                             if (elemBuff != null) {
                                 elemBuff.append(elem);
                                 elem = elemBuff.toString();
@@ -253,7 +248,12 @@ public class Rfc4180Reader implements ElementReader {
                              * 先頭ではなく末尾にスペースを持つ要素の場合は、INVALIDにはしない。
                              * (グレーだけれど)
                              */
-                            if (rb_.isDiscardedHeadingSpace()) {
+                            /*
+                             * と上のコメントに書いてあるが、
+                             * 先頭のスペースを捨てていた場合はINVALIDにしない、という動きをするように見える。
+                             */
+                            // クォート文字の1文字ぶん差がある
+                            if (beginPos != elemBeginPlain + 1) {
                                 logger.debug(log);
                             } else {
                                 logger.warn(log);
@@ -294,8 +294,8 @@ public class Rfc4180Reader implements ElementReader {
                     if (elemBuff == null) {
                         elemBuff = new StringBuilder();
                     }
-                    elemBuff.append(bodyChars, beginPos, i - beginPos);
-                    beginPos = i;
+                    elemBuff.append(bodyChars, fromPos, i - fromPos);
+                    fromPos = i;
                     elemBuff.append(endChars);
                     continue read_loop;
                 }
@@ -309,9 +309,10 @@ public class Rfc4180Reader implements ElementReader {
             case BEGIN_ELEMENT:
                 rb_.startElement();
                 if (elemBeginPlain != i) {
-                    beginPos = elemBeginPlain;
-                    final String elem = new String(bodyChars, beginPos, i
-                            - beginPos);
+                    fromPos = beginPos = elemBeginPlain;
+                    // 空白だけの要素で行が終わる場合も、ここでフォロー
+                    final String elem = new String(bodyChars, fromPos, i
+                            - fromPos);
                     rb_.endElement(elem);
                 } else {
                     rb_.endElement(EMPTY_ELEM);
@@ -320,8 +321,8 @@ public class Rfc4180Reader implements ElementReader {
                 break;
             case UNQUOTED_ELEMENT:
                 if (rb_.isInElement()) {
-                    final String elem = new String(bodyChars, beginPos, i
-                            - beginPos);
+                    final String elem = new String(bodyChars, fromPos, i
+                            - fromPos);
                     rb_.endElement(elem);
                 }
                 rb_.endRecord();
@@ -334,7 +335,7 @@ public class Rfc4180Reader implements ElementReader {
                 }
                 // クォートされた要素の途中でEOFになった場合
                 if (rb_.isInElement()) {
-                    String elem = new String(bodyChars, beginPos, i - beginPos);
+                    String elem = new String(bodyChars, fromPos, i - fromPos);
                     if (elemBuff != null) {
                         elemBuff.append(elem);
                         elem = elemBuff.toString();
@@ -348,8 +349,8 @@ public class Rfc4180Reader implements ElementReader {
             case QUOTE:
                 if (rb_.isInElement()) {
                     // クォートされていたら最後のスペースは除く
-                    String elem = new String(bodyChars, beginPos, elemEnd
-                            - beginPos);
+                    String elem = new String(bodyChars, fromPos, elemEnd
+                            - fromPos);
                     if (elemBuff != null) {
                         elemBuff.append(elem);
                         elem = elemBuff.toString();
@@ -425,8 +426,6 @@ public class Rfc4180Reader implements ElementReader {
          * 要素区切り文字の次の文字から、その要素を終える区切り文字(or 改行)の手前までを持つ。
          */
         private StringBuilder plainElement_;
-        private StringBuilder pending_;
-        private boolean discardedHeadingSpace_;
         private boolean inElement_;
         private boolean inRecord_;
 
@@ -434,8 +433,6 @@ public class Rfc4180Reader implements ElementReader {
             elems_.clear();
             clearBuffer(sb_);
             clearBuffer(plainElement_);
-            clearBuffer(pending_);
-            discardedHeadingSpace_ = false;
             inElement_ = false;
             inRecord_ = false;
         }
@@ -446,11 +443,6 @@ public class Rfc4180Reader implements ElementReader {
         }
 
         public void endRecord() {
-            // 空白だけの要素で行が終わる場合をフォロー
-            if (pending_ != null) {
-                startElement();
-                endElement();
-            }
             assertInRecord();
             assertNotInElement();
             inRecord_ = false;
@@ -507,24 +499,6 @@ public class Rfc4180Reader implements ElementReader {
             clearBuffer(plainElement_);
         }
 
-        /*
-         * 両端のスペースを一時的に持つ。
-         * 状態によってtrim扱いとするため。
-         */
-        public void pendingSpace(final char c) {
-            if (pending_ == null) {
-                pending_ = new StringBuilder();
-            }
-            pending_.append(c);
-        }
-
-        public void discardHeadingSpace() {
-            if (pending_ != null) {
-                discardedHeadingSpace_ = true;
-                pending_ = null;
-            }
-        }
-
         public boolean isEmpty() {
             return elems_.isEmpty();
         }
@@ -556,10 +530,6 @@ public class Rfc4180Reader implements ElementReader {
             if (isInElement()) {
                 throw new IllegalStateException("already started");
             }
-        }
-
-        public boolean isDiscardedHeadingSpace() {
-            return discardedHeadingSpace_;
         }
 
         public String getPlain() {
