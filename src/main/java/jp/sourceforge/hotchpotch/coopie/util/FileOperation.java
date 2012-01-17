@@ -39,6 +39,7 @@ public class FileOperation {
     private String suffix_ = ".tmp";
     private int bufferSize_ = DEFAULT_BUFF_SIZE;
     private Charset charset_;
+    private final BinaryStreamOperation binaryStreams_ = new BinaryStreamOperation();
 
     public FileOperation() {
         setEncoding(UTF8);
@@ -161,10 +162,7 @@ public class FileOperation {
 
     private void pipe(final InputStream is, final OutputStream os)
             throws IOException {
-        final byte[] buf = new byte[bufferSize_];
-        for (int len = 0; (len = is.read(buf, 0, buf.length)) != -1;) {
-            os.write(buf, 0, len);
-        }
+        binaryStreams_.pipe(is, os);
     }
 
     private void pipe(final Reader in, final Writer out) throws IOException {
@@ -452,6 +450,7 @@ public class FileOperation {
 
     public void setBufferSize(final int bufferSize) {
         bufferSize_ = bufferSize;
+        binaryStreams_.setBufferSize(bufferSize);
     }
 
     public void setEncoding(final String encoding) {
