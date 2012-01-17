@@ -1,7 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -55,7 +57,7 @@ public class FileOperationTest {
     }
 
     @Test
-    public void write() throws Exception {
+    public void write_text() throws Exception {
         // ## Arrange ##
         final FileOperation files = new FileOperation();
         final File f = files.createTempFile(root);
@@ -68,6 +70,20 @@ public class FileOperationTest {
         final byte[] bytes = files.readAsBytes(f);
         final String s = new String(bytes, "UTF-8");
         assertEquals("かねがなるなり", s);
+    }
+
+    @Test
+    public void write_binary() throws Exception {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File f = files.createTempFile(root);
+
+        // ## Act ##
+        files.write(f, new ByteArrayInputStream("1234567890".getBytes()));
+
+        // ## Assert ##
+        final byte[] bytes = files.readAsBytes(f);
+        assertThat(bytes, is("1234567890".getBytes()));
     }
 
     @Test
