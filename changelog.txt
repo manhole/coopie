@@ -13,6 +13,7 @@
 - クォートで開始した要素が閉じクォートが無いままEOFになった場合は、クォート文字を要素に含む要素として扱うことにしました。
   (既存の動作が変わります。今までは最後にクォートを補っていました)
 - add: FileSize.create: InputStreamのバイナリサイズを測る
+- add: FileSize.ToStringMode: FileSize#toStringの出力モードを変更できるようにしました。
 
 0.2.0 2011/12/14
 

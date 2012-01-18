@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 
@@ -66,6 +67,31 @@ public class FileSizeTest {
         // 89.82663721438621
         assertEquals("89.83 TB (98,765,432,101,234)", fileSize.toString());
         assertEquals("89.83 TB", fileSize.toHumanReadableString());
+    }
+
+    @Test
+    public void toStringMode() throws Throwable {
+        // ## Arrange ##
+        final FileSize fileSize = new FileSize(76543211L);
+
+        // ## Act ##
+        // ## Assert ##
+        assertThat(fileSize.toString(), is("73.00 MB (76,543,211)"));
+
+        try {
+            fileSize.setToStringMode(null);
+            fail();
+        } catch (final NullPointerException e) {
+        }
+
+        fileSize.setToStringMode(FileSize.HUMAN_READABLE);
+        assertThat(fileSize.toString(), is("73.00 MB"));
+
+        fileSize.setToStringMode(FileSize.BYTE);
+        assertThat(fileSize.toString(), is("76,543,211"));
+
+        fileSize.setToStringMode(FileSize.DETAIL);
+        assertThat(fileSize.toString(), is("73.00 MB (76,543,211)"));
     }
 
     @Test
