@@ -31,10 +31,10 @@ public class FileSize {
 
     };
 
-    private static final FileSizeUnit KB = new SimpleFileSizeUnit("KB", K);
-    private static final FileSizeUnit MB = new SimpleFileSizeUnit("MB", M);
-    private static final FileSizeUnit GB = new SimpleFileSizeUnit("GB", G);
-    private static final FileSizeUnit TB = new SimpleFileSizeUnit("TB", T);
+    private static final FileSizeUnit KB = new SimpleFileSizeUnit("KiB", K);
+    private static final FileSizeUnit MB = new SimpleFileSizeUnit("MiB", M);
+    private static final FileSizeUnit GB = new SimpleFileSizeUnit("GiB", G);
+    private static final FileSizeUnit TB = new SimpleFileSizeUnit("TiB", T);
 
     public static final ToStringMode DETAIL = new DetailMode();
     public static final ToStringMode HUMAN_READABLE = new HumanReadableMode();
