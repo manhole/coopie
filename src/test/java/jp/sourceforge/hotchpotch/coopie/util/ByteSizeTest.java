@@ -126,6 +126,31 @@ public class ByteSizeTest {
     }
 
     @Test
+    public void asPetaBinary() throws Throwable {
+        // ## Arrange ##
+        final ByteSize byteSize = new ByteSize(1298765432101234L);
+
+        // ## Act ##
+        // ## Assert ##
+        // 1.153535429044824
+        assertEquals("1.15 PiB (1,298,765,432,101,234)", byteSize.toString());
+        assertEquals("1.15 PiB", byteSize.toHumanReadableString());
+    }
+
+    @Test
+    public void asPetaByte() throws Throwable {
+        // ## Arrange ##
+        final ByteSize byteSize = new ByteSize(1298765432101234L);
+
+        // ## Act ##
+        byteSize.setBaseType(BaseType.DECIMAL);
+
+        // ## Assert ##
+        assertEquals("1.30 PB (1,298,765,432,101,234)", byteSize.toString());
+        assertEquals("1.30 PB", byteSize.toHumanReadableString());
+    }
+
+    @Test
     public void toStringMode() throws Throwable {
         // ## Arrange ##
         final ByteSize byteSize = new ByteSize(76543211L);
