@@ -7,6 +7,8 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 
+import jp.sourceforge.hotchpotch.coopie.util.FileSize.BaseType;
+
 import org.junit.Test;
 
 public class FileSizeTest {
@@ -35,6 +37,20 @@ public class FileSizeTest {
     }
 
     @Test
+    public void asKiloByte() throws Throwable {
+        // ## Arrange ##
+        final FileSize fileSize = new FileSize(543210L);
+
+        // ## Act ##
+        fileSize.setBaseType(BaseType.DECIMAL);
+
+        // ## Assert ##
+        // (543,210 / 1000) => 543.21
+        assertEquals("543.21 kB (543,210)", fileSize.toString());
+        assertEquals("543.21 kB", fileSize.toHumanReadableString());
+    }
+
+    @Test
     public void asMegaBinary() throws Throwable {
         // ## Arrange ##
         final FileSize fileSize = new FileSize(76543210L);
@@ -44,6 +60,19 @@ public class FileSizeTest {
         // 72.99729347229004
         assertEquals("73.00 MiB (76,543,210)", fileSize.toString());
         assertEquals("73.00 MiB", fileSize.toHumanReadableString());
+    }
+
+    @Test
+    public void asMegaByte() throws Throwable {
+        // ## Arrange ##
+        final FileSize fileSize = new FileSize(76543210L);
+
+        // ## Act ##
+        fileSize.setBaseType(BaseType.DECIMAL);
+
+        // ## Assert ##
+        assertEquals("76.54 MB (76,543,210)", fileSize.toString());
+        assertEquals("76.54 MB", fileSize.toHumanReadableString());
     }
 
     @Test
@@ -59,6 +88,19 @@ public class FileSizeTest {
     }
 
     @Test
+    public void asGigaByte() throws Throwable {
+        // ## Arrange ##
+        final FileSize fileSize = new FileSize(9876543210L);
+
+        // ## Act ##
+        fileSize.setBaseType(BaseType.DECIMAL);
+
+        // ## Assert ##
+        assertEquals("9.88 GB (9,876,543,210)", fileSize.toString());
+        assertEquals("9.88 GB", fileSize.toHumanReadableString());
+    }
+
+    @Test
     public void asTeraBinary() throws Throwable {
         // ## Arrange ##
         final FileSize fileSize = new FileSize(98765432101234L);
@@ -68,6 +110,19 @@ public class FileSizeTest {
         // 89.82663721438621
         assertEquals("89.83 TiB (98,765,432,101,234)", fileSize.toString());
         assertEquals("89.83 TiB", fileSize.toHumanReadableString());
+    }
+
+    @Test
+    public void asTeraByte() throws Throwable {
+        // ## Arrange ##
+        final FileSize fileSize = new FileSize(98765432101234L);
+
+        // ## Act ##
+        fileSize.setBaseType(BaseType.DECIMAL);
+
+        // ## Assert ##
+        assertEquals("98.77 TB (98,765,432,101,234)", fileSize.toString());
+        assertEquals("98.77 TB", fileSize.toHumanReadableString());
     }
 
     @Test

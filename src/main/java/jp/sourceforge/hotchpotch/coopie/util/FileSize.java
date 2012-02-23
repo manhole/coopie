@@ -9,11 +9,6 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileSize {
 
-    private static final long K = 1024;
-    private static final long M = K * 1024;
-    private static final long G = M * 1024;
-    private static final long T = G * 1024;
-
     private static final FileSizeUnit B = new SimpleFileSizeUnit("B", 0) {
 
         @Override
@@ -31,11 +26,6 @@ public class FileSize {
 
     };
 
-    private static final FileSizeUnit KB = new SimpleFileSizeUnit("KiB", K);
-    private static final FileSizeUnit MB = new SimpleFileSizeUnit("MiB", M);
-    private static final FileSizeUnit GB = new SimpleFileSizeUnit("GiB", G);
-    private static final FileSizeUnit TB = new SimpleFileSizeUnit("TiB", T);
-
     public static final ToStringMode DETAIL = new DetailMode();
     public static final ToStringMode HUMAN_READABLE = new HumanReadableMode();
     public static final ToStringMode BYTE = new ByteMode();
@@ -44,6 +34,7 @@ public class FileSize {
 
     private final long size_;
     private ToStringMode toStringMode_ = DETAIL;
+    private UnitsTable unitsTable_ = BaseType.BINARY.getUnitsTable();
 
     public FileSize(final long size) {
         size_ = size;
@@ -92,16 +83,8 @@ public class FileSize {
     }
 
     private FileSizeUnit detectUnit(final long size) {
-        if (KB.lessThan(size)) {
-            return B;
-        } else if (MB.lessThan(size)) {
-            return KB;
-        } else if (GB.lessThan(size)) {
-            return MB;
-        } else if (TB.lessThan(size)) {
-            return GB;
-        }
-        return TB;
+        final FileSizeUnit unit = unitsTable_.detectUnit(size);
+        return unit;
     }
 
     public void setToStringMode(final ToStringMode toStringMode) {
@@ -109,6 +92,136 @@ public class FileSize {
             throw new NullPointerException("toStringMode");
         }
         toStringMode_ = toStringMode;
+    }
+
+    public void setBaseType(final BaseType baseType) {
+        unitsTable_ = baseType.getUnitsTable();
+    }
+
+    public static enum BaseType {
+
+        BINARY(BinaryUnits.getInstance()),
+
+        DECIMAL(DecimalUnits.getInstance())
+
+        ;
+
+        private final UnitsTable unitsTable_;
+
+        private BaseType(final UnitsTable unitsTable) {
+            unitsTable_ = unitsTable;
+        }
+
+        public UnitsTable getUnitsTable() {
+            return unitsTable_;
+        }
+
+    }
+
+    private static class Coefficient {
+
+        private final int base_;
+
+        public Coefficient(final int base) {
+            base_ = base;
+        }
+
+        public long pow(final int exponent) {
+            final double pow = Math.pow(base_, exponent);
+            return (long) pow;
+        }
+
+    }
+
+    private static interface UnitsTable {
+
+        FileSizeUnit detectUnit(long size);
+
+    }
+
+    /*
+     * Binary prefix
+     * IEC
+     * http://en.wikipedia.org/wiki/Binary_prefix
+     */
+    private static class BinaryUnits implements UnitsTable {
+
+        private static final Coefficient COEFFICIENT = new Coefficient(1024);
+        private static final BinaryUnits INSTANCE = new BinaryUnits();
+
+        public static BinaryUnits getInstance() {
+            return INSTANCE;
+        }
+
+        // kilobinary
+        private static final FileSizeUnit KB = new SimpleFileSizeUnit("KiB",
+                COEFFICIENT.pow(1));
+        // megabinary
+        private static final FileSizeUnit MB = new SimpleFileSizeUnit("MiB",
+                COEFFICIENT.pow(2));
+        // gigabinary
+        private static final FileSizeUnit GB = new SimpleFileSizeUnit("GiB",
+                COEFFICIENT.pow(3));
+        // terabinary
+        private static final FileSizeUnit TB = new SimpleFileSizeUnit("TiB",
+                COEFFICIENT.pow(4));
+
+        @Override
+        public FileSizeUnit detectUnit(final long size) {
+            if (KB.lessThan(size)) {
+                return B;
+            } else if (MB.lessThan(size)) {
+                return KB;
+            } else if (GB.lessThan(size)) {
+                return MB;
+            } else if (TB.lessThan(size)) {
+                return GB;
+            }
+            return TB;
+        }
+
+    }
+
+    /*
+     * SI prefix system
+     * (International System of Units (SI))
+     */
+    private static class DecimalUnits implements UnitsTable {
+
+        private static final Coefficient COEFFICIENT = new Coefficient(1000);
+        private static final DecimalUnits INSTANCE = new DecimalUnits();
+
+        public static DecimalUnits getInstance() {
+            return INSTANCE;
+        }
+
+        // Kilobyte
+        private static final FileSizeUnit KB = new SimpleFileSizeUnit("kB",
+                COEFFICIENT.pow(1));
+        // Megabyte
+        private static final FileSizeUnit MB = new SimpleFileSizeUnit("MB",
+                COEFFICIENT.pow(2));
+        // Gigabyte
+        private static final FileSizeUnit GB = new SimpleFileSizeUnit("GB",
+                COEFFICIENT.pow(3));
+        // Terabyte
+        private static final FileSizeUnit TB = new SimpleFileSizeUnit("TB",
+                COEFFICIENT.pow(4));
+
+        @Override
+        public FileSizeUnit detectUnit(final long size) {
+            if (KB.lessThan(size)) {
+                return B;
+            } else if (MB.lessThan(size)) {
+                return KB;
+            } else if (GB.lessThan(size)) {
+                return MB;
+            } else if (TB.lessThan(size)) {
+                return GB;
+            }
+            return TB;
+        }
+
     }
 
     public interface FileSizeUnit {
