@@ -77,6 +77,14 @@ public class Rfc4180Reader implements ElementReader {
 
         recordState_ = RecordState.VALID;
         rb_.clear();
+        try {
+            return readRecord0();
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
+
+    private String[] readRecord0() throws IOException {
         State state = State.INITIAL;
 
         // 要素区切り文字の次の位置
@@ -93,288 +101,282 @@ public class Rfc4180Reader implements ElementReader {
         StringBuilder elemBuff = null;
         List<Line> savedLines = null;
         String body = null;
-        try {
-            read_loop: while (true) {
-                final Line line = readLine();
-                if (line == null) {
-                    eof_ = true;
-                    break read_loop;
-                }
-                fromPos = 0;
-
-                body = line.getBody();
-                final char[] bodyChars = body.toCharArray();
-                final int length = bodyChars.length;
-                i = 0;
-                body_loop: for (; i < length; i++) {
-                    final char c = bodyChars[i];
-                    switch (state) {
-                    case INITIAL:
-                        if (c == quoteMark_) {
-                            state = State.QUOTED_ELEMENT;
-                            rb_.startRecord();
-                            rb_.startElement();
-                            fromPos = beginPos = i + 1;
-                            elemBeginPlain = i;
-                        } else if (c == elementSeparator_) {
-                            state = State.BEGIN_ELEMENT;
-                            rb_.startRecord();
-                            rb_.startElement();
-                            rb_.endElement(EMPTY_ELEM);
-                            elemBeginPlain = i + 1;
-                        } else if (c == SP) {
-                            state = State.BEGIN_ELEMENT;
-                            rb_.startRecord();
-                        } else {
-                            state = State.UNQUOTED_ELEMENT;
-                            rb_.startRecord();
-                            rb_.startElement();
-                            fromPos = beginPos = i;
-                            elemBeginPlain = i;
-                        }
-                        break;
-
-                    case BEGIN_ELEMENT:
-                        if (c == quoteMark_) {
-                            state = State.QUOTED_ELEMENT;
-                            // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
-                            rb_.startElement();
-                            fromPos = beginPos = i + 1;
-                        } else if (c == elementSeparator_) {
-                            rb_.startElement();
-                            if (elemBeginPlain != i) {
-                                fromPos = beginPos = elemBeginPlain;
-                            } else {
-                                fromPos = beginPos = i;
-                            }
-                            final String elem = body.substring(fromPos, i);
-                            rb_.endElement(elem);
-                            elemBeginPlain = i + 1;
-                        } else if (c == SP) {
-                        } else {
-                            state = State.UNQUOTED_ELEMENT;
-                            rb_.startElement();
-                            if (elemBeginPlain != i) {
-                                fromPos = beginPos = elemBeginPlain;
-                            } else {
-                                fromPos = beginPos = i;
-                            }
-                        }
-                        break;
-
-                    case UNQUOTED_ELEMENT:
-                        if (c == quoteMark_) {
-                        } else if (c == elementSeparator_) {
-                            final String elem = body.substring(fromPos, i);
-                            rb_.endElement(elem);
-                            elemBeginPlain = i + 1;
-                            state = State.BEGIN_ELEMENT;
-                        }
-                        break;
-
-                    case QUOTED_ELEMENT:
-                        if (c == quoteMark_) {
-                            elemEnd = i;
-                            state = State.QUOTE;
-                        }
-                        break;
-
-                    case QUOTE:
-                        if (c == quoteMark_ && elemEnd + 1 == i) {
-                            if (elemBuff == null) {
-                                elemBuff = new StringBuilder();
-                            }
-                            elemBuff.append(body.substring(fromPos, i));
-                            fromPos = i + 1;
-
-                            state = State.QUOTED_ELEMENT;
-                        } else if (c == SP) {
-                            // 要素より後のspaceを捨てるため
-                        } else if (c == elementSeparator_) {
-                            String elem = body.substring(fromPos, elemEnd);
-                            if (elemBuff != null) {
-                                elemBuff.append(elem);
-                                elem = elemBuff.toString();
-                                elemBuff = null;
-                            }
-                            rb_.endElement(elem);
-                            elemBeginPlain = i + 1;
-                            state = State.BEGIN_ELEMENT;
-                        } else {
-                            /*
-                             * クォートされた要素内にクォートが登場したら、
-                             * 続く文字はクォート(→エスケープされたクォート文字とみなす)か、改行(→レコードの終わりとみなす)
-                             * であるべき。
-                             * だが、通常の文字が入力されてしまった。
-                             * "abc"d" ... このような入力
-                             */
-                            final SimpleLog log = new SimpleLog();
-                            log.append("invalid record: recordNo={}, ",
-                                    recordNo_);
-                            log.appendFormat("line=");
-
-                            boolean first = true;
-                            if (savedLines != null) {
-                                for (final Line l : savedLines) {
-                                    if (first) {
-                                        first = !first;
-                                    } else {
-                                        log.appendFormat(",");
-                                    }
-                                    log.append("{}[{}]", l.getNumber(),
-                                            l.getBody());
-                                }
-                            }
-                            if (first) {
-                                first = !first;
-                            } else {
-                                log.appendFormat(",");
-                            }
-                            log.append("{}[{}]", line.getNumber(), body);
-
-                            /*
-                             * 先頭のスペースを除いた、クォートされた要素の場合は、
-                             * クォートされない要素として読み直す。
-                             * 
-                             * 先頭ではなく末尾にスペースを持つ要素の場合は、INVALIDにはしない。
-                             * (グレーだけれど)
-                             */
-                            /*
-                             * と上のコメントに書いてあるが、
-                             * 先頭のスペースを捨てていた場合はINVALIDにしない、という動きをするように見える。
-                             */
-                            // クォート文字の1文字ぶん差がある
-                            if (beginPos != elemBeginPlain + 1) {
-                                logger.debug(log);
-                            } else {
-                                logger.warn(log);
-                                recordState_ = RecordState.INVALID;
-                            }
-
-                            /*
-                             * ここでは、要素自体がクォートされていないものとして扱うことにする。
-                             * つまり、"abc"d" このような入力を、"abc"d" そのものとみなすということ。
-                             * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
-                             * (見直す可能性アリ)
-                             */
-
-                            state = State.UNQUOTED_ELEMENT;
-                            elemBuff = null;
-                            if (savedLines != null) {
-                                final Iterator<Line> it = savedLines.iterator();
-                                final Line line1 = it.next();
-                                final StringBuilder sb = new StringBuilder();
-                                sb.append(line1.getBodyAndSeparator()
-                                        .substring(elemBeginPlain));
-                                while (it.hasNext()) {
-                                    final Line l = it.next();
-                                    sb.append(l.getBodyAndSeparator());
-                                }
-                                sb.append(line.getBodyAndSeparator());
-                                pushback_ = new LineReadable(new StringReader(
-                                        sb.toString()));
-                                savedLines = null;
-                                continue read_loop;
-                            }
-                            i = elemBeginPlain - 1;
-                            fromPos = beginPos = elemBeginPlain;
-                            continue body_loop;
-                        }
-                        break;
-
-                    default:
-                        throw new AssertionError();
-                    }
-                }
-
-                /* body終了 */
-                if (state == State.QUOTED_ELEMENT) {
-                    // 改行を含む要素
-                    if (elemBuff == null) {
-                        elemBuff = new StringBuilder();
-                    }
-                    elemBuff.append(body.substring(fromPos, i));
-                    fromPos = i;
-                    final String separator = line.getSeparator().getSeparator();
-                    elemBuff.append(separator);
-
-                    if (savedLines == null) {
-                        savedLines = CollectionsUtil.newArrayList();
-                    }
-                    savedLines.add(copyLine(line));
-                    continue read_loop;
-                }
+        read_loop: while (true) {
+            final Line line = readLine();
+            if (line == null) {
+                eof_ = true;
                 break read_loop;
             }
+            fromPos = 0;
 
-            // 終了処理
-            switch (state) {
-            case INITIAL:
-                break;
-            case BEGIN_ELEMENT:
-                rb_.startElement();
-                if (elemBeginPlain != i) {
-                    fromPos = beginPos = elemBeginPlain;
-                    // 空白だけの要素で行が終わる場合も、ここでフォロー
-                    final String elem = body.substring(fromPos, i);
-                    rb_.endElement(elem);
-                } else {
-                    rb_.endElement(EMPTY_ELEM);
-                }
-                rb_.endRecord();
-                break;
-            case UNQUOTED_ELEMENT:
-                if (rb_.isInElement()) {
-                    final String elem = body.substring(fromPos, i);
-                    rb_.endElement(elem);
-                }
-                rb_.endRecord();
-                break;
-            case QUOTED_ELEMENT:
-                // クォート文字しかないrecordの場合
-                if (rb_.isEmpty()) {
-                    rb_.endElement(String.valueOf(quoteMark_));
-                }
-                // クォートされた要素の途中でEOFになった場合
-                if (rb_.isInElement()) {
-                    String elem = body.substring(fromPos, i);
-                    if (elemBuff != null) {
-                        elemBuff.append(elem);
-                        elem = elemBuff.toString();
-                        elemBuff = null;
+            body = line.getBody();
+            final char[] bodyChars = body.toCharArray();
+            final int length = bodyChars.length;
+            i = 0;
+            body_loop: for (; i < length; i++) {
+                final char c = bodyChars[i];
+                switch (state) {
+                case INITIAL:
+                    if (c == quoteMark_) {
+                        state = State.QUOTED_ELEMENT;
+                        rb_.startRecord();
+                        rb_.startElement();
+                        fromPos = beginPos = i + 1;
+                        elemBeginPlain = i;
+                    } else if (c == elementSeparator_) {
+                        state = State.BEGIN_ELEMENT;
+                        rb_.startRecord();
+                        rb_.startElement();
+                        rb_.endElement(EMPTY_ELEM);
+                        elemBeginPlain = i + 1;
+                    } else if (c == SP) {
+                        state = State.BEGIN_ELEMENT;
+                        rb_.startRecord();
+                    } else {
+                        state = State.UNQUOTED_ELEMENT;
+                        rb_.startRecord();
+                        rb_.startElement();
+                        fromPos = beginPos = i;
+                        elemBeginPlain = i;
                     }
-                    rb_.endElement(elem);
-                    recordState_ = RecordState.INVALID;
-                }
-                rb_.endRecord();
-                break;
-            case QUOTE:
-                if (rb_.isInElement()) {
-                    // クォートされていたら最後のスペースは除く
-                    String elem = body.substring(fromPos, elemEnd);
-                    if (elemBuff != null) {
-                        elemBuff.append(elem);
-                        elem = elemBuff.toString();
-                        elemBuff = null;
+                    break;
+
+                case BEGIN_ELEMENT:
+                    if (c == quoteMark_) {
+                        state = State.QUOTED_ELEMENT;
+                        // クォートが要素の先頭に登場したとき、それより前のspaceを除く。
+                        rb_.startElement();
+                        fromPos = beginPos = i + 1;
+                    } else if (c == elementSeparator_) {
+                        rb_.startElement();
+                        if (elemBeginPlain != i) {
+                            fromPos = beginPos = elemBeginPlain;
+                        } else {
+                            fromPos = beginPos = i;
+                        }
+                        final String elem = body.substring(fromPos, i);
+                        rb_.endElement(elem);
+                        elemBeginPlain = i + 1;
+                    } else if (c == SP) {
+                    } else {
+                        state = State.UNQUOTED_ELEMENT;
+                        rb_.startElement();
+                        if (elemBeginPlain != i) {
+                            fromPos = beginPos = elemBeginPlain;
+                        } else {
+                            fromPos = beginPos = i;
+                        }
                     }
-                    rb_.endElement(elem);
+                    break;
+
+                case UNQUOTED_ELEMENT:
+                    if (c == quoteMark_) {
+                    } else if (c == elementSeparator_) {
+                        final String elem = body.substring(fromPos, i);
+                        rb_.endElement(elem);
+                        elemBeginPlain = i + 1;
+                        state = State.BEGIN_ELEMENT;
+                    }
+                    break;
+
+                case QUOTED_ELEMENT:
+                    if (c == quoteMark_) {
+                        elemEnd = i;
+                        state = State.QUOTE;
+                    }
+                    break;
+
+                case QUOTE:
+                    if (c == quoteMark_ && elemEnd + 1 == i) {
+                        if (elemBuff == null) {
+                            elemBuff = new StringBuilder();
+                        }
+                        elemBuff.append(body.substring(fromPos, i));
+                        fromPos = i + 1;
+
+                        state = State.QUOTED_ELEMENT;
+                    } else if (c == SP) {
+                        // 要素より後のspaceを捨てるため
+                    } else if (c == elementSeparator_) {
+                        String elem = body.substring(fromPos, elemEnd);
+                        if (elemBuff != null) {
+                            elemBuff.append(elem);
+                            elem = elemBuff.toString();
+                            elemBuff = null;
+                        }
+                        rb_.endElement(elem);
+                        elemBeginPlain = i + 1;
+                        state = State.BEGIN_ELEMENT;
+                    } else {
+                        /*
+                         * クォートされた要素内にクォートが登場したら、
+                         * 続く文字はクォート(→エスケープされたクォート文字とみなす)か、改行(→レコードの終わりとみなす)
+                         * であるべき。
+                         * だが、通常の文字が入力されてしまった。
+                         * "abc"d" ... このような入力
+                         */
+                        final SimpleLog log = new SimpleLog();
+                        log.append("invalid record: recordNo={}, ", recordNo_);
+                        log.appendFormat("line=");
+
+                        boolean first = true;
+                        if (savedLines != null) {
+                            for (final Line l : savedLines) {
+                                if (first) {
+                                    first = !first;
+                                } else {
+                                    log.appendFormat(",");
+                                }
+                                log.append("{}[{}]", l.getNumber(), l.getBody());
+                            }
+                        }
+                        if (first) {
+                            first = !first;
+                        } else {
+                            log.appendFormat(",");
+                        }
+                        log.append("{}[{}]", line.getNumber(), body);
+
+                        /*
+                         * 先頭のスペースを除いた、クォートされた要素の場合は、
+                         * クォートされない要素として読み直す。
+                         * 
+                         * 先頭ではなく末尾にスペースを持つ要素の場合は、INVALIDにはしない。
+                         * (グレーだけれど)
+                         */
+                        /*
+                         * と上のコメントに書いてあるが、
+                         * 先頭のスペースを捨てていた場合はINVALIDにしない、という動きをするように見える。
+                         */
+                        // クォート文字の1文字ぶん差がある
+                        if (beginPos != elemBeginPlain + 1) {
+                            logger.debug(log);
+                        } else {
+                            logger.warn(log);
+                            recordState_ = RecordState.INVALID;
+                        }
+
+                        /*
+                         * ここでは、要素自体がクォートされていないものとして扱うことにする。
+                         * つまり、"abc"d" このような入力を、"abc"d" そのものとみなすということ。
+                         * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
+                         * (見直す可能性アリ)
+                         */
+
+                        state = State.UNQUOTED_ELEMENT;
+                        elemBuff = null;
+                        if (savedLines != null) {
+                            final Iterator<Line> it = savedLines.iterator();
+                            final Line line1 = it.next();
+                            final StringBuilder sb = new StringBuilder();
+                            sb.append(line1.getBodyAndSeparator().substring(
+                                    elemBeginPlain));
+                            while (it.hasNext()) {
+                                final Line l = it.next();
+                                sb.append(l.getBodyAndSeparator());
+                            }
+                            sb.append(line.getBodyAndSeparator());
+                            pushback_ = new LineReadable(new StringReader(
+                                    sb.toString()));
+                            savedLines = null;
+                            continue read_loop;
+                        }
+                        i = elemBeginPlain - 1;
+                        fromPos = beginPos = elemBeginPlain;
+                        continue body_loop;
+                    }
+                    break;
+
+                default:
+                    throw new AssertionError();
                 }
-                rb_.endRecord();
-                break;
-            default:
-                throw new AssertionError();
             }
 
-            if (eof_ && rb_.isEmpty()) {
-                return null;
-            }
+            /* body終了 */
+            if (state == State.QUOTED_ELEMENT) {
+                // 改行を含む要素
+                if (elemBuff == null) {
+                    elemBuff = new StringBuilder();
+                }
+                elemBuff.append(body.substring(fromPos, i));
+                fromPos = i;
+                final String separator = line.getSeparator().getSeparator();
+                elemBuff.append(separator);
 
-            recordNo_++;
-            final String[] record = rb_.toRecord();
-            return record;
-        } catch (final IOException e) {
-            throw new IORuntimeException(e);
+                if (savedLines == null) {
+                    savedLines = CollectionsUtil.newArrayList();
+                }
+                savedLines.add(copyLine(line));
+                continue read_loop;
+            }
+            break read_loop;
         }
+
+        // 終了処理
+        switch (state) {
+        case INITIAL:
+            break;
+        case BEGIN_ELEMENT:
+            rb_.startElement();
+            if (elemBeginPlain != i) {
+                fromPos = beginPos = elemBeginPlain;
+                // 空白だけの要素で行が終わる場合も、ここでフォロー
+                final String elem = body.substring(fromPos, i);
+                rb_.endElement(elem);
+            } else {
+                rb_.endElement(EMPTY_ELEM);
+            }
+            rb_.endRecord();
+            break;
+        case UNQUOTED_ELEMENT:
+            if (rb_.isInElement()) {
+                final String elem = body.substring(fromPos, i);
+                rb_.endElement(elem);
+            }
+            rb_.endRecord();
+            break;
+        case QUOTED_ELEMENT:
+            // クォート文字しかないrecordの場合
+            if (rb_.isEmpty()) {
+                rb_.endElement(String.valueOf(quoteMark_));
+            }
+            // クォートされた要素の途中でEOFになった場合
+            if (rb_.isInElement()) {
+                String elem = body.substring(fromPos, i);
+                if (elemBuff != null) {
+                    elemBuff.append(elem);
+                    elem = elemBuff.toString();
+                    elemBuff = null;
+                }
+                rb_.endElement(elem);
+                recordState_ = RecordState.INVALID;
+            }
+            rb_.endRecord();
+            break;
+        case QUOTE:
+            if (rb_.isInElement()) {
+                // クォートされていたら最後のスペースは除く
+                String elem = body.substring(fromPos, elemEnd);
+                if (elemBuff != null) {
+                    elemBuff.append(elem);
+                    elem = elemBuff.toString();
+                    elemBuff = null;
+                }
+                rb_.endElement(elem);
+            }
+            rb_.endRecord();
+            break;
+        default:
+            throw new AssertionError();
+        }
+
+        if (eof_ && rb_.isEmpty()) {
+            return null;
+        }
+
+        recordNo_++;
+        final String[] record = rb_.toRecord();
+        return record;
     }
 
     private Line readLine() throws IOException {
