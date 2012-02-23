@@ -3,6 +3,7 @@
 - junitのバージョンを4.8.1 -> 4.10へ。junit-addonsをdependencyから外し、替わりにhamcrestを追加。
 - add: LineReader#readLine(final Line line)
 - setupで指定したプロパティ名がBeanに無い場合は、PropertyNotFoundExceptionを投げるようにしました。
+- add: Duration
 
 0.2.0 2011/12/14
 
