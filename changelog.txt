@@ -7,6 +7,9 @@
 - add: FileSize#toHumanReadableString
 - FileSize: テラバイトに対応
 - BufferedReadable: char配列でも取得できるようにしました
+- add: Line#getBodyAndSeparator
+- LineReadable: パフォーマンス改善。BufferedReadableではなく直接CharBufferを使用し、char[]でループを回すようにした。
+- Rfc4180Reader: パフォーマンス改善。1文字ずつではなく、行単位でループを回すようにした。など。
 
 0.2.0 2011/12/14
 
