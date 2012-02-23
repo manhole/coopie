@@ -4,20 +4,21 @@
 - add: LineReader#readLine(final Line line)
 - setupで指定したプロパティ名がBeanに無い場合は、PropertyNotFoundExceptionを投げるようにしました。
 - add: Duration
-- add: FileSize#toHumanReadableString
-- FileSize: テラバイトに対応
+- rename: FileSize -> ByteSize
+- add: ByteSize#toHumanReadableString
+- ByteSize: テラバイトに対応
 - BufferedReadable: char配列でも取得できるようにしました
 - add: Line#getBodyAndSeparator
 - LineReadable: パフォーマンス改善。BufferedReadableではなく直接CharBufferを使用し、char[]でループを回すようにした。
 - Rfc4180Reader: パフォーマンス改善。1文字ずつではなく、行単位でループを回すようにした。など。
 - クォートで開始した要素が閉じクォートが無いままEOFになった場合は、クォート文字を要素に含む要素として扱うことにしました。
   (既存の動作が変わります。今までは最後にクォートを補っていました)
-- add: FileSize.create: InputStreamのバイナリサイズを測る
-- add: FileSize.ToStringMode: FileSize#toStringの出力モードを変更できるようにしました。
+- add: ByteSize.create: InputStreamのバイナリサイズを測る
+- add: ByteSize.ToStringMode: ByteSize#toStringの出力モードを変更できるようにしました。
 - add: FileOperation#write(File file, InputStream is)
 - add: BinaryStreamOperation. FileOperationから分離
-- FileSize: 文字列表現の形式を変更(ex: 530.48 KB -> 530.48 KiB)
-- FileSize: 単位を1000区切りとするのか1024区切りとするのかを切り換えられるようにしました。
+- ByteSize: 文字列表現の形式を変更(ex: 530.48 KB -> 530.48 KiB)
+- ByteSize: 単位を1000区切りとするのか1024区切りとするのかを切り換えられるようにしました。
 
 0.2.0 2011/12/14
 

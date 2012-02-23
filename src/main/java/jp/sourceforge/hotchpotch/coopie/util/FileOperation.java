@@ -624,8 +624,8 @@ public class FileOperation {
             }
 
             @Override
-            public FileSize getDeletedTotalSize() {
-                return new FileSize(totalBytes_);
+            public ByteSize getDeletedTotalSize() {
+                return new ByteSize(totalBytes_);
             }
 
             @Override
@@ -829,7 +829,7 @@ public class FileOperation {
 
         void logResult();
 
-        FileSize getDeletedTotalSize();
+        ByteSize getDeletedTotalSize();
 
         int getDeletedDirCount();
 

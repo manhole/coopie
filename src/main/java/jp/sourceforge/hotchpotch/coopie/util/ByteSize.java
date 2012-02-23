@@ -7,9 +7,9 @@ import java.text.NumberFormat;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
-public class FileSize {
+public class ByteSize {
 
-    private static final FileSizeUnit B = new SimpleFileSizeUnit("B", 0) {
+    private static final ByteSizeUnit B = new SimpleByteSizeUnit("B", 0) {
 
         @Override
         protected double convert(final long value) {
@@ -36,11 +36,11 @@ public class FileSize {
     private ToStringMode toStringMode_ = DETAIL;
     private UnitsTable unitsTable_ = BaseType.BINARY.getUnitsTable();
 
-    public FileSize(final long size) {
+    public ByteSize(final long size) {
         size_ = size;
     }
 
-    public static FileSize create(final InputStream is) {
+    public static ByteSize create(final InputStream is) {
         final byte[] buf = new byte[bufferSize];
         long l = 0;
         try {
@@ -51,7 +51,7 @@ public class FileSize {
                 }
                 l += len;
             }
-            return new FileSize(l);
+            return new ByteSize(l);
         } catch (final IOException e) {
             throw new IORuntimeException(e);
         } finally {
@@ -72,7 +72,7 @@ public class FileSize {
         return toStringMode_.toString(this);
     }
 
-    private void appendTo(final FileSizeUnit unit, final long size,
+    private void appendTo(final ByteSizeUnit unit, final long size,
             final StringBuilder sb) {
         sb.append(unit.format(size));
         if (unit == B) {
@@ -82,8 +82,8 @@ public class FileSize {
         sb.append(unit.getUnitLabel());
     }
 
-    private FileSizeUnit detectUnit(final long size) {
-        final FileSizeUnit unit = unitsTable_.detectUnit(size);
+    private ByteSizeUnit detectUnit(final long size) {
+        final ByteSizeUnit unit = unitsTable_.detectUnit(size);
         return unit;
     }
 
@@ -135,7 +135,7 @@ public class FileSize {
 
     private static interface UnitsTable {
 
-        FileSizeUnit detectUnit(long size);
+        ByteSizeUnit detectUnit(long size);
 
     }
 
@@ -154,20 +154,20 @@ public class FileSize {
         }
 
         // kilobinary
-        private static final FileSizeUnit KB = new SimpleFileSizeUnit("KiB",
+        private static final ByteSizeUnit KB = new SimpleByteSizeUnit("KiB",
                 COEFFICIENT.pow(1));
         // megabinary
-        private static final FileSizeUnit MB = new SimpleFileSizeUnit("MiB",
+        private static final ByteSizeUnit MB = new SimpleByteSizeUnit("MiB",
                 COEFFICIENT.pow(2));
         // gigabinary
-        private static final FileSizeUnit GB = new SimpleFileSizeUnit("GiB",
+        private static final ByteSizeUnit GB = new SimpleByteSizeUnit("GiB",
                 COEFFICIENT.pow(3));
         // terabinary
-        private static final FileSizeUnit TB = new SimpleFileSizeUnit("TiB",
+        private static final ByteSizeUnit TB = new SimpleByteSizeUnit("TiB",
                 COEFFICIENT.pow(4));
 
         @Override
-        public FileSizeUnit detectUnit(final long size) {
+        public ByteSizeUnit detectUnit(final long size) {
             if (KB.lessThan(size)) {
                 return B;
             } else if (MB.lessThan(size)) {
@@ -196,20 +196,20 @@ public class FileSize {
         }
 
         // Kilobyte
-        private static final FileSizeUnit KB = new SimpleFileSizeUnit("kB",
+        private static final ByteSizeUnit KB = new SimpleByteSizeUnit("kB",
                 COEFFICIENT.pow(1));
         // Megabyte
-        private static final FileSizeUnit MB = new SimpleFileSizeUnit("MB",
+        private static final ByteSizeUnit MB = new SimpleByteSizeUnit("MB",
                 COEFFICIENT.pow(2));
         // Gigabyte
-        private static final FileSizeUnit GB = new SimpleFileSizeUnit("GB",
+        private static final ByteSizeUnit GB = new SimpleByteSizeUnit("GB",
                 COEFFICIENT.pow(3));
         // Terabyte
-        private static final FileSizeUnit TB = new SimpleFileSizeUnit("TB",
+        private static final ByteSizeUnit TB = new SimpleByteSizeUnit("TB",
                 COEFFICIENT.pow(4));
 
         @Override
-        public FileSizeUnit detectUnit(final long size) {
+        public ByteSizeUnit detectUnit(final long size) {
             if (KB.lessThan(size)) {
                 return B;
             } else if (MB.lessThan(size)) {
@@ -224,7 +224,7 @@ public class FileSize {
 
     }
 
-    public interface FileSizeUnit {
+    static interface ByteSizeUnit {
 
         String format(long value);
 
@@ -234,13 +234,13 @@ public class FileSize {
 
     }
 
-    private static class SimpleFileSizeUnit implements FileSizeUnit {
+    private static class SimpleByteSizeUnit implements ByteSizeUnit {
 
         private final String label_;
         private final long coefficient_;
         private final NumberFormat format_;
 
-        SimpleFileSizeUnit(final String label, final long coefficient) {
+        SimpleByteSizeUnit(final String label, final long coefficient) {
             label_ = label;
             coefficient_ = coefficient;
             format_ = NumberFormat.getNumberInstance();
@@ -283,24 +283,24 @@ public class FileSize {
 
     public static interface ToStringMode {
 
-        String toString(FileSize fileSize);
+        String toString(ByteSize byteSize);
 
     }
 
     static class DetailMode implements ToStringMode {
 
         @Override
-        public String toString(final FileSize fileSize) {
-            final long size = fileSize.getSize();
-            final FileSizeUnit unit = fileSize.detectUnit(size);
+        public String toString(final ByteSize byteSize) {
+            final long size = byteSize.getSize();
+            final ByteSizeUnit unit = byteSize.detectUnit(size);
             final StringBuilder sb = new StringBuilder();
-            fileSize.appendTo(unit, size, sb);
+            byteSize.appendTo(unit, size, sb);
             if (unit == B) {
                 return sb.toString();
             }
 
             sb.append(" (");
-            fileSize.appendTo(B, size, sb);
+            byteSize.appendTo(B, size, sb);
             sb.append(")");
             return sb.toString();
         }
@@ -310,11 +310,11 @@ public class FileSize {
     static class HumanReadableMode implements ToStringMode {
 
         @Override
-        public String toString(final FileSize fileSize) {
-            final long size = fileSize.getSize();
-            final FileSizeUnit unit = fileSize.detectUnit(size);
+        public String toString(final ByteSize byteSize) {
+            final long size = byteSize.getSize();
+            final ByteSizeUnit unit = byteSize.detectUnit(size);
             final StringBuilder sb = new StringBuilder();
-            fileSize.appendTo(unit, size, sb);
+            byteSize.appendTo(unit, size, sb);
             return sb.toString();
         }
 
@@ -323,10 +323,10 @@ public class FileSize {
     static class ByteMode implements ToStringMode {
 
         @Override
-        public String toString(final FileSize fileSize) {
-            final long size = fileSize.getSize();
+        public String toString(final ByteSize byteSize) {
+            final long size = byteSize.getSize();
             final StringBuilder sb = new StringBuilder();
-            fileSize.appendTo(B, size, sb);
+            byteSize.appendTo(B, size, sb);
             return sb.toString();
         }
 
