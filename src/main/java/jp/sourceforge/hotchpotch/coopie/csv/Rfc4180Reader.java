@@ -100,9 +100,6 @@ public class Rfc4180Reader implements ElementReader {
                 fromPos = 0;
 
                 bodyChars = currentLine.getBody().toCharArray();
-                final String separator = currentLine.getSeparator()
-                        .getSeparator();
-                final char[] endChars = separator.toCharArray();
                 i = 0;
                 body_loop: for (; i < bodyChars.length; i++) {
                     final char c = bodyChars[i];
@@ -297,7 +294,9 @@ public class Rfc4180Reader implements ElementReader {
                     }
                     elemBuff.append(bodyChars, fromPos, i - fromPos);
                     fromPos = i;
-                    elemBuff.append(endChars);
+                    final String separator = currentLine.getSeparator()
+                            .getSeparator();
+                    elemBuff.append(separator);
 
                     if (savedLines == null) {
                         savedLines = CollectionsUtil.newArrayList();
