@@ -1,7 +1,11 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+
+import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileSize {
 
@@ -32,10 +36,31 @@ public class FileSize {
     private static final FileSizeUnit GB = new SimpleFileSizeUnit("GB", G);
     private static final FileSizeUnit TB = new SimpleFileSizeUnit("TB", T);
 
+    private static final int bufferSize = 1024 * 8;
+
     private final long size_;
 
     public FileSize(final long size) {
         size_ = size;
+    }
+
+    public static FileSize create(final InputStream is) {
+        final byte[] buf = new byte[bufferSize];
+        long l = 0;
+        try {
+            while (true) {
+                final int len = is.read(buf);
+                if (-1 == len) {
+                    break;
+                }
+                l += len;
+            }
+            return new FileSize(l);
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        } finally {
+            CloseableUtil.closeNoException(is);
+        }
     }
 
     public long getSize() {
