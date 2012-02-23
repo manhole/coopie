@@ -26,6 +26,11 @@ public class LineImpl implements Line {
     }
 
     @Override
+    public String getBodyAndSeparator() {
+        return body_ + separator_.getSeparator();
+    }
+
+    @Override
     public int getNumber() {
         return number_;
     }
