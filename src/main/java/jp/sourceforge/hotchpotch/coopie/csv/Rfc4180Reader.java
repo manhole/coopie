@@ -44,6 +44,7 @@ public class Rfc4180Reader implements ElementReader {
 
     private char elementSeparator_ = CsvSetting.COMMA;
     private char quoteMark_ = CsvSetting.DOUBLE_QUOTE;
+    private boolean eof_;
 
     public void open(final Readable readable) {
         rb_ = new RecordBuffer();
@@ -71,7 +72,7 @@ public class Rfc4180Reader implements ElementReader {
 
     @Override
     public String[] readRecord() {
-        if (isEof()) {
+        if (eof_) {
             return null;
         }
 
@@ -96,6 +97,7 @@ public class Rfc4180Reader implements ElementReader {
                     currentLine = reader_.readLine();
                 }
                 if (currentLine == null) {
+                    eof_ = true;
                     break read_loop;
                 }
 
@@ -322,7 +324,7 @@ public class Rfc4180Reader implements ElementReader {
                 throw new AssertionError();
             }
 
-            if (isEof() && rb_.isEmpty()) {
+            if (eof_ && rb_.isEmpty()) {
                 return null;
             }
 
@@ -332,13 +334,6 @@ public class Rfc4180Reader implements ElementReader {
         } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
-    }
-
-    /*
-     * EOF
-     */
-    private boolean isEof() {
-        return reader_.isEof();
     }
 
     @Override
@@ -577,7 +572,6 @@ public class Rfc4180Reader implements ElementReader {
 
         private final LineReadable reader_;
         private final LineReaderHandler lineReaderHandler_;
-        private boolean eof_;
 
         private boolean closed_;
         @SuppressWarnings("unused")
@@ -605,15 +599,10 @@ public class Rfc4180Reader implements ElementReader {
             return marker_.getMarkedLines();
         }
 
-        public boolean isEof() {
-            return eof_;
-        }
-
         public Line readLine() throws IOException {
             while (true) {
                 final Line line = lineReaderHandler_.readLine(reader_, line_);
                 if (line == null) {
-                    eof_ = true;
                     return null;
                 }
                 if (lineReaderHandler_.acceptLine(line, parserContext_)) {
