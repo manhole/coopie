@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -136,6 +137,39 @@ public class BufferedReadableTest {
         assertEquals(true, cs.isEof());
 
         cs.close();
+    }
+
+    @Test
+    public void readChars1() throws Throwable {
+        // ## Arrange ##
+        final BufferedReadable cs = create("01234");
+
+        // ## Act ##
+        final char[] chars = cs.readChars();
+
+        // ## Assert ##
+        assertArrayEquals(new char[] { '0', '1', '2', '3', '4' }, chars);
+    }
+
+    @Test
+    public void readChars2() throws Throwable {
+        // ## Arrange ##
+        final BufferedReadable cs = create("01234", 3);
+
+        // ## Act ##
+        // ## Assert ##
+        {
+            final char[] chars = cs.readChars();
+            assertArrayEquals(new char[] { '0', '1', '2' }, chars);
+        }
+        {
+            final char[] chars = cs.readChars();
+            assertArrayEquals(new char[] { '3', '4' }, chars);
+        }
+        {
+            final char[] chars = cs.readChars();
+            assertEquals(null, chars);
+        }
     }
 
     private BufferedReadable create(final String in) {

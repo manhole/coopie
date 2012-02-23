@@ -6,6 +6,7 @@
 - add: Duration
 - add: FileSize#toHumanReadableString
 - FileSize: テラバイトに対応
+- BufferedReadable: char配列でも取得できるようにしました
 
 0.2.0 2011/12/14
 
