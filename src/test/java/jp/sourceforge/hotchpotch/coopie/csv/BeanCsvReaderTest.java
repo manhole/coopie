@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.PropertyNotFoundException;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
@@ -578,6 +579,30 @@ public class BeanCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    /**
+     * setupしたプロパティ名がJavaBeansに無い場合は、例外とする。
+     */
+    @Test
+    public void invalid_propertyName() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+                @Override
+                public void setup(final CsvColumnSetup setup) {
+                    setup.column("bad_property_name");
+                }
+            });
+            fail();
+        } catch (final PropertyNotFoundException e) {
+            logger.debug(e.getMessage());
+        }
     }
 
     /**

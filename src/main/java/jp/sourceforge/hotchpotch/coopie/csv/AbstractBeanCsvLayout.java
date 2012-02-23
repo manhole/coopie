@@ -8,6 +8,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
+import org.t2framework.commons.meta.ClassDesc;
 import org.t2framework.commons.meta.PropertyDesc;
 import org.t2framework.commons.util.CollectionsUtil;
 import org.t2framework.commons.util.StringUtil;
@@ -194,9 +195,24 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final BeanDesc<U> beanDesc, final String name) {
         final PropertyDesc<U> pd = beanDesc.getPropertyDesc(name);
         if (pd == null) {
-            throw new IllegalStateException("property not found:<" + name + ">");
+            final ClassDesc<U> classDesc = beanDesc.getClassDesc();
+            final Class<? extends U> concreteClass = classDesc
+                    .getConcreteClass();
+            final String className = concreteClass.getName();
+            throw new PropertyNotFoundException("property not found:<" + name
+                    + "> for class:<" + className + ">");
         }
         return pd;
+    }
+
+    static class PropertyNotFoundException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        public PropertyNotFoundException(final String message) {
+            super(message);
+        }
+
     }
 
     static class BeanColumnDesc<T> implements ColumnDesc<T> {
