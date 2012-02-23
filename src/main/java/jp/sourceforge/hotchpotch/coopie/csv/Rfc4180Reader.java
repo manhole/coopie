@@ -3,7 +3,6 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.Logger;
@@ -76,7 +75,6 @@ public class Rfc4180Reader implements ElementReader {
             return null;
         }
 
-        reader_.mark();
         recordState_ = RecordState.VALID;
         rb_.clear();
         State state = State.INITIAL;
@@ -91,6 +89,7 @@ public class Rfc4180Reader implements ElementReader {
         int i = 0;
         char[] bodyChars = null;
         StringBuilder elemBuff = null;
+        List<Line> savedLines = null;
         try {
             read_loop: while (true) {
                 final Line currentLine = readLine();
@@ -105,7 +104,7 @@ public class Rfc4180Reader implements ElementReader {
                         .getSeparator();
                 final char[] endChars = separator.toCharArray();
                 i = 0;
-                for (; i < bodyChars.length; i++) {
+                body_loop: for (; i < bodyChars.length; i++) {
                     final char c = bodyChars[i];
                     switch (state) {
                     case INITIAL:
@@ -159,12 +158,10 @@ public class Rfc4180Reader implements ElementReader {
                             } else {
                                 fromPos = beginPos = i;
                             }
-                            //rb.appendPlain(c);
                         }
                         break;
 
                     case UNQUOTED_ELEMENT:
-                        //rb.appendPlain(c);
                         if (c == quoteMark_) {
                         } else if (c == elementSeparator_) {
                             final String elem = new String(bodyChars, fromPos,
@@ -215,18 +212,27 @@ public class Rfc4180Reader implements ElementReader {
                             final SimpleLog log = new SimpleLog();
                             log.append("invalid record: recordNo={}, ",
                                     recordNo_);
-                            final List<Line> lines = reader_.getMarkedLines();
                             log.appendFormat("line=");
+
                             boolean first = true;
-                            for (final Line line : lines) {
-                                if (first) {
-                                    first = !first;
-                                } else {
-                                    log.appendFormat(",");
+                            if (savedLines != null) {
+                                for (final Line line : savedLines) {
+                                    if (first) {
+                                        first = !first;
+                                    } else {
+                                        log.appendFormat(",");
+                                    }
+                                    log.append("{}[{}]", line.getNumber(),
+                                            line.getBody());
                                 }
-                                log.append("{}[{}]", line.getNumber(),
-                                        line.getBody());
                             }
+                            if (first) {
+                                first = !first;
+                            } else {
+                                log.appendFormat(",");
+                            }
+                            log.append("{}[{}]", currentLine.getNumber(),
+                                    currentLine.getBody());
 
                             /*
                              * 先頭のスペースを除いた、クォートされた要素の場合は、
@@ -253,20 +259,28 @@ public class Rfc4180Reader implements ElementReader {
                              * 恐らく "abc""d" の誤りと思われるが、そこまで判断できない。
                              * (見直す可能性アリ)
                              */
-                            final Iterator<Line> it = lines.iterator();
-                            final StringBuilder sb = new StringBuilder();
-                            final Line line1 = it.next();
-                            sb.append(line1.getBodyAndSeparator().substring(
-                                    elemBeginPlain));
-                            while (it.hasNext()) {
-                                final Line l = it.next();
-                                sb.append(l.getBodyAndSeparator());
-                            }
-                            pushback_ = new LineReadable(new StringReader(
-                                    sb.toString()));
+
                             state = State.UNQUOTED_ELEMENT;
                             elemBuff = null;
-                            continue read_loop;
+                            if (savedLines != null) {
+                                final Iterator<Line> it = savedLines.iterator();
+                                final Line line1 = it.next();
+                                final StringBuilder sb = new StringBuilder();
+                                sb.append(line1.getBodyAndSeparator()
+                                        .substring(elemBeginPlain));
+                                while (it.hasNext()) {
+                                    final Line l = it.next();
+                                    sb.append(l.getBodyAndSeparator());
+                                }
+                                sb.append(currentLine.getBodyAndSeparator());
+                                pushback_ = new LineReadable(new StringReader(
+                                        sb.toString()));
+                                savedLines = null;
+                                continue read_loop;
+                            }
+                            i = elemBeginPlain - 1;
+                            fromPos = beginPos = elemBeginPlain;
+                            continue body_loop;
                         }
                         break;
 
@@ -284,6 +298,11 @@ public class Rfc4180Reader implements ElementReader {
                     elemBuff.append(bodyChars, fromPos, i - fromPos);
                     fromPos = i;
                     elemBuff.append(endChars);
+
+                    if (savedLines == null) {
+                        savedLines = CollectionsUtil.newArrayList();
+                    }
+                    savedLines.add(copyLine(currentLine));
                     continue read_loop;
                 }
                 break read_loop;
@@ -373,6 +392,12 @@ public class Rfc4180Reader implements ElementReader {
             pushback_ = null;
         }
         return reader_.readLine();
+    }
+
+    private Line copyLine(final Line line) {
+        final Line l = new LineImpl(line.getBody(), line.getNumber(),
+                line.getSeparator());
+        return l;
     }
 
     @Override
@@ -524,7 +549,6 @@ public class Rfc4180Reader implements ElementReader {
         @SuppressWarnings("unused")
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
         private final Line line_ = new LineImpl();
-        private final Marker marker_ = new Marker();
         private final ElementParserContext parserContext_;
 
         CharacterReadable(final Readable readable,
@@ -535,17 +559,6 @@ public class Rfc4180Reader implements ElementReader {
             parserContext_ = parserContext;
         }
 
-        /*
-         * mark可能なのは、行の境目だけ。
-         */
-        public void mark() {
-            marker_.clear();
-        }
-
-        public List<Line> getMarkedLines() {
-            return marker_.getMarkedLines();
-        }
-
         public Line readLine() throws IOException {
             while (true) {
                 final Line line = lineReaderHandler_.readLine(reader_, line_);
@@ -553,7 +566,6 @@ public class Rfc4180Reader implements ElementReader {
                     return null;
                 }
                 if (lineReaderHandler_.acceptLine(line, parserContext_)) {
-                    marker_.mark(line);
                     return line;
                 }
             }
@@ -572,28 +584,6 @@ public class Rfc4180Reader implements ElementReader {
         public void close() throws IOException {
             closed_ = true;
             CloseableUtil.closeNoException(reader_);
-        }
-
-        private static class Marker {
-
-            private final List<Line> lines_ = CollectionsUtil.newLinkedList();
-
-            public void mark(final Line line) {
-                final Line l = new LineImpl(line.getBody(), line.getNumber(),
-                        line.getSeparator());
-                lines_.add(l);
-            }
-
-            public List<Line> getMarkedLines() {
-                final LinkedList<Line> lines = new LinkedList<Line>();
-                lines.addAll(lines_);
-                return lines;
-            }
-
-            public void clear() {
-                lines_.clear();
-            }
-
         }
 
     }
