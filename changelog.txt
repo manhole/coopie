@@ -14,6 +14,7 @@
   (既存の動作が変わります。今までは最後にクォートを補っていました)
 - add: FileSize.create: InputStreamのバイナリサイズを測る
 - add: FileSize.ToStringMode: FileSize#toStringの出力モードを変更できるようにしました。
+- add: FileOperation#write(File file, InputStream is)
 
 0.2.0 2011/12/14
 

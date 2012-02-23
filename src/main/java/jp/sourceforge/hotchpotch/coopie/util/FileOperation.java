@@ -115,6 +115,18 @@ public class FileOperation {
         }
     }
 
+    public void write(final File file, final InputStream is) {
+        final OutputStream os = openBufferedOutputStream(file);
+        try {
+            pipe(is, os);
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        } finally {
+            closeNoException(is);
+            closeNoException(os);
+        }
+    }
+
     public String read(final File file) {
         final BufferedReader reader = openBufferedReader(file);
         final StringWriter writer = new StringWriter();
