@@ -83,27 +83,16 @@ public class Rfc4180Reader implements ElementReader {
 
         try {
             read_loop: while (true) {
-                final Line currentLine;
-                if (pushback_ != null) {
-                    final Line l = pushback_.readLine();
-                    if (l == null) {
-                        CloseableUtil.closeNoException(pushback_);
-                        pushback_ = null;
-                        currentLine = reader_.readLine();
-                    } else {
-                        currentLine = l;
-                    }
-                } else {
-                    currentLine = reader_.readLine();
-                }
+                final Line currentLine = readLine();
                 if (currentLine == null) {
                     eof_ = true;
                     break read_loop;
                 }
 
                 final char[] bodyChars = currentLine.getBody().toCharArray();
-                final char[] endChars = currentLine.getSeparator()
-                        .getSeparator().toCharArray();
+                final String separator = currentLine.getSeparator()
+                        .getSeparator();
+                final char[] endChars = separator.toCharArray();
                 for (int i = 0; i < bodyChars.length; i++) {
                     final char c = bodyChars[i];
 
@@ -234,8 +223,7 @@ public class Rfc4180Reader implements ElementReader {
                                     rb_.getPlain()
                                             + new String(bodyChars, nextPos,
                                                     bodyChars.length - nextPos)
-                                            + currentLine.getSeparator()
-                                                    .getSeparator()));
+                                            + separator));
                             rb_.clearElement();
                             state = State.UNQUOTED_ELEMENT;
                             continue read_loop;
@@ -248,40 +236,15 @@ public class Rfc4180Reader implements ElementReader {
                 }
 
                 /* body終了 */
-                switch (state) {
-                case INITIAL:
-                    break read_loop;
-                case BEGIN_ELEMENT:
-                    if (0 < endChars.length) {
-                        rb_.endRecord();
-                        state = State.INITIAL;
-                    }
-                    break read_loop;
-                case UNQUOTED_ELEMENT:
-                    if (0 < endChars.length) {
-                        rb_.endElement();
-                        rb_.endRecord();
-                        state = State.INITIAL;
-                    }
-                    break read_loop;
-                case QUOTED_ELEMENT:
+                if (state == State.QUOTED_ELEMENT) {
                     // 改行を含む要素
                     for (final char c : endChars) {
                         rb_.appendPlain(c);
                         rb_.append(c);
                     }
-                    break;
-                case QUOTE:
-                    if (0 < endChars.length) {
-                        rb_.discardPending();
-                        rb_.endElement();
-                        rb_.endRecord();
-                        state = State.INITIAL;
-                    }
-                    break read_loop;
-                default:
-                    throw new AssertionError();
+                    continue read_loop;
                 }
+                break read_loop;
             }
 
             // 終了処理
@@ -334,6 +297,18 @@ public class Rfc4180Reader implements ElementReader {
         } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
+    }
+
+    private Line readLine() throws IOException {
+        if (pushback_ != null) {
+            final Line l = pushback_.readLine();
+            if (l != null) {
+                return l;
+            }
+            CloseableUtil.closeNoException(pushback_);
+            pushback_ = null;
+        }
+        return reader_.readLine();
     }
 
     @Override
