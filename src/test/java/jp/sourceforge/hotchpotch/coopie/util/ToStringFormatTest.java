@@ -1,10 +1,10 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
-import static jp.sourceforge.hotchpotch.coopie.CoopieMatchers.endsWithString;
-import static jp.sourceforge.hotchpotch.coopie.CoopieMatchers.startsWithString;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.containsString;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -347,8 +347,8 @@ public class ToStringFormatTest {
         logger.debug(actual);
         assertThat(actual, containsString("Composit[composit=Composit@"));
         assertThat(actual, containsString(", name=c1]"));
-        assertThat(actual, startsWithString("Composit[composit=Composit@"));
-        assertThat(actual, endsWithString(", name=c1]"));
+        assertThat(actual, startsWith("Composit[composit=Composit@"));
+        assertThat(actual, endsWith(", name=c1]"));
         //assertEquals("Composit[composit=Composit@xxxxxx, name=c1]", actual);
     }
 
