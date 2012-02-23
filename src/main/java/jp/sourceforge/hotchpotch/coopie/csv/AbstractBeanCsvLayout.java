@@ -26,28 +26,26 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return new BeanCsvRecordDescSetup<T>(beanDesc_);
     }
 
-    @Override
-    protected RecordDesc<T> getRecordDesc() {
-        if (super.getRecordDesc() == null) {
+    protected void prepareOpen() {
+        if (getRecordDesc() == null) {
             /*
              * アノテーションが付いている場合は、アノテーションを優先する
              */
             final RecordDesc<T> recordDesc = createByAnnotation();
-            super.setRecordDesc(recordDesc);
+            setRecordDesc(recordDesc);
         }
 
-        if (super.getRecordDesc() == null) {
+        if (getRecordDesc() == null) {
             /*
              * beanの全プロパティを対象に。
              */
             final RecordDesc<T> recordDesc = setupByProperties();
-            super.setRecordDesc(recordDesc);
+            setRecordDesc(recordDesc);
         }
 
-        if (super.getRecordDesc() == null) {
+        if (getRecordDesc() == null) {
             throw new AssertionError();
         }
-        return super.getRecordDesc();
     }
 
     private RecordDesc<T> createByAnnotation() {

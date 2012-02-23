@@ -24,6 +24,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
             throw new NullPointerException("readable");
         }
 
+        prepareOpen();
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
@@ -53,6 +54,7 @@ public class BeanCsvLayout<T> extends AbstractBeanCsvLayout<T> implements
             throw new NullPointerException("appendable");
         }
 
+        prepareOpen();
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());

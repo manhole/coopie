@@ -20,6 +20,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
             throw new NullPointerException("readable");
         }
 
+        prepareOpen();
         final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
@@ -49,6 +50,7 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
             throw new NullPointerException("appendable");
         }
 
+        prepareOpen();
         final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
