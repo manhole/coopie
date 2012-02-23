@@ -199,7 +199,7 @@ public class Rfc4180Reader implements ElementReader {
 
                     case QUOTE:
                         rb_.appendPlain(c);
-                        if (c == quoteMark_ && !rb_.hasPendingSpace()) {
+                        if (c == quoteMark_ && elemEnd + 1 == i) {
                             rb_.append(c);
                             if (elemBuff == null) {
                                 elemBuff = new StringBuilder();
@@ -212,7 +212,6 @@ public class Rfc4180Reader implements ElementReader {
                             // 要素より後のspaceを捨てるため
                             rb_.pendingSpace(c);
                         } else if (c == elementSeparator_) {
-                            rb_.discardPending();
                             String elem = new String(bodyChars, beginPos,
                                     elemEnd - beginPos);
                             if (elemBuff != null) {
@@ -349,7 +348,6 @@ public class Rfc4180Reader implements ElementReader {
             case QUOTE:
                 if (rb_.isInElement()) {
                     // クォートされていたら最後のスペースは除く
-                    rb_.discardPending();
                     String elem = new String(bodyChars, beginPos, elemEnd
                             - beginPos);
                     if (elemBuff != null) {
@@ -506,7 +504,6 @@ public class Rfc4180Reader implements ElementReader {
 
         public void clearElement() {
             clearBuffer(sb_);
-            discardPending();
             clearBuffer(plainElement_);
         }
 
@@ -526,17 +523,6 @@ public class Rfc4180Reader implements ElementReader {
                 discardedHeadingSpace_ = true;
                 pending_ = null;
             }
-        }
-
-        public void discardPending() {
-            pending_ = null;
-        }
-
-        public boolean hasPendingSpace() {
-            if (pending_ != null) {
-                return true;
-            }
-            return false;
         }
 
         public boolean isEmpty() {
