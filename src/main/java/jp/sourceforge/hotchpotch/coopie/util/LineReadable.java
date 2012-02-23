@@ -1,6 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import java.io.Closeable;
 import java.io.IOException;
+import java.nio.CharBuffer;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -12,7 +14,7 @@ public class LineReadable implements LineReader {
     private boolean closed_;
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
-    private final BufferedReadable readable_;
+    private final Readable readable_;
     private LineSeparator lineSeparator_;
     private String line_;
     private int lineNumber_;
@@ -21,9 +23,11 @@ public class LineReadable implements LineReader {
     private char[] buffer_ = new char[0];
     private int pos_;
     private int length_;
+    private final CharBuffer charBuffer_;
 
     public LineReadable(final Readable readable) {
-        readable_ = new BufferedReadable(readable);
+        readable_ = readable;
+        charBuffer_ = CharBuffer.allocate(1024 * 8);
     }
 
     public String readLineBody() throws IOException {
@@ -147,13 +151,15 @@ public class LineReadable implements LineReader {
     }
 
     protected void fill() throws IOException {
-        final char[] chars = readable_.readChars();
-        if (chars == null) {
+        final int len = readable_.read(charBuffer_);
+        final char[] chars = charBuffer_.array();
+        charBuffer_.rewind();
+        if (len == -1) {
             eof_ = true;
         } else {
             pos_ = 0;
             buffer_ = chars;
-            length_ = chars.length;
+            length_ = len;
         }
     }
 
@@ -176,7 +182,10 @@ public class LineReadable implements LineReader {
     @Override
     public void close() throws IOException {
         closed_ = true;
-        CloseableUtil.closeNoException(readable_);
+        if (readable_ instanceof Closeable) {
+            final Closeable closeable = Closeable.class.cast(readable_);
+            CloseableUtil.closeNoException(closeable);
+        }
     }
 
     /**
