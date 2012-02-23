@@ -6,7 +6,7 @@
 - add: Duration
 - rename: FileSize -> ByteSize
 - add: ByteSize#toHumanReadableString
-- ByteSize: テラバイトに対応
+- ByteSize: テラバイト・ペタバイトに対応
 - BufferedReadable: char配列でも取得できるようにしました
 - add: Line#getBodyAndSeparator
 - LineReadable: パフォーマンス改善。BufferedReadableではなく直接CharBufferを使用し、char[]でループを回すようにした。

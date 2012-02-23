@@ -165,6 +165,8 @@ public class ByteSize {
         // terabinary
         private static final ByteSizeUnit TB = new SimpleByteSizeUnit("TiB",
                 COEFFICIENT.pow(4));
+        private static final ByteSizeUnit PB = new SimpleByteSizeUnit("PiB",
+                COEFFICIENT.pow(5));
 
         @Override
         public ByteSizeUnit detectUnit(final long size) {
@@ -176,8 +178,10 @@ public class ByteSize {
                 return MB;
             } else if (TB.lessThan(size)) {
                 return GB;
+            } else if (PB.lessThan(size)) {
+                return TB;
             }
-            return TB;
+            return PB;
         }
 
     }
@@ -207,6 +211,9 @@ public class ByteSize {
         // Terabyte
         private static final ByteSizeUnit TB = new SimpleByteSizeUnit("TB",
                 COEFFICIENT.pow(4));
+        // Petabyte
+        private static final ByteSizeUnit PB = new SimpleByteSizeUnit("PB",
+                COEFFICIENT.pow(5));
 
         @Override
         public ByteSizeUnit detectUnit(final long size) {
@@ -218,8 +225,10 @@ public class ByteSize {
                 return MB;
             } else if (TB.lessThan(size)) {
                 return GB;
+            } else if (PB.lessThan(size)) {
+                return TB;
             }
-            return TB;
+            return PB;
         }
 
     }
