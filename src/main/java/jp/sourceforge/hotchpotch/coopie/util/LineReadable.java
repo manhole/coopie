@@ -145,6 +145,10 @@ public class LineReadable implements LineReader {
         if (bodyBuff == null) {
             line_ = new String(buffer_, bodyStartPos, bodyLength);
         } else {
+            /*
+             * fillする前にbodyBuffへ退避しているので、
+             * fillでEOFだった場合はbodyBuffだけで良い。
+             */
             if (eof_) {
             } else {
                 bodyBuff.append(buffer_, bodyStartPos, bodyLength);
