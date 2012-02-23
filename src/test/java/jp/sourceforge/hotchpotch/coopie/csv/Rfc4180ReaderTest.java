@@ -486,10 +486,11 @@ public class Rfc4180ReaderTest {
         // ## Arrange ##
 
         final LineReaderHandler lineReaderHandler = new LineReaderHandler() {
+
             @Override
-            public Line readLine(final LineReader lineReader)
+            public Line readLine(final LineReader lineReader, final Line line)
                     throws IOException {
-                return lineReader.readLine();
+                return lineReader.readLine(line);
             }
 
             @Override
@@ -503,6 +504,7 @@ public class Rfc4180ReaderTest {
                 }
                 return true;
             }
+
         };
         final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n"
                 + "\"b\r\n\r\n2\"", lineReaderHandler);

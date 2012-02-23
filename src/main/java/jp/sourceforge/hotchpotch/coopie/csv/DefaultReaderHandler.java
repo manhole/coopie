@@ -27,8 +27,9 @@ public class DefaultReaderHandler implements ElementReaderHandler,
     }
 
     @Override
-    public Line readLine(final LineReader lineReader) throws IOException {
-        return lineReaderHandler_.readLine(lineReader);
+    public Line readLine(final LineReader lineReader, final Line reusableLine)
+            throws IOException {
+        return lineReaderHandler_.readLine(lineReader, reusableLine);
     }
 
     @Override
