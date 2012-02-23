@@ -1,6 +1,5 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -14,7 +13,7 @@ import org.t2framework.commons.util.CollectionsUtil;
 public class Text {
 
     private final String rawText_;
-    private String[] lines_;
+    private Line[] lines_;
     private String concated_;
 
     public Text(final String text) {
@@ -25,49 +24,50 @@ public class Text {
         return rawText_;
     }
 
-    private String[] getLines() {
+    private Line[] getLines() {
         if (lines_ == null) {
             lines_ = toLines(rawText_);
         }
         return lines_;
     }
 
-    private String[] toLines(final String s) {
-        final List<String> l = CollectionsUtil.newArrayList();
-        final BufferedReader reader = new BufferedReader(new StringReader(s));
+    private Line[] toLines(final String s) {
+        final List<Line> l = CollectionsUtil.newArrayList();
+        final LineReader reader = new LineReadable(new StringReader(s));
         try {
             while (true) {
-                String line;
-                line = reader.readLine();
+                final Line line = reader.readLine();
                 if (line == null) {
                     break;
                 }
                 l.add(line);
             }
-            final String[] a = l.toArray(new String[l.size()]);
+            final Line[] a = l.toArray(new Line[l.size()]);
             return a;
         } catch (final IOException e) {
             throw new IORuntimeException(e);
+        } finally {
+            CloseableUtil.closeNoException(reader);
         }
     }
 
     public int getLineSize() {
-        final String[] ls = getLines();
+        final Line[] ls = getLines();
         return ls.length;
     }
 
     public Text getLine(final int lineNo) {
-        final String[] ls = getLines();
-        final String l = ls[lineNo];
-        return instantiate(l);
+        final Line[] ls = getLines();
+        final Line l = ls[lineNo];
+        return instantiate(l.getBody());
     }
 
     public boolean containsText(final String s) {
         if (concated_ == null) {
             final StringBuilder sb = new StringBuilder();
-            final String[] lines = getLines();
-            for (final String line : lines) {
-                final String trimWhitespace = trimWhitespace0(line);
+            final Line[] lines = getLines();
+            for (final Line line : lines) {
+                final String trimWhitespace = trimWhitespace0(line.getBody());
                 sb.append(trimWhitespace);
             }
             concated_ = sb.toString();
@@ -77,9 +77,9 @@ public class Text {
     }
 
     public boolean containsLine(final String s) {
-        final String[] lines = getLines();
-        for (final String line : lines) {
-            if (line.contains(s)) {
+        final Line[] lines = getLines();
+        for (final Line line : lines) {
+            if (line.getBody().contains(s)) {
                 return true;
             }
         }
