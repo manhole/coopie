@@ -270,6 +270,50 @@ public class LineReadableTest {
     }
 
     @Test
+    public void readLine_endsWithCR() throws Throwable {
+        // ## Arrange ##
+        final LineReadable r = create("abc\r");
+
+        // ## Act ##
+        // ## Assert ##
+        final Line line = new LineImpl();
+        {
+            assertSame(line, r.readLine(line));
+            assertEquals(1, line.getNumber());
+            assertEquals("abc", line.getBody());
+            assertEquals(LineSeparator.CR, line.getSeparator());
+        }
+
+        assertEquals(null, r.readLine(line));
+        assertEquals(1, r.getLineNumber());
+        assertEquals(null, r.getLineSeparator());
+
+        r.close();
+    }
+
+    @Test
+    public void readLine_endsWithLF() throws Throwable {
+        // ## Arrange ##
+        final LineReadable r = create("abc\n");
+
+        // ## Act ##
+        // ## Assert ##
+        final Line line = new LineImpl();
+        {
+            assertSame(line, r.readLine(line));
+            assertEquals(1, line.getNumber());
+            assertEquals("abc", line.getBody());
+            assertEquals(LineSeparator.LF, line.getSeparator());
+        }
+
+        assertEquals(null, r.readLine(line));
+        assertEquals(1, r.getLineNumber());
+        assertEquals(null, r.getLineSeparator());
+
+        r.close();
+    }
+
+    @Test
     public void pushback1() throws Throwable {
         // ## Arrange ##
         final LineReadable r = create("a1\r\n" + "a2\r" + "a3\n" + "a4\n"
