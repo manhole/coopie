@@ -42,17 +42,17 @@ public class Rfc4180ReaderTest {
         assertArrayEquals(a("aaa", "bbb", "ccc"), reader.readRecord());
         assertEquals(1, reader.getRecordNumber());
         assertEquals(1, reader.getLineNumber());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
 
         assertArrayEquals(a("zzz", "yyy", "xxx"), reader.readRecord());
         assertEquals(2, reader.getRecordNumber());
         assertEquals(2, reader.getLineNumber());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
 
         assertNull(reader.readRecord());
         assertEquals(2, reader.getRecordNumber());
         assertEquals(2, reader.getLineNumber());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
 
         reader.close();
     }
@@ -355,7 +355,7 @@ public class Rfc4180ReaderTest {
         // ## Assert ##
         assertArrayEquals(a("aaa ", "bbb", " ccc ", " ", ""),
                 reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -368,7 +368,7 @@ public class Rfc4180ReaderTest {
         // ## Act ##
         // ## Assert ##
         assertArrayEquals(a("bbb"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -382,13 +382,13 @@ public class Rfc4180ReaderTest {
         // ## Act ##
         // ## Assert ##
         assertArrayEquals(a("a"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertArrayEquals(a("b"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertArrayEquals(a("c"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertArrayEquals(a("d"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -407,7 +407,7 @@ public class Rfc4180ReaderTest {
         // ## Assert ##
         assertArrayEquals(a("a", " \"b\"bb\" ", "c"), reader.readRecord());
         // これはエラーではないためOKとみなしたい。
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -563,7 +563,7 @@ public class Rfc4180ReaderTest {
         assertArrayEquals(a("a", "\"b\"\"", "c"), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
         assertArrayEquals(a("A", "B", "C"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -599,9 +599,9 @@ public class Rfc4180ReaderTest {
         assertArrayEquals(a("a", "\"b\"\"", "c"), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
         assertArrayEquals(a("A", "B", "C"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertArrayEquals(a("D", "E", "F"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -626,7 +626,7 @@ public class Rfc4180ReaderTest {
         // ## Act ##
         // ## Assert ##
         assertArrayEquals(a("a", "b\"", "c"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertArrayEquals(a("A", "\"B\" \"\"", "C"), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
         assertNull(reader.readRecord());
@@ -655,7 +655,7 @@ public class Rfc4180ReaderTest {
         assertArrayEquals(a("a", "\"b\" \"\""), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.INVALID, reader.getRecordState());
         assertArrayEquals(a("A", "B", "C"), reader.readRecord());
-        assertEquals(Rfc4180Reader.RecordState.OK, reader.getRecordState());
+        assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
     }

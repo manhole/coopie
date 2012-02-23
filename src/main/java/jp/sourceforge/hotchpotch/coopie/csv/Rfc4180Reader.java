@@ -78,7 +78,7 @@ public class Rfc4180Reader implements ElementReader {
         }
 
         reader_.mark();
-        recordState_ = RecordState.OK;
+        recordState_ = RecordState.VALID;
         rb_.clear();
         State state = State.INITIAL;
 
@@ -702,7 +702,7 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     public enum RecordState {
-        OK, INVALID
+        VALID, INVALID
     }
 
 }
