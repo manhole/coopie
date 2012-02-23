@@ -52,4 +52,9 @@ public class LineImpl implements Line {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return String.format("[%s]%s%s", number_, body_, separator_);
+    }
+
 }
