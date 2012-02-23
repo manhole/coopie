@@ -36,9 +36,14 @@ public class FileSize {
     private static final FileSizeUnit GB = new SimpleFileSizeUnit("GB", G);
     private static final FileSizeUnit TB = new SimpleFileSizeUnit("TB", T);
 
+    public static final ToStringMode DETAIL = new DetailMode();
+    public static final ToStringMode HUMAN_READABLE = new HumanReadableMode();
+    public static final ToStringMode BYTE = new ByteMode();
+
     private static final int bufferSize = 1024 * 8;
 
     private final long size_;
+    private ToStringMode toStringMode_ = DETAIL;
 
     public FileSize(final long size) {
         size_ = size;
@@ -68,27 +73,12 @@ public class FileSize {
     }
 
     public String toHumanReadableString() {
-        final long size = getSize();
-        final FileSizeUnit unit = detectUnit(size);
-        final StringBuilder sb = new StringBuilder();
-        appendTo(unit, size, sb);
-        return sb.toString();
+        return HUMAN_READABLE.toString(this);
     }
 
     @Override
     public String toString() {
-        final long size = getSize();
-        final FileSizeUnit unit = detectUnit(size);
-        final StringBuilder sb = new StringBuilder();
-        appendTo(unit, size, sb);
-        if (unit == B) {
-            return sb.toString();
-        }
-
-        sb.append(" (");
-        appendTo(B, size, sb);
-        sb.append(")");
-        return sb.toString();
+        return toStringMode_.toString(this);
     }
 
     private void appendTo(final FileSizeUnit unit, final long size,
@@ -112,6 +102,13 @@ public class FileSize {
             return GB;
         }
         return TB;
+    }
+
+    public void setToStringMode(final ToStringMode toStringMode) {
+        if (toStringMode == null) {
+            throw new NullPointerException("toStringMode");
+        }
+        toStringMode_ = toStringMode;
     }
 
     public interface FileSizeUnit {
@@ -167,6 +164,57 @@ public class FileSize {
 
         protected NumberFormat getNumberFormat() {
             return format_;
+        }
+
+    }
+
+    public static interface ToStringMode {
+
+        String toString(FileSize fileSize);
+
+    }
+
+    static class DetailMode implements ToStringMode {
+
+        @Override
+        public String toString(final FileSize fileSize) {
+            final long size = fileSize.getSize();
+            final FileSizeUnit unit = fileSize.detectUnit(size);
+            final StringBuilder sb = new StringBuilder();
+            fileSize.appendTo(unit, size, sb);
+            if (unit == B) {
+                return sb.toString();
+            }
+
+            sb.append(" (");
+            fileSize.appendTo(B, size, sb);
+            sb.append(")");
+            return sb.toString();
+        }
+
+    }
+
+    static class HumanReadableMode implements ToStringMode {
+
+        @Override
+        public String toString(final FileSize fileSize) {
+            final long size = fileSize.getSize();
+            final FileSizeUnit unit = fileSize.detectUnit(size);
+            final StringBuilder sb = new StringBuilder();
+            fileSize.appendTo(unit, size, sb);
+            return sb.toString();
+        }
+
+    }
+
+    static class ByteMode implements ToStringMode {
+
+        @Override
+        public String toString(final FileSize fileSize) {
+            final long size = fileSize.getSize();
+            final StringBuilder sb = new StringBuilder();
+            fileSize.appendTo(B, size, sb);
+            return sb.toString();
         }
 
     }
