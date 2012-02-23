@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.io.StringReader;
 
@@ -99,31 +100,31 @@ public class LineReadableTest {
         // ## Assert ##
         final Line line = new LineImpl();
         {
-            assertEquals(true, r.readLine(line));
+            assertSame(line, r.readLine(line));
             assertEquals(1, line.getNumber());
             assertEquals("0123", line.getBody());
             assertEquals(LineSeparator.CRLF, line.getSeparator());
         }
         {
-            assertEquals(true, r.readLine(line));
+            assertSame(line, r.readLine(line));
             assertEquals(2, line.getNumber());
             assertEquals("45678", line.getBody());
             assertEquals(LineSeparator.CRLF, line.getSeparator());
         }
         {
-            assertEquals(true, r.readLine(line));
+            assertSame(line, r.readLine(line));
             assertEquals(3, line.getNumber());
             assertEquals("", line.getBody());
             assertEquals(LineSeparator.CRLF, line.getSeparator());
         }
         {
-            assertEquals(true, r.readLine(line));
+            assertSame(line, r.readLine(line));
             assertEquals(4, line.getNumber());
             assertEquals("9", line.getBody());
             assertEquals(LineSeparator.CRLF, line.getSeparator());
         }
 
-        assertEquals(false, r.readLine(line));
+        assertEquals(null, r.readLine(line));
         assertEquals(4, r.getLineNumber());
         assertEquals(null, r.getLineSeparator());
 

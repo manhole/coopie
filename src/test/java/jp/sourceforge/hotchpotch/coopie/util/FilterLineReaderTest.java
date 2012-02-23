@@ -14,7 +14,7 @@ public class FilterLineReaderTest {
      * ここでは空行を除いている。
      */
     @Test
-    public void filter() throws Throwable {
+    public void filter1() throws Throwable {
         // ## Arrange ##
         final LineReadable r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
                 + "\r\n" + "a3" + "\n" + "\r");
@@ -31,6 +31,28 @@ public class FilterLineReaderTest {
         assertEquals("a3", rr.readLine().getBody());
         assertEquals(6, rr.getLineNumber());
         assertEquals(null, rr.readLine());
+        rr.close();
+    }
+
+    @Test
+    public void filter2() throws Throwable {
+        // ## Arrange ##
+        final LineReadable r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
+                + "\r\n" + "a3" + "\n" + "\r");
+
+        // ## Act ##
+        final Line line = new LineImpl();
+        final LineFilter filter = new SkipLineFilter();
+        final LineReader rr = new FilterLineReader(r, filter);
+
+        // ## Assert ##
+        assertEquals("a1", rr.readLine(line).getBody());
+        assertEquals(2, rr.getLineNumber());
+        assertEquals("a2", rr.readLine(line).getBody());
+        assertEquals(3, rr.getLineNumber());
+        assertEquals("a3", rr.readLine(line).getBody());
+        assertEquals(6, rr.getLineNumber());
+        assertEquals(null, rr.readLine(line));
         rr.close();
     }
 

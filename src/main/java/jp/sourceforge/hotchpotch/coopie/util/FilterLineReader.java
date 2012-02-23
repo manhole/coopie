@@ -36,6 +36,20 @@ public class FilterLineReader implements LineReader {
     }
 
     @Override
+    public Line readLine(final Line reusableLine) throws IOException {
+        Line line = reusableLine;
+        while (true) {
+            line = lineReader_.readLine(line);
+            if (line == null) {
+                return null;
+            }
+            if (lineFilter_.accept(line)) {
+                return line;
+            }
+        }
+    }
+
+    @Override
     public boolean isClosed() {
         return closed_;
     }
