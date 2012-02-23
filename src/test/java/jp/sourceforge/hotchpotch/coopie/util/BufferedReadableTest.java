@@ -172,6 +172,61 @@ public class BufferedReadableTest {
         }
     }
 
+    @Test
+    public void readChars3() throws Throwable {
+        // ## Arrange ##
+        final BufferedReadable cs = create("01234", 3);
+
+        // ## Act ##
+        // ## Assert ##
+        {
+            final char c = cs.readChar();
+            assertEquals('0', c);
+        }
+        {
+            final char[] chars = cs.readChars();
+            // 今はこういう実装
+            assertArrayEquals(new char[] { '1', '2', }, chars);
+        }
+        {
+            final char[] chars = cs.readChars();
+            assertArrayEquals(new char[] { '3', '4' }, chars);
+        }
+        {
+            final char[] chars = cs.readChars();
+            assertEquals(null, chars);
+        }
+    }
+
+    @Test
+    public void readChars4() throws Throwable {
+        // ## Arrange ##
+        final BufferedReadable cs = create("01234", 3);
+
+        // ## Act ##
+        // ## Assert ##
+        {
+            final char c = cs.peekChar();
+            assertEquals('0', c);
+        }
+        {
+            final char[] chars = cs.readChars();
+            assertArrayEquals(new char[] { '0', '1', '2', }, chars);
+        }
+        {
+            final char c = cs.peekChar();
+            assertEquals('3', c);
+        }
+        {
+            final char[] chars = cs.readChars();
+            assertArrayEquals(new char[] { '3', '4' }, chars);
+        }
+        {
+            final char[] chars = cs.readChars();
+            assertEquals(null, chars);
+        }
+    }
+
     private BufferedReadable create(final String in) {
         final StringReader readable = new StringReader(in);
         return new BufferedReadable(readable);
