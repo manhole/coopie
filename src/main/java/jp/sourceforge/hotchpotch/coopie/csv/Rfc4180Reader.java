@@ -552,7 +552,7 @@ public class Rfc4180Reader implements ElementReader {
         @SuppressWarnings("unused")
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
         private final Line line_ = new LineImpl();
-        private Marker marker_;
+        private final Marker marker_ = new Marker();
         private final ElementParserContext parserContext_;
 
         CharacterReadable(final Readable readable,
@@ -567,7 +567,7 @@ public class Rfc4180Reader implements ElementReader {
          * mark可能なのは、行の境目だけ。
          */
         public void mark() {
-            marker_ = new Marker();
+            marker_.clear();
         }
 
         public List<Line> getMarkedLines() {
@@ -624,6 +624,11 @@ public class Rfc4180Reader implements ElementReader {
                     num++;
                 }
                 return lines;
+            }
+
+            public void clear() {
+                beginLineNumber_ = -1;
+                lines_ = null;
             }
 
         }
