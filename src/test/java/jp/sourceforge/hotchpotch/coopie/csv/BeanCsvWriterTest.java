@@ -284,15 +284,15 @@ public class BeanCsvWriterTest {
         final Text text = new Text(lines);
         assertEquals(3, text.getLineSize());
         {
-            final Text line = text.getLine(0);
+            final Text line = text.getLineAsText(0);
             assertEquals("ccc,aaa,bbb", line.deleteChar('\"').toString());
         }
         {
-            final Text line = text.getLine(1);
+            final Text line = text.getLineAsText(1);
             assertEquals("c1,a1,b1", line.deleteChar('\"').toString());
         }
         {
-            final Text line = text.getLine(2);
+            final Text line = text.getLineAsText(2);
             assertEquals("c2,a2,b2", line.deleteChar('\"').toString());
         }
     }
