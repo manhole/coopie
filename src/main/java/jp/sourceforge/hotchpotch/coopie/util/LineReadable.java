@@ -10,6 +10,7 @@ public class LineReadable implements LineReader {
 
     private static final char CR = IOUtil.CR;
     private static final char LF = IOUtil.LF;
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 8;
 
     private boolean closed_;
     @SuppressWarnings("unused")
@@ -20,14 +21,19 @@ public class LineReadable implements LineReader {
     private int lineNumber_;
     private Deque<Line> pushback_;
     private boolean eof_;
-    private char[] buffer_ = new char[0];
+    private final char[] buffer_;
     private int pos_;
     private int length_;
     private final CharBuffer charBuffer_;
 
     public LineReadable(final Readable readable) {
+        this(readable, DEFAULT_BUFFER_SIZE);
+    }
+
+    public LineReadable(final Readable readable, final int bufferSize) {
         readable_ = readable;
-        charBuffer_ = CharBuffer.allocate(1024 * 8);
+        buffer_ = new char[bufferSize];
+        charBuffer_ = CharBuffer.wrap(buffer_);
     }
 
     public String readLineBody() throws IOException {
@@ -152,13 +158,11 @@ public class LineReadable implements LineReader {
 
     protected void fill() throws IOException {
         final int len = readable_.read(charBuffer_);
-        final char[] chars = charBuffer_.array();
-        charBuffer_.rewind();
         if (len == -1) {
             eof_ = true;
         } else {
+            charBuffer_.rewind();
             pos_ = 0;
-            buffer_ = chars;
             length_ = len;
         }
     }
