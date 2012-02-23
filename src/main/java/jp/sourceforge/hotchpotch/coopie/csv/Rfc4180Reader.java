@@ -87,15 +87,12 @@ public class Rfc4180Reader implements ElementReader {
         final ReadContect rc = new ReadContect();
 
         read_loop: while (true) {
-            line_loop: while (true) {
-                final Line line = readLine();
-                rc.line = line;
-                if (line == null) {
-                    eof_ = true;
-                    break line_loop;
-                }
+            final Line line = readLine();
+            rc.line = line;
+            if (line == null) {
+                eof_ = true;
+            } else {
                 rc.fromPos = 0;
-
                 rc.body = line.getBody();
                 final char[] bodyChars = rc.body.toCharArray();
                 final int length = bodyChars.length;
@@ -194,7 +191,7 @@ public class Rfc4180Reader implements ElementReader {
                             rc.state = State.BEGIN_ELEMENT;
                         } else {
                             invalid(rc);
-                            continue line_loop;
+                            continue read_loop;
                         }
                         break;
 
@@ -202,26 +199,6 @@ public class Rfc4180Reader implements ElementReader {
                         throw new AssertionError();
                     }
                 }
-
-                // body終了
-                if (rc.state == State.QUOTED_ELEMENT) {
-                    // 改行を含む要素
-                    if (rc.elemBuff == null) {
-                        rc.elemBuff = new StringBuilder();
-                    }
-                    rc.elemBuff.append(rc.body.substring(rc.fromPos, rc.pos));
-                    rc.fromPos = rc.pos;
-                    final String separator = rc.line.getSeparator()
-                            .getSeparator();
-                    rc.elemBuff.append(separator);
-
-                    if (rc.savedLines == null) {
-                        rc.savedLines = CollectionsUtil.newArrayList();
-                    }
-                    rc.savedLines.add(copyLine(line));
-                    continue line_loop;
-                }
-                break line_loop;
             }
 
             // 終了処理(行の終わり or EOF)
@@ -246,19 +223,38 @@ public class Rfc4180Reader implements ElementReader {
                 rb_.endRecord();
                 break;
             case QUOTED_ELEMENT:
-                // クォート文字しかないrecordの場合
-                if (rb_.isEmpty()) {
-                    // クォートの手前にspaceがある場合は、spaceも含める
-                    final String s = rc.body.substring(rc.elemBeginPlain,
-                            rc.pos);
-                    rb_.endElement(s);
-                }
-                // クォートされた要素の途中でEOFになった場合
-                if (rb_.isInElement()) {
-                    invalid(rc);
+                if (eof_) {
+                    // クォート文字しかないrecordの場合
+                    if (rb_.isEmpty()) {
+                        // クォートの手前にspaceがある場合は、spaceも含める
+                        final String s = rc.body.substring(rc.elemBeginPlain,
+                                rc.pos);
+                        rb_.endElement(s);
+                    }
+                    // クォートされた要素の途中でEOFになった場合
+                    if (rb_.isInElement()) {
+                        invalid(rc);
+                        continue read_loop;
+                    }
+                    rb_.endRecord();
+                } else {
+                    // 改行を含む要素
+                    if (rc.elemBuff == null) {
+                        rc.elemBuff = new StringBuilder();
+                    }
+                    rc.elemBuff.append(rc.body.substring(rc.fromPos, rc.pos));
+                    rc.fromPos = rc.pos;
+                    final String separator = rc.line.getSeparator()
+                            .getSeparator();
+                    rc.elemBuff.append(separator);
+
+                    if (rc.savedLines == null) {
+                        rc.savedLines = CollectionsUtil.newArrayList();
+                    }
+                    rc.savedLines.add(copyLine(rc.line));
                     continue read_loop;
                 }
-                rb_.endRecord();
+
                 break;
             case QUOTE:
                 if (rb_.isInElement()) {
