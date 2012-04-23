@@ -23,6 +23,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.junit.Test;
+import org.t2framework.commons.util.ResourceUtil;
 
 public class BeanExcelWriterTest {
 
@@ -275,8 +276,9 @@ public class BeanExcelWriterTest {
         // nullカラムの色が変わっていること
         final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
                 baos.toByteArray()));
+        final File dir = ResourceUtil.getBuildDir(getClass());
         final BufferedOutputStream os = new FileOperation()
-                .openBufferedOutputStream(new File("target/test.xls"));
+                .openBufferedOutputStream(new File(dir, "test.xls"));
         book.write(os);
         os.close();
         assertEquals(1, book.getNumberOfSheets());
