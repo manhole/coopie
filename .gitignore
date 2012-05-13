@@ -9,3 +9,5 @@
 .project
 .gradle
 profiles.xml
+.DS_Store
+
