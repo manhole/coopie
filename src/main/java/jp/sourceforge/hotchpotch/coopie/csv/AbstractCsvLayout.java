@@ -146,20 +146,32 @@ public abstract class AbstractCsvLayout<T> {
             return builder;
         }
 
+        @Override
+        public ColumnBuilder columns(final String... names) {
+            final SimpleColumnBuilder builder = new SimpleColumnBuilder();
+            columnBuilders_.add(builder);
+            for (final String name : names) {
+                final SimpleColumnName n = new SimpleColumnName(name);
+                builder.addColumnName(n);
+            }
+            return builder;
+        }
+
     }
 
     public static class SimpleColumnBuilder implements ColumnBuilder {
 
-        private final ColumnName columnName_;
-        private String propertyName_;
+        private final List<ColumnName> columnNames_ = CollectionsUtil
+                .newArrayList();
+        private final List<String> propertyNames_ = CollectionsUtil
+                .newArrayList();
         private Converter converter_ = PassthroughStringConverter.getInstance();
 
-        public SimpleColumnBuilder(final ColumnName columnName) {
-            columnName_ = columnName;
+        public SimpleColumnBuilder() {
         }
 
-        public void property(final String propertyName) {
-            propertyName_ = propertyName;
+        public SimpleColumnBuilder(final ColumnName columnName) {
+            addColumnName(columnName);
         }
 
         @Override
@@ -167,8 +179,25 @@ public abstract class AbstractCsvLayout<T> {
             converter_ = converter;
         }
 
+        public void addColumnName(final ColumnName columnName) {
+            columnNames_.add(columnName);
+        }
+
         public ColumnName getColumnName() {
-            return columnName_;
+            if (columnNames_.isEmpty()) {
+                return null;
+            }
+            return columnNames_.get(0);
+        }
+
+        public List<ColumnName> getColumnNames() {
+            return columnNames_;
+        }
+
+        @Override
+        public ColumnBuilder property(final String propertyName) {
+            propertyNames_.add(propertyName);
+            return this;
         }
 
         public Converter getConverter() {
@@ -176,11 +205,19 @@ public abstract class AbstractCsvLayout<T> {
         }
 
         public String getPropertyName() {
-            return propertyName_;
+            if (propertyNames_.isEmpty()) {
+                return null;
+            }
+            return propertyNames_.get(0);
         }
 
         public void setPropertyName(final String propertyName) {
-            propertyName_ = propertyName;
+            propertyNames_.clear();
+            propertyNames_.add(propertyName);
+        }
+
+        public List<String> getPropertyNames() {
+            return propertyNames_;
         }
 
     }
