@@ -1,6 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -9,8 +12,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CccBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.DddBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.EeeBean;
@@ -540,6 +546,52 @@ public class BeanCsvWriterTest {
         final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
         final String expected = ReaderUtil.readText(reader);
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void write_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<BigDecimalBean>(
+                BigDecimalBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa").converter(new BigDecimalConverter());
+                setup.column("bbb");
+            }
+        });
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<BigDecimalBean> csvWriter = layout
+                .openWriter(writer);
+
+        final BigDecimalBean bean = new BigDecimalBean();
+        bean.setAaa(new BigDecimal("11.1"));
+        bean.setBbb("21.02");
+        csvWriter.write(bean);
+        bean.setAaa(new BigDecimal("1101.45"));
+        bean.setBbb("1,201.56");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+
+        {
+            final ElementReader reader = new CsvElementInOut(
+                    new DefaultCsvSetting())
+                    .openReader(new StringReader(lines));
+            assertArrayEquals(a("aaa", "bbb"), reader.readRecord());
+            assertArrayEquals(a("11.10", "21.02"), reader.readRecord());
+            assertArrayEquals(a("1,101.45", "1,201.56"), reader.readRecord());
+            assertNull(reader.readRecord());
+            reader.close();
+        }
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {

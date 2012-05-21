@@ -9,7 +9,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
@@ -23,6 +28,7 @@ import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.t2framework.commons.exception.ParseRuntimeException;
 import org.t2framework.commons.util.ResourceUtil;
 
 /*
@@ -1210,6 +1216,43 @@ public class BeanCsvReaderTest {
         }
     }
 
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void read_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<BigDecimalBean>(
+                BigDecimalBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa").converter(new BigDecimalConverter());
+                setup.column("bbb");
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<BigDecimalBean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimalBean bean = new BigDecimalBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("11.10", bean.getAaa().toPlainString());
+        assertEquals("21.02", bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("1101.45", bean.getAaa().toPlainString());
+        assertEquals("1,201.56", bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Charset charset = Charset.forName("UTF-8");
         final Reader reader = getResourceAsReader(suffix, ext, charset);
@@ -1419,6 +1462,65 @@ public class BeanCsvReaderTest {
         @Override
         public String toString() {
             return toStringFormat.format(this);
+        }
+
+    }
+
+    public static class BigDecimalBean {
+
+        private BigDecimal aaa_;
+        private String bbb_;
+
+        public BigDecimal getAaa() {
+            return aaa_;
+        }
+
+        public void setAaa(final BigDecimal aaa) {
+            aaa_ = aaa;
+        }
+
+        public String getBbb() {
+            return bbb_;
+        }
+
+        public void setBbb(final String bbb) {
+            bbb_ = bbb;
+        }
+
+    }
+
+    public static class BigDecimalConverter implements Converter {
+
+        private final DecimalFormat format_;
+
+        public BigDecimalConverter() {
+            format_ = (DecimalFormat) NumberFormat.getNumberInstance();
+            format_.setMinimumFractionDigits(2);
+            format_.setMaximumFractionDigits(2);
+            format_.setGroupingUsed(true);
+            format_.setGroupingSize(3);
+            format_.setParseBigDecimal(true);
+        }
+
+        @Override
+        public void convertTo(final Object[] from, final String[] to) {
+            final BigDecimal o = (BigDecimal) from[0];
+            final String s = format_.format(o);
+            to[0] = s;
+        }
+
+        @Override
+        public void convertFrom(final String[] from, final Object[] to) {
+            final String s = from[0];
+            final ParsePosition pp = new ParsePosition(0);
+            final Number parse = format_.parse(s, pp);
+            if (parse == null || pp.getIndex() != s.length()) {
+                // パースエラー
+                throw new ParseRuntimeException(new ParseException(s,
+                        pp.getIndex()));
+            }
+            final BigDecimal o = (BigDecimal) parse;
+            to[0] = o;
         }
 
     }

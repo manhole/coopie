@@ -72,8 +72,10 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final CsvColumnValue<T> c = list.get(i);
             final ColumnName columnName = c.getColumnName();
 
+            // TODO converter
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName,
-                    c.getPropertyDesc());
+                    c.getPropertyDesc(),
+                    PassthroughStringConverter.getInstance());
             cds[i] = cd;
         }
         // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
@@ -88,7 +90,9 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         for (final PropertyDesc<T> pd : pds) {
             final String propertyName = pd.getPropertyName();
             final ColumnName columnName = new SimpleColumnName(propertyName);
-            final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd);
+            // TODO converter
+            final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pd,
+                    PassthroughStringConverter.getInstance());
             cds[i] = cd;
             i++;
         }
@@ -168,7 +172,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<T>[] cds = toColumnDescs(columnNames_, beanDesc_);
+            final ColumnDesc<T>[] cds = toColumnDescs(columnBuilders_,
+                    beanDesc_);
             recordDesc_ = new DefaultRecordDesc<T>(cds,
                     OrderSpecified.SPECIFIED, new BeanRecordType<T>(beanDesc_));
         }
@@ -176,13 +181,15 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     // TODO
     public static <U> ColumnDesc<U>[] toColumnDescs(
-            final Collection<? extends ColumnName> columns, final BeanDesc<U> bd) {
+            final Collection<SimpleColumnBuilder> columns, final BeanDesc<U> bd) {
         final ColumnDesc<U>[] cds = ColumnDescs.newColumnDescs(columns.size());
         int i = 0;
-        for (final ColumnName columnName : columns) {
+        for (final SimpleColumnBuilder builder : columns) {
+            final ColumnName columnName = builder.getColumnName();
             final String propertyName = columnName.getName();
             final PropertyDesc<U> pd = getPropertyDesc(bd, propertyName);
-            final ColumnDesc<U> cd = newBeanColumnDesc(columnName, pd);
+            final ColumnDesc<U> cd = newBeanColumnDesc(columnName, pd,
+                    builder.getConverter());
             cds[i] = cd;
             i++;
         }
@@ -190,10 +197,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
-            final PropertyDesc<U> pd) {
+            final PropertyDesc<U> pd, final Converter converter) {
         final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
         cd.setPropertyDesc(pd);
         cd.setName(name);
+        cd.setConverter(converter);
         return cd;
     }
 
@@ -227,8 +235,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
          * CSV列名。
          */
         private ColumnName name_;
-
         private PropertyDesc<T> propertyDesc_;
+        private Converter converter_;
 
         @Override
         public ColumnName getName() {
@@ -247,18 +255,32 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             propertyDesc_ = propertyDesc;
         }
 
+        public Converter getConverter() {
+            return converter_;
+        }
+
+        public void setConverter(final Converter converter) {
+            converter_ = converter;
+        }
+
         @Override
         public String getValue(final T bean) {
             final Object v = propertyDesc_.getValue(bean);
             if (v == null) {
                 return null;
             }
-            return String.valueOf(v);
+            final Object[] from = new Object[] { v };
+            final String[] to = new String[1];
+            converter_.convertTo(from, to);
+            return String.valueOf(to[0]);
         }
 
         @Override
         public void setValue(final T bean, final String value) {
-            propertyDesc_.setValue(bean, value);
+            final String[] from = new String[] { value };
+            final Object[] to = new Object[1];
+            converter_.convertFrom(from, to);
+            propertyDesc_.setValue(bean, to[0]);
         }
 
     }

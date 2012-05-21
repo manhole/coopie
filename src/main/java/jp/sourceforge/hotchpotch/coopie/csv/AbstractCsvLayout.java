@@ -2,12 +2,13 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 
-abstract class AbstractCsvLayout<T> {
+public abstract class AbstractCsvLayout<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
     private RecordDesc<T> recordDesc_;
@@ -110,25 +111,53 @@ abstract class AbstractCsvLayout<T> {
     protected static abstract class AbstractCsvRecordDescSetup<T> implements
             CsvRecordDescSetup<T> {
 
-        protected final List<ColumnName> columnNames_ = CollectionsUtil
+        protected final List<SimpleColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
 
         @Override
-        public void column(final ColumnName name) {
-            columnNames_.add(name);
+        public ColumnBuilder column(final ColumnName name) {
+            final SimpleColumnBuilder builder = new SimpleColumnBuilder(name);
+            columnBuilders_.add(builder);
+            return builder;
         }
 
         @Override
-        public void column(final String name) {
-            column(new SimpleColumnName(name));
+        public ColumnBuilder column(final String name) {
+            final SimpleColumnName n = new SimpleColumnName(name);
+            return column(n);
         }
 
         @Override
-        public void column(final String propertyName, final String label) {
+        public ColumnBuilder column(final String propertyName,
+                final String label) {
             final SimpleColumnName n = new SimpleColumnName();
             n.setName(propertyName);
             n.setLabel(label);
-            column(n);
+            return column(n);
+        }
+
+    }
+
+    public static class SimpleColumnBuilder implements ColumnBuilder {
+
+        private final ColumnName columnName_;
+        private Converter converter_ = PassthroughStringConverter.getInstance();
+
+        public SimpleColumnBuilder(final ColumnName columnName) {
+            columnName_ = columnName;
+        }
+
+        @Override
+        public void converter(final Converter converter) {
+            converter_ = converter;
+        }
+
+        public ColumnName getColumnName() {
+            return columnName_;
+        }
+
+        public Converter getConverter() {
+            return converter_;
         }
 
     }

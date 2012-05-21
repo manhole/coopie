@@ -2,10 +2,16 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 public interface CsvColumnSetup {
 
-    void column(final ColumnName name);
+    ColumnBuilder column(ColumnName name);
 
-    void column(final String name);
+    ColumnBuilder column(String name);
 
-    void column(final String propertyName, final String label);
+    ColumnBuilder column(String propertyName, String label);
+
+    interface ColumnBuilder {
+
+        void converter(Converter converter);
+
+    }
 
 }

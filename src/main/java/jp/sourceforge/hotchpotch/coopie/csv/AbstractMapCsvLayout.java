@@ -55,7 +55,7 @@ public abstract class AbstractMapCsvLayout extends
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columnNames_);
+            final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columnBuilders_);
             recordDesc_ = new DefaultRecordDesc<Map<String, String>>(cds,
                     OrderSpecified.SPECIFIED, new MapRecordType());
         }
@@ -64,11 +64,12 @@ public abstract class AbstractMapCsvLayout extends
 
     // TODO
     public static ColumnDesc<Map<String, String>>[] toColumnDescs(
-            final Collection<? extends ColumnName> columns) {
+            final Collection<SimpleColumnBuilder> builders) {
         final ColumnDesc<Map<String, String>>[] cds = ColumnDescs
-                .newColumnDescs(columns.size());
+                .newColumnDescs(builders.size());
         int i = 0;
-        for (final ColumnName columnName : columns) {
+        for (final SimpleColumnBuilder builder : builders) {
+            final ColumnName columnName = builder.getColumnName();
             final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(columnName);
             cds[i] = cd;
             i++;
