@@ -13,6 +13,7 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
+import org.t2framework.commons.util.StringUtil;
 
 public abstract class AbstractMapCsvLayout<PROP> extends
         AbstractCsvLayout<Map<String, PROP>> {
@@ -146,13 +147,9 @@ public abstract class AbstractMapCsvLayout<PROP> extends
 
         @Override
         public String getValue(final Map<String, PROP> bean) {
-            final PROP v = propertyBinding_.getValue(bean);
-            if (v == null) {
-                return null;
-            }
-            final Object to = converter_.convertTo(v);
-            // TODO nullの場合
-            return String.valueOf(to);
+            final PROP from = propertyBinding_.getValue(bean);
+            final Object to = converter_.convertTo(from);
+            return StringUtil.toString(to);
         }
 
         @Override

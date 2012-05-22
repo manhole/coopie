@@ -438,14 +438,9 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         @Override
         public String getValue(final T bean) {
-            final Object v = propertyBinding_.getValue(bean);
-            if (v == null) {
-                return null;
-            }
-            final Object from = v;
+            final Object from = propertyBinding_.getValue(bean);
             final Object to = converter_.convertTo(from);
-            // TODO nullの場合
-            return String.valueOf(to);
+            return StringUtil.toString(to);
         }
 
         @Override

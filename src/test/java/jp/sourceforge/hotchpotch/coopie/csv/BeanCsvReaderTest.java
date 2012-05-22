@@ -1630,6 +1630,9 @@ public class BeanCsvReaderTest {
 
         @Override
         public String convertTo(final BigDecimal from) {
+            if (from == null) {
+                return null;
+            }
             final String s = format_.format(from);
             return s;
         }
