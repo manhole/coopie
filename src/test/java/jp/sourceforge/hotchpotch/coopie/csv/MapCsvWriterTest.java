@@ -22,7 +22,7 @@ public class MapCsvWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
         // ## Assert ##
@@ -38,7 +38,7 @@ public class MapCsvWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -74,7 +74,7 @@ public class MapCsvWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -121,7 +121,7 @@ public class MapCsvWriterTest {
     @Test
     public void write3() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -168,7 +168,7 @@ public class MapCsvWriterTest {
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
@@ -202,7 +202,7 @@ public class MapCsvWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -245,7 +245,7 @@ public class MapCsvWriterTest {
     @Test
     public void writeCsv() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -277,7 +277,7 @@ public class MapCsvWriterTest {
     @Test
     public void write_separator_comma() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
 
@@ -300,7 +300,7 @@ public class MapCsvWriterTest {
     @Test
     public void write_separator_tab() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.TAB);
 
@@ -323,7 +323,7 @@ public class MapCsvWriterTest {
     @Test
     public void write_lineseparator_LF() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setLineSeparator("\n");
@@ -347,7 +347,7 @@ public class MapCsvWriterTest {
     @Test
     public void write_quotechar_single() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setQuoteMark('\'');

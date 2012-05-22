@@ -32,7 +32,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
 
         // ## Act ##
         // ## Assert ##
@@ -54,7 +54,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -85,7 +85,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -115,7 +115,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-3", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -145,7 +145,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-4", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -194,7 +194,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read_empty() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -225,7 +225,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -253,7 +253,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -280,7 +280,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -308,7 +308,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -359,7 +359,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -402,7 +402,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void setup_invalid_readeditor() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
 
         // ## Act ##
         // ## Assert ##

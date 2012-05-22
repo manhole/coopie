@@ -29,7 +29,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void read_nosetup() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
 
         // ## Act ##
         // ## Assert ##
@@ -48,7 +48,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -93,7 +93,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -144,7 +144,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -189,7 +189,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
