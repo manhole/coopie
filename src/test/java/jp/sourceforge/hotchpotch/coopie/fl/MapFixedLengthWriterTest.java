@@ -1,17 +1,23 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.Map;
+import java.util.TreeMap;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -228,6 +234,56 @@ public class MapFixedLengthWriterTest {
     /*
      * TODO 定義した長さよりも実際のデータが長い場合
      */
+
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void write_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 10).converter(new BigDecimalConverter());
+                setup.column("bbb", 10, 20);
+            }
+        });
+        layout.setWithHeader(true);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, Object>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, Object> bean = new TreeMap<String, Object>();
+        bean.put("aaa", new BigDecimal("11.1"));
+        bean.put("bbb", "21.02");
+        csvWriter.write(bean);
+
+        bean.clear();
+        csvWriter.write(bean);
+
+        bean.put("aaa", new BigDecimal("1101.45"));
+        bean.put("bbb", "1,201.56");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+
+        {
+            final LineReadable reader = new LineReadable(
+                    new StringReader(lines));
+            assertEquals("       aaa       bbb", reader.readLineBody());
+            assertEquals("     11.10     21.02", reader.readLineBody());
+            assertEquals("                    ", reader.readLineBody());
+            assertEquals("  1,101.45  1,201.56", reader.readLineBody());
+            assertNull(reader.readLineBody());
+            reader.close();
+        }
+    }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
         return BeanFixedLengthReaderTest.getResourceAsReader(suffix, ext);

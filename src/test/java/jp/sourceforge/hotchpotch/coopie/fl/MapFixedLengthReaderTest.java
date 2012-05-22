@@ -7,14 +7,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.SkipEmptyLineReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.MapCsvReaderTest;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.CharSequenceWriter;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -412,6 +415,58 @@ public class MapFixedLengthReaderTest {
         } catch (final IllegalArgumentException e) {
             logger.debug(e.getMessage());
         }
+    }
+
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void read_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 10).converter(new BigDecimalConverter());
+                setup.column("bbb", 10, 20);
+            }
+        });
+        layout.setWithHeader(true);
+
+        String text;
+        {
+            final CharSequenceWriter w = new CharSequenceWriter();
+            w.writeLine("aaa       bbb       ");
+            w.writeLine("11.10     21.02     ");
+            w.writeLine("                    ");
+            w.writeLine("1,101.45    1,201.56");
+            text = w.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<Map<String, Object>> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final Map<String, Object> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("11.10", ((BigDecimal) bean.get("aaa")).toPlainString());
+        assertEquals("21.02", bean.get("bbb"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals(null, bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("1101.45", ((BigDecimal) bean.get("aaa")).toPlainString());
+        assertEquals("1,201.56", bean.get("bbb"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
