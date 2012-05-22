@@ -942,6 +942,11 @@ public class MapCsvReaderTest {
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
+        assertEquals(null, bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
         assertEquals("1101.45", ((BigDecimal) bean.get("aaa")).toPlainString());
         assertEquals("1,201.56", bean.get("bbb"));
 

@@ -1252,6 +1252,11 @@ public class BeanCsvReaderTest {
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
+        assertEquals(null, bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
         assertEquals("1101.45", bean.getAaa().toPlainString());
         assertEquals("1,201.56", bean.getBbb());
 
@@ -1631,6 +1636,9 @@ public class BeanCsvReaderTest {
 
         @Override
         public BigDecimal convertFrom(final String from) {
+            if (from == null) {
+                return null;
+            }
             final ParsePosition pp = new ParsePosition(0);
             final Number parse = format_.parse(from, pp);
             if (parse == null || pp.getIndex() != from.length()) {

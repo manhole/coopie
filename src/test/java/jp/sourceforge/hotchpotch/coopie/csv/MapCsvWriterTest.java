@@ -405,6 +405,10 @@ public class MapCsvWriterTest {
         bean.put("aaa", new BigDecimal("11.1"));
         bean.put("bbb", "21.02");
         csvWriter.write(bean);
+
+        bean.clear();
+        csvWriter.write(bean);
+
         bean.put("aaa", new BigDecimal("1101.45"));
         bean.put("bbb", "1,201.56");
         csvWriter.write(bean);
@@ -420,6 +424,7 @@ public class MapCsvWriterTest {
                     .openReader(new StringReader(lines));
             assertArrayEquals(a("aaa", "bbb"), reader.readRecord());
             assertArrayEquals(a("11.10", "21.02"), reader.readRecord());
+            assertArrayEquals(a("", ""), reader.readRecord());
             assertArrayEquals(a("1,101.45", "1,201.56"), reader.readRecord());
             assertNull(reader.readRecord());
             reader.close();

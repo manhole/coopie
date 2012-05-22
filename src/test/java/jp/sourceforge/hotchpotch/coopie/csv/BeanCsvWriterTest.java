@@ -578,6 +578,11 @@ public class BeanCsvWriterTest {
         bean.setAaa(new BigDecimal("11.1"));
         bean.setBbb("21.02");
         csvWriter.write(bean);
+
+        bean.setAaa(null);
+        bean.setBbb(null);
+        csvWriter.write(bean);
+
         bean.setAaa(new BigDecimal("1101.45"));
         bean.setBbb("1,201.56");
         csvWriter.write(bean);
@@ -593,6 +598,7 @@ public class BeanCsvWriterTest {
                     .openReader(new StringReader(lines));
             assertArrayEquals(a("aaa", "bbb"), reader.readRecord());
             assertArrayEquals(a("11.10", "21.02"), reader.readRecord());
+            assertArrayEquals(a("", ""), reader.readRecord());
             assertArrayEquals(a("1,101.45", "1,201.56"), reader.readRecord());
             assertNull(reader.readRecord());
             reader.close();
