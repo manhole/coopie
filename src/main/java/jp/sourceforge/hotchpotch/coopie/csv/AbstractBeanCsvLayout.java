@@ -253,17 +253,17 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final List<PropertyBinding<U, Object>> propertyBindings,
             final Converter converter) {
 
-        final CompositColumnDesc<U> ccd = new CompositColumnDesc<U>();
+        final CompositColumnDesc ccd = new CompositColumnDesc();
         ccd.setPropertyBindings(propertyBindings);
         ccd.setColumnNames(names);
         ccd.setConverter(converter);
         return ccd.getColumnDescs();
     }
 
-    static class CompositColumnDesc<T> {
+    public static class CompositColumnDesc<T> {
 
         private List<ColumnName> columnNames_;
-        private List<PropertyBinding<T, Object>> propertyBindings_;
+        private List<PropertyBinding> propertyBindings_;
 
         @SuppressWarnings("rawtypes")
         private Converter converter_;
@@ -290,7 +290,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
 
         public void setPropertyBindings(
-                final List<PropertyBinding<T, Object>> propertyBindings) {
+                final List<PropertyBinding> propertyBindings) {
             propertyBindings_ = propertyBindings;
         }
 

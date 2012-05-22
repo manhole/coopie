@@ -2,13 +2,17 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.CompositColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
+import org.t2framework.commons.util.CollectionsUtil;
 
 public abstract class AbstractMapCsvLayout<PROP> extends
         AbstractCsvLayout<Map<String, PROP>> {
@@ -32,11 +36,25 @@ public abstract class AbstractMapCsvLayout<PROP> extends
 
     protected static <PROP> ColumnDesc<Map<String, PROP>> newMapColumnDesc(
             final ColumnName columnName,
-            final PropertyBinding<Map<String, PROP>, PROP> propertyBinding) {
+            final PropertyBinding<Map<String, PROP>, PROP> propertyBinding,
+            final Converter converter) {
         final MapColumnDesc<PROP> cd = new MapColumnDesc<PROP>();
         cd.setName(columnName);
         cd.setPropertyBinding(propertyBinding);
+        cd.setConverter(converter);
         return cd;
+    }
+
+    private static <PROP extends Object> ColumnDesc<Map<String, PROP>>[] newCompositMapColumnDesc(
+            final List<ColumnName> names,
+            final List<PropertyBinding<Map<String, PROP>, PROP>> propertyBindings,
+            final Converter converter) {
+
+        final CompositColumnDesc ccd = new CompositColumnDesc<Map<String, PROP>>();
+        ccd.setPropertyBindings(propertyBindings);
+        ccd.setColumnNames(names);
+        ccd.setConverter(converter);
+        return ccd.getColumnDescs();
     }
 
     static class MapCsvRecordDescSetup<PROP> extends
@@ -67,19 +85,31 @@ public abstract class AbstractMapCsvLayout<PROP> extends
     // TODO
     public static <PROP> ColumnDesc<Map<String, PROP>>[] toColumnDescs(
             final Collection<SimpleColumnBuilder> builders) {
-        final ColumnDesc<Map<String, PROP>>[] cds = ColumnDescs
-                .newColumnDescs(builders.size());
-        int i = 0;
+        final List<ColumnDesc<Map<String, PROP>>> list = CollectionsUtil
+                .newArrayList();
         for (final SimpleColumnBuilder builder : builders) {
-            final ColumnName columnName = builder.getColumnName();
-            final String propertyName = builder.getPropertyName();
-            final PropertyBinding<Map<String, PROP>, PROP> propertyBinding = new MapPropertyBinding<PROP>(
-                    propertyName);
-            final ColumnDesc<Map<String, PROP>> cd = newMapColumnDesc(
-                    columnName, propertyBinding);
-            cds[i] = cd;
-            i++;
+            final List<ColumnName> columnNames = builder.getColumnNames();
+            final List<String> propertyNames = builder.getPropertyNames();
+            final List<PropertyBinding<Map<String, PROP>, PROP>> pbs = CollectionsUtil
+                    .newArrayList();
+            for (final String propertyName : propertyNames) {
+                final PropertyBinding<Map<String, PROP>, PROP> propertyBinding = new MapPropertyBinding<PROP>(
+                        propertyName);
+                pbs.add(propertyBinding);
+            }
+            if (columnNames.size() == 1 && pbs.size() == 1) {
+                final ColumnDesc<Map<String, PROP>> cd = newMapColumnDesc(
+                        columnNames.get(0), pbs.get(0), builder.getConverter());
+                list.add(cd);
+            } else {
+                final ColumnDesc<Map<String, PROP>>[] cds = newCompositMapColumnDesc(
+                        columnNames, pbs, builder.getConverter());
+                Collections.addAll(list, cds);
+            }
         }
+        final ColumnDesc<Map<String, PROP>>[] cds = ColumnDescs
+                .newColumnDescs(list.size());
+        list.toArray(cds);
         return cds;
     }
 
@@ -117,13 +147,19 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         @Override
         public String getValue(final Map<String, PROP> bean) {
             final PROP v = propertyBinding_.getValue(bean);
-            return (String) v;
+            if (v == null) {
+                return null;
+            }
+            final Object to = converter_.convertTo(v);
+            // TODO nullの場合
+            return String.valueOf(to);
         }
 
         @Override
         public void setValue(final Map<String, PROP> bean, final String value) {
             // TODO PROP
-            propertyBinding_.setValue(bean, (PROP) value);
+            final PROP to = (PROP) converter_.convertFrom(value);
+            propertyBinding_.setValue(bean, to);
         }
     }
 

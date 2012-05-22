@@ -7,9 +7,11 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.SkipEmptyLineReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
@@ -909,6 +911,42 @@ public class MapCsvReaderTest {
         } catch (final IllegalArgumentException e) {
             logger.debug(e.getMessage());
         }
+    }
+
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void read_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout<Object> layout = new MapCsvLayout<Object>();
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa").converter(new BigDecimalConverter());
+                setup.column("bbb");
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<Map<String, Object>> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final Map<String, Object> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("11.10", ((BigDecimal) bean.get("aaa")).toPlainString());
+        assertEquals("21.02", bean.get("bbb"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("1101.45", ((BigDecimal) bean.get("aaa")).toPlainString());
+        assertEquals("1,201.56", bean.get("bbb"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
