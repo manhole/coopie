@@ -357,8 +357,8 @@ abstract class AbstractFixedLengthLayout<T> {
 
         @Override
         public String[] getHeaderValues() {
-            // 固定長だからヘッダは無い
-            return null;
+            // setupByBeanが先に動作するため、ここは通らない
+            throw new UnsupportedOperationException();
         }
 
         @Override
