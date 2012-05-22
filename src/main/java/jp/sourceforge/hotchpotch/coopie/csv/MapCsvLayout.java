@@ -5,8 +5,8 @@ import java.util.Map;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FailureProtection;
 
-public class MapCsvLayout extends AbstractMapCsvLayout implements
-        RecordInOut<Map<String, String>> {
+public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> implements
+        RecordInOut<Map<String, PROP>> {
 
     private final CsvSetting csvSetting_;
 
@@ -15,13 +15,13 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
     }
 
     @Override
-    public RecordReader<Map<String, String>> openReader(final Readable readable) {
+    public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
         if (readable == null) {
             throw new NullPointerException("readable");
         }
 
         prepareOpen();
-        final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
+        final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
         r.setElementInOut(createElementInOut());
@@ -44,14 +44,14 @@ public class MapCsvLayout extends AbstractMapCsvLayout implements
     }
 
     @Override
-    public RecordWriter<Map<String, String>> openWriter(
+    public RecordWriter<Map<String, PROP>> openWriter(
             final Appendable appendable) {
         if (appendable == null) {
             throw new NullPointerException("appendable");
         }
 
         prepareOpen();
-        final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
+        final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
         w.setElementInOut(createElementInOut());

@@ -34,8 +34,8 @@ public class CsvAssert {
         }
 
         try {
-            final RecordReader<Map<String, String>> actualCsvReader = openMapReader(actualReader);
-            final RecordReader<Map<String, String>> expectedCsvReader = openMapReader(expectedReader);
+            final RecordReader<Map<String, Object>> actualCsvReader = openMapReader(actualReader);
+            final RecordReader<Map<String, Object>> expectedCsvReader = openMapReader(expectedReader);
             try {
                 assertCsvEquals(expectedCsvReader, actualCsvReader);
             } finally {
@@ -48,23 +48,23 @@ public class CsvAssert {
         }
     }
 
-    private RecordReader<Map<String, String>> openMapReader(
+    private RecordReader<Map<String, Object>> openMapReader(
             final Reader actualReader) {
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<Object> layout = new MapCsvLayout<Object>();
         layout.setWithHeader(true);
         layout.setElementSeparator(elementSeparator_);
-        final RecordReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, Object>> csvReader = layout
                 .openReader(actualReader);
         return csvReader;
     }
 
     private void assertCsvEquals(
-            final RecordReader<Map<String, String>> expectedCsvReader,
-            final RecordReader<Map<String, String>> actualCsvReader) {
+            final RecordReader<Map<String, Object>> expectedCsvReader,
+            final RecordReader<Map<String, Object>> actualCsvReader) {
 
         while (expectedCsvReader.hasNext() && actualCsvReader.hasNext()) {
-            final Map<String, String> exp = expectedCsvReader.read();
-            final Map<String, String> act = actualCsvReader.read();
+            final Map<String, Object> exp = expectedCsvReader.read();
+            final Map<String, Object> act = actualCsvReader.read();
             if (!exp.equals(act)) {
                 throw new CsvAssertionError("expected:<" + exp + "> but was:<"
                         + act + ">");

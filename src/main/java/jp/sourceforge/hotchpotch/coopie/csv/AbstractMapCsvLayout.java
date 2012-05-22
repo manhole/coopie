@@ -10,12 +10,12 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractMapCsvLayout extends
-        AbstractCsvLayout<Map<String, String>> {
+public abstract class AbstractMapCsvLayout<PROP> extends
+        AbstractCsvLayout<Map<String, PROP>> {
 
     @Override
-    protected AbstractCsvRecordDescSetup<Map<String, String>> getRecordDescSetup() {
-        return new MapCsvRecordDescSetup();
+    protected AbstractCsvRecordDescSetup<Map<String, PROP>> getRecordDescSetup() {
+        return new MapCsvRecordDescSetup<PROP>();
     }
 
     protected void prepareOpen() {
@@ -26,26 +26,26 @@ public abstract class AbstractMapCsvLayout extends
              * Writeの場合は1件目から、
              * カラム名を構築する。
              */
-            setRecordDesc(new LazyMapRecordDesc(this));
+            setRecordDesc(new LazyMapRecordDesc<PROP>(this));
         }
     }
 
-    protected static ColumnDesc<Map<String, String>> newMapColumnDesc(
+    protected static <PROP> ColumnDesc<Map<String, PROP>> newMapColumnDesc(
             final ColumnName columnName,
-            final PropertyBinding<Map<String, String>, String> propertyBinding) {
-        final MapColumnDesc cd = new MapColumnDesc();
+            final PropertyBinding<Map<String, PROP>, PROP> propertyBinding) {
+        final MapColumnDesc<PROP> cd = new MapColumnDesc<PROP>();
         cd.setName(columnName);
         cd.setPropertyBinding(propertyBinding);
         return cd;
     }
 
-    static class MapCsvRecordDescSetup extends
-            AbstractCsvRecordDescSetup<Map<String, String>> {
+    static class MapCsvRecordDescSetup<PROP> extends
+            AbstractCsvRecordDescSetup<Map<String, PROP>> {
 
-        private RecordDesc<Map<String, String>> recordDesc_;
+        private RecordDesc<Map<String, PROP>> recordDesc_;
 
         @Override
-        public RecordDesc<Map<String, String>> getRecordDesc() {
+        public RecordDesc<Map<String, PROP>> getRecordDesc() {
             buildIfNeed();
             return recordDesc_;
         }
@@ -57,25 +57,25 @@ public abstract class AbstractMapCsvLayout extends
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columnBuilders_);
-            recordDesc_ = new DefaultRecordDesc<Map<String, String>>(cds,
-                    OrderSpecified.SPECIFIED, new MapRecordType());
+            final ColumnDesc<Map<String, PROP>>[] cds = toColumnDescs(columnBuilders_);
+            recordDesc_ = new DefaultRecordDesc<Map<String, PROP>>(cds,
+                    OrderSpecified.SPECIFIED, new MapRecordType<PROP>());
         }
 
     }
 
     // TODO
-    public static ColumnDesc<Map<String, String>>[] toColumnDescs(
+    public static <PROP> ColumnDesc<Map<String, PROP>>[] toColumnDescs(
             final Collection<SimpleColumnBuilder> builders) {
-        final ColumnDesc<Map<String, String>>[] cds = ColumnDescs
+        final ColumnDesc<Map<String, PROP>>[] cds = ColumnDescs
                 .newColumnDescs(builders.size());
         int i = 0;
         for (final SimpleColumnBuilder builder : builders) {
             final ColumnName columnName = builder.getColumnName();
             final String propertyName = builder.getPropertyName();
-            final PropertyBinding<Map<String, String>, String> propertyBinding = new MapPropertyBinding<String>(
+            final PropertyBinding<Map<String, PROP>, PROP> propertyBinding = new MapPropertyBinding<PROP>(
                     propertyName);
-            final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(
+            final ColumnDesc<Map<String, PROP>> cd = newMapColumnDesc(
                     columnName, propertyBinding);
             cds[i] = cd;
             i++;
@@ -83,50 +83,57 @@ public abstract class AbstractMapCsvLayout extends
         return cds;
     }
 
-    static class MapColumnDesc implements ColumnDesc<Map<String, String>> {
+    static class MapColumnDesc<PROP> implements ColumnDesc<Map<String, PROP>> {
 
         /**
          * CSV列名。
          */
-        private ColumnName name_;
-
-        private PropertyBinding<Map<String, String>, String> propertyBinding_;
+        private ColumnName columnName_;
+        private PropertyBinding<Map<String, PROP>, PROP> propertyBinding_;
+        private Converter converter_;
 
         @Override
         public ColumnName getName() {
-            return name_;
+            return columnName_;
         }
 
         public void setName(final ColumnName name) {
-            name_ = name;
+            columnName_ = name;
         }
 
-        public PropertyBinding<Map<String, String>, String> getPropertyBinding() {
+        public PropertyBinding<Map<String, PROP>, PROP> getPropertyBinding() {
             return propertyBinding_;
         }
 
         public void setPropertyBinding(
-                final PropertyBinding<Map<String, String>, String> propertyBinding) {
+                final PropertyBinding<Map<String, PROP>, PROP> propertyBinding) {
             propertyBinding_ = propertyBinding;
         }
 
-        @Override
-        public String getValue(final Map<String, String> bean) {
-            return propertyBinding_.getValue(bean);
+        public void setConverter(final Converter converter) {
+            converter_ = converter;
         }
 
         @Override
-        public void setValue(final Map<String, String> bean, final String value) {
-            propertyBinding_.setValue(bean, value);
+        public String getValue(final Map<String, PROP> bean) {
+            final PROP v = propertyBinding_.getValue(bean);
+            return (String) v;
+        }
+
+        @Override
+        public void setValue(final Map<String, PROP> bean, final String value) {
+            // TODO PROP
+            propertyBinding_.setValue(bean, (PROP) value);
         }
     }
 
-    static class LazyMapRecordDesc implements RecordDesc<Map<String, String>> {
+    static class LazyMapRecordDesc<PROP> implements
+            RecordDesc<Map<String, PROP>> {
 
         private static final Logger logger = LoggerFactory.getLogger();
-        private final AbstractMapCsvLayout layout_;
+        private final AbstractMapCsvLayout<PROP> layout_;
 
-        public LazyMapRecordDesc(final AbstractMapCsvLayout layout) {
+        public LazyMapRecordDesc(final AbstractMapCsvLayout<PROP> layout) {
             layout_ = layout;
         }
 
@@ -134,8 +141,7 @@ public abstract class AbstractMapCsvLayout extends
          * CSVを読むとき
          */
         @Override
-        public RecordDesc<Map<String, String>> setupByHeader(
-                final String[] header) {
+        public RecordDesc<Map<String, PROP>> setupByHeader(final String[] header) {
 
             logger.debug("setupByHeader: {}", Arrays.toString(header));
 
@@ -155,8 +161,7 @@ public abstract class AbstractMapCsvLayout extends
                 }
             });
 
-            final RecordDesc<Map<String, String>> built = layout_
-                    .getRecordDesc();
+            final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();
@@ -173,8 +178,8 @@ public abstract class AbstractMapCsvLayout extends
          * (列名が設定されている場合は、そもそもこのクラスが使われない)
          */
         @Override
-        public RecordDesc<Map<String, String>> setupByBean(
-                final Map<String, String> bean) {
+        public RecordDesc<Map<String, PROP>> setupByBean(
+                final Map<String, PROP> bean) {
             /*
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
@@ -189,8 +194,7 @@ public abstract class AbstractMapCsvLayout extends
                 }
             });
 
-            final RecordDesc<Map<String, String>> built = layout_
-                    .getRecordDesc();
+            final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();
@@ -209,18 +213,18 @@ public abstract class AbstractMapCsvLayout extends
         }
 
         @Override
-        public String[] getValues(final Map<String, String> bean) {
+        public String[] getValues(final Map<String, PROP> bean) {
             throw new AssertionError();
         }
 
         @Override
-        public void setValues(final Map<String, String> bean,
+        public void setValues(final Map<String, PROP> bean,
                 final String[] values) {
             throw new AssertionError();
         }
 
         @Override
-        public Map<String, String> newInstance() {
+        public Map<String, PROP> newInstance() {
             throw new AssertionError();
         }
 
