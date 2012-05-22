@@ -7,6 +7,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.SimpleColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultElementReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultLineReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordDesc;
@@ -206,8 +207,8 @@ abstract class AbstractFixedLengthLayout<T> {
                 .newArrayList();
 
         @Override
-        public void column(final String propertyName, final int beginIndex,
-                final int endIndex) {
+        public CsvColumnSetup.ColumnBuilder column(final String propertyName,
+                final int beginIndex, final int endIndex) {
             final ColumnName columnName = new SimpleColumnName(propertyName);
             final SimpleColumnBuilder builder = new SimpleColumnBuilder(
                     columnName);
@@ -217,6 +218,7 @@ abstract class AbstractFixedLengthLayout<T> {
             final NameAndDesc nd = new NameAndDesc(builder, c);
             columns_.add(nd);
             builder.property(propertyName);
+            return builder;
         }
 
         private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
