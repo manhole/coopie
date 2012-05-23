@@ -1678,7 +1678,8 @@ public class BeanCsvReaderTest {
 
     }
 
-    static class CalendarConverter implements Converter<Calendar, String[]> {
+    public static class CalendarConverter implements
+            Converter<Calendar, String[]> {
 
         private final DateFormat dayFormat_;
         private final DateFormat timeFormat_;
