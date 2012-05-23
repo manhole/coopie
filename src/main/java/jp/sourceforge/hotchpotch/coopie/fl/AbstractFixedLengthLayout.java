@@ -203,26 +203,28 @@ abstract class AbstractFixedLengthLayout<T> {
     protected abstract static class AbstractFixedLengthRecordDescSetup<T>
             implements FixedLengthRecordDescSetup {
 
-        private final List<NameAndDesc> columns_ = CollectionsUtil
+        private final List<ColumnNameAndElementDesc> columns_ = CollectionsUtil
                 .newArrayList();
+
+        private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
+        private FixedLengthElementDesc[] fixedLengthElementDescs_;
 
         @Override
         public CsvColumnSetup.ColumnBuilder column(final String propertyName,
                 final int beginIndex, final int endIndex) {
+
             final ColumnName columnName = new SimpleColumnName(propertyName);
             final SimpleColumnBuilder builder = new SimpleColumnBuilder(
                     columnName);
 
             final SimpleFixedLengthElementDesc c = new SimpleFixedLengthElementDesc(
                     beginIndex, endIndex);
-            final NameAndDesc nd = new NameAndDesc(builder, c);
+            final ColumnNameAndElementDesc nd = new ColumnNameAndElementDesc(
+                    builder, c);
             columns_.add(nd);
             builder.property(propertyName);
             return builder;
         }
-
-        private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
-        private FixedLengthElementDesc[] fixedLengthElementDescs_;
 
         @Override
         public RecordDesc<T> getRecordDesc() {
@@ -248,7 +250,7 @@ abstract class AbstractFixedLengthLayout<T> {
             final FixedLengthElementDesc[] flColumnDescs = new FixedLengthElementDesc[columns_
                     .size()];
             int i = 0;
-            for (final NameAndDesc nd : columns_) {
+            for (final ColumnNameAndElementDesc nd : columns_) {
                 final AbstractCsvLayout.SimpleColumnBuilder cn = nd.columnName_;
                 builders.add(cn);
                 final FixedLengthElementDesc desc = nd.fixedLengthElementDesc_;
@@ -269,12 +271,12 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    private static class NameAndDesc {
+    private static class ColumnNameAndElementDesc {
 
         final SimpleColumnBuilder columnName_;
         final FixedLengthElementDesc fixedLengthElementDesc_;
 
-        public NameAndDesc(final SimpleColumnBuilder columnName,
+        public ColumnNameAndElementDesc(final SimpleColumnBuilder columnName,
                 final SimpleFixedLengthElementDesc desc) {
             columnName_ = columnName;
             fixedLengthElementDesc_ = desc;
