@@ -106,6 +106,72 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 new BeanRecordType<T>(beanDesc_));
     }
 
+    private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
+            final PropertyBinding<U, Object> propertyBinding,
+            final Converter converter) {
+        final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
+        cd.setPropertyBinding(propertyBinding);
+        cd.setName(name);
+        cd.setConverter(converter);
+        return cd;
+    }
+
+    private static <U> ColumnDesc<U>[] newCompositBeanColumnDesc(
+            final List<ColumnName> names,
+            final List<PropertyBinding<U, Object>> propertyBindings,
+            final Converter converter) {
+
+        final CompositColumnDesc ccd = new CompositColumnDesc();
+        ccd.setPropertyBindings(propertyBindings);
+        ccd.setColumnNames(names);
+        ccd.setConverter(converter);
+        return ccd.getColumnDescs();
+    }
+
+    // TODO
+    public static <U> ColumnDesc<U>[] toColumnDescs(
+            final List<SimpleColumnBuilder> columns, final BeanDesc<U> bd) {
+        final List<ColumnDesc<U>> list = CollectionsUtil.newArrayList();
+        for (final SimpleColumnBuilder builder : columns) {
+            final List<ColumnName> columnNames = builder.getColumnNames();
+            final List<String> propertyNames = builder.getPropertyNames();
+            final List<PropertyBinding<U, Object>> pbs = CollectionsUtil
+                    .newArrayList();
+            for (final String propertyName : propertyNames) {
+                final PropertyBinding<U, Object> pb = getPropertyBinding(bd,
+                        propertyName);
+                pbs.add(pb);
+            }
+            if (columnNames.size() == 1 && pbs.size() == 1) {
+                final ColumnDesc<U> cd = newBeanColumnDesc(columnNames.get(0),
+                        pbs.get(0), builder.getConverter());
+                list.add(cd);
+            } else {
+                final ColumnDesc<U>[] cds = newCompositBeanColumnDesc(
+                        columnNames, pbs, builder.getConverter());
+                Collections.addAll(list, cds);
+            }
+        }
+        final ColumnDesc<U>[] cds = ColumnDescs.newColumnDescs(list.size());
+        list.toArray(cds);
+        return cds;
+    }
+
+    private static <U> PropertyBinding<U, Object> getPropertyBinding(
+            final BeanDesc<U> beanDesc, final String name) {
+
+        final PropertyDesc<U> pd = beanDesc.getPropertyDesc(name);
+        if (pd == null) {
+            final ClassDesc<U> classDesc = beanDesc.getClassDesc();
+            final Class<? extends U> concreteClass = classDesc
+                    .getConcreteClass();
+            final String className = concreteClass.getName();
+            throw new PropertyNotFoundException("property not found:<" + name
+                    + "> for class:<" + className + ">");
+        }
+        return new BeanPropertyBinding<U, Object>(pd);
+    }
+
     private static class CsvColumnValue<T> implements
             Comparable<CsvColumnValue<T>> {
 
@@ -184,60 +250,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
     }
 
-    // TODO
-    public static <U> ColumnDesc<U>[] toColumnDescs(
-            final List<SimpleColumnBuilder> columns, final BeanDesc<U> bd) {
-        final List<ColumnDesc<U>> list = CollectionsUtil.newArrayList();
-        for (final SimpleColumnBuilder builder : columns) {
-            final List<ColumnName> columnNames = builder.getColumnNames();
-            final List<String> propertyNames = builder.getPropertyNames();
-            final List<PropertyBinding<U, Object>> pbs = CollectionsUtil
-                    .newArrayList();
-            for (final String propertyName : propertyNames) {
-                final PropertyBinding<U, Object> pb = getPropertyBinding(bd,
-                        propertyName);
-                pbs.add(pb);
-            }
-            if (columnNames.size() == 1 && pbs.size() == 1) {
-                final ColumnDesc<U> cd = newBeanColumnDesc(columnNames.get(0),
-                        pbs.get(0), builder.getConverter());
-                list.add(cd);
-            } else {
-                final ColumnDesc<U>[] cds = newCompositBeanColumnDesc(
-                        columnNames, pbs, builder.getConverter());
-                Collections.addAll(list, cds);
-            }
-        }
-        final ColumnDesc<U>[] cds = ColumnDescs.newColumnDescs(list.size());
-        list.toArray(cds);
-        return cds;
-    }
-
-    private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
-            final PropertyBinding<U, Object> propertyBinding,
-            final Converter converter) {
-        final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
-        cd.setPropertyBinding(propertyBinding);
-        cd.setName(name);
-        cd.setConverter(converter);
-        return cd;
-    }
-
-    private static <U> PropertyBinding<U, Object> getPropertyBinding(
-            final BeanDesc<U> beanDesc, final String name) {
-
-        final PropertyDesc<U> pd = beanDesc.getPropertyDesc(name);
-        if (pd == null) {
-            final ClassDesc<U> classDesc = beanDesc.getClassDesc();
-            final Class<? extends U> concreteClass = classDesc
-                    .getConcreteClass();
-            final String className = concreteClass.getName();
-            throw new PropertyNotFoundException("property not found:<" + name
-                    + "> for class:<" + className + ">");
-        }
-        return new BeanPropertyBinding<U, Object>(pd);
-    }
-
     static class PropertyNotFoundException extends RuntimeException {
 
         private static final long serialVersionUID = 1L;
@@ -246,18 +258,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             super(message);
         }
 
-    }
-
-    private static <U> ColumnDesc<U>[] newCompositBeanColumnDesc(
-            final List<ColumnName> names,
-            final List<PropertyBinding<U, Object>> propertyBindings,
-            final Converter converter) {
-
-        final CompositColumnDesc ccd = new CompositColumnDesc();
-        ccd.setPropertyBindings(propertyBindings);
-        ccd.setColumnNames(names);
-        ccd.setConverter(converter);
-        return ccd.getColumnDescs();
     }
 
     public static class CompositColumnDesc<T> {

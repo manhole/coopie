@@ -57,31 +57,6 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         return ccd.getColumnDescs();
     }
 
-    static class MapCsvRecordDescSetup<PROP> extends
-            AbstractCsvRecordDescSetup<Map<String, PROP>> {
-
-        private RecordDesc<Map<String, PROP>> recordDesc_;
-
-        @Override
-        public RecordDesc<Map<String, PROP>> getRecordDesc() {
-            buildIfNeed();
-            return recordDesc_;
-        }
-
-        private void buildIfNeed() {
-            if (recordDesc_ != null) {
-                return;
-            }
-            /*
-             * 設定されているプロパティ名を対象に。
-             */
-            final ColumnDesc<Map<String, PROP>>[] cds = toColumnDescs(columnBuilders_);
-            recordDesc_ = new DefaultRecordDesc<Map<String, PROP>>(cds,
-                    OrderSpecified.SPECIFIED, new MapRecordType<PROP>());
-        }
-
-    }
-
     // TODO
     public static <PROP> ColumnDesc<Map<String, PROP>>[] toColumnDescs(
             final Collection<SimpleColumnBuilder> builders) {
@@ -111,6 +86,31 @@ public abstract class AbstractMapCsvLayout<PROP> extends
                 .newColumnDescs(list.size());
         list.toArray(cds);
         return cds;
+    }
+
+    static class MapCsvRecordDescSetup<PROP> extends
+            AbstractCsvRecordDescSetup<Map<String, PROP>> {
+
+        private RecordDesc<Map<String, PROP>> recordDesc_;
+
+        @Override
+        public RecordDesc<Map<String, PROP>> getRecordDesc() {
+            buildIfNeed();
+            return recordDesc_;
+        }
+
+        private void buildIfNeed() {
+            if (recordDesc_ != null) {
+                return;
+            }
+            /*
+             * 設定されているプロパティ名を対象に。
+             */
+            final ColumnDesc<Map<String, PROP>>[] cds = toColumnDescs(columnBuilders_);
+            recordDesc_ = new DefaultRecordDesc<Map<String, PROP>>(cds,
+                    OrderSpecified.SPECIFIED, new MapRecordType<PROP>());
+        }
+
     }
 
     static class MapColumnDesc<PROP> implements ColumnDesc<Map<String, PROP>> {
