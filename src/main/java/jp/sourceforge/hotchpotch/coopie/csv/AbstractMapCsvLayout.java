@@ -40,14 +40,23 @@ public abstract class AbstractMapCsvLayout extends
     static class MapCsvRecordDescSetup extends
             AbstractCsvRecordDescSetup<Map<String, String>> {
 
+        private RecordDesc<Map<String, String>> recordDesc_;
+
         @Override
         public RecordDesc<Map<String, String>> getRecordDesc() {
+            buildIfNeed();
+            return recordDesc_;
+        }
+
+        private void buildIfNeed() {
+            if (recordDesc_ != null) {
+                return;
+            }
             /*
              * 設定されているプロパティ名を対象に。
              */
             final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columnNames_);
-
-            return new DefaultRecordDesc<Map<String, String>>(cds,
+            recordDesc_ = new DefaultRecordDesc<Map<String, String>>(cds,
                     OrderSpecified.SPECIFIED, new MapRecordType());
         }
 

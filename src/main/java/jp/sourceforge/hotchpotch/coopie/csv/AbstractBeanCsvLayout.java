@@ -149,6 +149,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             AbstractCsvRecordDescSetup<T> {
 
         private final BeanDesc<T> beanDesc_;
+        private RecordDesc<T> recordDesc_;
 
         BeanCsvRecordDescSetup(final BeanDesc<T> beanDesc) {
             beanDesc_ = beanDesc;
@@ -156,15 +157,21 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         @Override
         public RecordDesc<T> getRecordDesc() {
+            buildIfNeed();
+            return recordDesc_;
+        }
+
+        private void buildIfNeed() {
+            if (recordDesc_ != null) {
+                return;
+            }
             /*
              * 設定されているプロパティ名を対象に。
              */
             final ColumnDesc<T>[] cds = toColumnDescs(columnNames_, beanDesc_);
-
-            return new DefaultRecordDesc<T>(cds, OrderSpecified.SPECIFIED,
-                    new BeanRecordType<T>(beanDesc_));
+            recordDesc_ = new DefaultRecordDesc<T>(cds,
+                    OrderSpecified.SPECIFIED, new BeanRecordType<T>(beanDesc_));
         }
-
     }
 
     // TODO
