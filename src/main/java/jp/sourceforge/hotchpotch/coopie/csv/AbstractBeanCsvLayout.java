@@ -243,7 +243,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<T>[] cds = toColumnDescs(columnBuilders_,
+            final ColumnDesc<T>[] cds = toColumnDescs(getColumnBuilders(),
                     beanDesc_);
             recordDesc_ = new DefaultRecordDesc<T>(cds,
                     OrderSpecified.SPECIFIED, new BeanRecordType<T>(beanDesc_));

@@ -111,7 +111,7 @@ public abstract class AbstractCsvLayout<T> {
     protected static abstract class AbstractCsvRecordDescSetup<T> implements
             CsvRecordDescSetup<T> {
 
-        protected final List<SimpleColumnBuilder> columnBuilders_ = CollectionsUtil
+        private final List<SimpleColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
 
         @Override
@@ -155,6 +155,10 @@ public abstract class AbstractCsvLayout<T> {
                 builder.addColumnName(n);
             }
             return builder;
+        }
+
+        protected List<SimpleColumnBuilder> getColumnBuilders() {
+            return columnBuilders_;
         }
 
     }

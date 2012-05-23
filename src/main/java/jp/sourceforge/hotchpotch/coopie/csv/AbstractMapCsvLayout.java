@@ -107,7 +107,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<Map<String, PROP>>[] cds = toColumnDescs(columnBuilders_);
+            final ColumnDesc<Map<String, PROP>>[] cds = toColumnDescs(getColumnBuilders());
             recordDesc_ = new DefaultRecordDesc<Map<String, PROP>>(cds,
                     OrderSpecified.SPECIFIED, new MapRecordType<PROP>());
         }
