@@ -111,12 +111,12 @@ public abstract class AbstractCsvLayout<T> {
     protected static abstract class AbstractCsvRecordDescSetup<T> implements
             CsvRecordDescSetup<T> {
 
-        private final List<SimpleColumnBuilder> columnBuilders_ = CollectionsUtil
+        private final List<InternalColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
 
         @Override
         public ColumnBuilder column(final ColumnName name) {
-            final SimpleColumnBuilder builder = builder(name);
+            final InternalColumnBuilder builder = builder(name);
             builder.property(name.getLabel());
             return builder;
         }
@@ -124,7 +124,7 @@ public abstract class AbstractCsvLayout<T> {
         @Override
         public ColumnBuilder column(final String name) {
             final SimpleColumnName n = new SimpleColumnName(name);
-            final SimpleColumnBuilder builder = builder(n);
+            final InternalColumnBuilder builder = builder(n);
             builder.property(name);
             return builder;
         }
@@ -135,12 +135,12 @@ public abstract class AbstractCsvLayout<T> {
             final SimpleColumnName n = new SimpleColumnName();
             n.setName(propertyName);
             n.setLabel(label);
-            final SimpleColumnBuilder builder = builder(n);
+            final InternalColumnBuilder builder = builder(n);
             builder.property(propertyName);
             return builder;
         }
 
-        private SimpleColumnBuilder builder(final ColumnName name) {
+        private InternalColumnBuilder builder(final ColumnName name) {
             final SimpleColumnBuilder builder = new SimpleColumnBuilder(name);
             columnBuilders_.add(builder);
             return builder;
@@ -157,13 +157,23 @@ public abstract class AbstractCsvLayout<T> {
             return builder;
         }
 
-        protected List<SimpleColumnBuilder> getColumnBuilders() {
+        protected List<InternalColumnBuilder> getColumnBuilders() {
             return columnBuilders_;
         }
 
     }
 
-    public static class SimpleColumnBuilder implements ColumnBuilder {
+    public interface InternalColumnBuilder extends ColumnBuilder {
+
+        List<ColumnName> getColumnNames();
+
+        List<String> getPropertyNames();
+
+        Converter getConverter();
+
+    }
+
+    public static class SimpleColumnBuilder implements InternalColumnBuilder {
 
         private final List<ColumnName> columnNames_ = CollectionsUtil
                 .newArrayList();
@@ -187,6 +197,7 @@ public abstract class AbstractCsvLayout<T> {
             columnNames_.add(columnName);
         }
 
+        @Override
         public List<ColumnName> getColumnNames() {
             return columnNames_;
         }
@@ -197,10 +208,12 @@ public abstract class AbstractCsvLayout<T> {
             return this;
         }
 
+        @Override
         public Converter getConverter() {
             return converter_;
         }
 
+        @Override
         public List<String> getPropertyNames() {
             return propertyNames_;
         }

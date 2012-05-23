@@ -1,6 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -130,9 +131,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     // TODO
     public static <U> ColumnDesc<U>[] toColumnDescs(
-            final List<SimpleColumnBuilder> columns, final BeanDesc<U> bd) {
+            final Collection<? extends InternalColumnBuilder> builders,
+            final BeanDesc<U> bd) {
+
         final List<ColumnDesc<U>> list = CollectionsUtil.newArrayList();
-        for (final SimpleColumnBuilder builder : columns) {
+        for (final InternalColumnBuilder builder : builders) {
             final List<ColumnName> columnNames = builder.getColumnNames();
             final List<String> propertyNames = builder.getPropertyNames();
             final List<PropertyBinding<U, Object>> pbs = CollectionsUtil

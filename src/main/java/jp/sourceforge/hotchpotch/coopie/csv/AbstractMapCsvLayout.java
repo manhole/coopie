@@ -60,10 +60,11 @@ public abstract class AbstractMapCsvLayout<PROP> extends
 
     // TODO
     public static <PROP> ColumnDesc<Map<String, PROP>>[] toColumnDescs(
-            final Collection<SimpleColumnBuilder> builders) {
+            final Collection<? extends InternalColumnBuilder> builders) {
+
         final List<ColumnDesc<Map<String, PROP>>> list = CollectionsUtil
                 .newArrayList();
-        for (final SimpleColumnBuilder builder : builders) {
+        for (final InternalColumnBuilder builder : builders) {
             final List<ColumnName> columnNames = builder.getColumnNames();
             final List<String> propertyNames = builder.getPropertyNames();
             final List<PropertyBinding<Map<String, PROP>, PROP>> pbs = CollectionsUtil

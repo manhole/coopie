@@ -3,7 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 import java.io.IOException;
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.SimpleColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
@@ -214,7 +214,7 @@ abstract class AbstractFixedLengthLayout<T> {
                 final int beginIndex, final int endIndex) {
 
             final ColumnName columnName = new SimpleColumnName(propertyName);
-            final SimpleColumnBuilder builder = new SimpleColumnBuilder(
+            final InternalColumnBuilder builder = new SimpleColumnBuilder(
                     columnName);
 
             final SimpleFixedLengthElementDesc c = new SimpleFixedLengthElementDesc(
@@ -245,13 +245,13 @@ abstract class AbstractFixedLengthLayout<T> {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final List<AbstractCsvLayout.SimpleColumnBuilder> builders = CollectionsUtil
+            final List<InternalColumnBuilder> builders = CollectionsUtil
                     .newArrayList();
             final FixedLengthElementDesc[] flColumnDescs = new FixedLengthElementDesc[columns_
                     .size()];
             int i = 0;
             for (final ColumnNameAndElementDesc nd : columns_) {
-                final AbstractCsvLayout.SimpleColumnBuilder cn = nd.columnName_;
+                final InternalColumnBuilder cn = nd.columnName_;
                 builders.add(cn);
                 final FixedLengthElementDesc desc = nd.fixedLengthElementDesc_;
                 flColumnDescs[i] = desc;
@@ -265,7 +265,7 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         abstract protected ColumnDesc<T>[] createColumnDescs(
-                List<AbstractCsvLayout.SimpleColumnBuilder> builders);
+                List<InternalColumnBuilder> builders);
 
         abstract protected RecordType<T> getRecordType();
 
@@ -273,10 +273,10 @@ abstract class AbstractFixedLengthLayout<T> {
 
     private static class ColumnNameAndElementDesc {
 
-        final SimpleColumnBuilder columnName_;
+        final InternalColumnBuilder columnName_;
         final FixedLengthElementDesc fixedLengthElementDesc_;
 
-        public ColumnNameAndElementDesc(final SimpleColumnBuilder columnName,
+        public ColumnNameAndElementDesc(final InternalColumnBuilder columnName,
                 final SimpleFixedLengthElementDesc desc) {
             columnName_ = columnName;
             fixedLengthElementDesc_ = desc;

@@ -3,7 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 import java.util.List;
 import java.util.Map;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.SimpleColumnBuilder;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractMapCsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
@@ -70,7 +70,7 @@ public class MapFixedLengthLayout<PROP> extends
 
         @Override
         protected ColumnDesc<Map<String, PROP>>[] createColumnDescs(
-                final List<SimpleColumnBuilder> builders) {
+                final List<InternalColumnBuilder> builders) {
             final ColumnDesc<Map<String, PROP>>[] cds = AbstractMapCsvLayout
                     .toColumnDescs(builders);
             return cds;
