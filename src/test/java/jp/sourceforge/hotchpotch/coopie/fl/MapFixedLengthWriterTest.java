@@ -10,10 +10,14 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
@@ -283,6 +287,71 @@ public class MapFixedLengthWriterTest {
             assertNull(reader.readLineBody());
             reader.close();
         }
+    }
+
+    /**
+     * テキスト側が2カラムで、対応するJava側が1プロパティの場合。
+     * 年月日と時分秒で列が別れているとする。
+     */
+    @Test
+    public void write_calendar() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+                // 2列 <=> 1プロパティ の変換にConverterを使用する。
+                setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
+                        .property("bbb").converter(new CalendarConverter());
+            }
+        });
+        layout.setWithHeader(true);
+
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, Object>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, Object> bean = new TreeMap<String, Object>();
+        bean.put("aaa", "a");
+        {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(format.parse("2011/09/13 17:54:01"));
+            bean.put("bbb", c);
+        }
+        csvWriter.write(bean);
+
+        bean.put("aaa", "b");
+        {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(format.parse("2011/01/01 00:00:59"));
+            bean.put("bbb", c);
+        }
+        csvWriter.write(bean);
+
+        bean.put("aaa", "c");
+        bean.put("bbb", null);
+        csvWriter.write(bean);
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+
+        final LineReadable reader = new LineReadable(new StringReader(lines));
+        assertEquals("  aaa            ymd            hms",
+                reader.readLineBody());
+        assertEquals("    a     2011-09-13       17:54:01",
+                reader.readLineBody());
+        assertEquals("    b     2011-01-01       00:00:59",
+                reader.readLineBody());
+        assertEquals("    c                              ",
+                reader.readLineBody());
+        assertNull(reader.readLineBody());
+        reader.close();
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
