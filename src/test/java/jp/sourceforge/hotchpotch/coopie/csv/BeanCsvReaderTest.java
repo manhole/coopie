@@ -1383,7 +1383,7 @@ public class BeanCsvReaderTest {
      * propertyを呼び忘れた場合
      */
     @Test
-    public void invalid_columns_setup() throws Throwable {
+    public void invalid_columns_setup_property() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
                 CalendarBean.class);
@@ -1397,6 +1397,36 @@ public class BeanCsvReaderTest {
                     setup.column("aaa");
                     // property設定し忘れ
                     setup.columns("ymd", "hms");
+                }
+            });
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
+    /**
+     * 複数カラムに対応する
+     * converterを呼び忘れた場合
+     * 
+     * プロダクトコードが追いついていないため@Ignoreにしておく
+     */
+    @Test
+    @Ignore
+    public void invalid_columns_setup_converter() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+                @Override
+                public void setup(final CsvColumnSetup setup) {
+                    setup.column("aaa");
+                    // converter設定し忘れ
+                    setup.columns("ymd", "hms").property("bbb");
                 }
             });
             fail();
