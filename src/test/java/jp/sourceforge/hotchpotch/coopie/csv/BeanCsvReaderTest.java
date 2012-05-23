@@ -1378,6 +1378,33 @@ public class BeanCsvReaderTest {
         csvReader.close();
     }
 
+    /**
+     * 複数カラムに対応する
+     * propertyを呼び忘れた場合
+     */
+    @Test
+    public void invalid_columns_setup() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+                @Override
+                public void setup(final CsvColumnSetup setup) {
+                    setup.column("aaa");
+                    // property設定し忘れ
+                    setup.columns("ymd", "hms");
+                }
+            });
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Charset charset = Charset.forName("UTF-8");
         final Reader reader = getResourceAsReader(suffix, ext, charset);

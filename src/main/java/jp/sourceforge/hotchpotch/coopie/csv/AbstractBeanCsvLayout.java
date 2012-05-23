@@ -145,6 +145,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                         propertyName);
                 pbs.add(pb);
             }
+            if (pbs.isEmpty()) {
+                throw new IllegalStateException(
+                        "property is not specified. for column {" + columnNames
+                                + "}");
+            }
             if (columnNames.size() == 1 && pbs.size() == 1) {
                 final ColumnDesc<U> cd = newBeanColumnDesc(columnNames.get(0),
                         pbs.get(0), builder.getConverter());
