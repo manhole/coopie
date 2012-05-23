@@ -183,13 +183,6 @@ public abstract class AbstractCsvLayout<T> {
             columnNames_.add(columnName);
         }
 
-        public ColumnName getColumnName() {
-            if (columnNames_.isEmpty()) {
-                return null;
-            }
-            return columnNames_.get(0);
-        }
-
         public List<ColumnName> getColumnNames() {
             return columnNames_;
         }
@@ -202,18 +195,6 @@ public abstract class AbstractCsvLayout<T> {
 
         public Converter getConverter() {
             return converter_;
-        }
-
-        public String getPropertyName() {
-            if (propertyNames_.isEmpty()) {
-                return null;
-            }
-            return propertyNames_.get(0);
-        }
-
-        public void setPropertyName(final String propertyName) {
-            propertyNames_.clear();
-            propertyNames_.add(propertyName);
         }
 
         public List<String> getPropertyNames() {
