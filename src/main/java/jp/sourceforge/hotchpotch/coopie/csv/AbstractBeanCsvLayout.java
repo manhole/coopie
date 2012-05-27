@@ -110,7 +110,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
             final PropertyBinding<U, Object> propertyBinding,
             final Converter converter) {
-        final BeanColumnDesc<U> cd = new BeanColumnDesc<U>();
+        final DefaultColumnDesc<U> cd = new DefaultColumnDesc<U>();
         cd.setPropertyBinding(propertyBinding);
         cd.setName(name);
         cd.setConverter(converter);
@@ -409,7 +409,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     }
 
-    static class BeanColumnDesc<T> implements ColumnDesc<T> {
+    static class DefaultColumnDesc<T> implements ColumnDesc<T> {
 
         /**
          * CSV列名。

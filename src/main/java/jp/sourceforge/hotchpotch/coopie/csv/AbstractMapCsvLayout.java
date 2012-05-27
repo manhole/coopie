@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.BeanColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.CompositColumnDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.DefaultColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
@@ -39,7 +39,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
             final ColumnName columnName,
             final PropertyBinding<Map<String, PROP>, PROP> propertyBinding,
             final Converter converter) {
-        final BeanColumnDesc<Map<String, PROP>> cd = new BeanColumnDesc<Map<String, PROP>>();
+        final DefaultColumnDesc<Map<String, PROP>> cd = new DefaultColumnDesc<Map<String, PROP>>();
         cd.setName(columnName);
         cd.setPropertyBinding(propertyBinding);
         cd.setConverter(converter);
