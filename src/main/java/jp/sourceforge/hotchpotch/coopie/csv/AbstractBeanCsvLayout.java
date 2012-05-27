@@ -76,6 +76,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                     c.getPropertyDesc());
             cds[i] = cd;
         }
+        // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                 new BeanRecordType<T>(beanDesc_));
     }
