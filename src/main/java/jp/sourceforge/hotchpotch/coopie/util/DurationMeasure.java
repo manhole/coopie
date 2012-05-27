@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
-public class DurationMeasurer implements Duration {
+public class DurationMeasure implements Duration {
 
     private long begin_ = -1;
     private long end_ = -1;
