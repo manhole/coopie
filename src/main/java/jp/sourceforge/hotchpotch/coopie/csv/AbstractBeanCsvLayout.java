@@ -415,7 +415,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
          * CSV列名。
          */
         private ColumnName columnName_;
-        private PropertyBinding<T, Object> propertyBinding_;
+        private PropertyBinding propertyBinding_;
         private Converter converter_;
 
         @Override
@@ -427,12 +427,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             columnName_ = name;
         }
 
-        public PropertyBinding<T, Object> getPropertyBinding() {
+        public PropertyBinding getPropertyBinding() {
             return propertyBinding_;
         }
 
-        public void setPropertyBinding(
-                final PropertyBinding<T, Object> propertyBinding) {
+        public void setPropertyBinding(final PropertyBinding propertyBinding) {
             propertyBinding_ = propertyBinding;
         }
 

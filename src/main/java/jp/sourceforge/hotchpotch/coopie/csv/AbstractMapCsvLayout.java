@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.BeanColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.CompositColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.StringUtil;
 
 public abstract class AbstractMapCsvLayout<PROP> extends
         AbstractCsvLayout<Map<String, PROP>> {
@@ -39,7 +39,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
             final ColumnName columnName,
             final PropertyBinding<Map<String, PROP>, PROP> propertyBinding,
             final Converter converter) {
-        final MapColumnDesc<PROP> cd = new MapColumnDesc<PROP>();
+        final BeanColumnDesc<Map<String, PROP>> cd = new BeanColumnDesc<Map<String, PROP>>();
         cd.setName(columnName);
         cd.setPropertyBinding(propertyBinding);
         cd.setConverter(converter);
@@ -113,52 +113,6 @@ public abstract class AbstractMapCsvLayout<PROP> extends
                     OrderSpecified.SPECIFIED, new MapRecordType<PROP>());
         }
 
-    }
-
-    static class MapColumnDesc<PROP> implements ColumnDesc<Map<String, PROP>> {
-
-        /**
-         * CSV列名。
-         */
-        private ColumnName columnName_;
-        private PropertyBinding<Map<String, PROP>, PROP> propertyBinding_;
-        private Converter converter_;
-
-        @Override
-        public ColumnName getName() {
-            return columnName_;
-        }
-
-        public void setName(final ColumnName name) {
-            columnName_ = name;
-        }
-
-        public PropertyBinding<Map<String, PROP>, PROP> getPropertyBinding() {
-            return propertyBinding_;
-        }
-
-        public void setPropertyBinding(
-                final PropertyBinding<Map<String, PROP>, PROP> propertyBinding) {
-            propertyBinding_ = propertyBinding;
-        }
-
-        public void setConverter(final Converter converter) {
-            converter_ = converter;
-        }
-
-        @Override
-        public String getValue(final Map<String, PROP> bean) {
-            final PROP from = propertyBinding_.getValue(bean);
-            final Object to = converter_.convertTo(from);
-            return StringUtil.toString(to);
-        }
-
-        @Override
-        public void setValue(final Map<String, PROP> bean, final String value) {
-            // TODO PROP
-            final PROP to = (PROP) converter_.convertFrom(value);
-            propertyBinding_.setValue(bean, to);
-        }
     }
 
     static class LazyMapRecordDesc<PROP> implements
