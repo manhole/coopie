@@ -1,6 +1,7 @@
 0.2.2 2012/XX/XX
 
 - rename: DurationMeasurer -> DurationMeasure
+- Converterを追加。カラムとプロパティ間の型を変換できるようにし、String以外の型をプロパティに使用できるようにしました。
 
 0.2.1 2012/02/23
 
