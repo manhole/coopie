@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public class PassthroughStringConverter implements Converter {
+public class PassthroughStringConverter implements Converter<String, String> {
 
     private static PassthroughStringConverter INSTANCE = new PassthroughStringConverter();
 
@@ -9,13 +9,13 @@ public class PassthroughStringConverter implements Converter {
     }
 
     @Override
-    public void convertTo(final Object[] from, final String[] to) {
-        to[0] = (String) from[0];
+    public String convertTo(final String from) {
+        return from;
     }
 
     @Override
-    public void convertFrom(final String[] from, final Object[] to) {
-        to[0] = from[0];
+    public String convertFrom(final String from) {
+        return from;
     }
 
 }

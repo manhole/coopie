@@ -269,18 +269,17 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             if (v == null) {
                 return null;
             }
-            final Object[] from = new Object[] { v };
-            final String[] to = new String[1];
-            converter_.convertTo(from, to);
-            return String.valueOf(to[0]);
+            final Object from = v;
+            final Object to = converter_.convertTo(from);
+            // TODO nullの場合
+            return String.valueOf(to);
         }
 
         @Override
         public void setValue(final T bean, final String value) {
-            final String[] from = new String[] { value };
-            final Object[] to = new Object[1];
-            converter_.convertFrom(from, to);
-            propertyDesc_.setValue(bean, to[0]);
+            final String from = value;
+            final Object to = converter_.convertFrom(from);
+            propertyDesc_.setValue(bean, to);
         }
 
     }

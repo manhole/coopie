@@ -1,9 +1,13 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface Converter {
+/*
+ * IN ... JavaBean
+ * OUT ... CSV, FixedLength, Excel
+ */
+public interface Converter<IN, OUT> {
 
-    void convertTo(Object[] from, String[] to);
+    OUT convertTo(IN from);
 
-    void convertFrom(String[] from, Object[] to);
+    IN convertFrom(OUT from);
 
 }

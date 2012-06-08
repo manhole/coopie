@@ -1489,7 +1489,8 @@ public class BeanCsvReaderTest {
 
     }
 
-    public static class BigDecimalConverter implements Converter {
+    public static class BigDecimalConverter implements
+            Converter<BigDecimal, String> {
 
         private final DecimalFormat format_;
 
@@ -1503,24 +1504,22 @@ public class BeanCsvReaderTest {
         }
 
         @Override
-        public void convertTo(final Object[] from, final String[] to) {
-            final BigDecimal o = (BigDecimal) from[0];
-            final String s = format_.format(o);
-            to[0] = s;
+        public String convertTo(final BigDecimal from) {
+            final String s = format_.format(from);
+            return s;
         }
 
         @Override
-        public void convertFrom(final String[] from, final Object[] to) {
-            final String s = from[0];
+        public BigDecimal convertFrom(final String from) {
             final ParsePosition pp = new ParsePosition(0);
-            final Number parse = format_.parse(s, pp);
-            if (parse == null || pp.getIndex() != s.length()) {
+            final Number parse = format_.parse(from, pp);
+            if (parse == null || pp.getIndex() != from.length()) {
                 // パースエラー
-                throw new ParseRuntimeException(new ParseException(s,
+                throw new ParseRuntimeException(new ParseException(from,
                         pp.getIndex()));
             }
             final BigDecimal o = (BigDecimal) parse;
-            to[0] = o;
+            return o;
         }
 
     }
