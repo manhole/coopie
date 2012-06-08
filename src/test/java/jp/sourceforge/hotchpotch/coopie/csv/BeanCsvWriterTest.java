@@ -144,9 +144,9 @@ public class BeanCsvWriterTest {
                 /*
                  * プロパティ名, CSV項目名 の順
                  */
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
-                setup.column("bbb", "いい");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
+                setup.column("いい").toProperty("bbb");
             }
         });
 
@@ -311,9 +311,9 @@ public class BeanCsvWriterTest {
     static class AaaBeanBasicSetup implements SetupBlock<CsvColumnSetup> {
         @Override
         public void setup(final CsvColumnSetup setup) {
-            setup.column("aaa", "a");
-            setup.column("bbb", "b");
-            setup.column("ccc", "c");
+            setup.column("a").toProperty("aaa");
+            setup.column("b").toProperty("bbb");
+            setup.column("c").toProperty("ccc");
         }
     }
 

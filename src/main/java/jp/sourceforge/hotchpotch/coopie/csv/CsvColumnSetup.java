@@ -9,8 +9,6 @@ public interface CsvColumnSetup {
      */
     ColumnBuilder column(String name);
 
-    ColumnBuilder column(String propertyName, String label);
-
     ColumnBuilder columns(final String... names);
 
     interface ColumnBuilder {

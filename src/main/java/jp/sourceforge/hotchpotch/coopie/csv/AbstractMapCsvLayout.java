@@ -70,9 +70,15 @@ public abstract class AbstractMapCsvLayout<PROP> extends
             final List<PropertyBinding<Map<String, PROP>, PROP>> pbs = CollectionsUtil
                     .newArrayList();
             for (final String propertyName : propertyNames) {
-                final PropertyBinding<Map<String, PROP>, PROP> propertyBinding = new MapPropertyBinding<PROP>(
+                final PropertyBinding<Map<String, PROP>, PROP> pb = new MapPropertyBinding<PROP>(
                         propertyName);
-                pbs.add(propertyBinding);
+                pbs.add(pb);
+            }
+            // プロパティ名がカラム名と同じとみなす
+            if (pbs.isEmpty() && columnNames.size() == 1) {
+                final PropertyBinding<Map<String, PROP>, PROP> pb = new MapPropertyBinding<PROP>(
+                        columnNames.get(0).getLabel());
+                pbs.add(pb);
             }
             if (columnNames.size() == 1 && pbs.size() == 1) {
                 final ColumnDesc<Map<String, PROP>> cd = newMapColumnDesc(
