@@ -4,13 +4,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-public class MapExcelLayout extends AbstractMapCsvLayout implements
-        ExcelInOut<Map<String, String>> {
+public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> implements
+        ExcelInOut<Map<String, PROP>> {
 
     @Override
-    public RecordReader<Map<String, String>> openReader(final InputStream is) {
+    public RecordReader<Map<String, PROP>> openReader(final InputStream is) {
         prepareOpen();
-        final DefaultExcelReader<Map<String, String>> r = new DefaultExcelReader<Map<String, String>>(
+        final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<Map<String, PROP>>(
                 getRecordDesc());
         r.setWithHeader(isWithHeader());
         r.setElementReaderHandler(getElementReaderHandler());
@@ -21,9 +21,9 @@ public class MapExcelLayout extends AbstractMapCsvLayout implements
     }
 
     @Override
-    public RecordWriter<Map<String, String>> openWriter(final OutputStream os) {
+    public RecordWriter<Map<String, PROP>> openWriter(final OutputStream os) {
         prepareOpen();
-        final DefaultExcelWriter<Map<String, String>> w = new DefaultExcelWriter<Map<String, String>>(
+        final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<Map<String, PROP>>(
                 getRecordDesc());
         w.setWithHeader(isWithHeader());
         // TODO openで例外時にcloseすること

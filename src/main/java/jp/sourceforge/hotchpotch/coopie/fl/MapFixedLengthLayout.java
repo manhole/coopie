@@ -3,9 +3,9 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 import java.util.List;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractMapCsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
@@ -15,14 +15,14 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
-public class MapFixedLengthLayout extends
-        AbstractFixedLengthLayout<Map<String, String>> implements
-        RecordInOut<Map<String, String>> {
+public class MapFixedLengthLayout<PROP> extends
+        AbstractFixedLengthLayout<Map<String, PROP>> implements
+        RecordInOut<Map<String, PROP>> {
 
     @Override
-    public RecordReader<Map<String, String>> openReader(final Readable readable) {
-        final RecordDesc<Map<String, String>> rd = myRecordDesc();
-        final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
+    public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
+        final RecordDesc<Map<String, PROP>> rd = myRecordDesc();
+        final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
                 rd);
         r.setWithHeader(isWithHeader());
         r.setElementInOut(createElementInOut());
@@ -32,11 +32,11 @@ public class MapFixedLengthLayout extends
     }
 
     @Override
-    public RecordWriter<Map<String, String>> openWriter(
+    public RecordWriter<Map<String, PROP>> openWriter(
             final Appendable appendable) {
-        final RecordDesc<Map<String, String>> rd = myRecordDesc();
+        final RecordDesc<Map<String, PROP>> rd = myRecordDesc();
         final ElementInOut es = createElementInOut();
-        final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
+        final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(
                 rd);
         w.setWithHeader(isWithHeader());
         w.setElementInOut(es);
@@ -45,9 +45,8 @@ public class MapFixedLengthLayout extends
         return w;
     }
 
-    protected RecordDesc<Map<String, String>> myRecordDesc() {
-        final RecordDesc<Map<String, String>> recordDesc = super
-                .getRecordDesc();
+    protected RecordDesc<Map<String, PROP>> myRecordDesc() {
+        final RecordDesc<Map<String, PROP>> recordDesc = super.getRecordDesc();
         if (recordDesc == null) {
             throw new IllegalStateException("recordDesc");
         }
@@ -56,24 +55,24 @@ public class MapFixedLengthLayout extends
 
     @Override
     protected FixedLengthRecordDescSetup getRecordDescSetup() {
-        return new MapFixedLengthRecordDescSetup();
+        return new MapFixedLengthRecordDescSetup<PROP>();
     }
 
-    private static class MapFixedLengthRecordDescSetup extends
-            AbstractFixedLengthRecordDescSetup<Map<String, String>> {
+    private static class MapFixedLengthRecordDescSetup<PROP> extends
+            AbstractFixedLengthRecordDescSetup<Map<String, PROP>> {
 
-        private final MapRecordType recordType_ = new MapRecordType();
+        private final MapRecordType<PROP> recordType_ = new MapRecordType<PROP>();
 
         @Override
-        protected MapRecordType getRecordType() {
+        protected MapRecordType<PROP> getRecordType() {
             return recordType_;
         }
 
         @Override
-        protected ColumnDesc<Map<String, String>>[] createColumnDescs(
-                final List<ColumnName> columnNames) {
-            final ColumnDesc<Map<String, String>>[] cds = AbstractMapCsvLayout
-                    .toColumnDescs(columnNames);
+        protected ColumnDesc<Map<String, PROP>>[] createColumnDescs(
+                final List<InternalColumnBuilder> builders) {
+            final ColumnDesc<Map<String, PROP>>[] cds = AbstractMapCsvLayout
+                    .toColumnDescs(builders);
             return cds;
         }
 

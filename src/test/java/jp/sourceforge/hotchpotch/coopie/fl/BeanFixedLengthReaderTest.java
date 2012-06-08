@@ -10,14 +10,21 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.SkipEmptyLineReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementEditors;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.CharSequenceWriter;
 import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 
 import org.junit.Test;
@@ -612,6 +619,172 @@ public class BeanFixedLengthReaderTest {
         } catch (final IllegalArgumentException e) {
             logger.debug(e.getMessage());
         }
+    }
+
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void read_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<BigDecimalBean> layout = new BeanFixedLengthLayout<BigDecimalBean>(
+                BigDecimalBean.class);
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
+                setup.column("bbb", 10, 20);
+            }
+        });
+        layout.setWithHeader(true);
+
+        String text;
+        {
+            final CharSequenceWriter w = new CharSequenceWriter();
+            w.writeLine("aaa       bbb       ");
+            w.writeLine("11.10     21.02     ");
+            w.writeLine("                    ");
+            w.writeLine("1,101.45    1,201.56");
+            text = w.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<BigDecimalBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final BigDecimalBean bean = new BigDecimalBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("11.10", bean.getAaa().toPlainString());
+        assertEquals("21.02", bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals(null, bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("1101.45", bean.getAaa().toPlainString());
+        assertEquals("1,201.56", bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * テキスト側が2カラムで、対応するJava側が1プロパティの場合。
+     * 年月日と時分秒で列が別れているとする。
+     */
+    @Test
+    public void read_calendar1() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(
+                CalendarBean.class);
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+                // 2列 <=> 1プロパティ の変換にConverterを使用する。
+                // TODO ここでpropertyを呼び忘れた場合のエラーを、わかりやすくする
+                setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
+                        .toProperty("bbb").withConverter(new CalendarConverter());
+            }
+        });
+        layout.setWithHeader(true);
+
+        String text;
+        {
+            final CharSequenceWriter w = new CharSequenceWriter();
+            w.writeLine("  aaa            ymd            hms");
+            w.writeLine("    a     2011-09-13       17:54:01");
+            w.writeLine("    b     2011-01-01       00:00:59");
+            text = w.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<CalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final CalendarBean bean = new CalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/09/13 17:54:01",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals("2011/01/01 00:00:59",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 複数カラムを1プロパティへ対応づけている時に、一部カラムがnullの場合の挙動
+     */
+    @Test
+    public void read_calendar2() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(
+                CalendarBean.class);
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+                // 2列 <=> 1プロパティ の変換にConverterを使用する。
+                setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
+                        .toProperty("bbb").withConverter(new CalendarConverter());
+            }
+        });
+        layout.setWithHeader(true);
+
+        final String text;
+        {
+            final CharSequenceWriter w = new CharSequenceWriter();
+            w.writeLine("  aaa            ymd            hms");
+            w.writeLine("    a     2011-08-13       11:22:33");
+            w.writeLine("    b     2011-09-14               ");
+            w.writeLine("    c                      12:22:33");
+            text = w.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<CalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final CalendarBean bean = new CalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/08/13 11:22:33",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("c", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {

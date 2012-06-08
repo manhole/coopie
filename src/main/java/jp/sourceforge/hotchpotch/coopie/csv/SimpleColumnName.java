@@ -22,7 +22,6 @@ public class SimpleColumnName implements ColumnName {
      */
     private String label_;
 
-    @Override
     public String getName() {
         return name_;
     }

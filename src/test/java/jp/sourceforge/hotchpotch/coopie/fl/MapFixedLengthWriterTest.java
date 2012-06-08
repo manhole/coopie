@@ -1,17 +1,27 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
+import java.util.TreeMap;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -29,7 +39,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void read_nosetup() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
 
         // ## Act ##
         // ## Assert ##
@@ -48,7 +58,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -93,7 +103,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -144,7 +154,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -189,7 +199,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -228,6 +238,121 @@ public class MapFixedLengthWriterTest {
     /*
      * TODO 定義した長さよりも実際のデータが長い場合
      */
+
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void write_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
+                setup.column("bbb", 10, 20);
+            }
+        });
+        layout.setWithHeader(true);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, Object>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, Object> bean = new TreeMap<String, Object>();
+        bean.put("aaa", new BigDecimal("11.1"));
+        bean.put("bbb", "21.02");
+        csvWriter.write(bean);
+
+        bean.clear();
+        csvWriter.write(bean);
+
+        bean.put("aaa", new BigDecimal("1101.45"));
+        bean.put("bbb", "1,201.56");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+
+        {
+            final LineReadable reader = new LineReadable(
+                    new StringReader(lines));
+            assertEquals("       aaa       bbb", reader.readLineBody());
+            assertEquals("     11.10     21.02", reader.readLineBody());
+            assertEquals("                    ", reader.readLineBody());
+            assertEquals("  1,101.45  1,201.56", reader.readLineBody());
+            assertNull(reader.readLineBody());
+            reader.close();
+        }
+    }
+
+    /**
+     * テキスト側が2カラムで、対応するJava側が1プロパティの場合。
+     * 年月日と時分秒で列が別れているとする。
+     */
+    @Test
+    public void write_calendar() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+                // 2列 <=> 1プロパティ の変換にConverterを使用する。
+                setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
+                        .toProperty("bbb").withConverter(new CalendarConverter());
+            }
+        });
+        layout.setWithHeader(true);
+
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, Object>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, Object> bean = new TreeMap<String, Object>();
+        bean.put("aaa", "a");
+        {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(format.parse("2011/09/13 17:54:01"));
+            bean.put("bbb", c);
+        }
+        csvWriter.write(bean);
+
+        bean.put("aaa", "b");
+        {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(format.parse("2011/01/01 00:00:59"));
+            bean.put("bbb", c);
+        }
+        csvWriter.write(bean);
+
+        bean.put("aaa", "c");
+        bean.put("bbb", null);
+        csvWriter.write(bean);
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+
+        final LineReadable reader = new LineReadable(new StringReader(lines));
+        assertEquals("  aaa            ymd            hms",
+                reader.readLineBody());
+        assertEquals("    a     2011-09-13       17:54:01",
+                reader.readLineBody());
+        assertEquals("    b     2011-01-01       00:00:59",
+                reader.readLineBody());
+        assertEquals("    c                              ",
+                reader.readLineBody());
+        assertNull(reader.readLineBody());
+        reader.close();
+    }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
         return BeanFixedLengthReaderTest.getResourceAsReader(suffix, ext);

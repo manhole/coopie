@@ -3,10 +3,10 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.Annotations;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
@@ -156,9 +156,9 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
         @Override
         protected ColumnDesc<T>[] createColumnDescs(
-                final List<ColumnName> columnNames) {
+                final List<InternalColumnBuilder> builders) {
             final ColumnDesc<T>[] cds = AbstractBeanCsvLayout.toColumnDescs(
-                    columnNames, beanDesc_);
+                    builders, beanDesc_);
             return cds;
         }
 

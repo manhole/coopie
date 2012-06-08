@@ -2,12 +2,13 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 
-abstract class AbstractCsvLayout<T> {
+public abstract class AbstractCsvLayout<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
     private RecordDesc<T> recordDesc_;
@@ -110,25 +111,111 @@ abstract class AbstractCsvLayout<T> {
     protected static abstract class AbstractCsvRecordDescSetup<T> implements
             CsvRecordDescSetup<T> {
 
-        protected final List<ColumnName> columnNames_ = CollectionsUtil
+        private final List<InternalColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
 
         @Override
-        public void column(final ColumnName name) {
-            columnNames_.add(name);
+        public ColumnBuilder column(final ColumnName name) {
+            final InternalColumnBuilder builder = builder(name);
+            builder.toProperty(name.getLabel());
+            return builder;
         }
 
         @Override
-        public void column(final String name) {
-            column(new SimpleColumnName(name));
+        public ColumnBuilder column(final String name) {
+            final SimpleColumnName n = new SimpleColumnName(name);
+            final InternalColumnBuilder builder = builder(n);
+            builder.toProperty(name);
+            return builder;
         }
 
         @Override
-        public void column(final String propertyName, final String label) {
+        public ColumnBuilder column(final String propertyName,
+                final String label) {
             final SimpleColumnName n = new SimpleColumnName();
             n.setName(propertyName);
             n.setLabel(label);
-            column(n);
+            final InternalColumnBuilder builder = builder(n);
+            builder.toProperty(propertyName);
+            return builder;
+        }
+
+        private InternalColumnBuilder builder(final ColumnName name) {
+            final SimpleColumnBuilder builder = new SimpleColumnBuilder(name);
+            columnBuilders_.add(builder);
+            return builder;
+        }
+
+        @Override
+        public ColumnBuilder columns(final String... names) {
+            final SimpleColumnBuilder builder = new SimpleColumnBuilder();
+            columnBuilders_.add(builder);
+            for (final String name : names) {
+                final SimpleColumnName n = new SimpleColumnName(name);
+                builder.addColumnName(n);
+            }
+            return builder;
+        }
+
+        protected List<InternalColumnBuilder> getColumnBuilders() {
+            return columnBuilders_;
+        }
+
+    }
+
+    public interface InternalColumnBuilder extends ColumnBuilder {
+
+        List<ColumnName> getColumnNames();
+
+        List<String> getPropertyNames();
+
+        Converter getConverter();
+
+    }
+
+    public static class SimpleColumnBuilder implements InternalColumnBuilder {
+
+        private final List<ColumnName> columnNames_ = CollectionsUtil
+                .newArrayList();
+        private final List<String> propertyNames_ = CollectionsUtil
+                .newArrayList();
+        private Converter converter_ = PassthroughStringConverter.getInstance();
+
+        public SimpleColumnBuilder() {
+        }
+
+        public SimpleColumnBuilder(final ColumnName columnName) {
+            addColumnName(columnName);
+        }
+
+        @Override
+        public void withConverter(final Converter converter) {
+            converter_ = converter;
+        }
+
+        public void addColumnName(final ColumnName columnName) {
+            columnNames_.add(columnName);
+        }
+
+        @Override
+        public List<ColumnName> getColumnNames() {
+            return columnNames_;
+        }
+
+        @Override
+        public ColumnBuilder toProperty(final String propertyName) {
+            propertyNames_.add(propertyName);
+            return this;
+        }
+
+        @Override
+        public Converter getConverter() {
+            return converter_;
+        }
+
+        @Override
+        public List<String> getPropertyNames() {
+            return propertyNames_;
         }
 
     }
