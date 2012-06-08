@@ -381,7 +381,7 @@ public class BeanFixedLengthWriterTest {
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
                 setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .property("bbb").converter(new CalendarConverter());
+                        .toProperty("bbb").converter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);

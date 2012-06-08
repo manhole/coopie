@@ -489,7 +489,7 @@ public class MapFixedLengthReaderTest {
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
                 // TODO ここでpropertyを呼び忘れた場合のエラーを、わかりやすくする
                 setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .property("bbb").converter(new CalendarConverter());
+                        .toProperty("bbb").converter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);
@@ -541,7 +541,7 @@ public class MapFixedLengthReaderTest {
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
                 setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .property("bbb").converter(new CalendarConverter());
+                        .toProperty("bbb").converter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);

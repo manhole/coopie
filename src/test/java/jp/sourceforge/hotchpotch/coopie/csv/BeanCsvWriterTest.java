@@ -618,7 +618,7 @@ public class BeanCsvWriterTest {
             @Override
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
-                setup.columns("ymd", "hms").property("bbb")
+                setup.columns("ymd", "hms").toProperty("bbb")
                         .converter(new CalendarConverter());
             }
         });

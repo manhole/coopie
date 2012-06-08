@@ -117,7 +117,7 @@ public abstract class AbstractCsvLayout<T> {
         @Override
         public ColumnBuilder column(final ColumnName name) {
             final InternalColumnBuilder builder = builder(name);
-            builder.property(name.getLabel());
+            builder.toProperty(name.getLabel());
             return builder;
         }
 
@@ -125,7 +125,7 @@ public abstract class AbstractCsvLayout<T> {
         public ColumnBuilder column(final String name) {
             final SimpleColumnName n = new SimpleColumnName(name);
             final InternalColumnBuilder builder = builder(n);
-            builder.property(name);
+            builder.toProperty(name);
             return builder;
         }
 
@@ -136,7 +136,7 @@ public abstract class AbstractCsvLayout<T> {
             n.setName(propertyName);
             n.setLabel(label);
             final InternalColumnBuilder builder = builder(n);
-            builder.property(propertyName);
+            builder.toProperty(propertyName);
             return builder;
         }
 
@@ -203,7 +203,7 @@ public abstract class AbstractCsvLayout<T> {
         }
 
         @Override
-        public ColumnBuilder property(final String propertyName) {
+        public ColumnBuilder toProperty(final String propertyName) {
             propertyNames_.add(propertyName);
             return this;
         }

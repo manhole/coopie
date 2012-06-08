@@ -222,7 +222,7 @@ abstract class AbstractFixedLengthLayout<T> {
         public ColumnBuilder column(final FixedLengthColumnDef columnDef) {
             final FlColumnBuilder builder = new FlColumnBuilder();
             builder.addFixedLengthColumnDef(columnDef);
-            builder.property(columnDef.getName());
+            builder.toProperty(columnDef.getName());
             columnBuilders_.add(builder);
             return builder;
         }

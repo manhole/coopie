@@ -12,7 +12,7 @@ public interface CsvColumnSetup {
 
     interface ColumnBuilder {
 
-        ColumnBuilder property(final String propertyName);
+        ColumnBuilder toProperty(final String propertyName);
 
         void converter(Converter converter);
 
