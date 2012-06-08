@@ -14,7 +14,7 @@ public interface CsvColumnSetup {
 
         ColumnBuilder toProperty(final String propertyName);
 
-        void converter(Converter converter);
+        void withConverter(Converter converter);
 
     }
 

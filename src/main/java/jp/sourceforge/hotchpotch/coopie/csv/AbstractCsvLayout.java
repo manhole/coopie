@@ -189,7 +189,7 @@ public abstract class AbstractCsvLayout<T> {
         }
 
         @Override
-        public void converter(final Converter converter) {
+        public void withConverter(final Converter converter) {
             converter_ = converter;
         }
 

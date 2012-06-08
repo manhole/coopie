@@ -564,7 +564,7 @@ public class BeanCsvWriterTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa").converter(new BigDecimalConverter());
+                setup.column("aaa").withConverter(new BigDecimalConverter());
                 setup.column("bbb");
             }
         });
@@ -619,7 +619,7 @@ public class BeanCsvWriterTest {
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
                 setup.columns("ymd", "hms").toProperty("bbb")
-                        .converter(new CalendarConverter());
+                        .withConverter(new CalendarConverter());
             }
         });
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

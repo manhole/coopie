@@ -923,7 +923,7 @@ public class MapCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa").converter(new BigDecimalConverter());
+                setup.column("aaa").withConverter(new BigDecimalConverter());
                 setup.column("bbb");
             }
         });

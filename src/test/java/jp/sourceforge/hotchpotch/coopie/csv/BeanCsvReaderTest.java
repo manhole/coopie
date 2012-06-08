@@ -1233,7 +1233,7 @@ public class BeanCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa").converter(new BigDecimalConverter());
+                setup.column("aaa").withConverter(new BigDecimalConverter());
                 setup.column("bbb");
             }
         });
@@ -1280,7 +1280,7 @@ public class BeanCsvReaderTest {
                 // CSVの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
                 setup.columns("ymd", "hms").toProperty("bbb")
-                        .converter(new CalendarConverter());
+                        .withConverter(new CalendarConverter());
             }
         });
         final String text;
@@ -1333,7 +1333,7 @@ public class BeanCsvReaderTest {
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
                 setup.columns("ymd", "hms").toProperty("bbb")
-                        .converter(new CalendarConverter());
+                        .withConverter(new CalendarConverter());
             }
         });
 
