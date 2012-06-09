@@ -108,9 +108,9 @@ public class MapCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
-                setup.column("bbb", "いい");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
+                setup.column("いい").toProperty("bbb");
             }
         });
 
@@ -479,8 +479,8 @@ public class MapCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
             }
         });
 
@@ -527,7 +527,7 @@ public class MapCsvReaderTest {
             @Override
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
-                setup.column("ccc", "ddd");
+                setup.column("ddd").toProperty("ccc");
             }
         });
 

@@ -134,9 +134,9 @@ public class MapCsvWriterTest {
                 /*
                  * プロパティ名, CSV項目名 の順
                  */
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
-                setup.column("bbb", "いい");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
+                setup.column("いい").toProperty("bbb");
             }
         });
 

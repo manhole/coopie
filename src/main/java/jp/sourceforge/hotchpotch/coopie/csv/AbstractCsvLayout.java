@@ -125,18 +125,6 @@ public abstract class AbstractCsvLayout<T> {
         public ColumnBuilder column(final String name) {
             final SimpleColumnName n = new SimpleColumnName(name);
             final InternalColumnBuilder builder = builder(n);
-            builder.toProperty(name);
-            return builder;
-        }
-
-        @Override
-        public ColumnBuilder column(final String propertyName,
-                final String label) {
-            final SimpleColumnName n = new SimpleColumnName();
-            n.setName(propertyName);
-            n.setLabel(label);
-            final InternalColumnBuilder builder = builder(n);
-            builder.toProperty(propertyName);
             return builder;
         }
 
