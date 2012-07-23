@@ -29,7 +29,9 @@ dependencies {
         exclude group: "avalon-framework", name: "avalon-framework"
         exclude group: "log4j", name: "log4j"
     }
-    testCompile ("junit:junit:4.8.1")
+    testCompile ("junit:junit-dep:4.10")
+    testCompile ("org.hamcrest:hamcrest-core:1.2.1")
+    testCompile ("org.hamcrest:hamcrest-library:1.2.1")
     testCompile ("junit-addons:junit-addons:1.4") {
         exclude group: "xerces", name: "xercesImpl"
         exclude group: "xerces", name: "xmlParserAPIs"
