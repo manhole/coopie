@@ -18,22 +18,22 @@ def versions = [slf4j: "1.6.1", logback: "0.9.24"]
 
 dependencies {
     compile ("org.t2framework.commons:commons:0.6.7-ga") {
-        exclude group: "ch.qos.logback", name: "logback-core"
-        exclude group: "org.slf4j", name: "slf4j-api"
+        exclude group: "ch.qos.logback", module: "logback-core"
+        exclude group: "org.slf4j", module: "slf4j-api"
     }
     compile ("net.sf.opencsv:opencsv:2.1")
     compile ("org.slf4j:slf4j-api:${versions.slf4j}")
     compile ("ch.qos.logback:logback-core:${versions.logback}")
     compile ("ch.qos.logback:logback-classic:${versions.logback}")
     compile ("org.apache.poi:poi:3.1-FINAL") {
-        exclude group: "avalon-framework", name: "avalon-framework"
-        exclude group: "log4j", name: "log4j"
+        exclude group: "avalon-framework", module: "avalon-framework"
+        exclude group: "log4j", module: "log4j"
     }
     testCompile ("junit:junit-dep:4.10")
     testCompile ("org.hamcrest:hamcrest-core:1.2.1")
     testCompile ("org.hamcrest:hamcrest-library:1.2.1")
     testCompile ("junit-addons:junit-addons:1.4") {
-        exclude group: "xerces", name: "xercesImpl"
-        exclude group: "xerces", name: "xmlParserAPIs"
+        exclude group: "xerces", module: "xercesImpl"
+        exclude group: "xerces", module: "xmlParserAPIs"
     }
 }
