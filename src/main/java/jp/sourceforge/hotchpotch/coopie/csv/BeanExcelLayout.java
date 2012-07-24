@@ -17,6 +17,10 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     @Override
     public RecordReader<T> openReader(final InputStream is) {
+        if (is == null) {
+            throw new NullPointerException("is");
+        }
+
         prepareOpen();
         final DefaultExcelReader<T> r = new DefaultExcelReader<T>(
                 getRecordDesc());
@@ -30,6 +34,10 @@ public class BeanExcelLayout<T> extends AbstractBeanCsvLayout<T> implements
 
     @Override
     public RecordWriter<T> openWriter(final OutputStream os) {
+        if (os == null) {
+            throw new NullPointerException("os");
+        }
+
         prepareOpen();
         final DefaultExcelWriter<T> w = new DefaultExcelWriter<T>(
                 getRecordDesc());
