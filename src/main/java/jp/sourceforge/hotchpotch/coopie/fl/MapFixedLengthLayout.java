@@ -21,6 +21,10 @@ public class MapFixedLengthLayout<PROP> extends
 
     @Override
     public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
+        if (readable == null) {
+            throw new NullPointerException("readable");
+        }
+
         final RecordDesc<Map<String, PROP>> rd = myRecordDesc();
         final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
                 rd);
@@ -34,6 +38,10 @@ public class MapFixedLengthLayout<PROP> extends
     @Override
     public RecordWriter<Map<String, PROP>> openWriter(
             final Appendable appendable) {
+        if (appendable == null) {
+            throw new NullPointerException("appendable");
+        }
+
         final RecordDesc<Map<String, PROP>> rd = myRecordDesc();
         final ElementInOut es = createElementInOut();
         final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(

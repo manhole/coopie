@@ -2,6 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
@@ -32,6 +33,22 @@ import org.t2framework.commons.util.ResourceUtil;
 public class MapFixedLengthWriterTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
+
+    @Test
+    public void write_open_null() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openWriter(null);
+            fail();
+        } catch (final NullPointerException npe) {
+            assertTrue(npe.getMessage() != null
+                    && 0 < npe.getMessage().length());
+        }
+    }
 
     /**
      * setupしないでopenしようとしたら、エラーにする。
@@ -249,7 +266,8 @@ public class MapFixedLengthWriterTest {
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
+                setup.column("aaa", 0, 10).withConverter(
+                        new BigDecimalConverter());
                 setup.column("bbb", 10, 20);
             }
         });
@@ -304,7 +322,8 @@ public class MapFixedLengthWriterTest {
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
                 setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .toProperty("bbb").withConverter(new CalendarConverter());
+                        .toProperty("bbb")
+                        .withConverter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);
