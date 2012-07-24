@@ -19,10 +19,6 @@ public interface CsvColumnDef<BEAN> {
 
     void setConverter(Converter<?, ?> converter);
 
-    Class<?> getPropertyType();
-
-    void setPropertyType(Class<?> propertyType);
-
     PropertyDesc<BEAN> getPropertyDesc();
 
     void setPropertyDesc(PropertyDesc<BEAN> propertyDesc);
