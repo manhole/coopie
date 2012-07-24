@@ -9,6 +9,10 @@ public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> implements
 
     @Override
     public RecordReader<Map<String, PROP>> openReader(final InputStream is) {
+        if (is == null) {
+            throw new NullPointerException("is");
+        }
+
         prepareOpen();
         final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<Map<String, PROP>>(
                 getRecordDesc());
@@ -22,6 +26,10 @@ public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> implements
 
     @Override
     public RecordWriter<Map<String, PROP>> openWriter(final OutputStream os) {
+        if (os == null) {
+            throw new NullPointerException("os");
+        }
+
         prepareOpen();
         final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<Map<String, PROP>>(
                 getRecordDesc());

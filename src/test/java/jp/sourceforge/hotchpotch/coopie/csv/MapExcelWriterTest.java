@@ -1,5 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
@@ -7,6 +10,22 @@ import org.junit.Test;
 import org.t2framework.commons.util.CollectionsUtil;
 
 public class MapExcelWriterTest {
+
+    @Test
+    public void write_open_null() throws Throwable {
+        // ## Arrange ##
+        final MapExcelLayout<String> layout = new MapExcelLayout<String>();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openWriter(null);
+            fail();
+        } catch (final NullPointerException npe) {
+            assertTrue(npe.getMessage() != null
+                    && 0 < npe.getMessage().length());
+        }
+    }
 
     /**
      * カラム順を設定できること。
