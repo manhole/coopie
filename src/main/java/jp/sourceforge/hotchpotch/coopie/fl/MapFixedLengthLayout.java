@@ -25,7 +25,8 @@ public class MapFixedLengthLayout<PROP> extends
             throw new NullPointerException("readable");
         }
 
-        final RecordDesc<Map<String, PROP>> rd = myRecordDesc();
+        prepareOpen();
+        final RecordDesc<Map<String, PROP>> rd = getRecordDesc();
         final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
                 rd);
         r.setWithHeader(isWithHeader());
@@ -42,7 +43,8 @@ public class MapFixedLengthLayout<PROP> extends
             throw new NullPointerException("appendable");
         }
 
-        final RecordDesc<Map<String, PROP>> rd = myRecordDesc();
+        prepareOpen();
+        final RecordDesc<Map<String, PROP>> rd = getRecordDesc();
         final ElementInOut es = createElementInOut();
         final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(
                 rd);
@@ -53,12 +55,10 @@ public class MapFixedLengthLayout<PROP> extends
         return w;
     }
 
-    protected RecordDesc<Map<String, PROP>> myRecordDesc() {
-        final RecordDesc<Map<String, PROP>> recordDesc = super.getRecordDesc();
-        if (recordDesc == null) {
+    protected void prepareOpen() {
+        if (getRecordDesc() == null) {
             throw new IllegalStateException("recordDesc");
         }
-        return recordDesc;
     }
 
     @Override

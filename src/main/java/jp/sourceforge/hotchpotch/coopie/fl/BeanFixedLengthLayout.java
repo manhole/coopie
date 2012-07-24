@@ -43,7 +43,8 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
             throw new NullPointerException("readable");
         }
 
-        final RecordDesc<T> rd = myRecordDesc();
+        prepareOpen();
+        final RecordDesc<T> rd = getRecordDesc();
         final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
         r.setWithHeader(isWithHeader());
         r.setElementInOut(createElementInOut());
@@ -59,7 +60,8 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
             throw new NullPointerException("appendable");
         }
 
-        final RecordDesc<T> rd = myRecordDesc();
+        prepareOpen();
+        final RecordDesc<T> rd = getRecordDesc();
         final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(rd);
         w.setWithHeader(isWithHeader());
         w.setElementInOut(createElementInOut());
@@ -73,7 +75,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         return new BeanFixedLengthRecordDescSetup<T>(beanDesc_);
     }
 
-    protected RecordDesc<T> myRecordDesc() {
+    protected void prepareOpen() {
         if (getRecordDesc() == null) {
             /*
              * アノテーションが付いている場合は、アノテーションから構築する
@@ -81,11 +83,9 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
             setupByAnnotation();
         }
 
-        final RecordDesc<T> recordDesc = getRecordDesc();
-        if (recordDesc == null) {
+        if (getRecordDesc() == null) {
             throw new IllegalStateException("recordDesc");
         }
-        return recordDesc;
     }
 
     private void setupByAnnotation() {
