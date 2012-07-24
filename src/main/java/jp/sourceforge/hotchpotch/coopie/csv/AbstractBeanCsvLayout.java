@@ -186,6 +186,67 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return new BeanPropertyBinding<U, Object>(pd);
     }
 
+    private static class BeanCsvColumnDef<BEAN> implements CsvColumnDef<BEAN> {
+
+        private PropertyDesc<BEAN> propertyDesc_;
+
+        private String label_;
+        private int order_;
+        private Converter<?, ?> converter_;
+        private Class<?> propertyType_;
+
+        @Override
+        public String getLabel() {
+            return label_;
+        }
+
+        @Override
+        public void setLabel(final String label) {
+            label_ = label;
+        }
+
+        @Override
+        public int getOrder() {
+            return order_;
+        }
+
+        @Override
+        public void setOrder(final int order) {
+            order_ = order;
+        }
+
+        @Override
+        public Converter<?, ?> getConverter() {
+            return converter_;
+        }
+
+        @Override
+        public void setConverter(final Converter<?, ?> converter) {
+            converter_ = converter;
+        }
+
+        @Override
+        public Class<?> getPropertyType() {
+            return propertyType_;
+        }
+
+        @Override
+        public void setPropertyType(final Class<?> propertyType) {
+            propertyType_ = propertyType;
+        }
+
+        @Override
+        public PropertyDesc<BEAN> getPropertyDesc() {
+            return propertyDesc_;
+        }
+
+        @Override
+        public void setPropertyDesc(final PropertyDesc<BEAN> propertyDesc) {
+            propertyDesc_ = propertyDesc;
+        }
+
+    }
+
     private static class CsvColumnValue<T> implements
             Comparable<CsvColumnValue<T>> {
 
