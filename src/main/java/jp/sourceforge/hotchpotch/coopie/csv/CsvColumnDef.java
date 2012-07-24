@@ -1,11 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import org.t2framework.commons.meta.PropertyDesc;
-
 /*
  * @CsvColumnと対になる
  */
-public interface CsvColumnDef<BEAN> {
+public interface CsvColumnDef {
 
     String getLabel();
 
@@ -19,8 +17,6 @@ public interface CsvColumnDef<BEAN> {
 
     void setConverter(Converter<?, ?> converter);
 
-    PropertyDesc<BEAN> getPropertyDesc();
-
-    void setPropertyDesc(PropertyDesc<BEAN> propertyDesc);
+    Class<?> getPropertyType();
 
 }

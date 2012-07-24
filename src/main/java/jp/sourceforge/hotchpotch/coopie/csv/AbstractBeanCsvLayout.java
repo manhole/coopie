@@ -19,6 +19,8 @@ import org.t2framework.commons.util.StringUtil;
 public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private final BeanDesc<T> beanDesc_;
+    private CsvColumnCustomizer customizer_ = EmptyCsvColumnCustomizer
+            .getInstance();
 
     public AbstractBeanCsvLayout(final Class<T> beanClass) {
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
@@ -77,6 +79,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
 
         Collections.sort(list);
+        customizer_.customize(list);
 
         final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
         for (int i = 0; i < list.size(); i++) {
@@ -113,6 +116,10 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                 new BeanRecordType<T>(beanDesc_));
+    }
+
+    public void setCustomizer(final CsvColumnCustomizer customizer) {
+        customizer_ = customizer;
     }
 
     private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
@@ -194,7 +201,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return new BeanPropertyBinding<U, Object>(pd);
     }
 
-    private static class BeanCsvColumnDef<BEAN> implements CsvColumnDef<BEAN>,
+    private static class BeanCsvColumnDef<BEAN> implements CsvColumnDef,
             Comparable<BeanCsvColumnDef<BEAN>> {
 
         private PropertyDesc<BEAN> propertyDesc_;
@@ -235,11 +242,14 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
 
         @Override
+        public Class<?> getPropertyType() {
+            return propertyDesc_.getPropertyType();
+        }
+
         public PropertyDesc<BEAN> getPropertyDesc() {
             return propertyDesc_;
         }
 
-        @Override
         public void setPropertyDesc(final PropertyDesc<BEAN> propertyDesc) {
             propertyDesc_ = propertyDesc;
         }
