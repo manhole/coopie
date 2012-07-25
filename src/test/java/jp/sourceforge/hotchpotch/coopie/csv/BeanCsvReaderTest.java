@@ -1273,10 +1273,44 @@ public class BeanCsvReaderTest {
     /**
      * setupColumnsを使わない方法。
      * 
-     * Columnアノテーションが付いているBeanの場合
+     * Columnアノテーションが付いていないBeanの場合
      */
     @Test
     public void read_bigDecimal2() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimalBean> layout = BeanCsvLayout
+                .getInstance(BigDecimalBean.class);
+        final BigDecimalConverter converter = new BigDecimalConverter();
+        layout.setCustomizer(new CsvColumnCustomizer() {
+            @Override
+            public void customize(
+                    final Collection<? extends CsvColumnDef> columnDefs) {
+                for (final CsvColumnDef columnDef : columnDefs) {
+                    final Class<?> propertyType = columnDef.getPropertyType();
+                    if (propertyType.isAssignableFrom(BigDecimal.class)) {
+                        columnDef.setConverter(converter);
+                    }
+                }
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<BigDecimalBean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimalBean bean = new BigDecimalBean();
+
+        assertBigDecimal(csvReader, bean);
+    }
+
+    /**
+     * setupColumnsを使わない方法。
+     * 
+     * Columnアノテーションが付いているBeanの場合
+     */
+    @Test
+    public void read_bigDecimal3() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
                 .getInstance(BigDecimal2Bean.class);
