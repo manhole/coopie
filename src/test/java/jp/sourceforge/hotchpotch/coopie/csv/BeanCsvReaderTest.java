@@ -1280,6 +1280,7 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
                 .getInstance(BigDecimal2Bean.class);
+        final BigDecimalConverter converter = new BigDecimalConverter();
         layout.setCustomizer(new CsvColumnCustomizer() {
             @Override
             public void customize(
@@ -1287,7 +1288,7 @@ public class BeanCsvReaderTest {
                 for (final CsvColumnDef columnDef : columnDefs) {
                     final Class<?> propertyType = columnDef.getPropertyType();
                     if (propertyType.isAssignableFrom(BigDecimal.class)) {
-                        columnDef.setConverter(new BigDecimalConverter());
+                        columnDef.setConverter(converter);
                     }
                 }
             }
