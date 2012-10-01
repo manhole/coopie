@@ -54,7 +54,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private RecordDesc<T> createByAnnotation() {
-        final List<BeanCsvColumnDef<T>> list = CollectionsUtil.newArrayList();
+        final List<BeanCsvColumnDef<T>> columnDefs = CollectionsUtil
+                .newArrayList();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final CsvColumn column = Annotations.getAnnotation(pd,
@@ -63,33 +64,34 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 continue;
             }
 
-            final BeanCsvColumnDef<T> c = new BeanCsvColumnDef<T>();
+            final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
             if (StringUtil.isBlank(column.label())) {
-                c.setLabel(pd.getPropertyName());
+                columnDef.setLabel(pd.getPropertyName());
             } else {
-                c.setLabel(column.label());
+                columnDef.setLabel(column.label());
             }
-            c.setOrder(column.order());
-            c.setPropertyDesc(pd);
-            list.add(c);
+            columnDef.setOrder(column.order());
+            columnDef.setPropertyDesc(pd);
+            columnDefs.add(columnDef);
         }
 
-        if (list.isEmpty()) {
+        if (columnDefs.isEmpty()) {
             return null;
         }
 
-        Collections.sort(list);
-        customizer_.customize(list);
+        Collections.sort(columnDefs);
+        customizer_.customize(columnDefs);
 
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            final BeanCsvColumnDef<T> c = list.get(i);
-            final ColumnName columnName = c.getColumnName();
+        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(columnDefs
+                .size());
+        for (int i = 0; i < columnDefs.size(); i++) {
+            final BeanCsvColumnDef<T> columnDef = columnDefs.get(i);
+            final ColumnName columnName = columnDef.getColumnName();
 
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
-                    c.getPropertyDesc());
+                    columnDef.getPropertyDesc());
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
-                    c.getConverter());
+                    columnDef.getConverter());
             cds[i] = cd;
         }
         // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
@@ -98,29 +100,31 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private RecordDesc<T> setupByProperties() {
-        final List<BeanCsvColumnDef<T>> list = CollectionsUtil.newArrayList();
+        final List<BeanCsvColumnDef<T>> columnDefs = CollectionsUtil
+                .newArrayList();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final String propertyName = pd.getPropertyName();
-            final BeanCsvColumnDef<T> c = new BeanCsvColumnDef<T>();
-            c.setLabel(propertyName);
+            final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
+            columnDef.setLabel(propertyName);
             //orderは未指定とする
             //c.setOrder();
-            c.setPropertyDesc(pd);
-            list.add(c);
+            columnDef.setPropertyDesc(pd);
+            columnDefs.add(columnDef);
         }
 
-        customizer_.customize(list);
+        customizer_.customize(columnDefs);
 
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            final BeanCsvColumnDef<T> c = list.get(i);
-            final ColumnName columnName = c.getColumnName();
+        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(columnDefs
+                .size());
+        for (int i = 0; i < columnDefs.size(); i++) {
+            final BeanCsvColumnDef<T> columnDef = columnDefs.get(i);
+            final ColumnName columnName = columnDef.getColumnName();
 
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
-                    c.getPropertyDesc());
+                    columnDef.getPropertyDesc());
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
-                    c.getConverter());
+                    columnDef.getConverter());
             cds[i] = cd;
         }
 
