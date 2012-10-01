@@ -4,6 +4,8 @@
 - Converterを追加。カラムとプロパティ間の型を変換できるようにし、String以外の型をプロパティに使用できるようにしました。
 - CsvColumnSetup#column(String propertyName, String label) を廃止。
   カラム名とプロパティ名が異なる場合は明示的にtoPropertyを呼んでください。
+- @CsvColumnsアノテーションを追加。
+  アノテーションでも1プロパティを複数カラムへ対応付けられるようにしました。
 
 0.2.1 2012/02/23
 
