@@ -1403,6 +1403,7 @@ public class BeanCsvReaderTest {
             @Override
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
+                // TODO CsvColumnCustomizerと単位が合わない
                 setup.columns("ymd", "hms").toProperty("bbb")
                         .withConverter(new CalendarConverter());
             }

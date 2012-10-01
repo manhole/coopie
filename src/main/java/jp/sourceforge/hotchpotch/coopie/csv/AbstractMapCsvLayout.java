@@ -58,7 +58,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         return ccd.getColumnDescs();
     }
 
-    // TODO
+    // TODO AbstractBeanCsvLayoutのと共通化できそうだ
     public static <PROP> ColumnDesc<Map<String, PROP>>[] toColumnDescs(
             final Collection<? extends InternalColumnBuilder> builders) {
 
