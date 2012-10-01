@@ -21,9 +21,9 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.PropertyNotFoundException;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
@@ -1281,11 +1281,10 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<BigDecimalBean> layout = BeanCsvLayout
                 .getInstance(BigDecimalBean.class);
         final BigDecimalConverter converter = new BigDecimalConverter();
-        layout.setCustomizer(new CsvColumnCustomizer() {
+        layout.setCustomizer(new RecordDefCustomizer() {
             @Override
-            public void customize(
-                    final Collection<? extends CsvColumnDef> columnDefs) {
-                for (final CsvColumnDef columnDef : columnDefs) {
+            public void customize(final RecordDef recordDef) {
+                for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
                     final Class<?> propertyType = columnDef.getPropertyType();
                     if (propertyType.isAssignableFrom(BigDecimal.class)) {
                         columnDef.setConverter(converter);
@@ -1315,11 +1314,10 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
                 .getInstance(BigDecimal2Bean.class);
         final BigDecimalConverter converter = new BigDecimalConverter();
-        layout.setCustomizer(new CsvColumnCustomizer() {
+        layout.setCustomizer(new RecordDefCustomizer() {
             @Override
-            public void customize(
-                    final Collection<? extends CsvColumnDef> columnDefs) {
-                for (final CsvColumnDef columnDef : columnDefs) {
+            public void customize(final RecordDef recordDef) {
+                for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
                     final Class<?> propertyType = columnDef.getPropertyType();
                     if (propertyType.isAssignableFrom(BigDecimal.class)) {
                         columnDef.setConverter(converter);
@@ -1406,6 +1404,7 @@ public class BeanCsvReaderTest {
             @Override
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
+                // TODO CsvColumnCustomizerと単位が合わない
                 setup.columns("ymd", "hms").toProperty("bbb")
                         .withConverter(new CalendarConverter());
             }
@@ -1431,6 +1430,77 @@ public class BeanCsvReaderTest {
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         final CalendarBean bean = new CalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/08/13 11:22:33",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("c", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 複数カラムを1プロパティへ対応づけている時に、一部カラムがnullの場合の挙動
+     * 
+     * setupColumnsを使わない方法。
+     * 
+     * Columnアノテーションが付いているBeanの場合
+     */
+    @Test
+    public void read_calendar3() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AnnotatedCalendarBean> layout = new BeanCsvLayout<AnnotatedCalendarBean>(
+                AnnotatedCalendarBean.class);
+        final AtomicBoolean called = new AtomicBoolean();
+        layout.setCustomizer(new RecordDefCustomizer() {
+            @Override
+            public void customize(final RecordDef recordDef) {
+                for (final CsvColumnsDef columnsDef : recordDef
+                        .getColumnsDefs()) {
+                    final String propertyName = columnsDef.getPropertyName();
+                    called.set(true);
+                    if ("bbb".equals(propertyName)) {
+                        columnsDef.setConverter(new CalendarConverter());
+                    }
+                }
+            }
+        });
+        assertEquals(false, called.get());
+
+        final String text;
+        {
+            final StringWriter sw = new StringWriter();
+            final ElementWriter writer = new CsvElementInOut(
+                    new DefaultCsvSetting()).openWriter(sw);
+            writer.writeRecord(a("aaa", "ymd", "hms"));
+            writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
+            writer.writeRecord(a("b", "2011-09-14", ""));
+            writer.writeRecord(a("c", "", "12:22:33"));
+            writer.close();
+            text = sw.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<AnnotatedCalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        assertEquals(true, called.get());
+
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final AnnotatedCalendarBean bean = new AnnotatedCalendarBean();
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
@@ -1815,6 +1885,31 @@ public class BeanCsvReaderTest {
             aaa_ = aaa;
         }
 
+        public Calendar getBbb() {
+            return bbb_;
+        }
+
+        public void setBbb(final Calendar bbb) {
+            bbb_ = bbb;
+        }
+
+    }
+
+    public static class AnnotatedCalendarBean {
+
+        private String aaa_;
+        private Calendar bbb_;
+
+        @CsvColumn
+        public String getAaa() {
+            return aaa_;
+        }
+
+        public void setAaa(final String aaa) {
+            aaa_ = aaa;
+        }
+
+        @CsvColumns({ @CsvColumn(label = "ymd"), @CsvColumn(label = "hms") })
         public Calendar getBbb() {
             return bbb_;
         }

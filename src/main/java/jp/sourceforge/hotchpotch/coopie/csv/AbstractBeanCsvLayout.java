@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ import org.t2framework.commons.util.StringUtil;
 public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private final BeanDesc<T> beanDesc_;
-    private CsvColumnCustomizer customizer_ = EmptyCsvColumnCustomizer
+    private RecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
             .getInstance();
 
     public AbstractBeanCsvLayout(final Class<T> beanClass) {
@@ -54,82 +55,129 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private RecordDesc<T> createByAnnotation() {
-        final List<BeanCsvColumnDef<T>> list = CollectionsUtil.newArrayList();
+        final BeanRecordDef<T> recordDef = new BeanRecordDef<T>();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
+            final CsvColumns columns = Annotations.getAnnotation(pd,
+                    CsvColumns.class);
+            if (columns != null) {
+                final BeanCsvColumnsDef<T> columnsDef = new BeanCsvColumnsDef<T>();
+                columnsDef.setPropertyDesc(pd);
+                for (final CsvColumn column : columns.value()) {
+                    final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
+                    if (StringUtil.isBlank(column.label())) {
+                        columnDef.setLabel(pd.getPropertyName());
+                    } else {
+                        columnDef.setLabel(column.label());
+                    }
+                    columnDef.setOrder(column.order());
+                    columnDef.setColumnName(new SimpleColumnName(columnDef
+                            .getLabel()));
+                    columnsDef.addColumnDef(columnDef);
+                }
+                recordDef.addColumnsDef(columnsDef);
+                continue;
+            }
             final CsvColumn column = Annotations.getAnnotation(pd,
                     CsvColumn.class);
             if (column == null) {
                 continue;
             }
+            // TODO: CsvColumnとCsvColumnsの両方があったら例外にすること
 
-            final BeanCsvColumnDef<T> c = new BeanCsvColumnDef<T>();
+            final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
             if (StringUtil.isBlank(column.label())) {
-                c.setLabel(pd.getPropertyName());
+                columnDef.setLabel(pd.getPropertyName());
             } else {
-                c.setLabel(column.label());
+                columnDef.setLabel(column.label());
             }
-            c.setOrder(column.order());
-            c.setPropertyDesc(pd);
-            list.add(c);
+            columnDef.setOrder(column.order());
+            columnDef.setPropertyDesc(pd);
+            recordDef.addColumnDef(columnDef);
         }
 
-        if (list.isEmpty()) {
+        if (recordDef.getColumnDefs().isEmpty()
+                && recordDef.getColumnsDefs().isEmpty()) {
             return null;
         }
 
-        Collections.sort(list);
-        customizer_.customize(list);
+        Collections.sort(recordDef.getColumnDefs(),
+                CsvColumnDefComparator.getInstance());
+        customizer_.customize(recordDef);
 
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            final BeanCsvColumnDef<T> c = list.get(i);
-            final ColumnName columnName = c.getColumnName();
-
+        final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
+        for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
+            final ColumnName columnName = columnDef.getColumnName();
+            final PropertyDesc<T> pd = beanDesc_.getPropertyDesc(columnDef
+                    .getPropertyName());
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
-                    c.getPropertyDesc());
+                    pd);
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
-                    c.getConverter());
-            cds[i] = cd;
+                    columnDef.getConverter());
+            list.add(cd);
         }
+        for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
+            final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
+            final List<PropertyBinding<T, Object>> pbs = CollectionsUtil
+                    .newArrayList();
+            final PropertyDesc<T> pd = beanDesc_.getPropertyDesc(columnsDef
+                    .getPropertyName());
+            final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
+                    pd);
+            pbs.add(pb);
+            for (final CsvColumnDef columnDef : columnsDef.getColumnDefs()) {
+                columnNames.add(columnDef.getColumnName());
+            }
+            final ColumnDesc<T>[] cds = newCompositBeanColumnDesc(columnNames,
+                    pbs, columnsDef.getConverter());
+            Collections.addAll(list, cds);
+        }
+        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
+        list.toArray(cds);
+
         // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                 new BeanRecordType<T>(beanDesc_));
     }
 
     private RecordDesc<T> setupByProperties() {
-        final List<BeanCsvColumnDef<T>> list = CollectionsUtil.newArrayList();
+        final BeanRecordDef<T> recordDef = new BeanRecordDef<T>();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final String propertyName = pd.getPropertyName();
-            final BeanCsvColumnDef<T> c = new BeanCsvColumnDef<T>();
-            c.setLabel(propertyName);
+            final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
+            columnDef.setLabel(propertyName);
             //orderは未指定とする
             //c.setOrder();
-            c.setPropertyDesc(pd);
-            list.add(c);
+            columnDef.setPropertyDesc(pd);
+            recordDef.addColumnDef(columnDef);
         }
 
-        customizer_.customize(list);
+        customizer_.customize(recordDef);
 
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            final BeanCsvColumnDef<T> c = list.get(i);
-            final ColumnName columnName = c.getColumnName();
-
+        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(recordDef
+                .getColumnDefs().size());
+        final Collection<? extends CsvColumnDef> columnDefs = recordDef
+                .getColumnDefs();
+        int i = 0;
+        for (final CsvColumnDef columnDef : columnDefs) {
+            final ColumnName columnName = columnDef.getColumnName();
+            final PropertyDesc<T> pd = beanDesc_.getPropertyDesc(columnDef
+                    .getPropertyName());
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
-                    c.getPropertyDesc());
+                    pd);
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
-                    c.getConverter());
+                    columnDef.getConverter());
             cds[i] = cd;
+            i++;
         }
 
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                 new BeanRecordType<T>(beanDesc_));
     }
 
-    public void setCustomizer(final CsvColumnCustomizer customizer) {
-        customizer_ = customizer;
+    public void setCustomizer(final RecordDefCustomizer columnCustomizer) {
+        customizer_ = columnCustomizer;
     }
 
     private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
@@ -221,6 +269,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         private Converter<?, ?> converter_ = PassthroughStringConverter
                 .getInstance();
 
+        private ColumnName columnName_;
+
         @Override
         public String getLabel() {
             return label_;
@@ -252,6 +302,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
 
         @Override
+        public String getPropertyName() {
+            return propertyDesc_.getPropertyName();
+        }
+
+        @Override
         public Class<?> getPropertyType() {
             return propertyDesc_.getPropertyType();
         }
@@ -271,11 +326,110 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             return ret;
         }
 
+        @Override
         public ColumnName getColumnName() {
-            final SimpleColumnName columnName = new SimpleColumnName();
-            columnName.setName(getPropertyDesc().getPropertyName());
-            columnName.setLabel(getLabel());
-            return columnName;
+            if (columnName_ == null) {
+                final SimpleColumnName columnName = new SimpleColumnName();
+                columnName.setName(getPropertyDesc().getPropertyName());
+                columnName.setLabel(getLabel());
+                columnName_ = columnName;
+            }
+            return columnName_;
+        }
+
+        public void setColumnName(final ColumnName columnName) {
+            columnName_ = columnName;
+        }
+
+    }
+
+    private static class BeanCsvColumnsDef<BEAN> implements CsvColumnsDef {
+
+        private PropertyDesc<BEAN> propertyDesc_;
+        private Converter<?, ?> converter_ = PassthroughStringConverter
+                .getInstance();
+        private final List<CsvColumnDef> columnDefs_ = CollectionsUtil
+                .newArrayList();
+
+        @Override
+        public List<CsvColumnDef> getColumnDefs() {
+            return columnDefs_;
+        }
+
+        public void addColumnDef(final CsvColumnDef columnDef) {
+            columnDefs_.add(columnDef);
+        }
+
+        @Override
+        public Converter<?, ?> getConverter() {
+            return converter_;
+        }
+
+        @Override
+        public void setConverter(final Converter<?, ?> converter) {
+            converter_ = converter;
+        }
+
+        @Override
+        public String getPropertyName() {
+            return propertyDesc_.getPropertyName();
+        }
+
+        @Override
+        public Class<?> getPropertyType() {
+            return propertyDesc_.getPropertyType();
+        }
+
+        public PropertyDesc<BEAN> getPropertyDesc() {
+            return propertyDesc_;
+        }
+
+        public void setPropertyDesc(final PropertyDesc<BEAN> propertyDesc) {
+            propertyDesc_ = propertyDesc;
+        }
+
+    }
+
+    static class BeanRecordDef<BEAN> implements RecordDef {
+
+        final List<CsvColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
+        final List<CsvColumnsDef> columnsDefs_ = CollectionsUtil.newArrayList();
+
+        @Override
+        public void addColumnDef(final CsvColumnDef columnDef) {
+            columnDefs_.add(columnDef);
+        }
+
+        @Override
+        public List<? extends CsvColumnDef> getColumnDefs() {
+            return columnDefs_;
+        }
+
+        @Override
+        public void addColumnsDef(final CsvColumnsDef columnsDef) {
+            columnsDefs_.add(columnsDef);
+        }
+
+        @Override
+        public List<? extends CsvColumnsDef> getColumnsDefs() {
+            return columnsDefs_;
+        }
+
+    }
+
+    static class CsvColumnDefComparator implements Comparator<CsvColumnDef> {
+
+        private static CsvColumnDefComparator INSTANCE = new CsvColumnDefComparator();
+
+        public static CsvColumnDefComparator getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public int compare(final CsvColumnDef o1, final CsvColumnDef o2) {
+            // orderが小さい方を左側に
+            final int ret = o1.getOrder() - o2.getOrder();
+            return ret;
         }
 
     }
