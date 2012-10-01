@@ -21,6 +21,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -1226,7 +1227,7 @@ public class BeanCsvReaderTest {
      * Bean側をBigDecimalで扱えること
      */
     @Test
-    public void read_bigDecimal() throws Throwable {
+    public void read_bigDecimal1() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<BigDecimalBean>(
                 BigDecimalBean.class);
@@ -1245,6 +1246,11 @@ public class BeanCsvReaderTest {
         // ## Assert ##
         final BigDecimalBean bean = new BigDecimalBean();
 
+        assertBigDecimal(csvReader, bean);
+    }
+
+    private <T extends BigDecimalBean> void assertBigDecimal(
+            final RecordReader<T> csvReader, final T bean) throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         assertEquals("11.10", bean.getAaa().toPlainString());
@@ -1262,6 +1268,74 @@ public class BeanCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    /**
+     * setupColumnsを使わない方法。
+     * 
+     * Columnアノテーションが付いていないBeanの場合
+     */
+    @Test
+    public void read_bigDecimal2() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimalBean> layout = BeanCsvLayout
+                .getInstance(BigDecimalBean.class);
+        final BigDecimalConverter converter = new BigDecimalConverter();
+        layout.setCustomizer(new CsvColumnCustomizer() {
+            @Override
+            public void customize(
+                    final Collection<? extends CsvColumnDef> columnDefs) {
+                for (final CsvColumnDef columnDef : columnDefs) {
+                    final Class<?> propertyType = columnDef.getPropertyType();
+                    if (propertyType.isAssignableFrom(BigDecimal.class)) {
+                        columnDef.setConverter(converter);
+                    }
+                }
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<BigDecimalBean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimalBean bean = new BigDecimalBean();
+
+        assertBigDecimal(csvReader, bean);
+    }
+
+    /**
+     * setupColumnsを使わない方法。
+     * 
+     * Columnアノテーションが付いているBeanの場合
+     */
+    @Test
+    public void read_bigDecimal3() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
+                .getInstance(BigDecimal2Bean.class);
+        final BigDecimalConverter converter = new BigDecimalConverter();
+        layout.setCustomizer(new CsvColumnCustomizer() {
+            @Override
+            public void customize(
+                    final Collection<? extends CsvColumnDef> columnDefs) {
+                for (final CsvColumnDef columnDef : columnDefs) {
+                    final Class<?> propertyType = columnDef.getPropertyType();
+                    if (propertyType.isAssignableFrom(BigDecimal.class)) {
+                        columnDef.setConverter(converter);
+                    }
+                }
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<BigDecimal2Bean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimal2Bean bean = new BigDecimal2Bean();
+
+        assertBigDecimal(csvReader, bean);
     }
 
     /**
@@ -1667,6 +1741,22 @@ public class BeanCsvReaderTest {
 
         public void setBbb(final String bbb) {
             bbb_ = bbb;
+        }
+
+    }
+
+    public static class BigDecimal2Bean extends BigDecimalBean {
+
+        @Override
+        @CsvColumn
+        public BigDecimal getAaa() {
+            return super.getAaa();
+        }
+
+        @Override
+        @CsvColumn
+        public String getBbb() {
+            return super.getBbb();
         }
 
     }

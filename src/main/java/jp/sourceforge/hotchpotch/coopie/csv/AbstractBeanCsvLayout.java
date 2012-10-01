@@ -19,6 +19,8 @@ import org.t2framework.commons.util.StringUtil;
 public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private final BeanDesc<T> beanDesc_;
+    private CsvColumnCustomizer customizer_ = EmptyCsvColumnCustomizer
+            .getInstance();
 
     public AbstractBeanCsvLayout(final Class<T> beanClass) {
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
@@ -52,7 +54,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private RecordDesc<T> createByAnnotation() {
-        final List<CsvColumnValue<T>> list = CollectionsUtil.newArrayList();
+        final List<BeanCsvColumnDef<T>> list = CollectionsUtil.newArrayList();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final CsvColumn column = Annotations.getAnnotation(pd,
@@ -60,7 +62,15 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             if (column == null) {
                 continue;
             }
-            final CsvColumnValue<T> c = new CsvColumnValue<T>(pd, column);
+
+            final BeanCsvColumnDef<T> c = new BeanCsvColumnDef<T>();
+            if (StringUtil.isBlank(column.label())) {
+                c.setLabel(pd.getPropertyName());
+            } else {
+                c.setLabel(column.label());
+            }
+            c.setOrder(column.order());
+            c.setPropertyDesc(pd);
             list.add(c);
         }
 
@@ -69,17 +79,17 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
 
         Collections.sort(list);
+        customizer_.customize(list);
 
         final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
         for (int i = 0; i < list.size(); i++) {
-            final CsvColumnValue<T> c = list.get(i);
+            final BeanCsvColumnDef<T> c = list.get(i);
             final ColumnName columnName = c.getColumnName();
 
-            // TODO converter
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
                     c.getPropertyDesc());
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
-                    PassthroughStringConverter.getInstance());
+                    c.getConverter());
             cds[i] = cd;
         }
         // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
@@ -88,23 +98,38 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private RecordDesc<T> setupByProperties() {
+        final List<BeanCsvColumnDef<T>> list = CollectionsUtil.newArrayList();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(pds.size());
-        int i = 0;
         for (final PropertyDesc<T> pd : pds) {
             final String propertyName = pd.getPropertyName();
-            final ColumnName columnName = new SimpleColumnName(propertyName);
-            // TODO converter
+            final BeanCsvColumnDef<T> c = new BeanCsvColumnDef<T>();
+            c.setLabel(propertyName);
+            //orderは未指定とする
+            //c.setOrder();
+            c.setPropertyDesc(pd);
+            list.add(c);
+        }
+
+        customizer_.customize(list);
+
+        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
+        for (int i = 0; i < list.size(); i++) {
+            final BeanCsvColumnDef<T> c = list.get(i);
+            final ColumnName columnName = c.getColumnName();
+
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
-                    pd);
+                    c.getPropertyDesc());
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
-                    PassthroughStringConverter.getInstance());
+                    c.getConverter());
             cds[i] = cd;
-            i++;
         }
 
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                 new BeanRecordType<T>(beanDesc_));
+    }
+
+    public void setCustomizer(final CsvColumnCustomizer customizer) {
+        customizer_ = customizer;
     }
 
     private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
@@ -186,14 +211,15 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return new BeanPropertyBinding<U, Object>(pd);
     }
 
-    private static class BeanCsvColumnDef<BEAN> implements CsvColumnDef<BEAN> {
+    private static class BeanCsvColumnDef<BEAN> implements CsvColumnDef,
+            Comparable<BeanCsvColumnDef<BEAN>> {
 
         private PropertyDesc<BEAN> propertyDesc_;
 
         private String label_;
         private int order_;
-        private Converter<?, ?> converter_;
-        private Class<?> propertyType_;
+        private Converter<?, ?> converter_ = PassthroughStringConverter
+                .getInstance();
 
         @Override
         public String getLabel() {
@@ -227,70 +253,29 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         @Override
         public Class<?> getPropertyType() {
-            return propertyType_;
+            return propertyDesc_.getPropertyType();
         }
 
-        @Override
-        public void setPropertyType(final Class<?> propertyType) {
-            propertyType_ = propertyType;
-        }
-
-        @Override
         public PropertyDesc<BEAN> getPropertyDesc() {
             return propertyDesc_;
         }
 
-        @Override
         public void setPropertyDesc(final PropertyDesc<BEAN> propertyDesc) {
             propertyDesc_ = propertyDesc;
         }
 
-    }
-
-    private static class CsvColumnValue<T> implements
-            Comparable<CsvColumnValue<T>> {
-
-        private final PropertyDesc<T> propertyDesc_;
-        private final CsvColumn column_;
-
-        public CsvColumnValue(final PropertyDesc<T> propertyDesc,
-                final CsvColumn column) {
-            propertyDesc_ = propertyDesc;
-            column_ = column;
-        }
-
-        public ColumnName getColumnName() {
-            final SimpleColumnName n = new SimpleColumnName();
-            n.setName(getPropertyName());
-            n.setLabel(getLabel());
-            return n;
-        }
-
-        public int getOrder() {
-            return column_.order();
-        }
-
-        private String getLabel() {
-            final String s = column_.label();
-            if (StringUtil.isBlank(s)) {
-                return propertyDesc_.getPropertyName();
-            }
-            return s;
-        }
-
-        private String getPropertyName() {
-            return propertyDesc_.getPropertyName();
-        }
-
-        public PropertyDesc<T> getPropertyDesc() {
-            return propertyDesc_;
-        }
-
         @Override
-        public int compareTo(final CsvColumnValue<T> o) {
+        public int compareTo(final BeanCsvColumnDef<BEAN> o) {
             // orderが小さい方を左側に
             final int ret = getOrder() - o.getOrder();
             return ret;
+        }
+
+        public ColumnName getColumnName() {
+            final SimpleColumnName columnName = new SimpleColumnName();
+            columnName.setName(getPropertyDesc().getPropertyName());
+            columnName.setLabel(getLabel());
+            return columnName;
         }
 
     }
