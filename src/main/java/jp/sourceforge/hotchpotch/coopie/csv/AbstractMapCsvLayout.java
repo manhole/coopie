@@ -14,6 +14,7 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
+import org.t2framework.commons.util.StringUtil;
 
 public abstract class AbstractMapCsvLayout<PROP> extends
         AbstractCsvLayout<Map<String, PROP>> {
@@ -48,11 +49,11 @@ public abstract class AbstractMapCsvLayout<PROP> extends
 
     private static <PROP extends Object> ColumnDesc<Map<String, PROP>>[] newCompositMapColumnDesc(
             final List<ColumnName> names,
-            final List<PropertyBinding<Map<String, PROP>, PROP>> propertyBindings,
+            final PropertyBinding<Map<String, PROP>, PROP> propertyBindings,
             final Converter converter) {
 
         final CompositColumnDesc ccd = new CompositColumnDesc<Map<String, PROP>>();
-        ccd.setPropertyBindings(propertyBindings);
+        ccd.setPropertyBinding(propertyBindings);
         ccd.setColumnNames(names);
         ccd.setConverter(converter);
         return ccd.getColumnDescs();
@@ -66,27 +67,28 @@ public abstract class AbstractMapCsvLayout<PROP> extends
                 .newArrayList();
         for (final InternalColumnBuilder builder : builders) {
             final List<ColumnName> columnNames = builder.getColumnNames();
-            final List<String> propertyNames = builder.getPropertyNames();
-            final List<PropertyBinding<Map<String, PROP>, PROP>> pbs = CollectionsUtil
-                    .newArrayList();
-            for (final String propertyName : propertyNames) {
-                final PropertyBinding<Map<String, PROP>, PROP> pb = new MapPropertyBinding<PROP>(
-                        propertyName);
-                pbs.add(pb);
+            final String propertyName = builder.getPropertyName();
+            final PropertyBinding<Map<String, PROP>, PROP> pb;
+            if (!StringUtil.isEmpty(propertyName)) {
+                pb = new MapPropertyBinding<PROP>(propertyName);
+            } else {
+                // プロパティ名がカラム名と同じとみなす
+                if (columnNames.size() == 1) {
+                    pb = new MapPropertyBinding<PROP>(columnNames.get(0)
+                            .getLabel());
+                } else {
+                    throw new IllegalStateException(
+                            "property is not specified. for column {"
+                                    + columnNames + "}");
+                }
             }
-            // プロパティ名がカラム名と同じとみなす
-            if (pbs.isEmpty() && columnNames.size() == 1) {
-                final PropertyBinding<Map<String, PROP>, PROP> pb = new MapPropertyBinding<PROP>(
-                        columnNames.get(0).getLabel());
-                pbs.add(pb);
-            }
-            if (columnNames.size() == 1 && pbs.size() == 1) {
+            if (columnNames.size() == 1) {
                 final ColumnDesc<Map<String, PROP>> cd = newMapColumnDesc(
-                        columnNames.get(0), pbs.get(0), builder.getConverter());
+                        columnNames.get(0), pb, builder.getConverter());
                 list.add(cd);
             } else {
                 final ColumnDesc<Map<String, PROP>>[] cds = newCompositMapColumnDesc(
-                        columnNames, pbs, builder.getConverter());
+                        columnNames, pb, builder.getConverter());
                 Collections.addAll(list, cds);
             }
         }

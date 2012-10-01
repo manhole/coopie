@@ -155,7 +155,7 @@ public abstract class AbstractCsvLayout<T> {
 
         List<ColumnName> getColumnNames();
 
-        List<String> getPropertyNames();
+        String getPropertyName();
 
         Converter getConverter();
 
@@ -165,8 +165,7 @@ public abstract class AbstractCsvLayout<T> {
 
         private final List<ColumnName> columnNames_ = CollectionsUtil
                 .newArrayList();
-        private final List<String> propertyNames_ = CollectionsUtil
-                .newArrayList();
+        private String propertyName_;
         private Converter converter_ = PassthroughStringConverter.getInstance();
 
         public SimpleColumnBuilder() {
@@ -192,7 +191,7 @@ public abstract class AbstractCsvLayout<T> {
 
         @Override
         public ColumnBuilder toProperty(final String propertyName) {
-            propertyNames_.add(propertyName);
+            propertyName_ = propertyName;
             return this;
         }
 
@@ -202,8 +201,8 @@ public abstract class AbstractCsvLayout<T> {
         }
 
         @Override
-        public List<String> getPropertyNames() {
-            return propertyNames_;
+        public String getPropertyName() {
+            return propertyName_;
         }
 
     }

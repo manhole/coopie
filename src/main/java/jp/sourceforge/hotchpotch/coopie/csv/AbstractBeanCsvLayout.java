@@ -109,18 +109,15 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         _appendColumnDefTo(recordDef, list);
         for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
             final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
-            final List<PropertyBinding<T, Object>> pbs = CollectionsUtil
-                    .newArrayList();
             final PropertyDesc<T> pd = beanDesc_.getPropertyDesc(columnsDef
                     .getPropertyName());
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
                     pd);
-            pbs.add(pb);
             for (final CsvColumnDef columnDef : columnsDef.getColumnDefs()) {
                 columnNames.add(columnDef.getColumnName());
             }
             final ColumnDesc<T>[] cds = newCompositBeanColumnDesc(columnNames,
-                    pbs, columnsDef.getConverter());
+                    pb, columnsDef.getConverter());
             Collections.addAll(list, cds);
         }
         final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
@@ -185,11 +182,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private static <U> ColumnDesc<U>[] newCompositBeanColumnDesc(
             final List<ColumnName> names,
-            final List<PropertyBinding<U, Object>> propertyBindings,
+            final PropertyBinding<U, Object> propertyBinding,
             final Converter converter) {
 
         final CompositColumnDesc ccd = new CompositColumnDesc();
-        ccd.setPropertyBindings(propertyBindings);
+        ccd.setPropertyBinding(propertyBinding);
         ccd.setColumnNames(names);
         ccd.setConverter(converter);
         return ccd.getColumnDescs();
@@ -203,32 +200,27 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         final List<ColumnDesc<U>> list = CollectionsUtil.newArrayList();
         for (final InternalColumnBuilder builder : builders) {
             final List<ColumnName> columnNames = builder.getColumnNames();
-            final List<String> propertyNames = builder.getPropertyNames();
-            final List<PropertyBinding<U, Object>> pbs = CollectionsUtil
-                    .newArrayList();
-            for (final String propertyName : propertyNames) {
-                final PropertyBinding<U, Object> pb = getPropertyBinding(bd,
-                        propertyName);
-                pbs.add(pb);
+            final String propertyName = builder.getPropertyName();
+            final PropertyBinding<U, Object> pb;
+            if (!StringUtil.isEmpty(propertyName)) {
+                pb = getPropertyBinding(bd, propertyName);
+            } else {
+                // プロパティ名がカラム名と同じとみなす
+                if (columnNames.size() == 1) {
+                    pb = getPropertyBinding(bd, columnNames.get(0).getLabel());
+                } else {
+                    throw new IllegalStateException(
+                            "property is not specified. for column {"
+                                    + columnNames + "}");
+                }
             }
-            // プロパティ名がカラム名と同じとみなす
-            if (pbs.isEmpty() && columnNames.size() == 1) {
-                final PropertyBinding<U, Object> pb = getPropertyBinding(bd,
-                        columnNames.get(0).getLabel());
-                pbs.add(pb);
-            }
-            if (pbs.isEmpty()) {
-                throw new IllegalStateException(
-                        "property is not specified. for column {" + columnNames
-                                + "}");
-            }
-            if (columnNames.size() == 1 && pbs.size() == 1) {
+            if (columnNames.size() == 1) {
                 final ColumnDesc<U> cd = newBeanColumnDesc(columnNames.get(0),
-                        pbs.get(0), builder.getConverter());
+                        pb, builder.getConverter());
                 list.add(cd);
             } else {
                 final ColumnDesc<U>[] cds = newCompositBeanColumnDesc(
-                        columnNames, pbs, builder.getConverter());
+                        columnNames, pb, builder.getConverter());
                 Collections.addAll(list, cds);
             }
         }
@@ -470,7 +462,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     public static class CompositColumnDesc<T> {
 
         private List<ColumnName> columnNames_;
-        private List<PropertyBinding> propertyBindings_;
+        private PropertyBinding propertyBinding_;
 
         @SuppressWarnings("rawtypes")
         private Converter converter_;
@@ -496,9 +488,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             columnNames_ = columnNames;
         }
 
-        public void setPropertyBindings(
-                final List<PropertyBinding> propertyBindings) {
-            propertyBindings_ = propertyBindings;
+        public void setPropertyBinding(final PropertyBinding propertyBinding) {
+            propertyBinding_ = propertyBinding;
         }
 
         public void setConverter(final Converter converter) {
@@ -507,19 +498,10 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         private String getValue(final ColumnName columnName, final T bean) {
             if (getValues_ == null || !getValues_.containsKey(columnName)) {
-                final Object[] from = new Object[propertyBindings_.size()];
-                {
-                    int i = 0;
-                    for (final PropertyBinding<T, Object> binding : propertyBindings_) {
-                        final Object v = binding.getValue(bean);
-                        from[i] = v;
-                        i++;
-                    }
-                }
+                final Object from = propertyBinding_.getValue(bean);
 
-                // TODO 引数が配列の場合
                 // TODO 戻り値が配列ではない場合
-                final Object[] to = (Object[]) converter_.convertTo(from[0]);
+                final Object[] to = (Object[]) converter_.convertTo(from);
                 getValues_ = CollectionsUtil.newHashMap();
                 {
                     int i = 0;
@@ -569,13 +551,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
                 final Object to = converter_.convertFrom(from);
                 setValues_ = null;
-                // TODO プロパティ側が複数の場合
-                propertyBindings_.get(0).setValue(bean, to);
-                // TODO
-                //                for (final PropertyBinding<T, Object> binding : propertyBindings_) {
-                //                    final Object v = to.get();
-                //                    binding.setValue(bean, v);
-                //                }
+                propertyBinding_.setValue(bean, to);
             }
         }
 
