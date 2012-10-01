@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ import org.t2framework.commons.util.StringUtil;
 public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private final BeanDesc<T> beanDesc_;
-    private CsvColumnCustomizer customizer_ = EmptyCsvColumnCustomizer
+    private RecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
             .getInstance();
 
     public AbstractBeanCsvLayout(final Class<T> beanClass) {
@@ -54,8 +55,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private RecordDesc<T> createByAnnotation() {
-        final List<BeanCsvColumnDef<T>> columnDefs = CollectionsUtil
-                .newArrayList();
+        final BeanRecordDef<T> recordDef = new BeanRecordDef<T>();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final CsvColumn column = Annotations.getAnnotation(pd,
@@ -63,6 +63,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             if (column == null) {
                 continue;
             }
+            // TODO: CsvColumnとCsvColumnsの両方があったら例外にすること
 
             final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
             if (StringUtil.isBlank(column.label())) {
@@ -72,36 +73,42 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             }
             columnDef.setOrder(column.order());
             columnDef.setPropertyDesc(pd);
-            columnDefs.add(columnDef);
+            recordDef.addColumnDef(columnDef);
         }
 
-        if (columnDefs.isEmpty()) {
+        if (recordDef.getColumnDefs().isEmpty()) {
             return null;
         }
 
-        Collections.sort(columnDefs);
-        customizer_.customize(columnDefs);
+        Collections.sort(recordDef.getColumnDefs(),
+                CsvColumnDefComparator.getInstance());
+        customizer_.customize(recordDef);
 
+        final Collection<? extends CsvColumnDef> columnDefs = recordDef
+                .getColumnDefs();
         final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(columnDefs
                 .size());
-        for (int i = 0; i < columnDefs.size(); i++) {
-            final BeanCsvColumnDef<T> columnDef = columnDefs.get(i);
+        int i = 0;
+        for (final CsvColumnDef columnDef : columnDefs) {
             final ColumnName columnName = columnDef.getColumnName();
-
+            final PropertyDesc<T> pd = beanDesc_.getPropertyDesc(columnDef
+                    .getPropertyName());
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
-                    columnDef.getPropertyDesc());
+                    pd);
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
                     columnDef.getConverter());
             cds[i] = cd;
+
+            i++;
         }
+
         // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                 new BeanRecordType<T>(beanDesc_));
     }
 
     private RecordDesc<T> setupByProperties() {
-        final List<BeanCsvColumnDef<T>> columnDefs = CollectionsUtil
-                .newArrayList();
+        final BeanRecordDef<T> recordDef = new BeanRecordDef<T>();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final String propertyName = pd.getPropertyName();
@@ -110,30 +117,34 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             //orderは未指定とする
             //c.setOrder();
             columnDef.setPropertyDesc(pd);
-            columnDefs.add(columnDef);
+            recordDef.addColumnDef(columnDef);
         }
 
-        customizer_.customize(columnDefs);
+        customizer_.customize(recordDef);
 
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(columnDefs
-                .size());
-        for (int i = 0; i < columnDefs.size(); i++) {
-            final BeanCsvColumnDef<T> columnDef = columnDefs.get(i);
+        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(recordDef
+                .getColumnDefs().size());
+        final Collection<? extends CsvColumnDef> columnDefs = recordDef
+                .getColumnDefs();
+        int i = 0;
+        for (final CsvColumnDef columnDef : columnDefs) {
             final ColumnName columnName = columnDef.getColumnName();
-
+            final PropertyDesc<T> pd = beanDesc_.getPropertyDesc(columnDef
+                    .getPropertyName());
             final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
-                    columnDef.getPropertyDesc());
+                    pd);
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
                     columnDef.getConverter());
             cds[i] = cd;
+            i++;
         }
 
         return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
                 new BeanRecordType<T>(beanDesc_));
     }
 
-    public void setCustomizer(final CsvColumnCustomizer customizer) {
-        customizer_ = customizer;
+    public void setCustomizer(final RecordDefCustomizer columnCustomizer) {
+        customizer_ = columnCustomizer;
     }
 
     private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
@@ -225,6 +236,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         private Converter<?, ?> converter_ = PassthroughStringConverter
                 .getInstance();
 
+        private SimpleColumnName columnName_;
+
         @Override
         public String getLabel() {
             return label_;
@@ -256,6 +269,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
 
         @Override
+        public String getPropertyName() {
+            return propertyDesc_.getPropertyName();
+        }
+
+        @Override
         public Class<?> getPropertyType() {
             return propertyDesc_.getPropertyType();
         }
@@ -275,13 +293,48 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             return ret;
         }
 
+        @Override
         public ColumnName getColumnName() {
-            final SimpleColumnName columnName = new SimpleColumnName();
-            columnName.setName(getPropertyDesc().getPropertyName());
-            columnName.setLabel(getLabel());
-            return columnName;
+            if (columnName_ == null) {
+                columnName_ = new SimpleColumnName();
+                columnName_.setName(getPropertyDesc().getPropertyName());
+                columnName_.setLabel(getLabel());
+            }
+            return columnName_;
         }
 
+    }
+
+    static class BeanRecordDef<BEAN> implements RecordDef {
+
+        final List<CsvColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
+
+        @Override
+        public void addColumnDef(final CsvColumnDef columnDef) {
+            columnDefs_.add(columnDef);
+        }
+
+        @Override
+        public List<? extends CsvColumnDef> getColumnDefs() {
+            return columnDefs_;
+        }
+
+    }
+
+    static class CsvColumnDefComparator implements Comparator<CsvColumnDef> {
+
+        private static CsvColumnDefComparator INSTANCE = new CsvColumnDefComparator();
+
+        public static CsvColumnDefComparator getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public int compare(final CsvColumnDef o1, final CsvColumnDef o2) {
+            // orderが小さい方を左側に
+            final int ret = o1.getOrder() - o2.getOrder();
+            return ret;
+        }
     }
 
     static class BeanCsvRecordDescSetup<T> extends

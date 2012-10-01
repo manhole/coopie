@@ -21,7 +21,6 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -1281,11 +1280,10 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<BigDecimalBean> layout = BeanCsvLayout
                 .getInstance(BigDecimalBean.class);
         final BigDecimalConverter converter = new BigDecimalConverter();
-        layout.setCustomizer(new CsvColumnCustomizer() {
+        layout.setCustomizer(new RecordDefCustomizer() {
             @Override
-            public void customize(
-                    final Collection<? extends CsvColumnDef> columnDefs) {
-                for (final CsvColumnDef columnDef : columnDefs) {
+            public void customize(final RecordDef recordDef) {
+                for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
                     final Class<?> propertyType = columnDef.getPropertyType();
                     if (propertyType.isAssignableFrom(BigDecimal.class)) {
                         columnDef.setConverter(converter);
@@ -1315,11 +1313,10 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
                 .getInstance(BigDecimal2Bean.class);
         final BigDecimalConverter converter = new BigDecimalConverter();
-        layout.setCustomizer(new CsvColumnCustomizer() {
+        layout.setCustomizer(new RecordDefCustomizer() {
             @Override
-            public void customize(
-                    final Collection<? extends CsvColumnDef> columnDefs) {
-                for (final CsvColumnDef columnDef : columnDefs) {
+            public void customize(final RecordDef recordDef) {
+                for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
                     final Class<?> propertyType = columnDef.getPropertyType();
                     if (propertyType.isAssignableFrom(BigDecimal.class)) {
                         columnDef.setConverter(converter);

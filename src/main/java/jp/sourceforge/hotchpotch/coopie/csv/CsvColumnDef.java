@@ -17,6 +17,10 @@ public interface CsvColumnDef {
 
     void setConverter(Converter<?, ?> converter);
 
+    String getPropertyName();
+
     Class<?> getPropertyType();
+
+    ColumnName getColumnName();
 
 }
