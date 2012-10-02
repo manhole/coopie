@@ -76,8 +76,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             }
         }
 
-        if (recordDef.getColumnDefs().isEmpty()
-                && recordDef.getColumnsDefs().isEmpty()) {
+        if (recordDef.isEmpty()) {
             return null;
         }
 
@@ -377,6 +376,10 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         final List<CsvColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
         final List<CsvColumnsDef> columnsDefs_ = CollectionsUtil.newArrayList();
+
+        public boolean isEmpty() {
+            return getColumnDefs().isEmpty() && getColumnsDefs().isEmpty();
+        }
 
         @Override
         public void addColumnDef(final CsvColumnDef columnDef) {
