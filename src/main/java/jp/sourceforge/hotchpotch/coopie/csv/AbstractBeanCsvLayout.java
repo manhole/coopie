@@ -61,38 +61,19 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                     CsvColumns.class);
             if (columns != null) {
                 final BeanCsvColumnsDef<T> columnsDef = new BeanCsvColumnsDef<T>();
-                columnsDef.setPropertyDesc(pd);
-                for (final CsvColumn column : columns.value()) {
-                    final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
-                    if (StringUtil.isBlank(column.label())) {
-                        columnDef.setLabel(pd.getPropertyName());
-                    } else {
-                        columnDef.setLabel(column.label());
-                    }
-                    columnDef.setOrder(column.order());
-                    columnDef.setColumnName(new SimpleColumnName(columnDef
-                            .getLabel()));
-                    columnsDef.addColumnDef(columnDef);
-                }
+                columnsDef.setup(columns, pd);
                 recordDef.addColumnsDef(columnsDef);
-                continue;
-            }
-            final CsvColumn column = Annotations.getAnnotation(pd,
-                    CsvColumn.class);
-            if (column == null) {
                 continue;
             }
             // TODO: CsvColumnとCsvColumnsの両方があったら例外にすること
 
-            final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
-            if (StringUtil.isBlank(column.label())) {
-                columnDef.setLabel(pd.getPropertyName());
-            } else {
-                columnDef.setLabel(column.label());
+            final CsvColumn column = Annotations.getAnnotation(pd,
+                    CsvColumn.class);
+            if (column != null) {
+                final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
+                columnDef.setup(column, pd);
+                recordDef.addColumnDef(columnDef);
             }
-            columnDef.setOrder(column.order());
-            columnDef.setPropertyDesc(pd);
-            recordDef.addColumnDef(columnDef);
         }
 
         if (recordDef.getColumnDefs().isEmpty()
@@ -244,6 +225,16 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         private ColumnName columnName_;
 
+        public void setup(final CsvColumn column, final PropertyDesc<BEAN> pd) {
+            if (StringUtil.isBlank(column.label())) {
+                setLabel(pd.getPropertyName());
+            } else {
+                setLabel(column.label());
+            }
+            setOrder(column.order());
+            setPropertyDesc(pd);
+        }
+
         @Override
         public String getLabel() {
             return label_;
@@ -323,6 +314,22 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 .getInstance();
         private final List<CsvColumnDef> columnDefs_ = CollectionsUtil
                 .newArrayList();
+
+        public void setup(final CsvColumns columns, final PropertyDesc<BEAN> pd) {
+            for (final CsvColumn column : columns.value()) {
+                final BeanCsvColumnDef<BEAN> columnDef = new BeanCsvColumnDef<BEAN>();
+                if (StringUtil.isBlank(column.label())) {
+                    columnDef.setLabel(pd.getPropertyName());
+                } else {
+                    columnDef.setLabel(column.label());
+                }
+                columnDef.setOrder(column.order());
+                columnDef.setColumnName(new SimpleColumnName(columnDef
+                        .getLabel()));
+                addColumnDef(columnDef);
+            }
+            setPropertyDesc(pd);
+        }
 
         @Override
         public List<CsvColumnDef> getColumnDefs() {
