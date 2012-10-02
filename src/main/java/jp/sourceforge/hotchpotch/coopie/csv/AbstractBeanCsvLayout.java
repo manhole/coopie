@@ -106,20 +106,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         customizer_.customize(recordDef);
 
         final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
-        _appendColumnDefTo(recordDef, list);
-        for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
-            final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
-            final PropertyDesc<T> pd = beanDesc_.getPropertyDesc(columnsDef
-                    .getPropertyName());
-            final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
-                    pd);
-            for (final CsvColumnDef columnDef : columnsDef.getColumnDefs()) {
-                columnNames.add(columnDef.getColumnName());
-            }
-            final ColumnDesc<T>[] cds = newCompositBeanColumnDesc(columnNames,
-                    pb, columnsDef.getConverter());
-            Collections.addAll(list, cds);
-        }
+        appendColumnDescFromColumnDef(recordDef, list);
+        appendColumnDescFromColumnsDef(recordDef, list);
         final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
         list.toArray(cds);
 
@@ -144,7 +132,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         customizer_.customize(recordDef);
 
         final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
-        _appendColumnDefTo(recordDef, list);
+        appendColumnDescFromColumnDef(recordDef, list);
         final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
         list.toArray(cds);
 
@@ -152,7 +140,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 new BeanRecordType<T>(beanDesc_));
     }
 
-    private void _appendColumnDefTo(final BeanRecordDef<T> recordDef,
+    private void appendColumnDescFromColumnDef(final RecordDef recordDef,
             final List<ColumnDesc<T>> list) {
         for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
             final ColumnName columnName = columnDef.getColumnName();
@@ -163,6 +151,23 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
                     columnDef.getConverter());
             list.add(cd);
+        }
+    }
+
+    private void appendColumnDescFromColumnsDef(final RecordDef recordDef,
+            final List<ColumnDesc<T>> list) {
+        for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
+            final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
+            for (final CsvColumnDef columnDef : columnsDef.getColumnDefs()) {
+                columnNames.add(columnDef.getColumnName());
+            }
+            final PropertyDesc<T> pd = beanDesc_.getPropertyDesc(columnsDef
+                    .getPropertyName());
+            final PropertyBinding<T, Object> pb = new BeanPropertyBinding<T, Object>(
+                    pd);
+            final ColumnDesc<T>[] cds = newCompositBeanColumnDesc(columnNames,
+                    pb, columnsDef.getConverter());
+            Collections.addAll(list, cds);
         }
     }
 
