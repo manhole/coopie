@@ -100,12 +100,9 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         final BeanRecordDef<T> recordDef = new BeanRecordDef<T>();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
-            final String propertyName = pd.getPropertyName();
             final BeanCsvColumnDef<T> columnDef = new BeanCsvColumnDef<T>();
-            columnDef.setLabel(propertyName);
-            //orderは未指定とする
-            //c.setOrder();
-            columnDef.setPropertyDesc(pd);
+            // orderは未指定とする
+            columnDef.setup(pd);
             recordDef.addColumnDef(columnDef);
         }
 
@@ -232,6 +229,12 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
                 setLabel(column.label());
             }
             setOrder(column.order());
+            setPropertyDesc(pd);
+        }
+
+        public void setup(final PropertyDesc<BEAN> pd) {
+            final String propertyName = pd.getPropertyName();
+            setLabel(propertyName);
             setPropertyDesc(pd);
         }
 
