@@ -149,6 +149,8 @@ public class BufferedReadableTest {
 
         // ## Assert ##
         assertArrayEquals(new char[] { '0', '1', '2', '3', '4' }, chars);
+
+        cs.close();
     }
 
     @Test
@@ -170,6 +172,7 @@ public class BufferedReadableTest {
             final char[] chars = cs.readChars();
             assertEquals(null, chars);
         }
+        cs.close();
     }
 
     @Test
@@ -196,6 +199,7 @@ public class BufferedReadableTest {
             final char[] chars = cs.readChars();
             assertEquals(null, chars);
         }
+        cs.close();
     }
 
     @Test
@@ -225,6 +229,7 @@ public class BufferedReadableTest {
             final char[] chars = cs.readChars();
             assertEquals(null, chars);
         }
+        cs.close();
     }
 
     private BufferedReadable create(final String in) {
