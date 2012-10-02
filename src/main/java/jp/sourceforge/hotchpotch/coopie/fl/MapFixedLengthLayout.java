@@ -3,12 +3,13 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 import java.util.List;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractMapCsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
+import jp.sourceforge.hotchpotch.coopie.csv.MapPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.MapRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
@@ -79,8 +80,10 @@ public class MapFixedLengthLayout<PROP> extends
         @Override
         protected ColumnDesc<Map<String, PROP>>[] createColumnDescs(
                 final List<InternalColumnBuilder> builders) {
-            final ColumnDesc<Map<String, PROP>>[] cds = AbstractMapCsvLayout
-                    .toColumnDescs(builders);
+            final MapPropertyBinding.Factory pbf = MapPropertyBinding.Factory
+                    .getInstance();
+            final ColumnDesc<Map<String, PROP>>[] cds = (ColumnDesc[]) AbstractBeanCsvLayout
+                    .toColumnDescs(builders, pbf);
             return cds;
         }
 
