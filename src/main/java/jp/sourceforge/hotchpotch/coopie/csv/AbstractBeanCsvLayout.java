@@ -175,12 +175,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         customizer_ = columnCustomizer;
     }
 
-    private static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName name,
-            final PropertyBinding<U, Object> propertyBinding,
-            final Converter converter) {
+    static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName columnName,
+            final PropertyBinding propertyBinding, final Converter converter) {
         final DefaultColumnDesc<U> cd = new DefaultColumnDesc<U>();
+        cd.setName(columnName);
         cd.setPropertyBinding(propertyBinding);
-        cd.setName(name);
         cd.setConverter(converter);
         return cd;
     }
