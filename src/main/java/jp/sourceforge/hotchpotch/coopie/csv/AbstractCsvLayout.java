@@ -7,6 +7,7 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
+import org.t2framework.commons.util.StringUtil;
 
 public abstract class AbstractCsvLayout<T> {
 
@@ -153,11 +154,11 @@ public abstract class AbstractCsvLayout<T> {
 
     public interface InternalColumnBuilder extends ColumnBuilder {
 
-        List<ColumnName> getColumnNames();
+        boolean isMultipleColumns();
 
-        String getPropertyName();
+        CsvColumnDef getColumnDef();
 
-        Converter getConverter();
+        CsvColumnsDef getColumnsDef();
 
     }
 
@@ -184,7 +185,6 @@ public abstract class AbstractCsvLayout<T> {
             columnNames_.add(columnName);
         }
 
-        @Override
         public List<ColumnName> getColumnNames() {
             return columnNames_;
         }
@@ -195,14 +195,68 @@ public abstract class AbstractCsvLayout<T> {
             return this;
         }
 
-        @Override
         public Converter getConverter() {
             return converter_;
         }
 
-        @Override
         public String getPropertyName() {
             return propertyName_;
+        }
+
+        @Override
+        public boolean isMultipleColumns() {
+            if (1 < getColumnNames().size()) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public CsvColumnDef getColumnDef() {
+            final List<ColumnName> columnNames = getColumnNames();
+            if (columnNames.size() != 1) {
+                throw new IllegalStateException();
+            }
+            final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+            def.setColumnName(columnNames.get(0));
+            {
+                final String n = getPropertyName();
+                if (!StringUtil.isEmpty(n)) {
+                    def.setPropertyName(n);
+                } else {
+                    // プロパティ名がカラム名と同じとみなす
+                    def.setPropertyName(columnNames.get(0).getLabel());
+                }
+            }
+            def.setConverter(getConverter());
+            return def;
+        }
+
+        @Override
+        public CsvColumnsDef getColumnsDef() {
+            final List<ColumnName> columnNames = getColumnNames();
+            if (columnNames.size() < 2) {
+                throw new IllegalStateException();
+            }
+            final DefaultCsvColumnsDef sdef = new DefaultCsvColumnsDef();
+            {
+                final String n = getPropertyName();
+                if (StringUtil.isEmpty(n)) {
+                    throw new IllegalStateException(
+                            "property is not specified. for column {"
+                                    + columnNames + "}");
+                }
+                sdef.setPropertyName(n);
+            }
+            sdef.setConverter(getConverter());
+            for (final ColumnName columnName : columnNames) {
+                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                def.setColumnName(columnName);
+                //def.setPropertyName(getPropertyName());
+                //def.setConverter(getConverter());
+                sdef.addColumnDef(def);
+            }
+            return sdef;
         }
 
     }
