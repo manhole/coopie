@@ -151,8 +151,9 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         customizer_ = columnCustomizer;
     }
 
-    static <U> ColumnDesc<U> newBeanColumnDesc(final ColumnName columnName,
-            final PropertyBinding propertyBinding, final Converter converter) {
+    private static <U> ColumnDesc<U> newBeanColumnDesc(
+            final ColumnName columnName, final PropertyBinding propertyBinding,
+            final Converter converter) {
         final DefaultColumnDesc<U> cd = new DefaultColumnDesc<U>();
         cd.setName(columnName);
         cd.setPropertyBinding(propertyBinding);
