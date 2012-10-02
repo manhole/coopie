@@ -11,7 +11,6 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
-import org.t2framework.commons.meta.ClassDesc;
 import org.t2framework.commons.meta.MethodDesc;
 import org.t2framework.commons.meta.PropertyDesc;
 import org.t2framework.commons.util.CollectionsUtil;
@@ -199,7 +198,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     // TODO
     public static <U> ColumnDesc<U>[] toColumnDescs(
             final Collection<? extends InternalColumnBuilder> builders,
-            final BeanDesc<U> bd) {
+            final PropertyBindingFactory<U> pbf) {
 
         final List<ColumnDesc<U>> list = CollectionsUtil.newArrayList();
         for (final InternalColumnBuilder builder : builders) {
@@ -207,11 +206,11 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final String propertyName = builder.getPropertyName();
             final PropertyBinding<U, Object> pb;
             if (!StringUtil.isEmpty(propertyName)) {
-                pb = getPropertyBinding(bd, propertyName);
+                pb = pbf.getPropertyBinding(propertyName);
             } else {
                 // プロパティ名がカラム名と同じとみなす
                 if (columnNames.size() == 1) {
-                    pb = getPropertyBinding(bd, columnNames.get(0).getLabel());
+                    pb = pbf.getPropertyBinding(columnNames.get(0).getLabel());
                 } else {
                     throw new IllegalStateException(
                             "property is not specified. for column {"
@@ -231,21 +230,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         final ColumnDesc<U>[] cds = ColumnDescs.newColumnDescs(list.size());
         list.toArray(cds);
         return cds;
-    }
-
-    private static <U> PropertyBinding<U, Object> getPropertyBinding(
-            final BeanDesc<U> beanDesc, final String name) {
-
-        final PropertyDesc<U> pd = beanDesc.getPropertyDesc(name);
-        if (pd == null) {
-            final ClassDesc<U> classDesc = beanDesc.getClassDesc();
-            final Class<? extends U> concreteClass = classDesc
-                    .getConcreteClass();
-            final String className = concreteClass.getName();
-            throw new PropertyNotFoundException("property not found:<" + name
-                    + "> for class:<" + className + ">");
-        }
-        return new BeanPropertyBinding<U, Object>(pd);
     }
 
     private static class BeanCsvColumnDef<BEAN> implements CsvColumnDef,
@@ -446,8 +430,9 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final ColumnDesc<T>[] cds = toColumnDescs(getColumnBuilders(),
+            final PropertyBindingFactory<T> pbf = new BeanPropertyBinding.Factory<T>(
                     beanDesc_);
+            final ColumnDesc<T>[] cds = toColumnDescs(getColumnBuilders(), pbf);
             recordDesc_ = new DefaultRecordDesc<T>(cds,
                     OrderSpecified.SPECIFIED, new BeanRecordType<T>(beanDesc_));
         }

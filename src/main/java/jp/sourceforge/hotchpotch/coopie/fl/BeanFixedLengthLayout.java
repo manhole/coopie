@@ -5,10 +5,12 @@ import java.util.List;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.Annotations;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
@@ -157,8 +159,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         @Override
         protected ColumnDesc<T>[] createColumnDescs(
                 final List<InternalColumnBuilder> builders) {
+            final PropertyBindingFactory<T> pbf = new BeanPropertyBinding.Factory<T>(
+                    beanDesc_);
             final ColumnDesc<T>[] cds = AbstractBeanCsvLayout.toColumnDescs(
-                    builders, beanDesc_);
+                    builders, pbf);
             return cds;
         }
 
