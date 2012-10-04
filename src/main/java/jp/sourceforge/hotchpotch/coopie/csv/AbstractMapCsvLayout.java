@@ -48,9 +48,9 @@ public abstract class AbstractMapCsvLayout<PROP> extends
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final MapPropertyBinding.Factory pbf = MapPropertyBinding.Factory
+            final MapPropertyBinding.Factory<PROP> pbf = MapPropertyBinding.Factory
                     .getInstance();
-            final ColumnDesc<Map<String, PROP>>[] cds = (ColumnDesc[]) AbstractBeanCsvLayout
+            final ColumnDesc<Map<String, PROP>>[] cds = AbstractBeanCsvLayout
                     .toColumnDescs(getColumnBuilders(), pbf);
             recordDesc_ = new DefaultRecordDesc<Map<String, PROP>>(cds,
                     OrderSpecified.SPECIFIED, new MapRecordType<PROP>());

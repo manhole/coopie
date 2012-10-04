@@ -22,21 +22,21 @@ public class MapPropertyBinding<PROP> implements
         return v;
     }
 
-    public static class Factory implements
-            PropertyBindingFactory<Map<String, Object>> {
+    public static class Factory<PROP> implements
+            PropertyBindingFactory<Map<String, PROP>> {
 
         private static Factory INSTANCE = new Factory();
 
-        public static Factory getInstance() {
+        public static <PROP> Factory<PROP> getInstance() {
             return INSTANCE;
         }
 
         @Override
-        public <PROP> PropertyBinding<Map<String, Object>, PROP> getPropertyBinding(
+        public PropertyBinding<Map<String, PROP>, PROP> getPropertyBinding(
                 final String name) {
             final MapPropertyBinding<PROP> pb = new MapPropertyBinding<PROP>(
                     name);
-            return (PropertyBinding) pb;
+            return pb;
         }
 
     }

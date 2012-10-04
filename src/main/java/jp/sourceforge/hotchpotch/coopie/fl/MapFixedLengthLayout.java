@@ -80,9 +80,9 @@ public class MapFixedLengthLayout<PROP> extends
         @Override
         protected ColumnDesc<Map<String, PROP>>[] createColumnDescs(
                 final List<InternalColumnBuilder> builders) {
-            final MapPropertyBinding.Factory pbf = MapPropertyBinding.Factory
+            final MapPropertyBinding.Factory<PROP> pbf = MapPropertyBinding.Factory
                     .getInstance();
-            final ColumnDesc<Map<String, PROP>>[] cds = (ColumnDesc[]) AbstractBeanCsvLayout
+            final ColumnDesc<Map<String, PROP>>[] cds = AbstractBeanCsvLayout
                     .toColumnDescs(builders, pbf);
             return cds;
         }
