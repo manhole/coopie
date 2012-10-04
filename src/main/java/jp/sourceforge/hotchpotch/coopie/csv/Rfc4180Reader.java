@@ -144,7 +144,7 @@ public class Rfc4180Reader implements ElementReader {
                         } else {
                             rc.state = State.UNQUOTED_ELEMENT;
                             rb_.startElement();
-                            // 要素先頭の空白を残す
+                            // spaceがあれば、要素先頭のspaceを残す(捨てない)
                             rc.fromPos = rc.beginPos = rc.elemBeginPlain;
                         }
                         break;
@@ -161,6 +161,7 @@ public class Rfc4180Reader implements ElementReader {
 
                     case QUOTED_ELEMENT:
                         if (c == quoteMark_) {
+                            // 閉じ候補クォートの手前位置を記録
                             rc.elemEnd = rc.pos;
                             rc.state = State.QUOTE;
                         }
@@ -168,6 +169,11 @@ public class Rfc4180Reader implements ElementReader {
 
                     case QUOTE:
                         if (c == quoteMark_ && rc.elemEnd + 1 == rc.pos) {
+                            /*
+                             * 閉じ候補クォートの直後に再度クォート文字が登場した場合
+                             * ["abc""...]
+                             * 2つ連続したクォートを1クォート文字として扱う
+                             */
                             if (rc.elemBuff == null) {
                                 rc.elemBuff = new StringBuilder();
                             }
@@ -177,8 +183,13 @@ public class Rfc4180Reader implements ElementReader {
 
                             rc.state = State.QUOTED_ELEMENT;
                         } else if (c == SP) {
-                            // 要素より後のspaceを捨てるため
+                            // 閉じ候補クォートより後のspaceを捨てるため
                         } else if (c == elementSeparator_) {
+                            /*
+                             * 閉じクォートの後(直後 or spaceを間に含んでいる)に、要素区切り文字が登場。
+                             * 
+                             * 閉じクォートの手前位置までをデータとして取得。
+                             */
                             String elem = rc.body.substring(rc.fromPos,
                                     rc.elemEnd);
                             if (rc.elemBuff != null) {
@@ -327,11 +338,15 @@ public class Rfc4180Reader implements ElementReader {
         /*
          * と上のコメントに書いてあるが、
          * 先頭のスペースを捨てていた場合はINVALIDにしない、という動きをするように見える。
+         * 
+         * クォート関係が不正でも、要素がspace始まりだった場合は、
+         * spaceを要素に含みクォートを単なる文字として扱う。
          */
         // クォート文字の1文字ぶん差がある
         if (rc.beginPos != rc.elemBeginPlain + 1) {
             logger.debug(log);
         } else {
+            // 先頭がspaceではない
             logger.warn(log);
             recordState_ = RecordState.INVALID;
         }
@@ -407,19 +422,39 @@ public class Rfc4180Reader implements ElementReader {
 
     static class ReadContect {
         State state = State.INITIAL;
-        // 要素区切り文字の次の位置
+        /*
+         * 要素区切り文字の次の位置
+         * - 要素がクォートされている場合は、先頭のクォートの手前の位置。
+         *   要素BBの場合
+         *   [AA,BB]   => 3
+         *   [AA,"BB"] => 3
+         *   [AA, "BB"] => 3
+         */
         int elemBeginPlain = 0;
         /*
-         * 要素開始位置。
+         * 要素データの開始位置。
          * クォートされた要素の手前にスペースが登場したかの判定にだけ使用している
+         * - 要素がクォートされている場合は、先頭のクォートの次の位置
+         * - 要素がクォートされない場合は、elemBeginPlainと同じ値になる
+         *   [AA,BB]    => 3
+         *   [AA,"BB"]  => 4
+         *   [AA, "BB"] => 5
          */
         int beginPos = -1;
-        // substring用
+        /*
+         * substring用
+         * ほぼbeginPosと同じ値
+         * 
+         * クォート文字をデータに含む場合に、エスケープクォート途中までを前の行までをいったんバッファへ入れ、
+         * 後続の位置を記録するのに使う。
+         */
         int fromPos = -1;
         int elemEnd = -1;
         int pos = 0;
         StringBuilder elemBuff;
+        // 改行を含む行の場合に、改行前までのLineを保持する
         List<Line> savedLines;
+        // 今読んでいる最中の行
         Line line;
         String body;
     }

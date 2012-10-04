@@ -397,6 +397,9 @@ public class Rfc4180ReaderTest {
      * クォートされた要素と見せかけて実は前後にスペースを持つ通常の要素である場合、をフォローする。
      * 
      * これはフォーマットエラーとはみなさない。
+     * 
+     * [a, "b"bb" ,c]
+     * 2つ目の要素のクォートを、クォートとして特別扱いせず、データとして扱う
      */
     @Test
     public void space4() throws Throwable {
