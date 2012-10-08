@@ -33,18 +33,12 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
-            /*
-             * アノテーションが付いている場合は、アノテーションを優先する
-             */
-            final RecordDesc<T> recordDesc = createByAnnotation();
-            setRecordDesc(recordDesc);
-        }
-
-        if (getRecordDesc() == null) {
-            /*
-             * beanの全プロパティを対象に。
-             */
-            final RecordDesc<T> recordDesc = setupByProperties();
+            final RecordDef recordDef = createRecordDef();
+            customizer_.customize(recordDef);
+            final ColumnDesc<T>[] cds = recordDefToColumnDesc(recordDef);
+            // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
+            final RecordDesc<T> recordDesc = new DefaultRecordDesc<T>(cds,
+                    OrderSpecified.NO, new BeanRecordType<T>(beanDesc_));
             setRecordDesc(recordDesc);
         }
 
@@ -53,7 +47,35 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
     }
 
-    private RecordDesc<T> createByAnnotation() {
+    private RecordDef createRecordDef() throws AssertionError {
+        /*
+         * アノテーションが付いている場合は、アノテーションを優先する
+         */
+        RecordDef recordDef = createRecordDefByAnnotation();
+        if (recordDef == null) {
+            /*
+             * beanの全プロパティを対象に。
+             */
+            recordDef = createRecordDefByProperties();
+        }
+        if (recordDef == null) {
+            throw new AssertionError();
+        }
+        return recordDef;
+    }
+
+    private ColumnDesc<T>[] recordDefToColumnDesc(final RecordDef recordDef) {
+        final BeanPropertyBinding.Factory<T> pbf = new BeanPropertyBinding.Factory<T>(
+                beanDesc_);
+        final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
+        appendColumnDescFromColumnDef(recordDef, list, pbf);
+        appendColumnDescFromColumnsDef(recordDef, list, pbf);
+        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
+        list.toArray(cds);
+        return cds;
+    }
+
+    private DefaultRecordDef createRecordDefByAnnotation() {
         final DefaultRecordDef recordDef = new DefaultRecordDef();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
@@ -82,22 +104,10 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
         Collections.sort(recordDef.getColumnDefs(),
                 CsvColumnDefComparator.getInstance());
-        customizer_.customize(recordDef);
-
-        final BeanPropertyBinding.Factory<T> pbf = new BeanPropertyBinding.Factory<T>(
-                beanDesc_);
-        final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
-        appendColumnDescFromColumnDef(recordDef, list, pbf);
-        appendColumnDescFromColumnsDef(recordDef, list, pbf);
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
-        list.toArray(cds);
-
-        // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
-        return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
-                new BeanRecordType<T>(beanDesc_));
+        return recordDef;
     }
 
-    private RecordDesc<T> setupByProperties() {
+    private DefaultRecordDef createRecordDefByProperties() {
         final DefaultRecordDef recordDef = new DefaultRecordDef();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
@@ -106,19 +116,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             columnDef.setup(pd);
             recordDef.addColumnDef(columnDef);
         }
-
-        customizer_.customize(recordDef);
-
-        final BeanPropertyBinding.Factory<T> pbf = new BeanPropertyBinding.Factory<T>(
-                beanDesc_);
-        final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
-        appendColumnDescFromColumnDef(recordDef, list, pbf);
-        appendColumnDescFromColumnsDef(recordDef, list, pbf);
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
-        list.toArray(cds);
-
-        return new DefaultRecordDesc<T>(cds, OrderSpecified.NO,
-                new BeanRecordType<T>(beanDesc_));
+        return recordDef;
     }
 
     private static <T> void appendColumnDescFromColumnDef(
