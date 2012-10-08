@@ -5,7 +5,7 @@ package jp.sourceforge.hotchpotch.coopie.fl;
  */
 public interface FixedLengthColumnDef {
 
-    String getName();
+    String getPropertyName();
 
     int getBeginIndex();
 

@@ -222,7 +222,7 @@ abstract class AbstractFixedLengthLayout<T> {
         public ColumnBuilder column(final FixedLengthColumnDef columnDef) {
             final FlColumnBuilder builder = new FlColumnBuilder();
             builder.addFixedLengthColumnDef(columnDef);
-            builder.toProperty(columnDef.getName());
+            builder.toProperty(columnDef.getPropertyName());
             columnBuilders_.add(builder);
             return builder;
         }
@@ -242,7 +242,7 @@ abstract class AbstractFixedLengthLayout<T> {
                 final int endIndex) {
 
             final FixedLengthColumnDefImpl def = new FixedLengthColumnDefImpl();
-            def.setName(name);
+            def.setPropertyName(name);
             def.setBeginIndex(beginIndex);
             def.setEndIndex(endIndex);
             return def;
@@ -395,17 +395,17 @@ abstract class AbstractFixedLengthLayout<T> {
     private static class FixedLengthColumnDefImpl implements
             FixedLengthColumnDef {
 
-        private String name_;
+        private String propertyName_;
         private int beginIndex_;
         private int endIndex_;
 
         @Override
-        public String getName() {
-            return name_;
+        public String getPropertyName() {
+            return propertyName_;
         }
 
-        public void setName(final String propertyName) {
-            name_ = propertyName;
+        public void setPropertyName(final String propertyName) {
+            propertyName_ = propertyName;
         }
 
         @Override
@@ -441,7 +441,7 @@ abstract class AbstractFixedLengthLayout<T> {
 
         public void addFixedLengthColumnDef(final FixedLengthColumnDef columnDef) {
             final ColumnName columnName = new SimpleColumnName(
-                    columnDef.getName());
+                    columnDef.getPropertyName());
             addColumnName(columnName);
 
             final FixedLengthElementDesc desc = new SimpleFixedLengthElementDesc(
