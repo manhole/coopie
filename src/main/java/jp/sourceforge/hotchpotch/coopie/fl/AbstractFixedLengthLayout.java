@@ -273,8 +273,7 @@ abstract class AbstractFixedLengthLayout<T> {
                     .newArrayList();
 
             for (final InternalFlColumnBuilder builder : columnBuilders_) {
-                final InternalColumnBuilder cn = builder;
-                builders.add(cn);
+                builders.add(builder);
 
                 for (final FixedLengthElementDesc elemDesc : builder
                         .getElementDescs()) {
