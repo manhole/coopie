@@ -135,7 +135,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final ColumnName columnName = columnDef.getColumnName();
             final PropertyBinding<T, Object> pb = pbf
                     .getPropertyBinding(columnDef.getPropertyName());
-            final ColumnDesc<T> cd = newBeanColumnDesc(columnName, pb,
+            final ColumnDesc<T> cd = newColumnDesc(columnName, pb,
                     columnDef.getConverter());
             list.add(cd);
         }
@@ -151,8 +151,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             }
             final PropertyBinding<T, Object> pb = pbf
                     .getPropertyBinding(columnsDef.getPropertyName());
-            final ColumnDesc<T>[] cds = newCompositBeanColumnDesc(columnNames,
-                    pb, columnsDef.getConverter());
+            final ColumnDesc<T>[] cds = newCompositColumnDesc(columnNames, pb,
+                    columnsDef.getConverter());
             Collections.addAll(list, cds);
         }
     }
@@ -161,9 +161,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         customizer_ = columnCustomizer;
     }
 
-    private static <U> ColumnDesc<U> newBeanColumnDesc(
-            final ColumnName columnName, final PropertyBinding propertyBinding,
-            final Converter converter) {
+    private static <U> ColumnDesc<U> newColumnDesc(final ColumnName columnName,
+            final PropertyBinding propertyBinding, final Converter converter) {
         final DefaultColumnDesc<U> cd = new DefaultColumnDesc<U>();
         cd.setName(columnName);
         cd.setPropertyBinding(propertyBinding);
@@ -171,7 +170,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return cd;
     }
 
-    private static <U> ColumnDesc<U>[] newCompositBeanColumnDesc(
+    private static <U> ColumnDesc<U>[] newCompositColumnDesc(
             final List<ColumnName> names,
             final PropertyBinding<U, Object> propertyBinding,
             final Converter converter) {
