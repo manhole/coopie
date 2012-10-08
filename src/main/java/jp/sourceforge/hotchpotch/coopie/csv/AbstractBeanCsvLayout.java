@@ -19,6 +19,8 @@ import org.t2framework.commons.util.StringUtil;
 public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private final BeanDesc<T> beanDesc_;
+    private RecordDef recordDef_;
+
     private RecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
             .getInstance();
 
@@ -33,7 +35,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
-            final RecordDef recordDef = createRecordDef();
+            final RecordDef recordDef = recordDef();
             customizer_.customize(recordDef);
             final ColumnDesc<T>[] cds = recordDefToColumnDesc(recordDef);
             // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
@@ -45,6 +47,13 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         if (getRecordDesc() == null) {
             throw new AssertionError();
         }
+    }
+
+    public RecordDef recordDef() {
+        if (recordDef_ == null) {
+            recordDef_ = createRecordDef();
+        }
+        return recordDef_;
     }
 
     private RecordDef createRecordDef() throws AssertionError {
