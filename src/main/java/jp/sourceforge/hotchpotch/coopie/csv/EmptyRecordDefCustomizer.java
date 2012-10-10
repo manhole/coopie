@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public class EmptyRecordDefCustomizer implements RecordDefCustomizer {
+public class EmptyRecordDefCustomizer implements CsvRecordDefCustomizer {
 
     private static EmptyRecordDefCustomizer INSTANCE = new EmptyRecordDefCustomizer();
 
@@ -9,7 +9,7 @@ public class EmptyRecordDefCustomizer implements RecordDefCustomizer {
     }
 
     @Override
-    public void customize(final RecordDef recordDef) {
+    public void customize(final CsvRecordDef recordDef) {
         // no op.
     }
 

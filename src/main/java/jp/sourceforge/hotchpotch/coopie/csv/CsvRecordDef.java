@@ -2,7 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.List;
 
-public interface RecordDef {
+public interface CsvRecordDef {
 
     List<? extends CsvColumnDef> getColumnDefs();
 

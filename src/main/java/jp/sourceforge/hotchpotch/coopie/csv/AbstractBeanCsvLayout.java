@@ -19,9 +19,9 @@ import org.t2framework.commons.util.StringUtil;
 public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private final BeanDesc<T> beanDesc_;
-    private RecordDef recordDef_;
+    private CsvRecordDef recordDef_;
 
-    private RecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
+    private CsvRecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
             .getInstance();
 
     public AbstractBeanCsvLayout(final Class<T> beanClass) {
@@ -35,7 +35,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
-            final RecordDef recordDef = recordDef();
+            final CsvRecordDef recordDef = recordDef();
             customizer_.customize(recordDef);
             final BeanPropertyBinding.Factory<T> pbf = new BeanPropertyBinding.Factory<T>(
                     beanDesc_);
@@ -51,18 +51,18 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
     }
 
-    public RecordDef recordDef() {
+    public CsvRecordDef recordDef() {
         if (recordDef_ == null) {
             recordDef_ = createRecordDef();
         }
         return recordDef_;
     }
 
-    private RecordDef createRecordDef() throws AssertionError {
+    private CsvRecordDef createRecordDef() throws AssertionError {
         /*
          * アノテーションが付いている場合は、アノテーションを優先する
          */
-        RecordDef recordDef = createRecordDefByAnnotation();
+        CsvRecordDef recordDef = createRecordDefByAnnotation();
         if (recordDef == null) {
             /*
              * beanの全プロパティを対象に。
@@ -76,7 +76,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private static <T> ColumnDesc<T>[] recordDefToColumnDesc(
-            final RecordDef recordDef, final PropertyBindingFactory<T> pbf) {
+            final CsvRecordDef recordDef, final PropertyBindingFactory<T> pbf) {
         final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
         appendColumnDescFromColumnDef(recordDef, list, pbf);
         appendColumnDescFromColumnsDef(recordDef, list, pbf);
@@ -85,8 +85,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return cds;
     }
 
-    private DefaultRecordDef createRecordDefByAnnotation() {
-        final DefaultRecordDef recordDef = new DefaultRecordDef();
+    private CsvRecordDef createRecordDefByAnnotation() {
+        final DefaultCsvRecordDef recordDef = new DefaultCsvRecordDef();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final CsvColumns columns = Annotations.getAnnotation(pd,
@@ -117,8 +117,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return recordDef;
     }
 
-    private DefaultRecordDef createRecordDefByProperties() {
-        final DefaultRecordDef recordDef = new DefaultRecordDef();
+    private CsvRecordDef createRecordDefByProperties() {
+        final DefaultCsvRecordDef recordDef = new DefaultCsvRecordDef();
         final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<T> pd : pds) {
             final DefaultCsvColumnDef columnDef = new DefaultCsvColumnDef();
@@ -130,7 +130,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private static <T> void appendColumnDescFromColumnDef(
-            final RecordDef recordDef, final List<ColumnDesc<T>> list,
+            final CsvRecordDef recordDef, final List<ColumnDesc<T>> list,
             final PropertyBindingFactory<T> pbf) {
         for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
             final ColumnName columnName = columnDef.getColumnName();
@@ -143,7 +143,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     }
 
     private static <T> void appendColumnDescFromColumnsDef(
-            final RecordDef recordDef, final List<ColumnDesc<T>> list,
+            final CsvRecordDef recordDef, final List<ColumnDesc<T>> list,
             final PropertyBindingFactory<T> pbf) {
         for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
             final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
@@ -158,7 +158,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
     }
 
-    public void setCustomizer(final RecordDefCustomizer columnCustomizer) {
+    public void setCustomizer(final CsvRecordDefCustomizer columnCustomizer) {
         customizer_ = columnCustomizer;
     }
 
@@ -188,14 +188,14 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final Collection<? extends InternalColumnBuilder> builders,
             final PropertyBindingFactory<U> pbf) {
 
-        final RecordDef recordDef = toRecordDesc(builders);
+        final CsvRecordDef recordDef = toRecordDesc(builders);
         final ColumnDesc<U>[] cds = recordDefToColumnDesc(recordDef, pbf);
         return cds;
     }
 
-    private static RecordDef toRecordDesc(
+    private static CsvRecordDef toRecordDesc(
             final Collection<? extends InternalColumnBuilder> builders) {
-        final RecordDef recordDef = new DefaultRecordDef();
+        final CsvRecordDef recordDef = new DefaultCsvRecordDef();
         for (final InternalColumnBuilder builder : builders) {
             if (builder.isMultipleColumns()) {
                 recordDef.addColumnsDef(builder.getColumnsDef());
@@ -206,7 +206,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return recordDef;
     }
 
-    static class DefaultRecordDef implements RecordDef {
+    static class DefaultCsvRecordDef implements CsvRecordDef {
 
         final List<CsvColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
         final List<CsvColumnsDef> columnsDefs_ = CollectionsUtil.newArrayList();

@@ -1281,9 +1281,9 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<BigDecimalBean> layout = BeanCsvLayout
                 .getInstance(BigDecimalBean.class);
         final BigDecimalConverter converter = new BigDecimalConverter();
-        layout.setCustomizer(new RecordDefCustomizer() {
+        layout.setCustomizer(new CsvRecordDefCustomizer() {
             @Override
-            public void customize(final RecordDef recordDef) {
+            public void customize(final CsvRecordDef recordDef) {
                 for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
                     final Class<?> propertyType = columnDef.getPropertyType();
                     if (propertyType.isAssignableFrom(BigDecimal.class)) {
@@ -1314,9 +1314,9 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
                 .getInstance(BigDecimal2Bean.class);
         final BigDecimalConverter converter = new BigDecimalConverter();
-        layout.setCustomizer(new RecordDefCustomizer() {
+        layout.setCustomizer(new CsvRecordDefCustomizer() {
             @Override
-            public void customize(final RecordDef recordDef) {
+            public void customize(final CsvRecordDef recordDef) {
                 for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
                     final Class<?> propertyType = columnDef.getPropertyType();
                     if (propertyType.isAssignableFrom(BigDecimal.class)) {
@@ -1464,9 +1464,9 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AnnotatedCalendarBean> layout = new BeanCsvLayout<AnnotatedCalendarBean>(
                 AnnotatedCalendarBean.class);
         final AtomicBoolean called = new AtomicBoolean();
-        layout.setCustomizer(new RecordDefCustomizer() {
+        layout.setCustomizer(new CsvRecordDefCustomizer() {
             @Override
-            public void customize(final RecordDef recordDef) {
+            public void customize(final CsvRecordDef recordDef) {
                 for (final CsvColumnsDef columnsDef : recordDef
                         .getColumnsDefs()) {
                     final String propertyName = columnsDef.getPropertyName();
