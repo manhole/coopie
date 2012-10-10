@@ -99,6 +99,7 @@ class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
         return columnName_;
     }
 
+    @Override
     public void setColumnName(final ColumnName columnName) {
         columnName_ = columnName;
     }

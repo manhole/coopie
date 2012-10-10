@@ -532,6 +532,7 @@ public class MapFixedLengthReaderTest {
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
+        logger.debug("{}", bean);
         assertEquals("a", bean.get("aaa"));
         assertEquals("2011/09/13 17:54:01",
                 format.format(((Calendar) bean.get("bbb")).getTime()));

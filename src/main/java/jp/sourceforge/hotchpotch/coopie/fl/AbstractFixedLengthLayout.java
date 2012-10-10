@@ -26,12 +26,15 @@ import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
+import org.t2framework.commons.util.StringUtil;
 
 abstract class AbstractFixedLengthLayout<T> {
 
     // 固定長ファイルでは「ヘッダ無し」をデフォルトにする。
     private boolean withHeader_ = false;
     private RecordDesc<T> recordDesc_;
+    private FixedLengthRecordDef recordDef_;
+
     private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
             .getInstance();
     private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
@@ -44,8 +47,7 @@ abstract class AbstractFixedLengthLayout<T> {
     public void setupColumns(final SetupBlock<FixedLengthColumnSetup> block) {
         final FixedLengthRecordDescSetup setup = getRecordDescSetup();
         block.setup(setup);
-        recordDesc_ = setup.getRecordDesc();
-        fixedLengthElementDescs_ = setup.getElementDescs();
+        recordDef_ = setup.getRecordDef();
     }
 
     protected RecordDesc<T> getRecordDesc() {
@@ -54,6 +56,14 @@ abstract class AbstractFixedLengthLayout<T> {
 
     protected void setRecordDesc(final RecordDesc<T> recordDesc) {
         recordDesc_ = recordDesc;
+    }
+
+    protected FixedLengthRecordDef getRecordDef() {
+        return recordDef_;
+    }
+
+    protected void setRecordDef(final FixedLengthRecordDef recordDef) {
+        recordDef_ = recordDef;
     }
 
     protected boolean isWithHeader() {
@@ -91,6 +101,11 @@ abstract class AbstractFixedLengthLayout<T> {
 
     protected FixedLengthElementDesc[] getFixedLengthElementDescs() {
         return fixedLengthElementDescs_;
+    }
+
+    protected void setFixedLengthElementDescs(
+            final FixedLengthElementDesc[] fixedLengthElementDescs) {
+        fixedLengthElementDescs_ = fixedLengthElementDescs;
     }
 
     /**
@@ -137,9 +152,7 @@ abstract class AbstractFixedLengthLayout<T> {
     protected static interface FixedLengthRecordDescSetup extends
             FixedLengthColumnSetup {
 
-        <T> RecordDesc<T> getRecordDesc();
-
-        FixedLengthElementDesc[] getElementDescs();
+        FixedLengthRecordDef getRecordDef();
 
     }
 
@@ -206,9 +219,7 @@ abstract class AbstractFixedLengthLayout<T> {
 
         private final List<FlColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
-
-        private FixedLengthRecordDesc<T> fixedLengthRecordDesc_;
-        private FixedLengthElementDesc[] fixedLengthElementDescs_;
+        private FixedLengthRecordDef recordDef_;
 
         @Override
         public CsvColumnSetup.ColumnBuilder column(final String name,
@@ -241,7 +252,7 @@ abstract class AbstractFixedLengthLayout<T> {
         public FixedLengthColumnDef c(final String name, final int beginIndex,
                 final int endIndex) {
 
-            final FixedLengthColumnDefImpl def = new FixedLengthColumnDefImpl();
+            final DefaultFixedLengthColumnDef def = new DefaultFixedLengthColumnDef();
             def.setPropertyName(name);
             def.setBeginIndex(beginIndex);
             def.setEndIndex(endIndex);
@@ -249,49 +260,72 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         @Override
-        public RecordDesc<T> getRecordDesc() {
+        public FixedLengthRecordDef getRecordDef() {
             buildIfNeed();
-            return fixedLengthRecordDesc_;
-        }
-
-        @Override
-        public FixedLengthElementDesc[] getElementDescs() {
-            return fixedLengthElementDescs_;
+            return recordDef_;
         }
 
         private void buildIfNeed() {
-            if (fixedLengthRecordDesc_ != null) {
+            if (recordDef_ != null) {
                 return;
             }
 
             /*
              * 設定されているプロパティ名を対象に。
              */
-            final List<InternalColumnBuilder> builders = CollectionsUtil
-                    .newArrayList();
-            final List<FixedLengthElementDesc> elementDescs = CollectionsUtil
-                    .newArrayList();
-
+            final DefaultFixedLengthRecordDef recordDef = new DefaultFixedLengthRecordDef();
             for (final InternalFlColumnBuilder builder : columnBuilders_) {
-                builders.add(builder);
-
-                for (final FixedLengthElementDesc elemDesc : builder
-                        .getElementDescs()) {
-                    elementDescs.add(elemDesc);
+                final List<FixedLengthColumnDef> columnDefs = builder
+                        .getColumnDefs();
+                if (1 < columnDefs.size()) {
+                    final FixedLengthColumnsDef columnsDef = toColumnsDef(builder);
+                    recordDef.addColumnsDef(columnsDef);
+                } else {
+                    final FixedLengthColumnDef columnDef = toColumnDef(builder);
+                    recordDef.addColumnDef(columnDef);
                 }
             }
-
-            final ColumnDesc<T>[] cds = createColumnDescs(builders);
-            fixedLengthRecordDesc_ = new FixedLengthRecordDesc<T>(cds,
-                    getRecordType());
-            fixedLengthElementDescs_ = elementDescs
-                    .toArray(new FixedLengthElementDesc[elementDescs.size()]);
+            recordDef_ = recordDef;
         }
 
-        abstract protected ColumnDesc<T>[] createColumnDescs(
-                List<InternalColumnBuilder> builders);
+        private FixedLengthColumnDef toColumnDef(
+                final InternalFlColumnBuilder builder) {
+            final List<FixedLengthColumnDef> columnDefs = builder
+                    .getColumnDefs();
+            if (columnDefs.size() != 1) {
+                throw new IllegalStateException();
+            }
 
-        abstract protected RecordType<T> getRecordType();
+            final FixedLengthColumnDef columnDef = columnDefs.get(0);
+            columnDef.setConverter(builder.getConverter());
+            return columnDef;
+        }
+
+        private FixedLengthColumnsDef toColumnsDef(
+                final InternalFlColumnBuilder builder) {
+            final List<FixedLengthColumnDef> columnDefs = builder
+                    .getColumnDefs();
+            if (columnDefs.size() < 2) {
+                throw new IllegalStateException();
+            }
+            final DefaultFixedLengthColumnsDef sdef = new DefaultFixedLengthColumnsDef();
+            {
+                final String n = builder.getPropertyName();
+                if (StringUtil.isEmpty(n)) {
+                    // TODO
+                    //                    throw new IllegalStateException(
+                    //                            "property is not specified. for column {"
+                    //                                    + columnNames + "}");
+                    throw new IllegalStateException();
+                }
+                sdef.setPropertyName(n);
+            }
+            for (final FixedLengthColumnDef columnDef : columnDefs) {
+                sdef.addColumnDef(columnDef);
+            }
+            sdef.setConverter(builder.getConverter());
+            return sdef;
+        }
 
     }
 
@@ -343,7 +377,7 @@ abstract class AbstractFixedLengthLayout<T> {
 
     protected static class FixedLengthRecordDesc<T> implements RecordDesc<T> {
 
-        private final DefaultRecordDesc<T> delegate_;
+        private final RecordDesc<T> delegate_;
 
         protected FixedLengthRecordDesc(final ColumnDesc<T>[] columnDescs,
                 final RecordType<T> recordType) {
@@ -391,66 +425,31 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    private static class FixedLengthColumnDefImpl implements
-            FixedLengthColumnDef {
-
-        private String propertyName_;
-        private int beginIndex_;
-        private int endIndex_;
-
-        @Override
-        public String getPropertyName() {
-            return propertyName_;
-        }
-
-        public void setPropertyName(final String propertyName) {
-            propertyName_ = propertyName;
-        }
-
-        @Override
-        public int getBeginIndex() {
-            return beginIndex_;
-        }
-
-        public void setBeginIndex(final int beginIndex) {
-            beginIndex_ = beginIndex;
-        }
-
-        @Override
-        public int getEndIndex() {
-            return endIndex_;
-        }
-
-        public void setEndIndex(final int endIndex) {
-            endIndex_ = endIndex;
-        }
-    }
-
     public interface InternalFlColumnBuilder extends InternalColumnBuilder {
 
-        List<FixedLengthElementDesc> getElementDescs();
+        List<FixedLengthColumnDef> getColumnDefs();
 
     }
 
     static class FlColumnBuilder extends SimpleColumnBuilder implements
             InternalFlColumnBuilder {
 
-        private final List<FixedLengthElementDesc> elementDescs_ = CollectionsUtil
+        private final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil
                 .newArrayList();
 
         public void addFixedLengthColumnDef(final FixedLengthColumnDef columnDef) {
+            columnDefs_.add(columnDef);
+            // TODO この時点ではColumnNameを作らなくて良い。
+            // 後からも作るため、
             final ColumnName columnName = new SimpleColumnName(
                     columnDef.getPropertyName());
             addColumnName(columnName);
 
-            final FixedLengthElementDesc desc = new SimpleFixedLengthElementDesc(
-                    columnDef.getBeginIndex(), columnDef.getEndIndex());
-            elementDescs_.add(desc);
         }
 
         @Override
-        public List<FixedLengthElementDesc> getElementDescs() {
-            return elementDescs_;
+        public List<FixedLengthColumnDef> getColumnDefs() {
+            return columnDefs_;
         }
 
     }

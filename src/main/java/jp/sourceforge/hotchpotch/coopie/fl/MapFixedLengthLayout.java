@@ -1,16 +1,14 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
-import java.util.List;
 import java.util.Map;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout;
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.MapPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.MapRecordType;
+import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
@@ -58,7 +56,26 @@ public class MapFixedLengthLayout<PROP> extends
 
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
-            throw new IllegalStateException("recordDesc");
+            final FixedLengthRecordDef recordDef = getRecordDef();
+            if (recordDef != null) {
+                {
+                    final FixedLengthElementDesc[] elementDescs = BeanFixedLengthLayout
+                            .setupElementDescs(recordDef);
+                    setFixedLengthElementDescs(elementDescs);
+                }
+
+                final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
+                        .getInstance();
+                final ColumnDesc<Map<String, PROP>>[] cds = BeanFixedLengthLayout
+                        .recordDefToColumnDesc(recordDef, pbf);
+                final RecordDesc<Map<String, PROP>> recordDesc = new FixedLengthRecordDesc<Map<String, PROP>>(
+                        cds, new MapRecordType<PROP>());
+                setRecordDesc(recordDesc);
+            }
+        }
+
+        if (getRecordDesc() == null) {
+            throw new AssertionError();
         }
     }
 
@@ -69,23 +86,6 @@ public class MapFixedLengthLayout<PROP> extends
 
     private static class MapFixedLengthRecordDescSetup<PROP> extends
             AbstractFixedLengthRecordDescSetup<Map<String, PROP>> {
-
-        private final MapRecordType<PROP> recordType_ = new MapRecordType<PROP>();
-
-        @Override
-        protected MapRecordType<PROP> getRecordType() {
-            return recordType_;
-        }
-
-        @Override
-        protected ColumnDesc<Map<String, PROP>>[] createColumnDescs(
-                final List<InternalColumnBuilder> builders) {
-            final MapPropertyBinding.Factory<PROP> pbf = MapPropertyBinding.Factory
-                    .getInstance();
-            final ColumnDesc<Map<String, PROP>>[] cds = AbstractBeanCsvLayout
-                    .toColumnDescs(builders, pbf);
-            return cds;
-        }
 
     }
 

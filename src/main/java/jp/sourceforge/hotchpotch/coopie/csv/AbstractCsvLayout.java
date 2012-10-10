@@ -3,6 +3,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
@@ -13,6 +14,8 @@ public abstract class AbstractCsvLayout<T> {
 
     private static final Logger logger = LoggerFactory.getLogger();
     private RecordDesc<T> recordDesc_;
+    private CsvRecordDef recordDef_;
+
     private boolean withHeader_ = true;
     private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
             .getInstance();
@@ -21,9 +24,10 @@ public abstract class AbstractCsvLayout<T> {
     private ElementEditor elementEditor_;
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
+        recordDesc_ = null;
         final CsvRecordDescSetup<T> setup = getRecordDescSetup();
         block.setup(setup);
-        recordDesc_ = setup.getRecordDesc();
+        recordDef_ = setup.getRecordDef();
     }
 
     protected abstract CsvRecordDescSetup<T> getRecordDescSetup();
@@ -34,6 +38,14 @@ public abstract class AbstractCsvLayout<T> {
 
     protected void setRecordDesc(final RecordDesc<T> recordDesc) {
         recordDesc_ = recordDesc;
+    }
+
+    protected CsvRecordDef getRecordDef() {
+        return recordDef_;
+    }
+
+    protected void setRecordDef(final CsvRecordDef recordDef) {
+        recordDef_ = recordDef;
     }
 
     protected boolean isWithHeader() {
@@ -105,7 +117,7 @@ public abstract class AbstractCsvLayout<T> {
 
     protected static interface CsvRecordDescSetup<T> extends CsvColumnSetup {
 
-        RecordDesc<T> getRecordDesc();
+        CsvRecordDef getRecordDef();
 
     }
 
@@ -114,6 +126,8 @@ public abstract class AbstractCsvLayout<T> {
 
         private final List<InternalColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
+
+        private CsvRecordDef recordDef_;
 
         @Override
         public ColumnBuilder column(final ColumnName name) {
@@ -146,19 +160,92 @@ public abstract class AbstractCsvLayout<T> {
             return builder;
         }
 
-        protected List<InternalColumnBuilder> getColumnBuilders() {
-            return columnBuilders_;
+        @Override
+        public CsvRecordDef getRecordDef() {
+            buildIfNeed();
+            return recordDef_;
+        }
+
+        private void buildIfNeed() {
+            if (recordDef_ != null) {
+                return;
+            }
+
+            /*
+             * 設定されているプロパティ名を対象に。
+             */
+            final CsvRecordDef recordDef = new DefaultCsvRecordDef();
+            for (final InternalColumnBuilder builder : columnBuilders_) {
+                if (builder.isMultipleColumns()) {
+                    final CsvColumnsDef columnsDef = toColumnsDef(builder);
+                    recordDef.addColumnsDef(columnsDef);
+                } else {
+                    final CsvColumnDef columnDef = toColumnDef(builder);
+                    recordDef.addColumnDef(columnDef);
+                }
+            }
+            recordDef.setOrderSpecified(OrderSpecified.SPECIFIED);
+            recordDef_ = recordDef;
+        }
+
+        private CsvColumnDef toColumnDef(final InternalColumnBuilder builder) {
+            final List<ColumnName> columnNames = builder.getColumnNames();
+            if (columnNames.size() != 1) {
+                throw new IllegalStateException();
+            }
+            final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+            final ColumnName columnName = columnNames.get(0);
+            def.setColumnName(columnName);
+            {
+                final String n = builder.getPropertyName();
+                if (!StringUtil.isEmpty(n)) {
+                    def.setPropertyName(n);
+                } else {
+                    // プロパティ名がカラム名と同じとみなす
+                    def.setPropertyName(columnName.getLabel());
+                }
+            }
+            def.setConverter(builder.getConverter());
+            return def;
+        }
+
+        private CsvColumnsDef toColumnsDef(final InternalColumnBuilder builder) {
+            final List<ColumnName> columnNames = builder.getColumnNames();
+            if (columnNames.size() < 2) {
+                throw new IllegalStateException();
+            }
+            final DefaultCsvColumnsDef sdef = new DefaultCsvColumnsDef();
+            {
+                final String n = builder.getPropertyName();
+                if (StringUtil.isEmpty(n)) {
+                    throw new IllegalStateException(
+                            "property is not specified. for column {"
+                                    + columnNames + "}");
+                }
+                sdef.setPropertyName(n);
+            }
+            sdef.setConverter(builder.getConverter());
+            for (final ColumnName columnName : columnNames) {
+                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                def.setColumnName(columnName);
+                //def.setPropertyName(getPropertyName());
+                //def.setConverter(getConverter());
+                sdef.addColumnDef(def);
+            }
+            return sdef;
         }
 
     }
 
     public interface InternalColumnBuilder extends ColumnBuilder {
 
+        List<ColumnName> getColumnNames();
+
+        String getPropertyName();
+
+        Converter getConverter();
+
         boolean isMultipleColumns();
-
-        CsvColumnDef getColumnDef();
-
-        CsvColumnsDef getColumnsDef();
 
     }
 
@@ -185,6 +272,7 @@ public abstract class AbstractCsvLayout<T> {
             columnNames_.add(columnName);
         }
 
+        @Override
         public List<ColumnName> getColumnNames() {
             return columnNames_;
         }
@@ -195,10 +283,12 @@ public abstract class AbstractCsvLayout<T> {
             return this;
         }
 
+        @Override
         public Converter getConverter() {
             return converter_;
         }
 
+        @Override
         public String getPropertyName() {
             return propertyName_;
         }
@@ -209,54 +299,6 @@ public abstract class AbstractCsvLayout<T> {
                 return true;
             }
             return false;
-        }
-
-        @Override
-        public CsvColumnDef getColumnDef() {
-            final List<ColumnName> columnNames = getColumnNames();
-            if (columnNames.size() != 1) {
-                throw new IllegalStateException();
-            }
-            final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-            def.setColumnName(columnNames.get(0));
-            {
-                final String n = getPropertyName();
-                if (!StringUtil.isEmpty(n)) {
-                    def.setPropertyName(n);
-                } else {
-                    // プロパティ名がカラム名と同じとみなす
-                    def.setPropertyName(columnNames.get(0).getLabel());
-                }
-            }
-            def.setConverter(getConverter());
-            return def;
-        }
-
-        @Override
-        public CsvColumnsDef getColumnsDef() {
-            final List<ColumnName> columnNames = getColumnNames();
-            if (columnNames.size() < 2) {
-                throw new IllegalStateException();
-            }
-            final DefaultCsvColumnsDef sdef = new DefaultCsvColumnsDef();
-            {
-                final String n = getPropertyName();
-                if (StringUtil.isEmpty(n)) {
-                    throw new IllegalStateException(
-                            "property is not specified. for column {"
-                                    + columnNames + "}");
-                }
-                sdef.setPropertyName(n);
-            }
-            sdef.setConverter(getConverter());
-            for (final ColumnName columnName : columnNames) {
-                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                def.setColumnName(columnName);
-                //def.setPropertyName(getPropertyName());
-                //def.setConverter(getConverter());
-                sdef.addColumnDef(def);
-            }
-            return sdef;
         }
 
     }

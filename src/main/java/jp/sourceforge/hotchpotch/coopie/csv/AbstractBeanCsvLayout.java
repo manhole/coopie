@@ -1,13 +1,10 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.lang.reflect.Array;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-
-import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
@@ -19,7 +16,6 @@ import org.t2framework.commons.util.StringUtil;
 public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     private final BeanDesc<T> beanDesc_;
-    private CsvRecordDef recordDef_;
 
     private CsvRecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
             .getInstance();
@@ -30,19 +26,20 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     @Override
     protected CsvRecordDescSetup<T> getRecordDescSetup() {
-        return new BeanCsvRecordDescSetup<T>(beanDesc_);
+        return new BeanCsvRecordDescSetup<T>();
     }
 
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = recordDef();
             customizer_.customize(recordDef);
-            final BeanPropertyBinding.Factory<T> pbf = new BeanPropertyBinding.Factory<T>(
+            final PropertyBindingFactory<T> pbf = new BeanPropertyBinding.Factory<T>(
                     beanDesc_);
             final ColumnDesc<T>[] cds = recordDefToColumnDesc(recordDef, pbf);
             // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
             final RecordDesc<T> recordDesc = new DefaultRecordDesc<T>(cds,
-                    OrderSpecified.NO, new BeanRecordType<T>(beanDesc_));
+                    recordDef.getOrderSpecified(), new BeanRecordType<T>(
+                            beanDesc_));
             setRecordDesc(recordDesc);
         }
 
@@ -51,14 +48,15 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
     }
 
-    public CsvRecordDef recordDef() {
-        if (recordDef_ == null) {
-            recordDef_ = createRecordDef();
+    private CsvRecordDef recordDef() {
+        if (getRecordDef() == null) {
+            final CsvRecordDef r = createRecordDef();
+            setRecordDef(r);
         }
-        return recordDef_;
+        return getRecordDef();
     }
 
-    private CsvRecordDef createRecordDef() throws AssertionError {
+    private CsvRecordDef createRecordDef() {
         /*
          * アノテーションが付いている場合は、アノテーションを優先する
          */
@@ -75,7 +73,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         return recordDef;
     }
 
-    private static <T> ColumnDesc<T>[] recordDefToColumnDesc(
+    static <T> ColumnDesc<T>[] recordDefToColumnDesc(
             final CsvRecordDef recordDef, final PropertyBindingFactory<T> pbf) {
         final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
         appendColumnDescFromColumnDef(recordDef, list, pbf);
@@ -136,8 +134,8 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final ColumnName columnName = columnDef.getColumnName();
             final PropertyBinding<T, Object> pb = pbf
                     .getPropertyBinding(columnDef.getPropertyName());
-            final ColumnDesc<T> cd = newColumnDesc(columnName, pb,
-                    columnDef.getConverter());
+            final ColumnDesc<T> cd = DefaultColumnDesc.newColumnDesc(
+                    columnName, pb, columnDef.getConverter());
             list.add(cd);
         }
     }
@@ -152,89 +150,15 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             }
             final PropertyBinding<T, Object> pb = pbf
                     .getPropertyBinding(columnsDef.getPropertyName());
-            final ColumnDesc<T>[] cds = newCompositColumnDesc(columnNames, pb,
-                    columnsDef.getConverter());
+            final ColumnDesc<T>[] cds = CompositColumnDesc
+                    .newCompositColumnDesc(columnNames, pb,
+                            columnsDef.getConverter());
             Collections.addAll(list, cds);
         }
     }
 
     public void setCustomizer(final CsvRecordDefCustomizer columnCustomizer) {
         customizer_ = columnCustomizer;
-    }
-
-    private static <U> ColumnDesc<U> newColumnDesc(final ColumnName columnName,
-            final PropertyBinding propertyBinding, final Converter converter) {
-        final DefaultColumnDesc<U> cd = new DefaultColumnDesc<U>();
-        cd.setName(columnName);
-        cd.setPropertyBinding(propertyBinding);
-        cd.setConverter(converter);
-        return cd;
-    }
-
-    private static <U> ColumnDesc<U>[] newCompositColumnDesc(
-            final List<ColumnName> names,
-            final PropertyBinding<U, Object> propertyBinding,
-            final Converter converter) {
-
-        final CompositColumnDesc ccd = new CompositColumnDesc();
-        ccd.setPropertyBinding(propertyBinding);
-        ccd.setColumnNames(names);
-        ccd.setConverter(converter);
-        return ccd.getColumnDescs();
-    }
-
-    // TODO
-    public static <U> ColumnDesc<U>[] toColumnDescs(
-            final Collection<? extends InternalColumnBuilder> builders,
-            final PropertyBindingFactory<U> pbf) {
-
-        final CsvRecordDef recordDef = toRecordDesc(builders);
-        final ColumnDesc<U>[] cds = recordDefToColumnDesc(recordDef, pbf);
-        return cds;
-    }
-
-    private static CsvRecordDef toRecordDesc(
-            final Collection<? extends InternalColumnBuilder> builders) {
-        final CsvRecordDef recordDef = new DefaultCsvRecordDef();
-        for (final InternalColumnBuilder builder : builders) {
-            if (builder.isMultipleColumns()) {
-                recordDef.addColumnsDef(builder.getColumnsDef());
-            } else {
-                recordDef.addColumnDef(builder.getColumnDef());
-            }
-        }
-        return recordDef;
-    }
-
-    static class DefaultCsvRecordDef implements CsvRecordDef {
-
-        final List<CsvColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
-        final List<CsvColumnsDef> columnsDefs_ = CollectionsUtil.newArrayList();
-
-        public boolean isEmpty() {
-            return getColumnDefs().isEmpty() && getColumnsDefs().isEmpty();
-        }
-
-        @Override
-        public void addColumnDef(final CsvColumnDef columnDef) {
-            columnDefs_.add(columnDef);
-        }
-
-        @Override
-        public List<? extends CsvColumnDef> getColumnDefs() {
-            return columnDefs_;
-        }
-
-        @Override
-        public void addColumnsDef(final CsvColumnsDef columnsDef) {
-            columnsDefs_.add(columnsDef);
-        }
-
-        @Override
-        public List<? extends CsvColumnsDef> getColumnsDefs() {
-            return columnsDefs_;
-        }
-
     }
 
     static class CsvColumnDefComparator implements Comparator<CsvColumnDef> {
@@ -257,32 +181,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
     static class BeanCsvRecordDescSetup<T> extends
             AbstractCsvRecordDescSetup<T> {
 
-        private final BeanDesc<T> beanDesc_;
-        private RecordDesc<T> recordDesc_;
-
-        BeanCsvRecordDescSetup(final BeanDesc<T> beanDesc) {
-            beanDesc_ = beanDesc;
-        }
-
-        @Override
-        public RecordDesc<T> getRecordDesc() {
-            buildIfNeed();
-            return recordDesc_;
-        }
-
-        private void buildIfNeed() {
-            if (recordDesc_ != null) {
-                return;
-            }
-            /*
-             * 設定されているプロパティ名を対象に。
-             */
-            final PropertyBindingFactory<T> pbf = new BeanPropertyBinding.Factory<T>(
-                    beanDesc_);
-            final ColumnDesc<T>[] cds = toColumnDescs(getColumnBuilders(), pbf);
-            recordDesc_ = new DefaultRecordDesc<T>(cds,
-                    OrderSpecified.SPECIFIED, new BeanRecordType<T>(beanDesc_));
-        }
     }
 
     static class PropertyNotFoundException extends RuntimeException {
@@ -391,6 +289,18 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             }
         }
 
+        public static <T> ColumnDesc<T>[] newCompositColumnDesc(
+                final List<ColumnName> names,
+                final PropertyBinding<T, Object> propertyBinding,
+                final Converter converter) {
+
+            final CompositColumnDesc ccd = new CompositColumnDesc();
+            ccd.setPropertyBinding(propertyBinding);
+            ccd.setColumnNames(names);
+            ccd.setConverter(converter);
+            return ccd.getColumnDescs();
+        }
+
         class Adapter implements ColumnDesc<T> {
 
             private final ColumnName columnName_;
@@ -420,7 +330,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
 
     }
 
-    static class DefaultColumnDesc<T> implements ColumnDesc<T> {
+    public static class DefaultColumnDesc<T> implements ColumnDesc<T> {
 
         /**
          * CSV列名。
@@ -467,6 +377,17 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final Object to = converter_.convertFrom(from);
             propertyBinding_.setValue(bean, to);
         }
+
+        public static <T> ColumnDesc<T> newColumnDesc(
+                final ColumnName columnName,
+                final PropertyBinding propertyBinding, final Converter converter) {
+            final DefaultColumnDesc<T> cd = new DefaultColumnDesc<T>();
+            cd.setName(columnName);
+            cd.setPropertyBinding(propertyBinding);
+            cd.setConverter(converter);
+            return cd;
+        }
+
     }
 
 }

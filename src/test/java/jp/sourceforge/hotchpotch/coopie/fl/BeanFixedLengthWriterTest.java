@@ -58,7 +58,6 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_nosetup() throws Throwable {
         // ## Arrange ##
-
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
                 AaaBean.class);
 

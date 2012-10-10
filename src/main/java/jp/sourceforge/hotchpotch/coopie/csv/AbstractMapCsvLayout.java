@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
-import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
@@ -19,42 +18,34 @@ public abstract class AbstractMapCsvLayout<PROP> extends
 
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
-            /*
-             * カラム名が設定されていない場合は、
-             * Readの場合はヘッダから、
-             * Writeの場合は1件目から、
-             * カラム名を構築する。
-             */
-            setRecordDesc(new LazyMapRecordDesc<PROP>(this));
+            final CsvRecordDef recordDef = getRecordDef();
+            if (recordDef != null) {
+                final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
+                        .getInstance();
+                final ColumnDesc<Map<String, PROP>>[] cds = AbstractBeanCsvLayout
+                        .recordDefToColumnDesc(recordDef, pbf);
+                final RecordDesc<Map<String, PROP>> recordDesc = new DefaultRecordDesc<Map<String, PROP>>(
+                        cds, recordDef.getOrderSpecified(),
+                        new MapRecordType<PROP>());
+                setRecordDesc(recordDesc);
+            } else {
+                /*
+                 * カラム名が設定されていない場合は、
+                 * Readの場合はヘッダから、
+                 * Writeの場合は1件目から、
+                 * カラム名を構築する。
+                 */
+                setRecordDesc(new LazyMapRecordDesc<PROP>(this));
+            }
+        }
+
+        if (getRecordDesc() == null) {
+            throw new AssertionError();
         }
     }
 
     static class MapCsvRecordDescSetup<PROP> extends
             AbstractCsvRecordDescSetup<Map<String, PROP>> {
-
-        private RecordDesc<Map<String, PROP>> recordDesc_;
-
-        @Override
-        public RecordDesc<Map<String, PROP>> getRecordDesc() {
-            buildIfNeed();
-            return recordDesc_;
-        }
-
-        private void buildIfNeed() {
-            if (recordDesc_ != null) {
-                return;
-            }
-
-            /*
-             * 設定されているプロパティ名を対象に。
-             */
-            final MapPropertyBinding.Factory<PROP> pbf = MapPropertyBinding.Factory
-                    .getInstance();
-            final ColumnDesc<Map<String, PROP>>[] cds = AbstractBeanCsvLayout
-                    .toColumnDescs(getColumnBuilders(), pbf);
-            recordDesc_ = new DefaultRecordDesc<Map<String, PROP>>(cds,
-                    OrderSpecified.SPECIFIED, new MapRecordType<PROP>());
-        }
 
     }
 
@@ -73,7 +64,6 @@ public abstract class AbstractMapCsvLayout<PROP> extends
          */
         @Override
         public RecordDesc<Map<String, PROP>> setupByHeader(final String[] header) {
-
             logger.debug("setupByHeader: {}", Arrays.toString(header));
 
             /*
@@ -91,6 +81,9 @@ public abstract class AbstractMapCsvLayout<PROP> extends
                     }
                 }
             });
+
+            // TODO 素直にRecordDescを取得したい
+            layout_.prepareOpen();
 
             final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
@@ -124,6 +117,9 @@ public abstract class AbstractMapCsvLayout<PROP> extends
                     }
                 }
             });
+
+            // TODO 素直にRecordDescを取得したい
+            layout_.prepareOpen();
 
             final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
