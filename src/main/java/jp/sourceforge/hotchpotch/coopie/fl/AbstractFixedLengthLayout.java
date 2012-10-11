@@ -42,7 +42,9 @@ abstract class AbstractFixedLengthLayout<T> {
     private ElementEditor elementEditor_;
     private FixedLengthElementDesc[] fixedLengthElementDescs_;
 
-    protected abstract FixedLengthRecordDescSetup getRecordDescSetup();
+    protected FixedLengthRecordDescSetup getRecordDescSetup() {
+        return new DefaultFixedLengthRecordDescSetup<T>();
+    }
 
     public void setupColumns(final SetupBlock<FixedLengthColumnSetup> block) {
         final FixedLengthRecordDescSetup setup = getRecordDescSetup();
@@ -214,8 +216,8 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    protected abstract static class AbstractFixedLengthRecordDescSetup<T>
-            implements FixedLengthRecordDescSetup {
+    protected static class DefaultFixedLengthRecordDescSetup<T> implements
+            FixedLengthRecordDescSetup {
 
         private final List<FlColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();

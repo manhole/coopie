@@ -11,11 +11,6 @@ import org.slf4j.Logger;
 public abstract class AbstractMapCsvLayout<PROP> extends
         AbstractCsvLayout<Map<String, PROP>> {
 
-    @Override
-    protected AbstractCsvRecordDescSetup<Map<String, PROP>> getRecordDescSetup() {
-        return new MapCsvRecordDescSetup<PROP>();
-    }
-
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = getRecordDef();
@@ -42,11 +37,6 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         if (getRecordDesc() == null) {
             throw new AssertionError();
         }
-    }
-
-    static class MapCsvRecordDescSetup<PROP> extends
-            AbstractCsvRecordDescSetup<Map<String, PROP>> {
-
     }
 
     static class LazyMapRecordDesc<PROP> implements

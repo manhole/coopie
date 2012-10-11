@@ -75,11 +75,6 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         return w;
     }
 
-    @Override
-    protected FixedLengthRecordDescSetup getRecordDescSetup() {
-        return new BeanFixedLengthRecordDescSetup<T>();
-    }
-
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
             /*
@@ -256,11 +251,6 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         public int getEndIndex() {
             return column_.endIndex();
         }
-
-    }
-
-    private static class BeanFixedLengthRecordDescSetup<T> extends
-            AbstractFixedLengthRecordDescSetup<T> {
 
     }
 

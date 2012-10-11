@@ -79,14 +79,4 @@ public class MapFixedLengthLayout<PROP> extends
         }
     }
 
-    @Override
-    protected FixedLengthRecordDescSetup getRecordDescSetup() {
-        return new MapFixedLengthRecordDescSetup<PROP>();
-    }
-
-    private static class MapFixedLengthRecordDescSetup<PROP> extends
-            AbstractFixedLengthRecordDescSetup<Map<String, PROP>> {
-
-    }
-
 }

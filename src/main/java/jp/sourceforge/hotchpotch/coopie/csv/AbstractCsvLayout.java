@@ -30,7 +30,9 @@ public abstract class AbstractCsvLayout<T> {
         recordDef_ = setup.getRecordDef();
     }
 
-    protected abstract CsvRecordDescSetup<T> getRecordDescSetup();
+    protected CsvRecordDescSetup<T> getRecordDescSetup() {
+        return new DefaultCsvRecordDescSetup<T>();
+    }
 
     protected RecordDesc<T> getRecordDesc() {
         return recordDesc_;
@@ -121,7 +123,7 @@ public abstract class AbstractCsvLayout<T> {
 
     }
 
-    protected static abstract class AbstractCsvRecordDescSetup<T> implements
+    protected static class DefaultCsvRecordDescSetup<T> implements
             CsvRecordDescSetup<T> {
 
         private final List<InternalColumnBuilder> columnBuilders_ = CollectionsUtil

@@ -24,11 +24,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
 
-    @Override
-    protected CsvRecordDescSetup<T> getRecordDescSetup() {
-        return new BeanCsvRecordDescSetup<T>();
-    }
-
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = recordDef();
@@ -175,11 +170,6 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             final int ret = o1.getOrder() - o2.getOrder();
             return ret;
         }
-
-    }
-
-    static class BeanCsvRecordDescSetup<T> extends
-            AbstractCsvRecordDescSetup<T> {
 
     }
 
