@@ -1,10 +1,10 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public class DefaultRecordWriter<T> extends AbstractRecordWriter<T> {
+public class DefaultRecordWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
     private ElementInOut elementInOut_;
 
-    public DefaultRecordWriter(final RecordDesc<T> recordDesc) {
+    public DefaultRecordWriter(final RecordDesc<BEAN> recordDesc) {
         super(recordDesc);
     }
 

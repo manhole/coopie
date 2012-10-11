@@ -902,8 +902,9 @@ public class BeanCsvReaderTest {
         assertReadAfterLast(csvReader, bean);
     }
 
-    public static <T> void assertReadAfterLast(final RecordReader<T> csvReader,
-            final T bean) throws Throwable {
+    public static <BEAN> void assertReadAfterLast(
+            final RecordReader<BEAN> csvReader, final BEAN bean)
+            throws Throwable {
         csvReader.read(bean);
         csvReader.read(bean);
         csvReader.read(bean);

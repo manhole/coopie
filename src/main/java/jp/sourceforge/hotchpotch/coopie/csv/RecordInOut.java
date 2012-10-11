@@ -1,9 +1,9 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface RecordInOut<T> {
+public interface RecordInOut<BEAN> {
 
-    RecordWriter<T> openWriter(Appendable appendable);
+    RecordReader<BEAN> openReader(Readable readable);
 
-    RecordReader<T> openReader(Readable readable);
+    RecordWriter<BEAN> openWriter(Appendable appendable);
 
 }

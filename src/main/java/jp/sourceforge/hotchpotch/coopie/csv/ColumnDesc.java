@@ -1,11 +1,11 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface ColumnDesc<T> {
+public interface ColumnDesc<BEAN> {
 
     ColumnName getName();
 
-    String getValue(T bean);
+    String getValue(BEAN bean);
 
-    void setValue(T bean, String value);
+    void setValue(BEAN bean, String value);
 
 }

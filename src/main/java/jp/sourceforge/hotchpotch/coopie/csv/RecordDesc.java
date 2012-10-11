@@ -1,16 +1,16 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface RecordDesc<T> {
+public interface RecordDesc<BEAN> {
 
     /**
      * ファイル 1レコードぶんの文字列を、オブジェクトから構築します。
      */
-    String[] getValues(T bean);
+    String[] getValues(BEAN bean);
 
     /**
      * ファイル 1レコードぶんの文字列を、オブジェクトへセットします。
      */
-    void setValues(T bean, String[] values);
+    void setValues(BEAN bean, String[] values);
 
     /**
      * ヘッダ行の文字列を返します。
@@ -26,17 +26,17 @@ public interface RecordDesc<T> {
     /**
      * ファイルを読む際に、ヘッダ行からrecord定義を修正します。
      */
-    RecordDesc<T> setupByHeader(String[] header);
+    RecordDesc<BEAN> setupByHeader(String[] header);
 
     /**
      * ファイルへ書く際に、1行目のオブジェクトからrecord定義を修正します。
      */
-    RecordDesc<T> setupByBean(T bean);
+    RecordDesc<BEAN> setupByBean(BEAN bean);
 
     /**
      * 1レコードぶんのオブジェクトを生成します。
      */
-    T newInstance();
+    BEAN newInstance();
 
     public enum OrderSpecified {
 

@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 import org.t2framework.commons.util.StringUtil;
 
-public abstract class AbstractCsvLayout<T> {
+public abstract class AbstractCsvLayout<BEAN> {
 
     private static final Logger logger = LoggerFactory.getLogger();
-    private RecordDesc<T> recordDesc_;
+    private RecordDesc<BEAN> recordDesc_;
     private CsvRecordDef recordDef_;
 
     private boolean withHeader_ = true;
@@ -25,20 +25,20 @@ public abstract class AbstractCsvLayout<T> {
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
         recordDesc_ = null;
-        final CsvRecordDescSetup<T> setup = getRecordDescSetup();
+        final CsvRecordDescSetup setup = getRecordDescSetup();
         block.setup(setup);
         recordDef_ = setup.getRecordDef();
     }
 
-    protected CsvRecordDescSetup<T> getRecordDescSetup() {
-        return new DefaultCsvRecordDescSetup<T>();
+    protected CsvRecordDescSetup getRecordDescSetup() {
+        return new DefaultCsvRecordDescSetup();
     }
 
-    protected RecordDesc<T> getRecordDesc() {
+    protected RecordDesc<BEAN> getRecordDesc() {
         return recordDesc_;
     }
 
-    protected void setRecordDesc(final RecordDesc<T> recordDesc) {
+    protected void setRecordDesc(final RecordDesc<BEAN> recordDesc) {
         recordDesc_ = recordDesc;
     }
 
@@ -117,14 +117,14 @@ public abstract class AbstractCsvLayout<T> {
         }
     }
 
-    protected static interface CsvRecordDescSetup<T> extends CsvColumnSetup {
+    protected static interface CsvRecordDescSetup extends CsvColumnSetup {
 
         CsvRecordDef getRecordDef();
 
     }
 
-    protected static class DefaultCsvRecordDescSetup<T> implements
-            CsvRecordDescSetup<T> {
+    protected static class DefaultCsvRecordDescSetup implements
+            CsvRecordDescSetup {
 
         private final List<InternalColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();

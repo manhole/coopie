@@ -2,16 +2,16 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import org.t2framework.commons.meta.BeanDesc;
 
-public class BeanRecordType<T> implements RecordType<T> {
+public class BeanRecordType<BEAN> implements RecordType<BEAN> {
 
-    private final BeanDesc<T> beanDesc_;
+    private final BeanDesc<BEAN> beanDesc_;
 
-    public BeanRecordType(final BeanDesc<T> beanDesc) {
+    public BeanRecordType(final BeanDesc<BEAN> beanDesc) {
         beanDesc_ = beanDesc;
     }
 
     @Override
-    public T newInstance() {
+    public BEAN newInstance() {
         return beanDesc_.newInstance();
     }
 

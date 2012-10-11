@@ -61,22 +61,23 @@ public class CsvExampleTest {
      */
     static class SomeCsvIO {
 
-        static <T> RecordWriter<T> openWriter(final Class<T> clazz,
+        static <BEAN> RecordWriter<BEAN> openWriter(final Class<BEAN> clazz,
                 final Appendable appendable) {
-            final BeanCsvLayout<T> layout = createLayout(clazz);
-            final RecordWriter<T> writer = layout.openWriter(appendable);
+            final BeanCsvLayout<BEAN> layout = createLayout(clazz);
+            final RecordWriter<BEAN> writer = layout.openWriter(appendable);
             return writer;
         }
 
-        static <T> RecordReader<T> openReader(final Class<T> clazz,
+        static <BEAN> RecordReader<BEAN> openReader(final Class<BEAN> clazz,
                 final Readable readable) {
-            final BeanCsvLayout<T> layout = createLayout(clazz);
-            final RecordReader<T> reader = layout.openReader(readable);
+            final BeanCsvLayout<BEAN> layout = createLayout(clazz);
+            final RecordReader<BEAN> reader = layout.openReader(readable);
             return reader;
         }
 
-        private static <T> BeanCsvLayout<T> createLayout(final Class<T> clazz) {
-            final BeanCsvLayout<T> layout = BeanCsvLayout.getInstance(clazz);
+        private static <BEAN> BeanCsvLayout<BEAN> createLayout(
+                final Class<BEAN> clazz) {
+            final BeanCsvLayout<BEAN> layout = BeanCsvLayout.getInstance(clazz);
             // 要素区切り文字をカンマ","にする
             layout.setElementSeparator(CsvSetting.COMMA);
             // 要素を必要なときのみクォートする

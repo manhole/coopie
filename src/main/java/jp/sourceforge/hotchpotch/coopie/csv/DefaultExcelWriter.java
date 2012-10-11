@@ -12,11 +12,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-public class DefaultExcelWriter<T> extends AbstractRecordWriter<T> {
+public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
     private WriteEditor writeEditor_ = DefaultWriteEditor.getInstance();
 
-    public DefaultExcelWriter(final RecordDesc<T> recordDesc) {
+    public DefaultExcelWriter(final RecordDesc<BEAN> recordDesc) {
         super(recordDesc);
     }
 

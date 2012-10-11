@@ -18,9 +18,9 @@ import org.slf4j.Logger;
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
 
-class DefaultExcelReader<T> extends AbstractRecordReader<T> {
+class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
 
-    public DefaultExcelReader(final RecordDesc<T> recordDesc) {
+    public DefaultExcelReader(final RecordDesc<BEAN> recordDesc) {
         super(recordDesc);
     }
 

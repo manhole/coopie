@@ -1,7 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface RecordType<T> {
+public interface RecordType<BEAN> {
 
-    T newInstance();
+    BEAN newInstance();
 
 }

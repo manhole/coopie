@@ -3,10 +3,10 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public interface ExcelInOut<T> {
+public interface ExcelInOut<BEAN> {
 
-    RecordReader<T> openReader(InputStream is);
+    RecordReader<BEAN> openReader(InputStream is);
 
-    RecordWriter<T> openWriter(OutputStream os);
+    RecordWriter<BEAN> openWriter(OutputStream os);
 
 }

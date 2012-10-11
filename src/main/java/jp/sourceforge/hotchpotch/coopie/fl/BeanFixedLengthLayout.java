@@ -128,14 +128,15 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         return cds;
     }
 
-    private static <T> void appendColumnDescFromColumnDef(
+    private static <BEAN> void appendColumnDescFromColumnDef(
             final FixedLengthRecordDef recordDef,
-            final List<ColumnDesc<T>> list, final PropertyBindingFactory<T> pbf) {
+            final List<ColumnDesc<BEAN>> list,
+            final PropertyBindingFactory<BEAN> pbf) {
         for (final FixedLengthColumnDef columnDef : recordDef.getColumnDefs()) {
             final ColumnName columnName = columnDef.getColumnName();
-            final PropertyBinding<T, Object> pb = pbf
+            final PropertyBinding<BEAN, Object> pb = pbf
                     .getPropertyBinding(columnDef.getPropertyName());
-            final ColumnDesc<T> cd = DefaultColumnDesc.newColumnDesc(
+            final ColumnDesc<BEAN> cd = DefaultColumnDesc.newColumnDesc(
                     columnName, pb, columnDef.getConverter());
             list.add(cd);
         }

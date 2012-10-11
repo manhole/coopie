@@ -377,14 +377,15 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    protected static class FixedLengthRecordDesc<T> implements RecordDesc<T> {
+    protected static class FixedLengthRecordDesc<BEAN> implements
+            RecordDesc<BEAN> {
 
-        private final RecordDesc<T> delegate_;
+        private final RecordDesc<BEAN> delegate_;
 
-        protected FixedLengthRecordDesc(final ColumnDesc<T>[] columnDescs,
-                final RecordType<T> recordType) {
+        protected FixedLengthRecordDesc(final ColumnDesc<BEAN>[] columnDescs,
+                final RecordType<BEAN> recordType) {
             // 固定長なので、常に指定した順序
-            delegate_ = new DefaultRecordDesc<T>(columnDescs,
+            delegate_ = new DefaultRecordDesc<BEAN>(columnDescs,
                     OrderSpecified.SPECIFIED, recordType);
         }
 
@@ -394,22 +395,22 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         @Override
-        public String[] getValues(final T bean) {
+        public String[] getValues(final BEAN bean) {
             return delegate_.getValues(bean);
         }
 
         @Override
-        public void setValues(final T bean, final String[] values) {
+        public void setValues(final BEAN bean, final String[] values) {
             delegate_.setValues(bean, values);
         }
 
         @Override
-        public RecordDesc<T> setupByBean(final T bean) {
+        public RecordDesc<BEAN> setupByBean(final BEAN bean) {
             return delegate_.setupByBean(bean);
         }
 
         @Override
-        public T newInstance() {
+        public BEAN newInstance() {
             return delegate_.newInstance();
         }
 
@@ -420,7 +421,7 @@ abstract class AbstractFixedLengthLayout<T> {
         }
 
         @Override
-        public RecordDesc<T> setupByHeader(final String[] header) {
+        public RecordDesc<BEAN> setupByHeader(final String[] header) {
             // 固定長では、ヘッダがあっても見ない
             return this;
         }

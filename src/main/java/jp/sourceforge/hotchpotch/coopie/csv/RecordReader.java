@@ -2,11 +2,11 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import jp.sourceforge.hotchpotch.coopie.util.Closable;
 
-public interface RecordReader<T> extends Closable {
+public interface RecordReader<BEAN> extends Closable {
 
-    T read();
+    BEAN read();
 
-    void read(T bean);
+    void read(BEAN bean);
 
     boolean hasNext();
 
