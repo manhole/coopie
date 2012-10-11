@@ -60,11 +60,15 @@ public class MapFixedLengthReaderTest {
 
         // ## Act ##
         // ## Assert ##
+        boolean success = false;
         try {
             layout.openReader(r);
-            fail();
-        } catch (final IllegalStateException e) {
+            success = true;
+        } catch (final AssertionError e) {
             logger.debug(e.getMessage());
+        }
+        if (success) {
+            fail();
         }
     }
 

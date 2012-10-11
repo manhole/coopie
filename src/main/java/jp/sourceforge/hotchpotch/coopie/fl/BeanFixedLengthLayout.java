@@ -98,7 +98,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         }
 
         if (getRecordDesc() == null) {
-            throw new IllegalStateException("recordDesc");
+            throw new AssertionError("recordDesc");
         }
     }
 
