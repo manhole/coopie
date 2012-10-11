@@ -65,11 +65,15 @@ public class BeanFixedLengthReaderTest {
 
         // ## Act ##
         // ## Assert ##
+        boolean success = false;
         try {
             layout.openReader(r);
-            fail();
-        } catch (final IllegalStateException e) {
+            success = true;
+        } catch (final AssertionError e) {
             logger.debug(e.getMessage());
+        }
+        if (success) {
+            fail();
         }
     }
 
@@ -632,7 +636,8 @@ public class BeanFixedLengthReaderTest {
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
+                setup.column("aaa", 0, 10).withConverter(
+                        new BigDecimalConverter());
                 setup.column("bbb", 10, 20);
             }
         });
@@ -691,7 +696,8 @@ public class BeanFixedLengthReaderTest {
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
                 // TODO ここでpropertyを呼び忘れた場合のエラーを、わかりやすくする
                 setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .toProperty("bbb").withConverter(new CalendarConverter());
+                        .toProperty("bbb")
+                        .withConverter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);
@@ -744,7 +750,8 @@ public class BeanFixedLengthReaderTest {
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
                 setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .toProperty("bbb").withConverter(new CalendarConverter());
+                        .toProperty("bbb")
+                        .withConverter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);

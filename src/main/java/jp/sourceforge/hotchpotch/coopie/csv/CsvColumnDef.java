@@ -23,4 +23,6 @@ public interface CsvColumnDef {
 
     ColumnName getColumnName();
 
+    void setColumnName(ColumnName columnName);
+
 }

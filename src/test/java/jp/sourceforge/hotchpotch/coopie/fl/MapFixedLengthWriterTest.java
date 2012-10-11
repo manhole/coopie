@@ -60,11 +60,15 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         // ## Assert ##
+        boolean success = false;
         try {
             layout.openWriter(new StringWriter());
-            fail();
-        } catch (final IllegalStateException e) {
+            success = true;
+        } catch (final AssertionError e) {
             logger.debug(e.getMessage());
+        }
+        if (success) {
+            fail();
         }
     }
 
