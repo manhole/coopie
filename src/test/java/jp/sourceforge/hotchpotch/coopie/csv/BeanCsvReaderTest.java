@@ -605,13 +605,14 @@ public class BeanCsvReaderTest {
 
         // ## Act ##
         // ## Assert ##
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("bad_property_name");
+            }
+        });
         try {
-            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-                @Override
-                public void setup(final CsvColumnSetup setup) {
-                    setup.column("bad_property_name");
-                }
-            });
+            layout.prepareOpen();
             fail();
         } catch (final PropertyNotFoundException e) {
             logger.debug(e.getMessage());
