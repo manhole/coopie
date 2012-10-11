@@ -39,7 +39,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
         }
 
         if (getRecordDesc() == null) {
-            throw new AssertionError();
+            throw new AssertionError("recordDesc");
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class AbstractBeanCsvLayout<T> extends AbstractCsvLayout<T> {
             recordDef = createRecordDefByProperties();
         }
         if (recordDef == null) {
-            throw new AssertionError();
+            throw new AssertionError("recordDef");
         }
         return recordDef;
     }

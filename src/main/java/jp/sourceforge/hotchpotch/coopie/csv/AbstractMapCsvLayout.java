@@ -35,7 +35,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         }
 
         if (getRecordDesc() == null) {
-            throw new AssertionError();
+            throw new AssertionError("recordDesc");
         }
     }
 
