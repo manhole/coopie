@@ -48,4 +48,16 @@ class DefaultCsvRecordDef implements CsvRecordDef {
         orderSpecified_ = orderSpecified;
     }
 
+    @Override
+    public List<? extends CsvColumnDef> getAllColumnDefs() {
+        final List<CsvColumnDef> all = CollectionsUtil.newArrayList();
+        all.addAll(getColumnDefs());
+        final List<? extends CsvColumnsDef> columnsDefs = getColumnsDefs();
+        for (final CsvColumnsDef columnsDef : columnsDefs) {
+            final List<CsvColumnDef> columnDefs = columnsDef.getColumnDefs();
+            all.addAll(columnDefs);
+        }
+        return all;
+    }
+
 }

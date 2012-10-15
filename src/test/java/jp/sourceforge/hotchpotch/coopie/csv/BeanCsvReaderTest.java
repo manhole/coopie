@@ -197,6 +197,62 @@ public class BeanCsvReaderTest {
         assertRead2(csvReader, bean);
     }
 
+    /**
+     * ヘッダがBeanのプロパティ名と異なる場合。
+     * ヘッダ名とbeanのプロパティ名をマッピングすること。
+     * 
+     * ヘッダ名が事前に決まらない(ロケールにより決定するなどで何パターンか有り得る)場合。
+     * Customizerでの実装。
+     * TODO CSV列名とのマッチングを確定する方法は、この書き方では手間なので、改善したい。
+     */
+    @Test
+    public void read2_3() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-2", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+
+        layout.setCustomizer(new CsvRecordDefCustomizer() {
+            @Override
+            public void customize(final CsvRecordDef recordDef) {
+                for (final CsvColumnDef def : recordDef.getAllColumnDefs()) {
+                    final ColumnName cn = def.getColumnName();
+                    final String pn = cn.getLabel();
+                    if ("aaa".equals(pn)) {
+                        def.setColumnName(new LazyColumnName(pn) {
+                            @Override
+                            public boolean labelEquals(final String label) {
+                                return label.contains("あ");
+                            }
+                        });
+                    } else if ("bbb".equals(pn)) {
+                        def.setColumnName(new LazyColumnName(pn) {
+                            @Override
+                            public boolean labelEquals(final String label) {
+                                return label.contains("いい");
+                            }
+                        });
+                    } else if ("ccc".equals(pn)) {
+                        def.setColumnName(new LazyColumnName(pn) {
+                            @Override
+                            public boolean labelEquals(final String label) {
+                                return label.contains("ううう");
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertRead2(csvReader, bean);
+    }
+
     static class LazyColumnName extends SimpleColumnName {
 
         public LazyColumnName(final String labelAndName) {
