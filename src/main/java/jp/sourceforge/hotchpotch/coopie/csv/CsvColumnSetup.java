@@ -4,17 +4,21 @@ public interface CsvColumnSetup {
 
     ColumnBuilder column(ColumnName name);
 
-    /*
-     * カラム名とプロパティ名が同じ場合
-     */
     ColumnBuilder column(String name);
 
     ColumnBuilder columns(final String... names);
 
     interface ColumnBuilder {
 
+        /*
+         * カラム名とプロパティ名が異なる場合は、当メソッドでプロパティ名を指定してください。
+         */
         ColumnBuilder toProperty(final String propertyName);
 
+        /*
+         * 型変換およびcompositカラムである場合は、
+         * 当メソッドでconverterを指定してください。
+         */
         void withConverter(Converter converter);
 
     }
