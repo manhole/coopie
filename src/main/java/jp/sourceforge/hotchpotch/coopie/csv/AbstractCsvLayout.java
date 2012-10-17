@@ -1,7 +1,10 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.Collections;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.CompositColumnDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.DefaultColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
@@ -114,6 +117,48 @@ public abstract class AbstractCsvLayout<BEAN> {
          */
         if (assigned == 0) {
             throw new IllegalArgumentException("no suitable");
+        }
+    }
+
+    protected ColumnDesc<BEAN>[] recordDefToColumnDesc(
+            final CsvRecordDef recordDef, final PropertyBindingFactory<BEAN> pbf) {
+        final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();
+        appendColumnDescFromColumnDef(recordDef, list, pbf);
+        appendColumnDescFromColumnsDef(recordDef, list, pbf);
+        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(list.size());
+        list.toArray(cds);
+        return cds;
+    }
+
+    private void appendColumnDescFromColumnDef(final CsvRecordDef recordDef,
+            final List<ColumnDesc<BEAN>> list,
+            final PropertyBindingFactory<BEAN> pbf) {
+
+        for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
+            final ColumnName columnName = columnDef.getColumnName();
+            final PropertyBinding<BEAN, Object> pb = pbf
+                    .getPropertyBinding(columnDef.getPropertyName());
+            final ColumnDesc<BEAN> cd = DefaultColumnDesc.newColumnDesc(
+                    columnName, pb, columnDef.getConverter());
+            list.add(cd);
+        }
+    }
+
+    private void appendColumnDescFromColumnsDef(final CsvRecordDef recordDef,
+            final List<ColumnDesc<BEAN>> list,
+            final PropertyBindingFactory<BEAN> pbf) {
+
+        for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
+            final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
+            for (final CsvColumnDef columnDef : columnsDef.getColumnDefs()) {
+                columnNames.add(columnDef.getColumnName());
+            }
+            final PropertyBinding<BEAN, Object> pb = pbf
+                    .getPropertyBinding(columnsDef.getPropertyName());
+            final ColumnDesc<BEAN>[] cds = CompositColumnDesc
+                    .newCompositColumnDesc(columnNames, pb,
+                            columnsDef.getConverter());
+            Collections.addAll(list, cds);
         }
     }
 

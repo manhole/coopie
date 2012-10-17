@@ -17,8 +17,8 @@ public abstract class AbstractMapCsvLayout<PROP> extends
             if (recordDef != null) {
                 final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
                         .getInstance();
-                final ColumnDesc<Map<String, PROP>>[] cds = AbstractBeanCsvLayout
-                        .recordDefToColumnDesc(recordDef, pbf);
+                final ColumnDesc<Map<String, PROP>>[] cds = recordDefToColumnDesc(
+                        recordDef, pbf);
                 final RecordDesc<Map<String, PROP>> recordDesc = new DefaultRecordDesc<Map<String, PROP>>(
                         cds, recordDef.getOrderSpecified(),
                         new MapRecordType<PROP>());

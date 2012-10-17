@@ -69,16 +69,6 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
         return recordDef;
     }
 
-    static <BEAN> ColumnDesc<BEAN>[] recordDefToColumnDesc(
-            final CsvRecordDef recordDef, final PropertyBindingFactory<BEAN> pbf) {
-        final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();
-        appendColumnDescFromColumnDef(recordDef, list, pbf);
-        appendColumnDescFromColumnsDef(recordDef, list, pbf);
-        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(list.size());
-        list.toArray(cds);
-        return cds;
-    }
-
     private CsvRecordDef createRecordDefByAnnotation() {
         final DefaultCsvRecordDef recordDef = new DefaultCsvRecordDef();
         final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
@@ -121,36 +111,6 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
             recordDef.addColumnDef(columnDef);
         }
         return recordDef;
-    }
-
-    private static <BEAN> void appendColumnDescFromColumnDef(
-            final CsvRecordDef recordDef, final List<ColumnDesc<BEAN>> list,
-            final PropertyBindingFactory<BEAN> pbf) {
-        for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
-            final ColumnName columnName = columnDef.getColumnName();
-            final PropertyBinding<BEAN, Object> pb = pbf
-                    .getPropertyBinding(columnDef.getPropertyName());
-            final ColumnDesc<BEAN> cd = DefaultColumnDesc.newColumnDesc(
-                    columnName, pb, columnDef.getConverter());
-            list.add(cd);
-        }
-    }
-
-    private static <BEAN> void appendColumnDescFromColumnsDef(
-            final CsvRecordDef recordDef, final List<ColumnDesc<BEAN>> list,
-            final PropertyBindingFactory<BEAN> pbf) {
-        for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
-            final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
-            for (final CsvColumnDef columnDef : columnsDef.getColumnDefs()) {
-                columnNames.add(columnDef.getColumnName());
-            }
-            final PropertyBinding<BEAN, Object> pb = pbf
-                    .getPropertyBinding(columnsDef.getPropertyName());
-            final ColumnDesc<BEAN>[] cds = CompositColumnDesc
-                    .newCompositColumnDesc(columnNames, pb,
-                            columnsDef.getConverter());
-            Collections.addAll(list, cds);
-        }
     }
 
     public void setCustomizer(final CsvRecordDefCustomizer columnCustomizer) {
