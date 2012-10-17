@@ -151,6 +151,23 @@ abstract class AbstractFixedLengthLayout<T> {
         return a;
     }
 
+    protected FixedLengthElementDesc[] recordDefToElementDescs(
+            final FixedLengthRecordDef recordDef) {
+        final List<FixedLengthElementDesc> elementDescs = CollectionsUtil
+                .newArrayList();
+        for (final FixedLengthColumnDef columnDef : recordDef
+                .getAllColumnDefs()) {
+            final FixedLengthElementDesc elementDesc = new SimpleFixedLengthElementDesc(
+                    columnDef.getBeginIndex(), columnDef.getEndIndex());
+            elementDescs.add(elementDesc);
+        }
+
+        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[elementDescs
+                .size()];
+        elementDescs.toArray(descs);
+        return descs;
+    }
+
     protected static interface FixedLengthRecordDescSetup extends
             FixedLengthColumnSetup {
 

@@ -59,8 +59,7 @@ public class MapFixedLengthLayout<PROP> extends
             final FixedLengthRecordDef recordDef = getRecordDef();
             if (recordDef != null) {
                 {
-                    final FixedLengthElementDesc[] elementDescs = BeanFixedLengthLayout
-                            .setupElementDescs(recordDef);
+                    final FixedLengthElementDesc[] elementDescs = recordDefToElementDescs(recordDef);
                     setFixedLengthElementDescs(elementDescs);
                 }
 

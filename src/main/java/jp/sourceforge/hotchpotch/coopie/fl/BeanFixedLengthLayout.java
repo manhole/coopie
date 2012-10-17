@@ -83,7 +83,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
             final FixedLengthRecordDef recordDef = recordDef();
             // TODO customizer_.customize(recordDef);
             {
-                final FixedLengthElementDesc[] elementDescs = setupElementDescs(recordDef);
+                final FixedLengthElementDesc[] elementDescs = recordDefToElementDescs(recordDef);
                 setFixedLengthElementDescs(elementDescs);
             }
             {
@@ -100,21 +100,6 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         if (getRecordDesc() == null) {
             throw new AssertionError("recordDesc");
         }
-    }
-
-    static FixedLengthElementDesc[] setupElementDescs(
-            final FixedLengthRecordDef recordDef) {
-        final List<FixedLengthElementDesc> elementDescs = CollectionsUtil
-                .newArrayList();
-        for (final FixedLengthColumnDef columnDef : recordDef
-                .getAllColumnDefs()) {
-            final FixedLengthElementDesc elementDesc = new SimpleFixedLengthElementDesc(
-                    columnDef.getBeginIndex(), columnDef.getEndIndex());
-            elementDescs.add(elementDesc);
-        }
-        final FixedLengthElementDesc[] descs = elementDescs
-                .toArray(new FixedLengthElementDesc[elementDescs.size()]);
-        return descs;
     }
 
     static <T> ColumnDesc<T>[] recordDefToColumnDesc(
