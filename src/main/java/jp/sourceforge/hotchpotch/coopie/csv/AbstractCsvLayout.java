@@ -26,13 +26,13 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
         recordDesc_ = null;
-        final CsvRecordDescSetup setup = getRecordDescSetup();
+        final CsvRecordDefSetup setup = getRecordDefSetup();
         block.setup(setup);
         recordDef_ = setup.getRecordDef();
     }
 
-    protected CsvRecordDescSetup getRecordDescSetup() {
-        return new DefaultCsvRecordDescSetup();
+    protected CsvRecordDefSetup getRecordDefSetup() {
+        return new DefaultCsvRecordDefSetup();
     }
 
     protected RecordDesc<BEAN> getRecordDesc() {
@@ -160,14 +160,14 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
     }
 
-    protected static interface CsvRecordDescSetup extends CsvColumnSetup {
+    protected static interface CsvRecordDefSetup extends CsvColumnSetup {
 
         CsvRecordDef getRecordDef();
 
     }
 
-    protected static class DefaultCsvRecordDescSetup implements
-            CsvRecordDescSetup {
+    protected static class DefaultCsvRecordDefSetup implements
+            CsvRecordDefSetup {
 
         private final List<InternalColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
