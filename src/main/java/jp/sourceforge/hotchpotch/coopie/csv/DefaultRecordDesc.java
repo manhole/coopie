@@ -126,7 +126,7 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
              */
             //throw new RuntimeException("headerElem=" + headerElem);
             logger.debug("ignore column=[{}]", headerElem);
-            cds[i] = new DefaultRecordDesc.IgnoreColumnDesc<BEAN>();
+            cds[i] = DefaultRecordDesc.IgnoreColumnDesc.getInstance();
             i++;
         }
 
@@ -166,6 +166,12 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
     }
 
     private static class IgnoreColumnDesc<BEAN> implements ColumnDesc<BEAN> {
+
+        private static IgnoreColumnDesc INSTANCE = new IgnoreColumnDesc();
+
+        public static <BEAN> IgnoreColumnDesc<BEAN> getInstance() {
+            return INSTANCE;
+        }
 
         @Override
         public ColumnName getName() {
