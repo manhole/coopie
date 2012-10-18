@@ -3,14 +3,14 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 import java.util.Collections;
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.CompositColumnDesc;
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.DefaultColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.Annotations;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDescs;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
+import jp.sourceforge.hotchpotch.coopie.csv.CompositColumnDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.PropertyBinding;

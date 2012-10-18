@@ -3,8 +3,6 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.util.Collections;
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.CompositColumnDesc;
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.DefaultColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
