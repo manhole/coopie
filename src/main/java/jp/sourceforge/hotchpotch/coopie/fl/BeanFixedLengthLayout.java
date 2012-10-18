@@ -1,19 +1,13 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
-import java.util.Collections;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.Annotations;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnDescs;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
-import jp.sourceforge.hotchpotch.coopie.csv.CompositColumnDesc;
-import jp.sourceforge.hotchpotch.coopie.csv.DefaultColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
-import jp.sourceforge.hotchpotch.coopie.csv.PropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
@@ -99,51 +93,6 @@ public class BeanFixedLengthLayout<BEAN> extends
 
         if (getRecordDesc() == null) {
             throw new AssertionError("recordDesc");
-        }
-    }
-
-    static <BEAN> ColumnDesc<BEAN>[] recordDefToColumnDesc(
-            final FixedLengthRecordDef recordDef,
-            final PropertyBindingFactory<BEAN> pbf) {
-        final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();
-        appendColumnDescFromColumnDef(recordDef, list, pbf);
-        appendColumnDescFromColumnsDef(recordDef, list, pbf);
-        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(list.size());
-        list.toArray(cds);
-        return cds;
-    }
-
-    private static <BEAN> void appendColumnDescFromColumnDef(
-            final FixedLengthRecordDef recordDef,
-            final List<ColumnDesc<BEAN>> list,
-            final PropertyBindingFactory<BEAN> pbf) {
-        for (final FixedLengthColumnDef columnDef : recordDef.getColumnDefs()) {
-            final ColumnName columnName = columnDef.getColumnName();
-            final PropertyBinding<BEAN, Object> pb = pbf
-                    .getPropertyBinding(columnDef.getPropertyName());
-            final ColumnDesc<BEAN> cd = DefaultColumnDesc.newColumnDesc(
-                    columnName, pb, columnDef.getConverter());
-            list.add(cd);
-        }
-    }
-
-    private static <BEAN> void appendColumnDescFromColumnsDef(
-            final FixedLengthRecordDef recordDef,
-            final List<ColumnDesc<BEAN>> list,
-            final PropertyBindingFactory<BEAN> pbf) {
-        for (final FixedLengthColumnsDef columnsDef : recordDef
-                .getColumnsDefs()) {
-            final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
-            for (final FixedLengthColumnDef columnDef : columnsDef
-                    .getColumnDefs()) {
-                columnNames.add(columnDef.getColumnName());
-            }
-            final PropertyBinding<BEAN, Object> pb = pbf
-                    .getPropertyBinding(columnsDef.getPropertyName());
-            final ColumnDesc<BEAN>[] cds = CompositColumnDesc
-                    .newCompositColumnDesc(columnNames, pb,
-                            columnsDef.getConverter());
-            Collections.addAll(list, cds);
         }
     }
 

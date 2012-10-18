@@ -1,14 +1,18 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.SimpleColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnDescs;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
+import jp.sourceforge.hotchpotch.coopie.csv.CompositColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultElementReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultLineReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordDesc;
@@ -18,6 +22,8 @@ import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.LineReaderHandler;
+import jp.sourceforge.hotchpotch.coopie.csv.PropertyBinding;
+import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
@@ -149,6 +155,51 @@ abstract class AbstractFixedLengthLayout<BEAN> {
                 getFixedLengthElementDescs());
         a.setLineReaderHandler(getLineReaderHandler());
         return a;
+    }
+
+    protected ColumnDesc<BEAN>[] recordDefToColumnDesc(
+            final FixedLengthRecordDef recordDef,
+            final PropertyBindingFactory<BEAN> pbf) {
+        final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();
+        appendColumnDescFromColumnDef(recordDef, list, pbf);
+        appendColumnDescFromColumnsDef(recordDef, list, pbf);
+        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(list.size());
+        list.toArray(cds);
+        return cds;
+    }
+
+    private void appendColumnDescFromColumnDef(
+            final FixedLengthRecordDef recordDef,
+            final List<ColumnDesc<BEAN>> list,
+            final PropertyBindingFactory<BEAN> pbf) {
+        for (final FixedLengthColumnDef columnDef : recordDef.getColumnDefs()) {
+            final ColumnName columnName = columnDef.getColumnName();
+            final PropertyBinding<BEAN, Object> pb = pbf
+                    .getPropertyBinding(columnDef.getPropertyName());
+            final ColumnDesc<BEAN> cd = DefaultColumnDesc.newColumnDesc(
+                    columnName, pb, columnDef.getConverter());
+            list.add(cd);
+        }
+    }
+
+    private void appendColumnDescFromColumnsDef(
+            final FixedLengthRecordDef recordDef,
+            final List<ColumnDesc<BEAN>> list,
+            final PropertyBindingFactory<BEAN> pbf) {
+        for (final FixedLengthColumnsDef columnsDef : recordDef
+                .getColumnsDefs()) {
+            final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
+            for (final FixedLengthColumnDef columnDef : columnsDef
+                    .getColumnDefs()) {
+                columnNames.add(columnDef.getColumnName());
+            }
+            final PropertyBinding<BEAN, Object> pb = pbf
+                    .getPropertyBinding(columnsDef.getPropertyName());
+            final ColumnDesc<BEAN>[] cds = CompositColumnDesc
+                    .newCompositColumnDesc(columnNames, pb,
+                            columnsDef.getConverter());
+            Collections.addAll(list, cds);
+        }
     }
 
     protected FixedLengthElementDesc[] recordDefToElementDescs(

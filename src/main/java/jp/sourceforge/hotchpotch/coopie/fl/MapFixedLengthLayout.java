@@ -65,8 +65,8 @@ public class MapFixedLengthLayout<PROP> extends
 
                 final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
                         .getInstance();
-                final ColumnDesc<Map<String, PROP>>[] cds = BeanFixedLengthLayout
-                        .recordDefToColumnDesc(recordDef, pbf);
+                final ColumnDesc<Map<String, PROP>>[] cds = recordDefToColumnDesc(
+                        recordDef, pbf);
                 final RecordDesc<Map<String, PROP>> recordDesc = new FixedLengthRecordDesc<Map<String, PROP>>(
                         cds, new MapRecordType<PROP>());
                 setRecordDesc(recordDesc);
