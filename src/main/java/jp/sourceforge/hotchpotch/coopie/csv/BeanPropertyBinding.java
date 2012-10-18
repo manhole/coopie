@@ -46,6 +46,9 @@ public class BeanPropertyBinding<BEAN, PROP> implements
         @Override
         public <PROP> PropertyBinding<BEAN, PROP> getPropertyBinding(
                 final String name) {
+            if (name == null) {
+                throw new NullPointerException("name");
+            }
             final PropertyDesc<BEAN> pd = beanDesc_.getPropertyDesc(name);
             if (pd == null) {
                 final ClassDesc<BEAN> classDesc = beanDesc_.getClassDesc();
