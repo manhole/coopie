@@ -177,7 +177,6 @@ public abstract class AbstractCsvLayout<BEAN> {
         @Override
         public ColumnBuilder column(final ColumnName name) {
             final InternalColumnBuilder builder = builder(name);
-            builder.toProperty(name.getLabel());
             return builder;
         }
 
