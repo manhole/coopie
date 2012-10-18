@@ -28,11 +28,11 @@ import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
 import org.t2framework.commons.util.StringUtil;
 
-abstract class AbstractFixedLengthLayout<T> {
+abstract class AbstractFixedLengthLayout<BEAN> {
 
     // 固定長ファイルでは「ヘッダ無し」をデフォルトにする。
     private boolean withHeader_ = false;
-    private RecordDesc<T> recordDesc_;
+    private RecordDesc<BEAN> recordDesc_;
     private FixedLengthRecordDef recordDef_;
 
     private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
@@ -43,7 +43,7 @@ abstract class AbstractFixedLengthLayout<T> {
     private FixedLengthElementDesc[] fixedLengthElementDescs_;
 
     protected FixedLengthRecordDefSetup getRecordDefSetup() {
-        return new DefaultFixedLengthRecordDefSetup<T>();
+        return new DefaultFixedLengthRecordDefSetup();
     }
 
     public void setupColumns(final SetupBlock<FixedLengthColumnSetup> block) {
@@ -52,11 +52,11 @@ abstract class AbstractFixedLengthLayout<T> {
         recordDef_ = setup.getRecordDef();
     }
 
-    protected RecordDesc<T> getRecordDesc() {
+    protected RecordDesc<BEAN> getRecordDesc() {
         return recordDesc_;
     }
 
-    protected void setRecordDesc(final RecordDesc<T> recordDesc) {
+    protected void setRecordDesc(final RecordDesc<BEAN> recordDesc) {
         recordDesc_ = recordDesc;
     }
 
@@ -233,7 +233,7 @@ abstract class AbstractFixedLengthLayout<T> {
 
     }
 
-    protected static class DefaultFixedLengthRecordDefSetup<T> implements
+    protected static class DefaultFixedLengthRecordDefSetup implements
             FixedLengthRecordDefSetup {
 
         private final List<FlColumnBuilder> columnBuilders_ = CollectionsUtil

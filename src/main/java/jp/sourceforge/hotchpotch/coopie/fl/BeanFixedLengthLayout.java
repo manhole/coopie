@@ -26,31 +26,31 @@ import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
 import org.t2framework.commons.util.CollectionsUtil;
 
-public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
-        implements RecordInOut<T> {
+public class BeanFixedLengthLayout<BEAN> extends
+        AbstractFixedLengthLayout<BEAN> implements RecordInOut<BEAN> {
 
-    private final BeanDesc<T> beanDesc_;
+    private final BeanDesc<BEAN> beanDesc_;
 
-    public static <T> BeanFixedLengthLayout<T> getInstance(
-            final Class<T> beanClass) {
-        final BeanFixedLengthLayout<T> instance = new BeanFixedLengthLayout<T>(
+    public static <BEAN> BeanFixedLengthLayout<BEAN> getInstance(
+            final Class<BEAN> beanClass) {
+        final BeanFixedLengthLayout<BEAN> instance = new BeanFixedLengthLayout<BEAN>(
                 beanClass);
         return instance;
     }
 
-    public BeanFixedLengthLayout(final Class<T> beanClass) {
+    public BeanFixedLengthLayout(final Class<BEAN> beanClass) {
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
 
     @Override
-    public RecordReader<T> openReader(final Readable readable) {
+    public RecordReader<BEAN> openReader(final Readable readable) {
         if (readable == null) {
             throw new NullPointerException("readable");
         }
 
         prepareOpen();
-        final RecordDesc<T> rd = getRecordDesc();
-        final DefaultRecordReader<T> r = new DefaultRecordReader<T>(rd);
+        final RecordDesc<BEAN> rd = getRecordDesc();
+        final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(rd);
         r.setWithHeader(isWithHeader());
         r.setElementInOut(createElementInOut());
         r.setElementEditor(getElementEditor());
@@ -60,14 +60,14 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     }
 
     @Override
-    public RecordWriter<T> openWriter(final Appendable appendable) {
+    public RecordWriter<BEAN> openWriter(final Appendable appendable) {
         if (appendable == null) {
             throw new NullPointerException("appendable");
         }
 
         prepareOpen();
-        final RecordDesc<T> rd = getRecordDesc();
-        final DefaultRecordWriter<T> w = new DefaultRecordWriter<T>(rd);
+        final RecordDesc<BEAN> rd = getRecordDesc();
+        final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(rd);
         w.setWithHeader(isWithHeader());
         w.setElementInOut(createElementInOut());
         // TODO openで例外時にcloseすること
@@ -87,12 +87,12 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
                 setFixedLengthElementDescs(elementDescs);
             }
             {
-                final PropertyBindingFactory<T> pbf = new BeanPropertyBinding.Factory<T>(
+                final PropertyBindingFactory<BEAN> pbf = new BeanPropertyBinding.Factory<BEAN>(
                         beanDesc_);
-                final ColumnDesc<T>[] cds = recordDefToColumnDesc(recordDef,
+                final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef,
                         pbf);
-                final RecordDesc<T> recordDesc = new FixedLengthRecordDesc<T>(
-                        cds, new BeanRecordType<T>(beanDesc_));
+                final RecordDesc<BEAN> recordDesc = new FixedLengthRecordDesc<BEAN>(
+                        cds, new BeanRecordType<BEAN>(beanDesc_));
                 setRecordDesc(recordDesc);
             }
         }
@@ -102,13 +102,13 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         }
     }
 
-    static <T> ColumnDesc<T>[] recordDefToColumnDesc(
+    static <BEAN> ColumnDesc<BEAN>[] recordDefToColumnDesc(
             final FixedLengthRecordDef recordDef,
-            final PropertyBindingFactory<T> pbf) {
-        final List<ColumnDesc<T>> list = CollectionsUtil.newArrayList();
+            final PropertyBindingFactory<BEAN> pbf) {
+        final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();
         appendColumnDescFromColumnDef(recordDef, list, pbf);
         appendColumnDescFromColumnsDef(recordDef, list, pbf);
-        final ColumnDesc<T>[] cds = ColumnDescs.newColumnDescs(list.size());
+        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(list.size());
         list.toArray(cds);
         return cds;
     }
@@ -127,9 +127,10 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         }
     }
 
-    private static <T> void appendColumnDescFromColumnsDef(
+    private static <BEAN> void appendColumnDescFromColumnsDef(
             final FixedLengthRecordDef recordDef,
-            final List<ColumnDesc<T>> list, final PropertyBindingFactory<T> pbf) {
+            final List<ColumnDesc<BEAN>> list,
+            final PropertyBindingFactory<BEAN> pbf) {
         for (final FixedLengthColumnsDef columnsDef : recordDef
                 .getColumnsDefs()) {
             final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
@@ -137,9 +138,9 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
                     .getColumnDefs()) {
                 columnNames.add(columnDef.getColumnName());
             }
-            final PropertyBinding<T, Object> pb = pbf
+            final PropertyBinding<BEAN, Object> pb = pbf
                     .getPropertyBinding(columnsDef.getPropertyName());
-            final ColumnDesc<T>[] cds = CompositColumnDesc
+            final ColumnDesc<BEAN>[] cds = CompositColumnDesc
                     .newCompositColumnDesc(columnNames, pb,
                             columnsDef.getConverter());
             Collections.addAll(list, cds);
@@ -167,8 +168,8 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
 
     private FixedLengthRecordDef createRecordDefByAnnotation() {
         final DefaultFixedLengthRecordDef recordDef = new DefaultFixedLengthRecordDef();
-        final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
-        for (final PropertyDesc<T> pd : pds) {
+        final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
+        for (final PropertyDesc<BEAN> pd : pds) {
             final FixedLengthColumn column = Annotations.getAnnotation(pd,
                     FixedLengthColumn.class);
             if (column == null) {
@@ -188,15 +189,15 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
     }
 
     private void setupByAnnotation() {
-        final List<PdAndColumn<T>> cols = CollectionsUtil.newArrayList();
-        final List<PropertyDesc<T>> pds = beanDesc_.getAllPropertyDesc();
-        for (final PropertyDesc<T> pd : pds) {
+        final List<PdAndColumn<BEAN>> cols = CollectionsUtil.newArrayList();
+        final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
+        for (final PropertyDesc<BEAN> pd : pds) {
             final FixedLengthColumn column = Annotations.getAnnotation(pd,
                     FixedLengthColumn.class);
             if (column == null) {
                 continue;
             }
-            cols.add(new PdAndColumn<T>(pd, column));
+            cols.add(new PdAndColumn<BEAN>(pd, column));
         }
 
         if (cols.isEmpty()) {
@@ -207,7 +208,7 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
-                for (final PdAndColumn<T> col : cols) {
+                for (final PdAndColumn<BEAN> col : cols) {
                     setup.column(col.getPropertyName(), col.getBeginIndex(),
                             col.getEndIndex());
                 }
@@ -215,12 +216,12 @@ public class BeanFixedLengthLayout<T> extends AbstractFixedLengthLayout<T>
         });
     }
 
-    private static class PdAndColumn<T> {
+    private static class PdAndColumn<BEAN> {
 
-        private final PropertyDesc<T> desc_;
+        private final PropertyDesc<BEAN> desc_;
         private final FixedLengthColumn column_;
 
-        public PdAndColumn(final PropertyDesc<T> desc,
+        public PdAndColumn(final PropertyDesc<BEAN> desc,
                 final FixedLengthColumn column) {
             desc_ = desc;
             column_ = column;
