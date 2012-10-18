@@ -4,17 +4,6 @@ import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 
 public class SimpleColumnName implements ColumnName {
 
-    public SimpleColumnName() {
-    }
-
-    public SimpleColumnName(final String labelAndName) {
-        setLabel(labelAndName);
-        setName(labelAndName);
-    }
-
-    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher
-            .getInstance();
-
     /**
      * オブジェクトのプロパティ名
      */
@@ -24,6 +13,17 @@ public class SimpleColumnName implements ColumnName {
      * CSVの項目名
      */
     private String label_;
+
+    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher
+            .getInstance();
+
+    public SimpleColumnName() {
+    }
+
+    public SimpleColumnName(final String labelAndName) {
+        setLabel(labelAndName);
+        setName(labelAndName);
+    }
 
     public String getName() {
         return name_;
@@ -54,21 +54,6 @@ public class SimpleColumnName implements ColumnName {
     @Override
     public String toString() {
         return new ToStringFormat().format(this);
-    }
-
-    private static class ExactNameMatcher implements ColumnNameMatcher {
-
-        private static ExactNameMatcher INSTANCE = new ExactNameMatcher();
-
-        public static ExactNameMatcher getInstance() {
-            return INSTANCE;
-        }
-
-        @Override
-        public boolean matches(final ColumnName columnName, final String str) {
-            return columnName.getLabel().equals(str);
-        }
-
     }
 
 }

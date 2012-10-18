@@ -171,34 +171,19 @@ public class BeanCsvReaderTest {
                 {
                     final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
                     def.setPropertyName("bbb");
-                    def.setColumnName(new LazyColumnName() {
-                        @Override
-                        public boolean labelEquals(final String label) {
-                            return label.contains("い");
-                        }
-                    });
+                    def.setColumnNameMatcher(new ContainsNameMatcher("い"));
                     setup.column(def);
                 }
                 {
                     final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
                     def.setPropertyName("aaa");
-                    def.setColumnName(new LazyColumnName() {
-                        @Override
-                        public boolean labelEquals(final String label) {
-                            return label.contains("あ");
-                        }
-                    });
+                    def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
                     setup.column(def);
                 }
                 {
                     final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
                     def.setPropertyName("ccc");
-                    def.setColumnName(new LazyColumnName() {
-                        @Override
-                        public boolean labelEquals(final String label) {
-                            return label.contains("う");
-                        }
-                    });
+                    def.setColumnNameMatcher(new ContainsNameMatcher("う"));
                     setup.column(def);
                 }
             }
@@ -232,29 +217,13 @@ public class BeanCsvReaderTest {
             @Override
             public void customize(final CsvRecordDef recordDef) {
                 for (final CsvColumnDef def : recordDef.getAllColumnDefs()) {
-                    final ColumnName cn = def.getColumnName();
-                    final String pn = cn.getLabel();
+                    final String pn = def.getLabel();
                     if ("aaa".equals(pn)) {
-                        def.setColumnName(new LazyColumnName(pn) {
-                            @Override
-                            public boolean labelEquals(final String label) {
-                                return label.contains("あ");
-                            }
-                        });
+                        def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
                     } else if ("bbb".equals(pn)) {
-                        def.setColumnName(new LazyColumnName(pn) {
-                            @Override
-                            public boolean labelEquals(final String label) {
-                                return label.contains("いい");
-                            }
-                        });
+                        def.setColumnNameMatcher(new ContainsNameMatcher("いい"));
                     } else if ("ccc".equals(pn)) {
-                        def.setColumnName(new LazyColumnName(pn) {
-                            @Override
-                            public boolean labelEquals(final String label) {
-                                return label.contains("ううう");
-                            }
-                        });
+                        def.setColumnNameMatcher(new ContainsNameMatcher("ううう"));
                     }
                 }
             }
@@ -266,23 +235,6 @@ public class BeanCsvReaderTest {
         // ## Assert ##
         final AaaBean bean = new AaaBean();
         assertRead2(csvReader, bean);
-    }
-
-    static class LazyColumnName extends SimpleColumnName {
-
-        public LazyColumnName() {
-        }
-
-        public LazyColumnName(final String labelAndName) {
-            setLabel(labelAndName);
-            setName(labelAndName);
-        }
-
-        @Override
-        public boolean labelEquals(final String label) {
-            throw new AssertionError("should override");
-        }
-
     }
 
     public static void assertRead2(final RecordReader<AaaBean> csvReader,

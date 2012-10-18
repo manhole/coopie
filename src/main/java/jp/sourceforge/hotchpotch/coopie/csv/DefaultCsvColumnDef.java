@@ -12,8 +12,8 @@ class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
     private int order_;
     private Converter<?, ?> converter_ = PassthroughStringConverter
             .getInstance();
-
-    private ColumnName columnName_;
+    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher
+            .getInstance();
 
     public void setup(final CsvColumn column, final PropertyDesc pd) {
         if (StringUtil.isBlank(column.label())) {
@@ -90,19 +90,13 @@ class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
     }
 
     @Override
-    public ColumnName getColumnName() {
-        if (columnName_ == null) {
-            final SimpleColumnName columnName = new SimpleColumnName();
-            columnName.setName(getPropertyName());
-            columnName.setLabel(getLabel());
-            columnName_ = columnName;
-        }
-        return columnName_;
+    public ColumnNameMatcher getColumnNameMatcher() {
+        return columnNameMatcher_;
     }
 
     @Override
-    public void setColumnName(final ColumnName columnName) {
-        columnName_ = columnName;
+    public void setColumnNameMatcher(final ColumnNameMatcher columnNameMatcher) {
+        columnNameMatcher_ = columnNameMatcher;
     }
 
 }

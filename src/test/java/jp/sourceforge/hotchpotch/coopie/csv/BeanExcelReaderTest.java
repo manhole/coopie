@@ -11,7 +11,6 @@ import java.io.InputStream;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
-import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.LazyColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
@@ -112,34 +111,19 @@ public class BeanExcelReaderTest {
                 {
                     final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
                     def.setPropertyName("bbb");
-                    def.setColumnName(new LazyColumnName() {
-                        @Override
-                        public boolean labelEquals(final String label) {
-                            return label.contains("い");
-                        }
-                    });
+                    def.setColumnNameMatcher(new ContainsNameMatcher("い"));
                     setup.column(def);
                 }
                 {
                     final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
                     def.setPropertyName("aaa");
-                    def.setColumnName(new LazyColumnName() {
-                        @Override
-                        public boolean labelEquals(final String label) {
-                            return label.contains("あ");
-                        }
-                    });
+                    def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
                     setup.column(def);
                 }
                 {
                     final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
                     def.setPropertyName("ccc");
-                    def.setColumnName(new LazyColumnName() {
-                        @Override
-                        public boolean labelEquals(final String label) {
-                            return label.contains("う");
-                        }
-                    });
+                    def.setColumnNameMatcher(new ContainsNameMatcher("う"));
                     setup.column(def);
                 }
             }

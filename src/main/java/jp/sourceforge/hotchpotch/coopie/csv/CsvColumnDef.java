@@ -23,8 +23,8 @@ public interface CsvColumnDef {
 
     Class<?> getPropertyType();
 
-    ColumnName getColumnName();
+    ColumnNameMatcher getColumnNameMatcher();
 
-    void setColumnName(ColumnName columnName);
+    void setColumnNameMatcher(ColumnNameMatcher columnNameMatcher);
 
 }

@@ -120,6 +120,7 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     protected ColumnDesc<BEAN>[] recordDefToColumnDesc(
             final CsvRecordDef recordDef, final PropertyBindingFactory<BEAN> pbf) {
+
         final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();
         appendColumnDescFromColumnDef(recordDef, list, pbf);
         appendColumnDescFromColumnsDef(recordDef, list, pbf);
@@ -133,7 +134,7 @@ public abstract class AbstractCsvLayout<BEAN> {
             final PropertyBindingFactory<BEAN> pbf) {
 
         for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
-            final ColumnName columnName = columnDef.getColumnName();
+            final ColumnName columnName = newColumnName(columnDef);
             final PropertyBinding<BEAN, Object> pb = pbf
                     .getPropertyBinding(columnDef.getPropertyName());
             final ColumnDesc<BEAN> cd = DefaultColumnDesc.newColumnDesc(
@@ -149,7 +150,7 @@ public abstract class AbstractCsvLayout<BEAN> {
         for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
             final List<ColumnName> columnNames = CollectionsUtil.newArrayList();
             for (final CsvColumnDef columnDef : columnsDef.getColumnDefs()) {
-                columnNames.add(columnDef.getColumnName());
+                columnNames.add(newColumnName(columnDef));
             }
             final PropertyBinding<BEAN, Object> pb = pbf
                     .getPropertyBinding(columnsDef.getPropertyName());
@@ -158,6 +159,14 @@ public abstract class AbstractCsvLayout<BEAN> {
                             columnsDef.getConverter());
             Collections.addAll(list, cds);
         }
+    }
+
+    private ColumnName newColumnName(final CsvColumnDef columnDef) {
+        final SimpleColumnName columnName = new SimpleColumnName();
+        columnName.setName(columnDef.getPropertyName());
+        columnName.setLabel(columnDef.getLabel());
+        columnName.setColumnNameMatcher(columnDef.getColumnNameMatcher());
+        return columnName;
     }
 
     protected static interface CsvRecordDefSetup extends CsvColumnSetup {
@@ -175,12 +184,6 @@ public abstract class AbstractCsvLayout<BEAN> {
         private CsvRecordDef recordDef_;
 
         @Override
-        public ColumnBuilder column(final CsvColumnDef columnDef) {
-            final InternalCsvColumnBuilder builder = builder(columnDef);
-            return builder;
-        }
-
-        @Override
         public ColumnBuilder column(final String name) {
             final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
             def.setLabel(name);
@@ -189,16 +192,21 @@ public abstract class AbstractCsvLayout<BEAN> {
             return builder;
         }
 
+        @Override
+        public ColumnBuilder column(final CsvColumnDef columnDef) {
+            final InternalCsvColumnBuilder builder = builder(columnDef);
+            return builder;
+        }
+
         private InternalCsvColumnBuilder builder(final CsvColumnDef columnDef) {
-            final SimpleColumnBuilder builder = new SimpleColumnBuilder(
-                    columnDef);
+            final CsvColumnBuilder builder = new CsvColumnBuilder(columnDef);
             columnBuilders_.add(builder);
             return builder;
         }
 
         @Override
         public ColumnBuilder columns(final String... names) {
-            final SimpleColumnBuilder builder = new SimpleColumnBuilder();
+            final CsvColumnBuilder builder = new CsvColumnBuilder();
             columnBuilders_.add(builder);
             for (final String name : names) {
                 final DefaultCsvColumnDef n = new DefaultCsvColumnDef();
@@ -289,13 +297,13 @@ public abstract class AbstractCsvLayout<BEAN> {
 
         Converter getConverter();
 
+        boolean isMultipleColumns();
+
     }
 
     public interface InternalCsvColumnBuilder extends InternalColumnBuilder {
 
         List<CsvColumnDef> getColumnDefs();
-
-        boolean isMultipleColumns();
 
     }
 
@@ -329,16 +337,16 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     }
 
-    public static class SimpleColumnBuilder extends AbstractColumnBuilder
-            implements InternalCsvColumnBuilder {
+    static class CsvColumnBuilder extends AbstractColumnBuilder implements
+            InternalCsvColumnBuilder {
 
         private final List<CsvColumnDef> columnDefs_ = CollectionsUtil
                 .newArrayList();
 
-        public SimpleColumnBuilder() {
+        public CsvColumnBuilder() {
         }
 
-        public SimpleColumnBuilder(final CsvColumnDef columnDef) {
+        public CsvColumnBuilder(final CsvColumnDef columnDef) {
             addColumnDef(columnDef);
         }
 

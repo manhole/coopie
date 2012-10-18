@@ -24,7 +24,6 @@ class DefaultCsvColumnsDef implements CsvColumnsDef {
                 columnDef.setLabel(column.label());
             }
             columnDef.setOrder(column.order());
-            columnDef.setColumnName(new SimpleColumnName(columnDef.getLabel()));
             addColumnDef(columnDef);
         }
         setPropertyName(pd.getPropertyName());

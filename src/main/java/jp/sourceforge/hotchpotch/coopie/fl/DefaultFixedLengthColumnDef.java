@@ -1,9 +1,7 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.Converter;
 import jp.sourceforge.hotchpotch.coopie.csv.PassthroughStringConverter;
-import jp.sourceforge.hotchpotch.coopie.csv.SimpleColumnName;
 
 class DefaultFixedLengthColumnDef implements FixedLengthColumnDef {
 
@@ -12,7 +10,6 @@ class DefaultFixedLengthColumnDef implements FixedLengthColumnDef {
     private int endIndex_;
     private Converter<?, ?> converter_ = PassthroughStringConverter
             .getInstance();
-    private ColumnName columnName_;
 
     @Override
     public String getPropertyName() {
@@ -49,21 +46,6 @@ class DefaultFixedLengthColumnDef implements FixedLengthColumnDef {
     @Override
     public void setConverter(final Converter<?, ?> converter) {
         converter_ = converter;
-    }
-
-    @Override
-    public ColumnName getColumnName() {
-        if (columnName_ == null) {
-            final SimpleColumnName columnName = new SimpleColumnName(
-                    getPropertyName());
-            columnName_ = columnName;
-        }
-        return columnName_;
-    }
-
-    @Override
-    public void setColumnName(final ColumnName columnName) {
-        columnName_ = columnName;
     }
 
 }
