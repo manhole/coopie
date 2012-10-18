@@ -13,12 +13,10 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
-import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
-import org.t2framework.commons.util.CollectionsUtil;
 
 public class BeanFixedLengthLayout<BEAN> extends
         AbstractFixedLengthLayout<BEAN> implements RecordInOut<BEAN> {
@@ -135,59 +133,6 @@ public class BeanFixedLengthLayout<BEAN> extends
         }
 
         return recordDef;
-    }
-
-    private void setupByAnnotation() {
-        final List<PdAndColumn<BEAN>> cols = CollectionsUtil.newArrayList();
-        final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
-        for (final PropertyDesc<BEAN> pd : pds) {
-            final FixedLengthColumn column = Annotations.getAnnotation(pd,
-                    FixedLengthColumn.class);
-            if (column == null) {
-                continue;
-            }
-            cols.add(new PdAndColumn<BEAN>(pd, column));
-        }
-
-        if (cols.isEmpty()) {
-            return;
-        }
-
-        // TODO CSV側へやり方を合わせる
-        setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                for (final PdAndColumn<BEAN> col : cols) {
-                    setup.column(col.getPropertyName(), col.getBeginIndex(),
-                            col.getEndIndex());
-                }
-            }
-        });
-    }
-
-    private static class PdAndColumn<BEAN> {
-
-        private final PropertyDesc<BEAN> desc_;
-        private final FixedLengthColumn column_;
-
-        public PdAndColumn(final PropertyDesc<BEAN> desc,
-                final FixedLengthColumn column) {
-            desc_ = desc;
-            column_ = column;
-        }
-
-        public String getPropertyName() {
-            return desc_.getPropertyName();
-        }
-
-        public int getBeginIndex() {
-            return column_.beginIndex();
-        }
-
-        public int getEndIndex() {
-            return column_.endIndex();
-        }
-
     }
 
 }
