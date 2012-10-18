@@ -68,6 +68,7 @@ class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
         return propertyName_;
     }
 
+    @Override
     public void setPropertyName(final String propertyName) {
         propertyName_ = propertyName;
     }

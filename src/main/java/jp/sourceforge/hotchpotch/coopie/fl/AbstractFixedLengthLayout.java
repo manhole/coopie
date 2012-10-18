@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.AbstractColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuilder;
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.SimpleColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDescs;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
@@ -27,7 +27,6 @@ import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
-import jp.sourceforge.hotchpotch.coopie.csv.SimpleColumnName;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.t2framework.commons.exception.IORuntimeException;
@@ -302,7 +301,7 @@ abstract class AbstractFixedLengthLayout<BEAN> {
         @Override
         public ColumnBuilder column(final FixedLengthColumnDef columnDef) {
             final FlColumnBuilder builder = new FlColumnBuilder();
-            builder.addFixedLengthColumnDef(columnDef);
+            builder.addColumnDef(columnDef);
             builder.toProperty(columnDef.getPropertyName());
             columnBuilders_.add(builder);
             return builder;
@@ -312,7 +311,7 @@ abstract class AbstractFixedLengthLayout<BEAN> {
         public ColumnBuilder columns(final FixedLengthColumnDef... columnDefs) {
             final FlColumnBuilder builder = new FlColumnBuilder();
             for (final FixedLengthColumnDef columnDef : columnDefs) {
-                builder.addFixedLengthColumnDef(columnDef);
+                builder.addColumnDef(columnDef);
             }
             columnBuilders_.add(builder);
             return builder;
@@ -502,20 +501,14 @@ abstract class AbstractFixedLengthLayout<BEAN> {
 
     }
 
-    static class FlColumnBuilder extends SimpleColumnBuilder implements
+    static class FlColumnBuilder extends AbstractColumnBuilder implements
             InternalFlColumnBuilder {
 
         private final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil
                 .newArrayList();
 
-        public void addFixedLengthColumnDef(final FixedLengthColumnDef columnDef) {
+        public void addColumnDef(final FixedLengthColumnDef columnDef) {
             columnDefs_.add(columnDef);
-            // TODO この時点ではColumnNameを作らなくて良い。
-            // 後からも作るため、
-            final ColumnName columnName = new SimpleColumnName(
-                    columnDef.getPropertyName());
-            addColumnName(columnName);
-
         }
 
         @Override

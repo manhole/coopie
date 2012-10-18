@@ -19,6 +19,8 @@ public interface CsvColumnDef {
 
     String getPropertyName();
 
+    void setPropertyName(String propertyName);
+
     Class<?> getPropertyType();
 
     ColumnName getColumnName();

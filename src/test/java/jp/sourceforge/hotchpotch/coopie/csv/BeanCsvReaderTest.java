@@ -168,24 +168,39 @@ public class BeanCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column(new LazyColumnName("bbb") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("い");
-                    }
-                });
-                setup.column(new LazyColumnName("aaa") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("あ");
-                    }
-                });
-                setup.column(new LazyColumnName("ccc") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("う");
-                    }
-                });
+                {
+                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                    def.setPropertyName("bbb");
+                    def.setColumnName(new LazyColumnName() {
+                        @Override
+                        public boolean labelEquals(final String label) {
+                            return label.contains("い");
+                        }
+                    });
+                    setup.column(def);
+                }
+                {
+                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                    def.setPropertyName("aaa");
+                    def.setColumnName(new LazyColumnName() {
+                        @Override
+                        public boolean labelEquals(final String label) {
+                            return label.contains("あ");
+                        }
+                    });
+                    setup.column(def);
+                }
+                {
+                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                    def.setPropertyName("ccc");
+                    def.setColumnName(new LazyColumnName() {
+                        @Override
+                        public boolean labelEquals(final String label) {
+                            return label.contains("う");
+                        }
+                    });
+                    setup.column(def);
+                }
             }
         });
 
@@ -254,6 +269,9 @@ public class BeanCsvReaderTest {
     }
 
     static class LazyColumnName extends SimpleColumnName {
+
+        public LazyColumnName() {
+        }
 
         public LazyColumnName(final String labelAndName) {
             setLabel(labelAndName);

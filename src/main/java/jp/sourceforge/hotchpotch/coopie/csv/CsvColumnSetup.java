@@ -2,7 +2,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 public interface CsvColumnSetup {
 
-    ColumnBuilder column(ColumnName name);
+    ColumnBuilder column(CsvColumnDef columnDef);
 
     ColumnBuilder column(String name);
 

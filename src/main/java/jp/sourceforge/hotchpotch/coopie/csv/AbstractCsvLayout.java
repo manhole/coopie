@@ -169,26 +169,29 @@ public abstract class AbstractCsvLayout<BEAN> {
     protected static class DefaultCsvRecordDefSetup implements
             CsvRecordDefSetup {
 
-        private final List<InternalColumnBuilder> columnBuilders_ = CollectionsUtil
+        private final List<InternalCsvColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
 
         private CsvRecordDef recordDef_;
 
         @Override
-        public ColumnBuilder column(final ColumnName name) {
-            final InternalColumnBuilder builder = builder(name);
+        public ColumnBuilder column(final CsvColumnDef columnDef) {
+            final InternalCsvColumnBuilder builder = builder(columnDef);
             return builder;
         }
 
         @Override
         public ColumnBuilder column(final String name) {
-            final SimpleColumnName n = new SimpleColumnName(name);
-            final InternalColumnBuilder builder = builder(n);
+            final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+            def.setLabel(name);
+            def.setPropertyName(name);
+            final InternalCsvColumnBuilder builder = builder(def);
             return builder;
         }
 
-        private InternalColumnBuilder builder(final ColumnName name) {
-            final SimpleColumnBuilder builder = new SimpleColumnBuilder(name);
+        private InternalCsvColumnBuilder builder(final CsvColumnDef columnDef) {
+            final SimpleColumnBuilder builder = new SimpleColumnBuilder(
+                    columnDef);
             columnBuilders_.add(builder);
             return builder;
         }
@@ -198,8 +201,10 @@ public abstract class AbstractCsvLayout<BEAN> {
             final SimpleColumnBuilder builder = new SimpleColumnBuilder();
             columnBuilders_.add(builder);
             for (final String name : names) {
-                final SimpleColumnName n = new SimpleColumnName(name);
-                builder.addColumnName(n);
+                final DefaultCsvColumnDef n = new DefaultCsvColumnDef();
+                n.setLabel(name);
+                n.setPropertyName(name);
+                builder.addColumnDef(n);
             }
             return builder;
         }
@@ -219,7 +224,7 @@ public abstract class AbstractCsvLayout<BEAN> {
              * 設定されているプロパティ名を対象に。
              */
             final CsvRecordDef recordDef = new DefaultCsvRecordDef();
-            for (final InternalColumnBuilder builder : columnBuilders_) {
+            for (final InternalCsvColumnBuilder builder : columnBuilders_) {
                 if (builder.isMultipleColumns()) {
                     final CsvColumnsDef columnsDef = toColumnsDef(builder);
                     recordDef.addColumnsDef(columnsDef);
@@ -232,29 +237,30 @@ public abstract class AbstractCsvLayout<BEAN> {
             recordDef_ = recordDef;
         }
 
-        private CsvColumnDef toColumnDef(final InternalColumnBuilder builder) {
-            final List<ColumnName> columnNames = builder.getColumnNames();
-            if (columnNames.size() != 1) {
+        private CsvColumnDef toColumnDef(final InternalCsvColumnBuilder builder) {
+            final List<CsvColumnDef> columnDefs = builder.getColumnDefs();
+            if (columnDefs.size() != 1) {
                 throw new IllegalStateException();
             }
-            final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-            final ColumnName columnName = columnNames.get(0);
-            def.setColumnName(columnName);
+            final CsvColumnDef def = columnDefs.get(0);
             {
                 final String n = builder.getPropertyName();
                 if (!StringUtil.isEmpty(n)) {
                     def.setPropertyName(n);
                 } else {
-                    // プロパティ名がカラム名と同じとみなす
-                    def.setPropertyName(columnName.getLabel());
+                    if (StringUtil.isEmpty(def.getPropertyName())) {
+                        // プロパティ名がカラム名と同じとみなす
+                        def.setPropertyName(def.getLabel());
+                    }
                 }
             }
             def.setConverter(builder.getConverter());
             return def;
         }
 
-        private CsvColumnsDef toColumnsDef(final InternalColumnBuilder builder) {
-            final List<ColumnName> columnNames = builder.getColumnNames();
+        private CsvColumnsDef toColumnsDef(
+                final InternalCsvColumnBuilder builder) {
+            final List<CsvColumnDef> columnNames = builder.getColumnDefs();
             if (columnNames.size() < 2) {
                 throw new IllegalStateException();
             }
@@ -269,11 +275,7 @@ public abstract class AbstractCsvLayout<BEAN> {
                 sdef.setPropertyName(n);
             }
             sdef.setConverter(builder.getConverter());
-            for (final ColumnName columnName : columnNames) {
-                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                def.setColumnName(columnName);
-                //def.setPropertyName(getPropertyName());
-                //def.setConverter(getConverter());
+            for (final CsvColumnDef def : columnNames) {
                 sdef.addColumnDef(def);
             }
             return sdef;
@@ -283,43 +285,26 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     public interface InternalColumnBuilder extends ColumnBuilder {
 
-        List<ColumnName> getColumnNames();
-
         String getPropertyName();
 
         Converter getConverter();
+
+    }
+
+    public interface InternalCsvColumnBuilder extends InternalColumnBuilder {
+
+        List<CsvColumnDef> getColumnDefs();
 
         boolean isMultipleColumns();
 
     }
 
-    public static class SimpleColumnBuilder implements InternalColumnBuilder {
+    public static abstract class AbstractColumnBuilder implements
+            InternalColumnBuilder {
 
-        private final List<ColumnName> columnNames_ = CollectionsUtil
-                .newArrayList();
-        private String propertyName_;
-        private Converter converter_ = PassthroughStringConverter.getInstance();
-
-        public SimpleColumnBuilder() {
-        }
-
-        public SimpleColumnBuilder(final ColumnName columnName) {
-            addColumnName(columnName);
-        }
-
-        @Override
-        public void withConverter(final Converter converter) {
-            converter_ = converter;
-        }
-
-        public void addColumnName(final ColumnName columnName) {
-            columnNames_.add(columnName);
-        }
-
-        @Override
-        public List<ColumnName> getColumnNames() {
-            return columnNames_;
-        }
+        protected String propertyName_;
+        protected Converter converter_ = PassthroughStringConverter
+                .getInstance();
 
         @Override
         public ColumnBuilder toProperty(final String propertyName) {
@@ -328,18 +313,47 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
 
         @Override
-        public Converter getConverter() {
-            return converter_;
-        }
-
-        @Override
         public String getPropertyName() {
             return propertyName_;
         }
 
         @Override
+        public void withConverter(final Converter converter) {
+            converter_ = converter;
+        }
+
+        @Override
+        public Converter getConverter() {
+            return converter_;
+        }
+
+    }
+
+    public static class SimpleColumnBuilder extends AbstractColumnBuilder
+            implements InternalCsvColumnBuilder {
+
+        private final List<CsvColumnDef> columnDefs_ = CollectionsUtil
+                .newArrayList();
+
+        public SimpleColumnBuilder() {
+        }
+
+        public SimpleColumnBuilder(final CsvColumnDef columnDef) {
+            addColumnDef(columnDef);
+        }
+
+        public void addColumnDef(final CsvColumnDef columnDef) {
+            columnDefs_.add(columnDef);
+        }
+
+        @Override
+        public List<CsvColumnDef> getColumnDefs() {
+            return columnDefs_;
+        }
+
+        @Override
         public boolean isMultipleColumns() {
-            if (1 < getColumnNames().size()) {
+            if (1 < getColumnDefs().size()) {
                 return true;
             }
             return false;
