@@ -12,6 +12,9 @@ public class SimpleColumnName implements ColumnName {
         setName(labelAndName);
     }
 
+    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher
+            .getInstance();
+
     /**
      * オブジェクトのプロパティ名
      */
@@ -41,12 +44,31 @@ public class SimpleColumnName implements ColumnName {
 
     @Override
     public boolean labelEquals(final String label) {
-        return label_.equals(label);
+        return columnNameMatcher_.matches(this, label);
+    }
+
+    public void setColumnNameMatcher(final ColumnNameMatcher columnNameMatcher) {
+        columnNameMatcher_ = columnNameMatcher;
     }
 
     @Override
     public String toString() {
         return new ToStringFormat().format(this);
+    }
+
+    private static class ExactNameMatcher implements ColumnNameMatcher {
+
+        private static ExactNameMatcher INSTANCE = new ExactNameMatcher();
+
+        public static ExactNameMatcher getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public boolean matches(final ColumnName columnName, final String str) {
+            return columnName.getLabel().equals(str);
+        }
+
     }
 
 }
