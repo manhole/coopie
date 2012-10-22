@@ -22,6 +22,8 @@ public interface CsvColumnSetup {
          */
         ColumnBuilder withConverter(Converter converter);
 
+        ColumnBuilder withColumnNameMatcher(ColumnNameMatcher columnNameMatcher);
+
     }
 
     public interface CsvCompositeColumnSetup {

@@ -169,24 +169,12 @@ public class BeanCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                {
-                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                    def.setPropertyName("bbb");
-                    def.setColumnNameMatcher(new ContainsNameMatcher("い"));
-                    setup.column(def);
-                }
-                {
-                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                    def.setPropertyName("aaa");
-                    def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
-                    setup.column(def);
-                }
-                {
-                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                    def.setPropertyName("ccc");
-                    def.setColumnNameMatcher(new ContainsNameMatcher("う"));
-                    setup.column(def);
-                }
+                setup.column("bbb").withColumnNameMatcher(
+                        new ContainsNameMatcher("い"));
+                setup.column("aaa").withColumnNameMatcher(
+                        new ContainsNameMatcher("あ"));
+                setup.column("ccc").withColumnNameMatcher(
+                        new ContainsNameMatcher("う"));
             }
         });
 

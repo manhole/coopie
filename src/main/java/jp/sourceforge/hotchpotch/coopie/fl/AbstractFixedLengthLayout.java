@@ -9,6 +9,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalCompositeC
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDescs;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnNameMatcher;
 import jp.sourceforge.hotchpotch.coopie.csv.CompositeColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.Converter;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
@@ -542,6 +543,13 @@ abstract class AbstractFixedLengthLayout<BEAN> {
         @Override
         public ColumnBuilder withConverter(final Converter converter) {
             columnDef_.setConverter(converter);
+            return this;
+        }
+
+        @Override
+        public ColumnBuilder withColumnNameMatcher(
+                final ColumnNameMatcher columnNameMatcher) {
+            columnDef_.setColumnNameMatcher(columnNameMatcher);
             return this;
         }
 

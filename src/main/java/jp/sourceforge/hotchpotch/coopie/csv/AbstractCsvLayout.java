@@ -319,6 +319,13 @@ public abstract class AbstractCsvLayout<BEAN> {
             return this;
         }
 
+        @Override
+        public ColumnBuilder withColumnNameMatcher(
+                final ColumnNameMatcher columnNameMatcher) {
+            columnDef_.setColumnNameMatcher(columnNameMatcher);
+            return this;
+        }
+
     }
 
     static class CsvCompositeColumnBuilder implements

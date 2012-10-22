@@ -1,5 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
+import jp.sourceforge.hotchpotch.coopie.csv.ColumnNameMatcher;
 import jp.sourceforge.hotchpotch.coopie.csv.Converter;
 
 /*
@@ -18,5 +19,9 @@ public interface FixedLengthColumnDef {
     Converter<?, ?> getConverter();
 
     void setConverter(Converter<?, ?> converter);
+
+    ColumnNameMatcher getColumnNameMatcher();
+
+    void setColumnNameMatcher(ColumnNameMatcher columnNameMatcher);
 
 }
