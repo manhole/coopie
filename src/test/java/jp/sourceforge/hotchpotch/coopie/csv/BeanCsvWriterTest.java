@@ -443,6 +443,37 @@ public class BeanCsvWriterTest {
         assertEquals(V_WRITE_QUOTECHAR_SINGLE, lines);
     }
 
+    @Test
+    public void write_quotemode_minimum() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setQuoteMode(QuoteMode.MINIMUM);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        setTo(bean, "a1", "b1", "c\"1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        assert_write_quotemode_minimum(lines);
+    }
+
+    static final String V_WRITE_QUOTEMODE_MINIMUM = "a,b,c" + CRLF
+            + "a1,b1,\"c\"\"1\"" + CRLF;
+
+    static void assert_write_quotemode_minimum(final String lines) {
+        assertEquals(V_WRITE_QUOTEMODE_MINIMUM, lines);
+    }
+
     private void setTo(final AaaBean bean, final String a, final String b,
             final String c) {
         bean.setAaa(a);
