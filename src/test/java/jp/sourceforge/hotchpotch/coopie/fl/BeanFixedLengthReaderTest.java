@@ -23,6 +23,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.SkipEmptyLineReadE
 import jp.sourceforge.hotchpotch.coopie.csv.ElementEditors;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
+import jp.sourceforge.hotchpotch.coopie.fl.FixedLengthColumnSetup.FixedLengthCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.CharSequenceWriter;
 import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
@@ -694,9 +695,15 @@ public class BeanFixedLengthReaderTest {
                 setup.column("aaa", 0, 5);
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                // TODO ここでpropertyを呼び忘れた場合のエラーを、わかりやすくする
-                setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .toProperty("bbb")
+                setup.columns(
+                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                            @Override
+                            public void setup(
+                                    final FixedLengthCompositeColumnSetup compositeSetup) {
+                                compositeSetup.column("ymd", 5, 20);
+                                compositeSetup.column("hms", 20, 35);
+                            }
+                        }).toProperty("bbb")
                         .withConverter(new CalendarConverter());
             }
         });
@@ -749,8 +756,15 @@ public class BeanFixedLengthReaderTest {
                 setup.column("aaa", 0, 5);
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .toProperty("bbb")
+                setup.columns(
+                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                            @Override
+                            public void setup(
+                                    final FixedLengthCompositeColumnSetup compositeSetup) {
+                                compositeSetup.column("ymd", 5, 20);
+                                compositeSetup.column("hms", 20, 35);
+                            }
+                        }).toProperty("bbb")
                         .withConverter(new CalendarConverter());
             }
         });
@@ -812,8 +826,15 @@ public class BeanFixedLengthReaderTest {
                 public void setup(final FixedLengthColumnSetup setup) {
                     setup.column("aaa", 0, 5);
                     // property設定し忘れ
-                    setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                            .withConverter(new CalendarConverter());
+                    setup.columns(
+                            new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                                @Override
+                                public void setup(
+                                        final FixedLengthCompositeColumnSetup compositeSetup) {
+                                    compositeSetup.column("ymd", 5, 20);
+                                    compositeSetup.column("hms", 20, 35);
+                                }
+                            }).withConverter(new CalendarConverter());
                 }
             });
             fail();

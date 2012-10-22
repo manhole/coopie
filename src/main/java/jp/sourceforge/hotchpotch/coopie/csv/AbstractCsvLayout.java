@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CompositeColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
@@ -178,8 +179,7 @@ public abstract class AbstractCsvLayout<BEAN> {
     protected static class DefaultCsvRecordDefSetup implements
             CsvRecordDefSetup {
 
-        private final List<InternalCsvColumnBuilder> columnBuilders_ = CollectionsUtil
-                .newArrayList();
+        private final List columnBuilders_ = CollectionsUtil.newArrayList();
 
         private CsvRecordDef recordDef_;
 
@@ -205,16 +205,23 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
 
         @Override
-        public ColumnBuilder columns(final String... names) {
+        public CompositeColumnBuilder columns(
+                final SetupBlock<CsvCompositeColumnSetup> compositeSetup) {
+
             final DefaultCsvColumnsDef columnsDef = new DefaultCsvColumnsDef();
-            for (final String name : names) {
-                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                def.setLabel(name);
-                def.setPropertyName(name);
-                columnsDef.addColumnDef(def);
-            }
             final CsvCompositeColumnBuilder builder = new CsvCompositeColumnBuilder(
                     columnsDef);
+            compositeSetup.setup(new CsvCompositeColumnSetup() {
+                @Override
+                public ColumnBuilder column(final String name) {
+                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                    def.setLabel(name);
+                    def.setPropertyName(name);
+                    final CsvColumnBuilder builder = new CsvColumnBuilder(def);
+                    columnsDef.addColumnDef(def);
+                    return builder;
+                }
+            });
             columnBuilders_.add(builder);
             return builder;
         }
@@ -234,9 +241,13 @@ public abstract class AbstractCsvLayout<BEAN> {
              * 設定されているプロパティ名を対象に。
              */
             final CsvRecordDef recordDef = new DefaultCsvRecordDef();
-            for (final InternalCsvColumnBuilder builder : columnBuilders_) {
-                if (builder.isMultipleColumns()) {
-                    final CsvColumnsDef columnsDef = builder
+            for (final Object builder : columnBuilders_) {
+                if (builder instanceof InternalCsvColumnBuilder) {
+                    final CsvColumnDef columnDef = ((InternalCsvColumnBuilder) builder)
+                            .getColumnDef();
+                    recordDef.addColumnDef(columnDef);
+                } else if (builder instanceof InternalCsvCompositeColumnBuilder) {
+                    final CsvColumnsDef columnsDef = ((InternalCsvCompositeColumnBuilder) builder)
                             .getCompositeColumnDef();
                     if (StringUtil.isEmpty(columnsDef.getPropertyName())) {
                         final List<String> names = CollectionsUtil
@@ -252,8 +263,7 @@ public abstract class AbstractCsvLayout<BEAN> {
                     }
                     recordDef.addColumnsDef(columnsDef);
                 } else {
-                    final CsvColumnDef columnDef = builder.getColumnDef();
-                    recordDef.addColumnDef(columnDef);
+                    throw new AssertionError();
                 }
             }
             recordDef.setOrderSpecified(OrderSpecified.SPECIFIED);
@@ -264,7 +274,10 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     public interface InternalColumnBuilder extends ColumnBuilder {
 
-        boolean isMultipleColumns();
+    }
+
+    public interface InternalCompositeColumnBuilder extends
+            CompositeColumnBuilder {
 
     }
 
@@ -272,17 +285,16 @@ public abstract class AbstractCsvLayout<BEAN> {
 
         CsvColumnDef getColumnDef();
 
+    }
+
+    public interface InternalCsvCompositeColumnBuilder extends
+            InternalCompositeColumnBuilder {
+
         CsvColumnsDef getCompositeColumnDef();
 
     }
 
-    public static abstract class AbstractColumnBuilder implements
-            InternalColumnBuilder {
-
-    }
-
-    static class CsvColumnBuilder extends AbstractColumnBuilder implements
-            InternalCsvColumnBuilder {
+    static class CsvColumnBuilder implements InternalCsvColumnBuilder {
 
         private final CsvColumnDef columnDef_;
 
@@ -291,18 +303,8 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
 
         @Override
-        public boolean isMultipleColumns() {
-            return false;
-        }
-
-        @Override
         public CsvColumnDef getColumnDef() {
             return columnDef_;
-        }
-
-        @Override
-        public CsvColumnsDef getCompositeColumnDef() {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -312,14 +314,15 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
 
         @Override
-        public void withConverter(final Converter converter) {
+        public ColumnBuilder withConverter(final Converter converter) {
             columnDef_.setConverter(converter);
+            return this;
         }
 
     }
 
-    static class CsvCompositeColumnBuilder extends AbstractColumnBuilder
-            implements InternalCsvColumnBuilder {
+    static class CsvCompositeColumnBuilder implements
+            InternalCsvCompositeColumnBuilder {
 
         private final CsvColumnsDef columnsDef_;
 
@@ -328,29 +331,20 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
 
         @Override
-        public boolean isMultipleColumns() {
-            return true;
-        }
-
-        @Override
-        public CsvColumnDef getColumnDef() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public CsvColumnsDef getCompositeColumnDef() {
             return columnsDef_;
         }
 
         @Override
-        public ColumnBuilder toProperty(final String propertyName) {
+        public CompositeColumnBuilder toProperty(final String propertyName) {
             columnsDef_.setPropertyName(propertyName);
             return this;
         }
 
         @Override
-        public void withConverter(final Converter converter) {
+        public CompositeColumnBuilder withConverter(final Converter converter) {
             columnsDef_.setConverter(converter);
+            return this;
         }
 
     }

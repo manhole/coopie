@@ -6,9 +6,10 @@ public interface CsvColumnSetup {
 
     ColumnBuilder column(String name);
 
-    ColumnBuilder columns(final String... names);
+    CompositeColumnBuilder columns(
+            final SetupBlock<CsvCompositeColumnSetup> compositeSetup);
 
-    interface ColumnBuilder {
+    public interface ColumnBuilder {
 
         /*
          * カラム名とプロパティ名が異なる場合は、当メソッドでプロパティ名を指定してください。
@@ -19,7 +20,21 @@ public interface CsvColumnSetup {
          * 型変換およびCompositeカラムである場合は、
          * 当メソッドでconverterを指定してください。
          */
-        void withConverter(Converter converter);
+        ColumnBuilder withConverter(Converter converter);
+
+    }
+
+    public interface CsvCompositeColumnSetup {
+
+        ColumnBuilder column(String name);
+
+    }
+
+    public interface CompositeColumnBuilder {
+
+        CompositeColumnBuilder toProperty(final String propertyName);
+
+        CompositeColumnBuilder withConverter(Converter converter);
 
     }
 

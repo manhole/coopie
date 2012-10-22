@@ -21,6 +21,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverte
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
+import jp.sourceforge.hotchpotch.coopie.fl.FixedLengthColumnSetup.FixedLengthCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
@@ -325,8 +326,16 @@ public class MapFixedLengthWriterTest {
                 setup.column("aaa", 0, 5);
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
-                        .toProperty("bbb")
+                setup.columns(
+                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+
+                            @Override
+                            public void setup(
+                                    final FixedLengthCompositeColumnSetup compositeSetup) {
+                                compositeSetup.column("ymd", 5, 20);
+                                compositeSetup.column("hms", 20, 35);
+                            }
+                        }).toProperty("bbb")
                         .withConverter(new CalendarConverter());
             }
         });

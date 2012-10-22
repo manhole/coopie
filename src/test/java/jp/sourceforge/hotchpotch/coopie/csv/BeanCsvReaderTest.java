@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.PropertyNotFoundException;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CsvCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
@@ -1379,7 +1380,15 @@ public class BeanCsvReaderTest {
                 setup.column("aaa");
                 // CSVの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns("ymd", "hms").toProperty("bbb")
+                setup.columns(
+                        new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
+                            @Override
+                            public void setup(
+                                    final CsvCompositeColumnSetup setup) {
+                                setup.column("ymd");
+                                setup.column("hms");
+                            }
+                        }).toProperty("bbb")
                         .withConverter(new CalendarConverter());
             }
         });
@@ -1433,7 +1442,15 @@ public class BeanCsvReaderTest {
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
                 // TODO CsvColumnCustomizerと単位が合わない
-                setup.columns("ymd", "hms").toProperty("bbb")
+                setup.columns(
+                        new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
+                            @Override
+                            public void setup(
+                                    final CsvCompositeColumnSetup setup) {
+                                setup.column("ymd");
+                                setup.column("hms");
+                            }
+                        }).toProperty("bbb")
                         .withConverter(new CalendarConverter());
             }
         });
@@ -1568,7 +1585,13 @@ public class BeanCsvReaderTest {
                 public void setup(final CsvColumnSetup setup) {
                     setup.column("aaa");
                     // property設定し忘れ
-                    setup.columns("ymd", "hms");
+                    setup.columns(new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
+                        @Override
+                        public void setup(final CsvCompositeColumnSetup setup) {
+                            setup.column("ymd");
+                            setup.column("hms");
+                        }
+                    });
                 }
             });
             fail();
@@ -1598,7 +1621,15 @@ public class BeanCsvReaderTest {
                 public void setup(final CsvColumnSetup setup) {
                     setup.column("aaa");
                     // converter設定し忘れ
-                    setup.columns("ymd", "hms").toProperty("bbb");
+                    setup.columns(
+                            new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
+                                @Override
+                                public void setup(
+                                        final CsvCompositeColumnSetup setup) {
+                                    setup.column("ymd");
+                                    setup.column("hms");
+                                }
+                            }).toProperty("bbb");
                 }
             });
             fail();

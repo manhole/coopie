@@ -25,6 +25,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CccBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.DddBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.EeeBean;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CsvCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.junit.Test;
@@ -618,8 +619,14 @@ public class BeanCsvWriterTest {
             @Override
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
-                setup.columns("ymd", "hms").toProperty("bbb")
-                        .withConverter(new CalendarConverter());
+                setup.columns(new SetupBlock<CsvCompositeColumnSetup>() {
+                    @Override
+                    public void setup(
+                            final CsvCompositeColumnSetup compositeSetup) {
+                        compositeSetup.column("ymd");
+                        compositeSetup.column("hms");
+                    }
+                }).toProperty("bbb").withConverter(new CalendarConverter());
             }
         });
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
