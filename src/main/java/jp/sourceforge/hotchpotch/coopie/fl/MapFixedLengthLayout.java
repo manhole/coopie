@@ -2,7 +2,6 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.util.Map;
 
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
@@ -65,10 +64,9 @@ public class MapFixedLengthLayout<PROP> extends
 
                 final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
                         .getInstance();
-                final ColumnDesc<Map<String, PROP>>[] cds = recordDefToColumnDesc(
-                        recordDef, pbf);
-                final RecordDesc<Map<String, PROP>> recordDesc = new FixedLengthRecordDesc<Map<String, PROP>>(
-                        cds, new MapRecordType<PROP>());
+                final MapRecordType<PROP> recordType = new MapRecordType<PROP>();
+                final RecordDesc<Map<String, PROP>> recordDesc = createRecordDesc(
+                        recordDef, pbf, recordType);
                 setRecordDesc(recordDesc);
             }
         }

@@ -119,7 +119,16 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
     }
 
-    protected ColumnDesc<BEAN>[] recordDefToColumnDesc(
+    protected RecordDesc<BEAN> createRecordDesc(final CsvRecordDef recordDef,
+            final PropertyBindingFactory<BEAN> pbf,
+            final RecordType<BEAN> recordType) {
+        final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef, pbf);
+        final RecordDesc<BEAN> recordDesc = new DefaultRecordDesc<BEAN>(cds,
+                recordDef.getOrderSpecified(), recordType);
+        return recordDesc;
+    }
+
+    private ColumnDesc<BEAN>[] recordDefToColumnDesc(
             final CsvRecordDef recordDef, final PropertyBindingFactory<BEAN> pbf) {
 
         final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();

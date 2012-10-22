@@ -5,7 +5,6 @@ import java.util.List;
 import jp.sourceforge.hotchpotch.coopie.csv.Annotations;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
@@ -81,10 +80,10 @@ public class BeanFixedLengthLayout<BEAN> extends
             {
                 final PropertyBindingFactory<BEAN> pbf = new BeanPropertyBinding.Factory<BEAN>(
                         beanDesc_);
-                final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef,
-                        pbf);
-                final RecordDesc<BEAN> recordDesc = new FixedLengthRecordDesc<BEAN>(
-                        cds, new BeanRecordType<BEAN>(beanDesc_));
+                final BeanRecordType<BEAN> recordType = new BeanRecordType<BEAN>(
+                        beanDesc_);
+                final RecordDesc<BEAN> recordDesc = createRecordDesc(recordDef,
+                        pbf, recordType);
                 setRecordDesc(recordDesc);
             }
         }

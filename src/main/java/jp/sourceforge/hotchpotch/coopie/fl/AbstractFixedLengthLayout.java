@@ -160,7 +160,17 @@ abstract class AbstractFixedLengthLayout<BEAN> {
         return a;
     }
 
-    protected ColumnDesc<BEAN>[] recordDefToColumnDesc(
+    protected RecordDesc<BEAN> createRecordDesc(
+            final FixedLengthRecordDef recordDef,
+            final PropertyBindingFactory<BEAN> pbf,
+            final RecordType<BEAN> recordType) {
+        final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef, pbf);
+        final RecordDesc<BEAN> recordDesc = new FixedLengthRecordDesc<BEAN>(
+                cds, recordType);
+        return recordDesc;
+    }
+
+    private ColumnDesc<BEAN>[] recordDefToColumnDesc(
             final FixedLengthRecordDef recordDef,
             final PropertyBindingFactory<BEAN> pbf) {
 

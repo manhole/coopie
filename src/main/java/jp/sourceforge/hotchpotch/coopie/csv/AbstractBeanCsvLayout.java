@@ -24,19 +24,24 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = recordDef();
             customizer_.customize(recordDef);
-            final PropertyBindingFactory<BEAN> pbf = new BeanPropertyBinding.Factory<BEAN>(
-                    beanDesc_);
-            final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef, pbf);
-            // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
-            final RecordDesc<BEAN> recordDesc = new DefaultRecordDesc<BEAN>(
-                    cds, recordDef.getOrderSpecified(),
-                    new BeanRecordType<BEAN>(beanDesc_));
+            final RecordDesc<BEAN> recordDesc = createRecordDesc(recordDef);
             setRecordDesc(recordDesc);
         }
 
         if (getRecordDesc() == null) {
             throw new AssertionError("recordDesc");
         }
+    }
+
+    private RecordDesc<BEAN> createRecordDesc(final CsvRecordDef recordDef) {
+        final PropertyBindingFactory<BEAN> pbf = new BeanPropertyBinding.Factory<BEAN>(
+                beanDesc_);
+        final BeanRecordType<BEAN> recordType = new BeanRecordType<BEAN>(
+                beanDesc_);
+        // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
+        final RecordDesc<BEAN> recordDesc = createRecordDesc(recordDef, pbf,
+                recordType);
+        return recordDesc;
     }
 
     private CsvRecordDef recordDef() {

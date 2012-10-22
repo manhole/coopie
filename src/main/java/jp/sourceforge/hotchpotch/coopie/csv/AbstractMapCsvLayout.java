@@ -15,13 +15,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = getRecordDef();
             if (recordDef != null) {
-                final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
-                        .getInstance();
-                final ColumnDesc<Map<String, PROP>>[] cds = recordDefToColumnDesc(
-                        recordDef, pbf);
-                final RecordDesc<Map<String, PROP>> recordDesc = new DefaultRecordDesc<Map<String, PROP>>(
-                        cds, recordDef.getOrderSpecified(),
-                        new MapRecordType<PROP>());
+                final RecordDesc<Map<String, PROP>> recordDesc = createRecordDesc(recordDef);
                 setRecordDesc(recordDesc);
             } else {
                 /*
@@ -37,6 +31,16 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         if (getRecordDesc() == null) {
             throw new AssertionError("recordDesc");
         }
+    }
+
+    private RecordDesc<Map<String, PROP>> createRecordDesc(
+            final CsvRecordDef recordDef) {
+        final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
+                .getInstance();
+        final MapRecordType<PROP> recordType = new MapRecordType<PROP>();
+        final RecordDesc<Map<String, PROP>> recordDesc = createRecordDesc(
+                recordDef, pbf, recordType);
+        return recordDesc;
     }
 
     static class LazyMapRecordDesc<PROP> implements
