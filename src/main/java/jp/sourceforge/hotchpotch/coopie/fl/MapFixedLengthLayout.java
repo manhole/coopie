@@ -11,6 +11,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
 public class MapFixedLengthLayout<PROP> extends
@@ -62,11 +63,7 @@ public class MapFixedLengthLayout<PROP> extends
                     setFixedLengthElementDescs(elementDescs);
                 }
 
-                final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
-                        .getInstance();
-                final MapRecordType<PROP> recordType = new MapRecordType<PROP>();
-                final RecordDesc<Map<String, PROP>> recordDesc = createRecordDesc(
-                        recordDef, pbf, recordType);
+                final RecordDesc<Map<String, PROP>> recordDesc = createRecordDesc(recordDef);
                 setRecordDesc(recordDesc);
             }
         }
@@ -74,6 +71,16 @@ public class MapFixedLengthLayout<PROP> extends
         if (getRecordDesc() == null) {
             throw new AssertionError("recordDesc");
         }
+    }
+
+    @Override
+    protected PropertyBindingFactory<Map<String, PROP>> createPropertyBindingFactory() {
+        return MapPropertyBinding.Factory.getInstance();
+    }
+
+    @Override
+    protected RecordType<Map<String, PROP>> createRecordType() {
+        return new MapRecordType<PROP>();
     }
 
 }

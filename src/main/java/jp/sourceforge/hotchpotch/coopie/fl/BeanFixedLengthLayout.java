@@ -11,6 +11,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
 import org.t2framework.commons.meta.BeanDesc;
@@ -78,12 +79,7 @@ public class BeanFixedLengthLayout<BEAN> extends
                 setFixedLengthElementDescs(elementDescs);
             }
             {
-                final PropertyBindingFactory<BEAN> pbf = new BeanPropertyBinding.Factory<BEAN>(
-                        beanDesc_);
-                final BeanRecordType<BEAN> recordType = new BeanRecordType<BEAN>(
-                        beanDesc_);
-                final RecordDesc<BEAN> recordDesc = createRecordDesc(recordDef,
-                        pbf, recordType);
+                final RecordDesc<BEAN> recordDesc = createRecordDesc(recordDef);
                 setRecordDesc(recordDesc);
             }
         }
@@ -91,6 +87,16 @@ public class BeanFixedLengthLayout<BEAN> extends
         if (getRecordDesc() == null) {
             throw new AssertionError("recordDesc");
         }
+    }
+
+    @Override
+    protected PropertyBindingFactory<BEAN> createPropertyBindingFactory() {
+        return new BeanPropertyBinding.Factory<BEAN>(beanDesc_);
+    }
+
+    @Override
+    protected RecordType<BEAN> createRecordType() {
+        return new BeanRecordType<BEAN>(beanDesc_);
     }
 
     private FixedLengthRecordDef recordDef() {

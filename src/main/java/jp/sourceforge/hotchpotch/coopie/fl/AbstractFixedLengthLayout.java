@@ -43,6 +43,8 @@ abstract class AbstractFixedLengthLayout<BEAN> {
     private boolean withHeader_ = false;
     private RecordDesc<BEAN> recordDesc_;
     private FixedLengthRecordDef recordDef_;
+    private PropertyBindingFactory<BEAN> propertyBindingFactory_;
+    private RecordType<BEAN> recordType_;
 
     private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
             .getInstance();
@@ -161,9 +163,9 @@ abstract class AbstractFixedLengthLayout<BEAN> {
     }
 
     protected RecordDesc<BEAN> createRecordDesc(
-            final FixedLengthRecordDef recordDef,
-            final PropertyBindingFactory<BEAN> pbf,
-            final RecordType<BEAN> recordType) {
+            final FixedLengthRecordDef recordDef) {
+        final PropertyBindingFactory<BEAN> pbf = getPropertyBindingFactory();
+        final RecordType<BEAN> recordType = getRecordType();
         final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef, pbf);
         final RecordDesc<BEAN> recordDesc = new FixedLengthRecordDesc<BEAN>(
                 cds, recordType);
@@ -240,6 +242,24 @@ abstract class AbstractFixedLengthLayout<BEAN> {
         elementDescs.toArray(descs);
         return descs;
     }
+
+    protected PropertyBindingFactory<BEAN> getPropertyBindingFactory() {
+        if (propertyBindingFactory_ == null) {
+            propertyBindingFactory_ = createPropertyBindingFactory();
+        }
+        return propertyBindingFactory_;
+    }
+
+    protected abstract PropertyBindingFactory<BEAN> createPropertyBindingFactory();
+
+    protected RecordType<BEAN> getRecordType() {
+        if (recordType_ == null) {
+            recordType_ = createRecordType();
+        }
+        return recordType_;
+    }
+
+    protected abstract RecordType<BEAN> createRecordType();
 
     protected static interface FixedLengthRecordDefSetup extends
             FixedLengthColumnSetup {
