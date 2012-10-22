@@ -11,9 +11,11 @@ import jp.sourceforge.hotchpotch.coopie.csv.Converter;
  */
 public interface FixedLengthColumnsDef {
 
+    List<FixedLengthColumnDef> getColumnDefs();
+
     String getPropertyName();
 
-    List<FixedLengthColumnDef> getColumnDefs();
+    void setPropertyName(String propertyName);
 
     Converter<?, ?> getConverter();
 

@@ -10,6 +10,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDescs;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.CompositeColumnDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.Converter;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultColumnDesc;
@@ -32,7 +33,6 @@ import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.StringUtil;
 
 abstract class AbstractFixedLengthLayout<BEAN> {
 
@@ -296,7 +296,7 @@ abstract class AbstractFixedLengthLayout<BEAN> {
     protected static class DefaultFixedLengthRecordDefSetup implements
             FixedLengthRecordDefSetup {
 
-        private final List<FixedLengthColumnBuilder> columnBuilders_ = CollectionsUtil
+        private final List<InternalFixedLengthColumnBuilder> columnBuilders_ = CollectionsUtil
                 .newArrayList();
         private FixedLengthRecordDef recordDef_;
 
@@ -317,19 +317,20 @@ abstract class AbstractFixedLengthLayout<BEAN> {
 
         private FixedLengthColumnBuilder builder(
                 final FixedLengthColumnDef columnDef) {
-            final FixedLengthColumnBuilder builder = new FixedLengthColumnBuilder();
-            builder.addColumnDef(columnDef);
-            builder.toProperty(columnDef.getPropertyName());
+            final FixedLengthColumnBuilder builder = new FixedLengthColumnBuilder(
+                    columnDef);
             columnBuilders_.add(builder);
             return builder;
         }
 
         @Override
         public ColumnBuilder columns(final FixedLengthColumnDef... columnDefs) {
-            final FixedLengthColumnBuilder builder = new FixedLengthColumnBuilder();
+            final DefaultFixedLengthColumnsDef columnsDef = new DefaultFixedLengthColumnsDef();
             for (final FixedLengthColumnDef columnDef : columnDefs) {
-                builder.addColumnDef(columnDef);
+                columnsDef.addColumnDef(columnDef);
             }
+            final FixedLengthCompositeColumnBuilder builder = new FixedLengthCompositeColumnBuilder(
+                    columnsDef);
             columnBuilders_.add(builder);
             return builder;
         }
@@ -362,53 +363,16 @@ abstract class AbstractFixedLengthLayout<BEAN> {
             final DefaultFixedLengthRecordDef recordDef = new DefaultFixedLengthRecordDef();
             for (final InternalFixedLengthColumnBuilder builder : columnBuilders_) {
                 if (builder.isMultipleColumns()) {
-                    final FixedLengthColumnsDef columnsDef = toColumnsDef(builder);
+                    final FixedLengthColumnsDef columnsDef = builder
+                            .getCompositeColumnDef();
                     recordDef.addColumnsDef(columnsDef);
                 } else {
-                    final FixedLengthColumnDef columnDef = toColumnDef(builder);
+                    final FixedLengthColumnDef columnDef = builder
+                            .getColumnDef();
                     recordDef.addColumnDef(columnDef);
                 }
             }
             recordDef_ = recordDef;
-        }
-
-        private FixedLengthColumnDef toColumnDef(
-                final InternalFixedLengthColumnBuilder builder) {
-            final List<FixedLengthColumnDef> columnDefs = builder
-                    .getColumnDefs();
-            if (columnDefs.size() != 1) {
-                throw new IllegalStateException();
-            }
-
-            final FixedLengthColumnDef columnDef = columnDefs.get(0);
-            columnDef.setConverter(builder.getConverter());
-            return columnDef;
-        }
-
-        private FixedLengthColumnsDef toColumnsDef(
-                final InternalFixedLengthColumnBuilder builder) {
-            final List<FixedLengthColumnDef> columnDefs = builder
-                    .getColumnDefs();
-            if (columnDefs.size() < 2) {
-                throw new IllegalStateException();
-            }
-            final DefaultFixedLengthColumnsDef sdef = new DefaultFixedLengthColumnsDef();
-            {
-                final String n = builder.getPropertyName();
-                if (StringUtil.isEmpty(n)) {
-                    // TODO
-                    //                    throw new IllegalStateException(
-                    //                            "property is not specified. for column {"
-                    //                                    + columnNames + "}");
-                    throw new IllegalStateException();
-                }
-                sdef.setPropertyName(n);
-            }
-            for (final FixedLengthColumnDef columnDef : columnDefs) {
-                sdef.addColumnDef(columnDef);
-            }
-            sdef.setConverter(builder.getConverter());
-            return sdef;
         }
 
     }
@@ -513,31 +477,83 @@ abstract class AbstractFixedLengthLayout<BEAN> {
     public interface InternalFixedLengthColumnBuilder extends
             InternalColumnBuilder {
 
-        List<FixedLengthColumnDef> getColumnDefs();
+        FixedLengthColumnDef getColumnDef();
+
+        FixedLengthColumnsDef getCompositeColumnDef();
 
     }
 
     static class FixedLengthColumnBuilder extends AbstractColumnBuilder
             implements InternalFixedLengthColumnBuilder {
 
-        private final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil
-                .newArrayList();
+        private final FixedLengthColumnDef columnDef_;
 
-        public void addColumnDef(final FixedLengthColumnDef columnDef) {
-            columnDefs_.add(columnDef);
-        }
-
-        @Override
-        public List<FixedLengthColumnDef> getColumnDefs() {
-            return columnDefs_;
+        public FixedLengthColumnBuilder(final FixedLengthColumnDef columnDef) {
+            columnDef_ = columnDef;
         }
 
         @Override
         public boolean isMultipleColumns() {
-            if (1 < getColumnDefs().size()) {
-                return true;
-            }
             return false;
+        }
+
+        @Override
+        public FixedLengthColumnDef getColumnDef() {
+            return columnDef_;
+        }
+
+        @Override
+        public FixedLengthColumnsDef getCompositeColumnDef() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ColumnBuilder toProperty(final String propertyName) {
+            columnDef_.setPropertyName(propertyName);
+            return this;
+        }
+
+        @Override
+        public void withConverter(final Converter converter) {
+            columnDef_.setConverter(converter);
+        }
+
+    }
+
+    static class FixedLengthCompositeColumnBuilder extends
+            AbstractColumnBuilder implements InternalFixedLengthColumnBuilder {
+
+        private final FixedLengthColumnsDef columnsDef_;
+
+        public FixedLengthCompositeColumnBuilder(
+                final FixedLengthColumnsDef columnsDef) {
+            columnsDef_ = columnsDef;
+        }
+
+        @Override
+        public boolean isMultipleColumns() {
+            return true;
+        }
+
+        @Override
+        public FixedLengthColumnDef getColumnDef() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public FixedLengthColumnsDef getCompositeColumnDef() {
+            return columnsDef_;
+        }
+
+        @Override
+        public ColumnBuilder toProperty(final String propertyName) {
+            columnsDef_.setPropertyName(propertyName);
+            return this;
+        }
+
+        @Override
+        public void withConverter(final Converter converter) {
+            columnsDef_.setConverter(converter);
         }
 
     }

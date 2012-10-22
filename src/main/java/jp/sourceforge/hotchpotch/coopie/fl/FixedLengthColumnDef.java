@@ -7,11 +7,13 @@ import jp.sourceforge.hotchpotch.coopie.csv.Converter;
  */
 public interface FixedLengthColumnDef {
 
-    String getPropertyName();
-
     int getBeginIndex();
 
     int getEndIndex();
+
+    String getPropertyName();
+
+    void setPropertyName(String propertyName);
 
     Converter<?, ?> getConverter();
 
