@@ -163,9 +163,8 @@ public abstract class AbstractCsvLayout<BEAN> {
     }
 
     private ColumnName newColumnName(final CsvColumnDef columnDef) {
-        final SimpleColumnName columnName = new SimpleColumnName();
-        columnName.setName(columnDef.getPropertyName());
-        columnName.setLabel(columnDef.getLabel());
+        final SimpleColumnName columnName = new SimpleColumnName(
+                columnDef.getLabel());
         columnName.setColumnNameMatcher(columnDef.getColumnNameMatcher());
         return columnName;
     }

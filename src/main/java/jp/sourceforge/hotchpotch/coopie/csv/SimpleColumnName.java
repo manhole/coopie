@@ -5,11 +5,6 @@ import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 public class SimpleColumnName implements ColumnName {
 
     /**
-     * オブジェクトのプロパティ名
-     */
-    private String name_;
-
-    /**
      * CSVの項目名
      */
     private String label_;
@@ -20,17 +15,8 @@ public class SimpleColumnName implements ColumnName {
     public SimpleColumnName() {
     }
 
-    public SimpleColumnName(final String labelAndName) {
-        setLabel(labelAndName);
-        setName(labelAndName);
-    }
-
-    public String getName() {
-        return name_;
-    }
-
-    public void setName(final String name) {
-        name_ = name;
+    public SimpleColumnName(final String label) {
+        setLabel(label);
     }
 
     @Override
