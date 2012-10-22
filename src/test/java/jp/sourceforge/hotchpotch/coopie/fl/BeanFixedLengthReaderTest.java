@@ -794,6 +794,34 @@ public class BeanFixedLengthReaderTest {
         csvReader.close();
     }
 
+    /**
+     * 複数カラムに対応する
+     * propertyを呼び忘れた場合
+     */
+    @Test
+    public void invalid_columns_setup_property() throws Throwable {
+        // ## Arrange ##
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(
+                CalendarBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+                @Override
+                public void setup(final FixedLengthColumnSetup setup) {
+                    setup.column("aaa", 0, 5);
+                    // property設定し忘れ
+                    setup.columns(setup.c("ymd", 5, 20), setup.c("hms", 20, 35))
+                            .withConverter(new CalendarConverter());
+                }
+            });
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Charset charset = Charset.forName("UTF-8");
         final Reader reader = getResourceAsReader(suffix, ext, charset);

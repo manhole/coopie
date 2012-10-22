@@ -33,6 +33,7 @@ import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
+import org.t2framework.commons.util.StringUtil;
 
 abstract class AbstractFixedLengthLayout<BEAN> {
 
@@ -365,6 +366,18 @@ abstract class AbstractFixedLengthLayout<BEAN> {
                 if (builder.isMultipleColumns()) {
                     final FixedLengthColumnsDef columnsDef = builder
                             .getCompositeColumnDef();
+                    if (StringUtil.isEmpty(columnsDef.getPropertyName())) {
+                        final List<String> names = CollectionsUtil
+                                .newArrayList();
+                        final List<FixedLengthColumnDef> defs = columnsDef
+                                .getColumnDefs();
+                        for (final FixedLengthColumnDef def : defs) {
+                            names.add(def.getPropertyName());
+                        }
+                        throw new IllegalStateException(
+                                "property is not specified. for column "
+                                        + names);
+                    }
                     recordDef.addColumnsDef(columnsDef);
                 } else {
                     final FixedLengthColumnDef columnDef = builder
