@@ -7,14 +7,6 @@ import java.util.List;
  */
 public interface CsvColumnsDef {
 
-    //    String getLabel();
-    //
-    //    void setLabel(String label);
-    //
-    //    int getOrder();
-    //
-    //    void setOrder(int order);
-
     List<CsvColumnDef> getColumnDefs();
 
     Converter<?, ?> getConverter();
