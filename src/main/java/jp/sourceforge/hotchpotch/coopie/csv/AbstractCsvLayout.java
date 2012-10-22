@@ -154,8 +154,8 @@ public abstract class AbstractCsvLayout<BEAN> {
             }
             final PropertyBinding<BEAN, Object> pb = pbf
                     .getPropertyBinding(columnsDef.getPropertyName());
-            final ColumnDesc<BEAN>[] cds = CompositColumnDesc
-                    .newCompositColumnDesc(columnNames, pb,
+            final ColumnDesc<BEAN>[] cds = CompositeColumnDesc
+                    .newCompositeColumnDesc(columnNames, pb,
                             columnsDef.getConverter());
             Collections.addAll(list, cds);
         }

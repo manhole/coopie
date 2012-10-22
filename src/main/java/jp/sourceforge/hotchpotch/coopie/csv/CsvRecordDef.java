@@ -19,7 +19,7 @@ public interface CsvRecordDef {
     void setOrderSpecified(OrderSpecified orderSpecified);
 
     /*
-     * Compositも含む
+     * Compositeも含む
      */
     List<? extends CsvColumnDef> getAllColumnDefs();
 

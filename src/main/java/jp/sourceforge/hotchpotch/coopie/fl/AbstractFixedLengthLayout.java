@@ -9,7 +9,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.AbstractCsvLayout.InternalColumnBuil
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnDescs;
 import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
-import jp.sourceforge.hotchpotch.coopie.csv.CompositColumnDesc;
+import jp.sourceforge.hotchpotch.coopie.csv.CompositeColumnDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultColumnDesc;
@@ -198,8 +198,8 @@ abstract class AbstractFixedLengthLayout<BEAN> {
             }
             final PropertyBinding<BEAN, Object> pb = pbf
                     .getPropertyBinding(columnsDef.getPropertyName());
-            final ColumnDesc<BEAN>[] cds = CompositColumnDesc
-                    .newCompositColumnDesc(columnNames, pb,
+            final ColumnDesc<BEAN>[] cds = CompositeColumnDesc
+                    .newCompositeColumnDesc(columnNames, pb,
                             columnsDef.getConverter());
             Collections.addAll(list, cds);
         }

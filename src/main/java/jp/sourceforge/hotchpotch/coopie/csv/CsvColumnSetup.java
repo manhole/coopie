@@ -16,7 +16,7 @@ public interface CsvColumnSetup {
         ColumnBuilder toProperty(final String propertyName);
 
         /*
-         * 型変換およびcompositカラムである場合は、
+         * 型変換およびCompositeカラムである場合は、
          * 当メソッドでconverterを指定してください。
          */
         void withConverter(Converter converter);

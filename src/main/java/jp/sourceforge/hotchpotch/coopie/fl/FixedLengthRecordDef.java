@@ -13,7 +13,7 @@ public interface FixedLengthRecordDef {
     void addColumnsDef(FixedLengthColumnsDef columnsDef);
 
     /*
-     * Compositも含む
+     * Compositeも含む
      */
     List<? extends FixedLengthColumnDef> getAllColumnDefs();
 

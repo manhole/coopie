@@ -9,7 +9,7 @@ import org.t2framework.commons.meta.MethodDesc;
 import org.t2framework.commons.util.CollectionsUtil;
 import org.t2framework.commons.util.StringUtil;
 
-public class CompositColumnDesc<BEAN> {
+public class CompositeColumnDesc<BEAN> {
 
     private List<ColumnName> columnNames_;
     private PropertyBinding propertyBinding_;
@@ -105,12 +105,12 @@ public class CompositColumnDesc<BEAN> {
         }
     }
 
-    public static <BEAN> ColumnDesc<BEAN>[] newCompositColumnDesc(
+    public static <BEAN> ColumnDesc<BEAN>[] newCompositeColumnDesc(
             final List<ColumnName> names,
             final PropertyBinding<BEAN, Object> propertyBinding,
             final Converter converter) {
 
-        final CompositColumnDesc ccd = new CompositColumnDesc();
+        final CompositeColumnDesc ccd = new CompositeColumnDesc();
         ccd.setPropertyBinding(propertyBinding);
         ccd.setColumnNames(names);
         ccd.setConverter(converter);
@@ -132,14 +132,14 @@ public class CompositColumnDesc<BEAN> {
 
         @Override
         public String getValue(final BEAN bean) {
-            final String v = CompositColumnDesc.this
-                    .getValue(columnName_, bean);
+            final String v = CompositeColumnDesc.this.getValue(columnName_,
+                    bean);
             return v;
         }
 
         @Override
         public void setValue(final BEAN bean, final String value) {
-            CompositColumnDesc.this.setValue(columnName_, bean, value);
+            CompositeColumnDesc.this.setValue(columnName_, bean, value);
         }
 
     }
