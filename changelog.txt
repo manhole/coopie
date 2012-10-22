@@ -8,7 +8,7 @@
   property情報やアノテーションから構築したCsvRecordDefを、変更できるようにしました。
 - @CsvColumnsアノテーションを追加。
   アノテーションでも1プロパティを複数カラムへ対応付けられるようにしました。
-- PropertyとColumnの関係を多対多をやめて、Property側を1にしました。
+- PropertyとColumnの関係を、Property側を1に対して、Column側をn持てるようにしました。
 - 設定情報をRecordDefへ持たせるようにして、RecordDefからRecordDescを作るよう内部処理を変更しました。
 
 0.2.1 2012/02/23
