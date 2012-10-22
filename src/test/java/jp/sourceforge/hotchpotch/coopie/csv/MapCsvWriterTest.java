@@ -374,6 +374,30 @@ public class MapCsvWriterTest {
         BeanCsvWriterTest.assert_write_quotechar_single(lines);
     }
 
+    @Test
+    public void write_quotemode_minimum() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setQuoteMode(QuoteMode.MINIMUM);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<Map<String, String>> csvWriter = layout
+                .openWriter(writer);
+
+        final Map<String, String> bean = new TreeMap<String, String>();
+        setTo(bean, "a1", "b1", "c\"1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        BeanCsvWriterTest.assert_write_quotemode_minimum(lines);
+    }
+
     private void setTo(final Map<String, String> bean, final String a,
             final String b, final String c) {
         bean.put("aaa", a);

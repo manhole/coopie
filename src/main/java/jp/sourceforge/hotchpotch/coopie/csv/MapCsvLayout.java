@@ -72,6 +72,10 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> implements
         csvSetting_.setQuoteMark(quoteMark);
     }
 
+    public void setQuoteMode(final QuoteMode quoteMode) {
+        csvSetting_.setQuoteMode(quoteMode);
+    }
+
     protected ElementInOut createElementInOut() {
         final CsvElementInOut a = new CsvElementInOut(csvSetting_);
         a.setLineReaderHandler(getLineReaderHandler());
