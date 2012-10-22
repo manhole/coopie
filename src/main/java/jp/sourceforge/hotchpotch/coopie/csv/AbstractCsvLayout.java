@@ -17,6 +17,8 @@ public abstract class AbstractCsvLayout<BEAN> {
     private static final Logger logger = LoggerFactory.getLogger();
     private RecordDesc<BEAN> recordDesc_;
     private CsvRecordDef recordDef_;
+    private PropertyBindingFactory<BEAN> propertyBindingFactory_;
+    private RecordType<BEAN> recordType_;
 
     private boolean withHeader_ = true;
     private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
@@ -119,10 +121,11 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
     }
 
-    protected RecordDesc<BEAN> createRecordDesc(final CsvRecordDef recordDef,
-            final PropertyBindingFactory<BEAN> pbf,
-            final RecordType<BEAN> recordType) {
+    protected RecordDesc<BEAN> createRecordDesc(final CsvRecordDef recordDef) {
+        final PropertyBindingFactory<BEAN> pbf = getPropertyBindingFactory();
+        final RecordType<BEAN> recordType = getRecordType();
         final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef, pbf);
+        // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
         final RecordDesc<BEAN> recordDesc = new DefaultRecordDesc<BEAN>(cds,
                 recordDef.getOrderSpecified(), recordType);
         return recordDesc;
@@ -177,6 +180,24 @@ public abstract class AbstractCsvLayout<BEAN> {
         columnName.setColumnNameMatcher(columnDef.getColumnNameMatcher());
         return columnName;
     }
+
+    protected PropertyBindingFactory<BEAN> getPropertyBindingFactory() {
+        if (propertyBindingFactory_ == null) {
+            propertyBindingFactory_ = createPropertyBindingFactory();
+        }
+        return propertyBindingFactory_;
+    }
+
+    protected abstract PropertyBindingFactory<BEAN> createPropertyBindingFactory();
+
+    protected RecordType<BEAN> getRecordType() {
+        if (recordType_ == null) {
+            recordType_ = createRecordType();
+        }
+        return recordType_;
+    }
+
+    protected abstract RecordType<BEAN> createRecordType();
 
     protected static interface CsvRecordDefSetup extends CsvColumnSetup {
 

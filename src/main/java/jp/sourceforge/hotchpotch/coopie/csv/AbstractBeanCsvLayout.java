@@ -12,7 +12,6 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
         AbstractCsvLayout<BEAN> {
 
     private final BeanDesc<BEAN> beanDesc_;
-
     private CsvRecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
             .getInstance();
 
@@ -33,15 +32,14 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
         }
     }
 
-    private RecordDesc<BEAN> createRecordDesc(final CsvRecordDef recordDef) {
-        final PropertyBindingFactory<BEAN> pbf = new BeanPropertyBinding.Factory<BEAN>(
-                beanDesc_);
-        final BeanRecordType<BEAN> recordType = new BeanRecordType<BEAN>(
-                beanDesc_);
-        // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
-        final RecordDesc<BEAN> recordDesc = createRecordDesc(recordDef, pbf,
-                recordType);
-        return recordDesc;
+    @Override
+    protected PropertyBindingFactory<BEAN> createPropertyBindingFactory() {
+        return new BeanPropertyBinding.Factory<BEAN>(beanDesc_);
+    }
+
+    @Override
+    protected BeanRecordType<BEAN> createRecordType() {
+        return new BeanRecordType<BEAN>(beanDesc_);
     }
 
     private CsvRecordDef recordDef() {

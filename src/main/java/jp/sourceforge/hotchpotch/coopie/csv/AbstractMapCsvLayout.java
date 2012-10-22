@@ -33,14 +33,14 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         }
     }
 
-    private RecordDesc<Map<String, PROP>> createRecordDesc(
-            final CsvRecordDef recordDef) {
-        final PropertyBindingFactory<Map<String, PROP>> pbf = MapPropertyBinding.Factory
-                .getInstance();
-        final MapRecordType<PROP> recordType = new MapRecordType<PROP>();
-        final RecordDesc<Map<String, PROP>> recordDesc = createRecordDesc(
-                recordDef, pbf, recordType);
-        return recordDesc;
+    @Override
+    protected PropertyBindingFactory<Map<String, PROP>> createPropertyBindingFactory() {
+        return MapPropertyBinding.Factory.getInstance();
+    }
+
+    @Override
+    protected RecordType<Map<String, PROP>> createRecordType() {
+        return new MapRecordType<PROP>();
     }
 
     static class LazyMapRecordDesc<PROP> implements
