@@ -13,6 +13,7 @@ import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineImpl;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
+import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
@@ -571,7 +572,7 @@ public class Rfc4180Reader implements ElementReader {
 
     private static class CharacterReadable implements Closable {
 
-        private final LineReadable reader_;
+        private final LineReader reader_;
         private final LineReaderHandler lineReaderHandler_;
 
         private boolean closed_;
