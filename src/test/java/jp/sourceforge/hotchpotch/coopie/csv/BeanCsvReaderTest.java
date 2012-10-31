@@ -1644,6 +1644,29 @@ public class BeanCsvReaderTest {
                 BeanCsvReaderTest.class.getName() + suffix, ext);
     }
 
+    @Test
+    public void generic_learning() throws Throwable {
+        final Converter c = new BigDecimalConverter();
+        {
+            final Type genericSuperclass = c.getClass().getGenericSuperclass();
+            assertEquals(Object.class, genericSuperclass);
+        }
+        final Type[] genericInterfaces = c.getClass().getGenericInterfaces();
+        assertEquals(1, genericInterfaces.length);
+        final Type type = genericInterfaces[0];
+        // これは環境によっては通らないかも...
+        assertEquals(
+                "jp.sourceforge.hotchpotch.coopie.csv.Converter<java.math.BigDecimal, java.lang.String>",
+                type.toString());
+        final ParameterizedType pType = (ParameterizedType) type;
+        assertEquals(null, pType.getOwnerType());
+        assertEquals(Converter.class, pType.getRawType());
+        final Type[] actualTypeArguments = pType.getActualTypeArguments();
+        assertEquals(2, actualTypeArguments.length);
+        assertEquals(BigDecimal.class, actualTypeArguments[0]);
+        assertEquals(String.class, actualTypeArguments[1]);
+    }
+
     public static class AaaBean {
 
         private String aaa;
