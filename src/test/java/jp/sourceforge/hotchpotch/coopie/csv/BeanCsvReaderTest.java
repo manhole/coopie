@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
@@ -1342,6 +1344,28 @@ public class BeanCsvReaderTest {
                 }
             }
         });
+
+        // ## Act ##
+        final RecordReader<BigDecimal2Bean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimal2Bean bean = new BigDecimal2Bean();
+
+        assertBigDecimal(csvReader, bean);
+    }
+
+    /**
+     * ConverterRepositoryを使う方法
+     */
+    @Test
+    public void read_bigDecimal4() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
+                .getInstance(BigDecimal2Bean.class);
+        final DefaultConverterRepository converterRepository = new DefaultConverterRepository();
+        converterRepository.register(new BigDecimalConverter());
+        layout.setConverterRepository(converterRepository);
 
         // ## Act ##
         final RecordReader<BigDecimal2Bean> csvReader = layout

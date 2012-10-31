@@ -13,6 +13,8 @@ public interface CsvColumnDef {
 
     void setOrder(int order);
 
+    boolean hasConverter();
+
     Converter<?, ?> getConverter();
 
     void setConverter(Converter<?, ?> converter);

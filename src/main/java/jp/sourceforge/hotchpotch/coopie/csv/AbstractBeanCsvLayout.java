@@ -22,6 +22,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = recordDef();
+            registerConverter(recordDef);
             customizer_.customize(recordDef);
             final RecordDesc<BEAN> recordDesc = createRecordDesc(recordDef);
             setRecordDesc(recordDesc);
@@ -29,6 +30,20 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
 
         if (getRecordDesc() == null) {
             throw new AssertionError("recordDesc");
+        }
+    }
+
+    private void registerConverter(final CsvRecordDef recordDef) {
+        final ConverterRepository converterRepository = getConverterRepository();
+        for (final CsvColumnDef csvColumnDef : recordDef.getColumnDefs()) {
+            if (csvColumnDef.hasConverter()) {
+                continue;
+            }
+            final Converter converter = converterRepository
+                    .detect(csvColumnDef);
+            if (converter != null) {
+                csvColumnDef.setConverter(converter);
+            }
         }
     }
 
