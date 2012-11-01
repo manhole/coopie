@@ -9,6 +9,8 @@ public interface CsvColumnsDef {
 
     List<CsvColumnDef> getColumnDefs();
 
+    boolean hasConverter();
+
     Converter<?, ?> getConverter();
 
     void setConverter(Converter<?, ?> converter);

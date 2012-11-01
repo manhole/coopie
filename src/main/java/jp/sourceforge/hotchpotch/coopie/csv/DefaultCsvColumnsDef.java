@@ -40,6 +40,17 @@ class DefaultCsvColumnsDef implements CsvColumnsDef {
     }
 
     @Override
+    public boolean hasConverter() {
+        if (converter_ == null) {
+            return false;
+        }
+        if (converter_ instanceof PassthroughStringConverter) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public Converter<?, ?> getConverter() {
         return converter_;
     }
@@ -54,6 +65,7 @@ class DefaultCsvColumnsDef implements CsvColumnsDef {
         return propertyName_;
     }
 
+    @Override
     public void setPropertyName(final String propertyName) {
         propertyName_ = propertyName;
     }

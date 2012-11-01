@@ -178,6 +178,10 @@ public abstract class AbstractCsvLayout<BEAN> {
             }
             final PropertyBinding<BEAN, Object> pb = pbf
                     .getPropertyBinding(columnsDef.getPropertyName());
+            if (!columnsDef.hasConverter()) {
+                throw new IllegalStateException(
+                        "composite column should have converter");
+            }
             final ColumnDesc<BEAN>[] cds = CompositeColumnDesc
                     .newCompositeColumnDesc(columnNames, pb,
                             columnsDef.getConverter());
