@@ -1404,18 +1404,7 @@ public class BeanCsvReaderTest {
                         .withConverter(new CalendarConverter());
             }
         });
-        final String text;
-        {
-            final StringWriter sw = new StringWriter();
-            final ElementWriter writer = new CsvElementInOut(
-                    new DefaultCsvSetting()).openWriter(sw);
-
-            writer.writeRecord(a("aaa", "ymd", "hms"));
-            writer.writeRecord(a("a", "2011-09-13", "17:54:01"));
-            writer.writeRecord(a("b", "2011-01-01", "00:00:59"));
-            writer.close();
-            text = sw.toString();
-        }
+        final String text = _calendar1_text();
 
         // ## Act ##
         final RecordReader<CalendarBean> csvReader = layout
@@ -1439,6 +1428,19 @@ public class BeanCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    private String _calendar1_text() throws IOException {
+        final StringWriter sw = new StringWriter();
+        final ElementWriter writer = new CsvElementInOut(
+                new DefaultCsvSetting()).openWriter(sw);
+
+        writer.writeRecord(a("aaa", "ymd", "hms"));
+        writer.writeRecord(a("a", "2011-09-13", "17:54:01"));
+        writer.writeRecord(a("b", "2011-01-01", "00:00:59"));
+        writer.close();
+        final String text = sw.toString();
+        return text;
     }
 
     /**
@@ -1467,18 +1469,7 @@ public class BeanCsvReaderTest {
             }
         });
 
-        final String text;
-        {
-            final StringWriter sw = new StringWriter();
-            final ElementWriter writer = new CsvElementInOut(
-                    new DefaultCsvSetting()).openWriter(sw);
-            writer.writeRecord(a("aaa", "ymd", "hms"));
-            writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
-            writer.writeRecord(a("b", "2011-09-14", ""));
-            writer.writeRecord(a("c", "", "12:22:33"));
-            writer.close();
-            text = sw.toString();
-        }
+        final String text = _calendar2_text();
 
         // ## Act ##
         final RecordReader<CalendarBean> csvReader = layout
@@ -1506,6 +1497,19 @@ public class BeanCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    private String _calendar2_text() throws IOException {
+        final StringWriter sw = new StringWriter();
+        final ElementWriter writer = new CsvElementInOut(
+                new DefaultCsvSetting()).openWriter(sw);
+        writer.writeRecord(a("aaa", "ymd", "hms"));
+        writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
+        writer.writeRecord(a("b", "2011-09-14", ""));
+        writer.writeRecord(a("c", "", "12:22:33"));
+        writer.close();
+        final String text = sw.toString();
+        return text;
     }
 
     /**
@@ -1536,18 +1540,7 @@ public class BeanCsvReaderTest {
         });
         assertEquals(false, called.get());
 
-        final String text;
-        {
-            final StringWriter sw = new StringWriter();
-            final ElementWriter writer = new CsvElementInOut(
-                    new DefaultCsvSetting()).openWriter(sw);
-            writer.writeRecord(a("aaa", "ymd", "hms"));
-            writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
-            writer.writeRecord(a("b", "2011-09-14", ""));
-            writer.writeRecord(a("c", "", "12:22:33"));
-            writer.close();
-            text = sw.toString();
-        }
+        final String text = _calendar2_text();
 
         // ## Act ##
         final RecordReader<AnnotatedCalendarBean> csvReader = layout
