@@ -1,11 +1,8 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
-
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.t2framework.commons.util.CollectionsUtil;
@@ -17,6 +14,7 @@ public class DefaultConverterRepository implements ConverterRepository {
      */
     private final Map<ConverterKey, Converter> propertyTypeMap_ = CollectionsUtil
             .newHashMap();
+    private final Class<?> stringArrayClass_ = new String[0].getClass();
 
     /*
      * BEAN情報 + Property情報
@@ -33,9 +31,21 @@ public class DefaultConverterRepository implements ConverterRepository {
         return converter;
     }
 
+    @Override
+    public Converter detect(final CsvColumnsDef columnsDef) {
+        //        final List<CsvColumnDef> columnDefs = columnsDef.getColumnDefs();
+        //        final Object[] outerTypes = new Object[columnDefs.size()];
+        //        for (final CsvColumnDef columnDef : columnDefs) {
+        //        }
+        final Class<?> propertyType = columnsDef.getPropertyType();
+        final Converter converter = propertyTypeMap_.get(new ConverterKey(
+                propertyType, stringArrayClass_));
+        return converter;
+    }
+
     private Converter _detectByType(final Class<?> propertyType) {
         final Converter converter = propertyTypeMap_.get(new ConverterKey(
-                propertyType, a(String.class)));
+                propertyType, String.class));
         return converter;
     }
 
@@ -49,33 +59,56 @@ public class DefaultConverterRepository implements ConverterRepository {
                 if (Converter.class.isAssignableFrom((Class) rawType)) {
                     final Type[] actualTypeArguments = pType
                             .getActualTypeArguments();
-                    // XXX 型チェックが必要かも
-                    final Class propertyType = (Class) actualTypeArguments[0];
-                    final Class outerType = (Class) actualTypeArguments[1];
+                    final Class<?> propertyType = toPropertyType(actualTypeArguments[0]);
+                    final Class<?> outerType = toOuterTypes(actualTypeArguments[1]);
                     propertyTypeMap_.put(new ConverterKey(propertyType,
-                            a(outerType)), converter);
+                            outerType), converter);
                     return;
                 }
             }
         }
     }
 
+    // XXX 型チェックが必要かも
+    private Class<?> toPropertyType(final Type inType) {
+        return (Class<?>) inType;
+    }
+
+    private Class<?> toOuterTypes(final Type outType) {
+        if (outType instanceof Class) {
+            return (Class<?>) outType;
+        }
+        if (outType instanceof GenericArrayType) {
+            final GenericArrayType gaType = (GenericArrayType) outType;
+            final Type genericComponentType = gaType.getGenericComponentType();
+            // outer側の要素数を取得したかったが、String[] までしか取得できないことに気づいた。
+            final Class clazz = (Class) genericComponentType;
+            if (String.class.equals(clazz)) {
+                return stringArrayClass_;
+            }
+            //            final Object newInstance = Array.newInstance(clazz, 0);
+            //            return newInstance.getClass();
+            throw new UnsupportedOperationException("genericComponentType: "
+                    + clazz);
+        }
+
+        throw new UnsupportedOperationException("type: " + outType);
+    }
+
     private static class ConverterKey {
 
         private final Class<?> propertyType_;
-        private final Class<?>[] outerTypes_;
+        private final Class<?> outerType_;
         private final int hashCode_;
 
-        ConverterKey(final Class<?> propertyType, final Class<?>[] outerTypes) {
+        ConverterKey(final Class<?> propertyType, final Class<?> outerType) {
             propertyType_ = propertyType;
-            outerTypes_ = outerTypes;
+            outerType_ = outerType;
 
             final int coefficient = 37;
             int c = 17;
             c = c * coefficient + propertyType.hashCode();
-            for (final Class<?> outerType : outerTypes) {
-                c = c * coefficient + outerType.hashCode();
-            }
+            c = c * coefficient + outerType.hashCode();
             hashCode_ = c;
         }
 
@@ -96,7 +129,7 @@ public class DefaultConverterRepository implements ConverterRepository {
             if (!propertyType_.equals(another.propertyType_)) {
                 return false;
             }
-            if (!Arrays.equals(outerTypes_, another.outerTypes_)) {
+            if (!outerType_.equals(another.outerType_)) {
                 return false;
             }
             return true;

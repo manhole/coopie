@@ -413,6 +413,11 @@ public abstract class AbstractCsvLayout<BEAN> {
             return null;
         }
 
+        @Override
+        public Converter detect(final CsvColumnsDef columnsDef) {
+            return null;
+        }
+
     }
 
 }

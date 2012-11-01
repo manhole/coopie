@@ -1573,6 +1573,44 @@ public class BeanCsvReaderTest {
     }
 
     /**
+     * ConverterRepositoryでCompositeカラムへconverterを設定できること。
+     */
+    @Test
+    public void read_calendar4() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AnnotatedCalendarBean> layout = BeanCsvLayout
+                .getInstance(AnnotatedCalendarBean.class);
+        final DefaultConverterRepository converterRepository = new DefaultConverterRepository();
+        converterRepository.register(new CalendarConverter());
+        layout.setConverterRepository(converterRepository);
+
+        final String text = _calendar1_text();
+
+        // ## Act ##
+        final RecordReader<AnnotatedCalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final AnnotatedCalendarBean bean = new AnnotatedCalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/09/13 17:54:01",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals("2011/01/01 00:00:59",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
      * 複数カラムに対応する
      * propertyを呼び忘れた場合
      */

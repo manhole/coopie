@@ -45,6 +45,16 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
                 csvColumnDef.setConverter(converter);
             }
         }
+        for (final CsvColumnsDef csvColumnsDef : recordDef.getColumnsDefs()) {
+            if (csvColumnsDef.hasConverter()) {
+                continue;
+            }
+            final Converter converter = converterRepository
+                    .detect(csvColumnsDef);
+            if (converter != null) {
+                csvColumnsDef.setConverter(converter);
+            }
+        }
     }
 
     @Override
