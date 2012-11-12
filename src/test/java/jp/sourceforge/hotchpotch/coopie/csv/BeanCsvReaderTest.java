@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
@@ -1354,6 +1356,28 @@ public class BeanCsvReaderTest {
     }
 
     /**
+     * ConverterRepositoryを使う方法
+     */
+    @Test
+    public void read_bigDecimal4() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
+                .getInstance(BigDecimal2Bean.class);
+        final DefaultConverterRepository converterRepository = new DefaultConverterRepository();
+        converterRepository.register(new BigDecimalConverter());
+        layout.setConverterRepository(converterRepository);
+
+        // ## Act ##
+        final RecordReader<BigDecimal2Bean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimal2Bean bean = new BigDecimal2Bean();
+
+        assertBigDecimal(csvReader, bean);
+    }
+
+    /**
      * CSV側が2カラムで、対応するJava側が1プロパティの場合。
      * 年月日と時分秒で列が別れているとする。
      */
@@ -1380,18 +1404,7 @@ public class BeanCsvReaderTest {
                         .withConverter(new CalendarConverter());
             }
         });
-        final String text;
-        {
-            final StringWriter sw = new StringWriter();
-            final ElementWriter writer = new CsvElementInOut(
-                    new DefaultCsvSetting()).openWriter(sw);
-
-            writer.writeRecord(a("aaa", "ymd", "hms"));
-            writer.writeRecord(a("a", "2011-09-13", "17:54:01"));
-            writer.writeRecord(a("b", "2011-01-01", "00:00:59"));
-            writer.close();
-            text = sw.toString();
-        }
+        final String text = _calendar1_text();
 
         // ## Act ##
         final RecordReader<CalendarBean> csvReader = layout
@@ -1415,6 +1428,19 @@ public class BeanCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    private String _calendar1_text() throws IOException {
+        final StringWriter sw = new StringWriter();
+        final ElementWriter writer = new CsvElementInOut(
+                new DefaultCsvSetting()).openWriter(sw);
+
+        writer.writeRecord(a("aaa", "ymd", "hms"));
+        writer.writeRecord(a("a", "2011-09-13", "17:54:01"));
+        writer.writeRecord(a("b", "2011-01-01", "00:00:59"));
+        writer.close();
+        final String text = sw.toString();
+        return text;
     }
 
     /**
@@ -1443,18 +1469,7 @@ public class BeanCsvReaderTest {
             }
         });
 
-        final String text;
-        {
-            final StringWriter sw = new StringWriter();
-            final ElementWriter writer = new CsvElementInOut(
-                    new DefaultCsvSetting()).openWriter(sw);
-            writer.writeRecord(a("aaa", "ymd", "hms"));
-            writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
-            writer.writeRecord(a("b", "2011-09-14", ""));
-            writer.writeRecord(a("c", "", "12:22:33"));
-            writer.close();
-            text = sw.toString();
-        }
+        final String text = _calendar2_text();
 
         // ## Act ##
         final RecordReader<CalendarBean> csvReader = layout
@@ -1482,6 +1497,19 @@ public class BeanCsvReaderTest {
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
+    }
+
+    private String _calendar2_text() throws IOException {
+        final StringWriter sw = new StringWriter();
+        final ElementWriter writer = new CsvElementInOut(
+                new DefaultCsvSetting()).openWriter(sw);
+        writer.writeRecord(a("aaa", "ymd", "hms"));
+        writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
+        writer.writeRecord(a("b", "2011-09-14", ""));
+        writer.writeRecord(a("c", "", "12:22:33"));
+        writer.close();
+        final String text = sw.toString();
+        return text;
     }
 
     /**
@@ -1512,18 +1540,7 @@ public class BeanCsvReaderTest {
         });
         assertEquals(false, called.get());
 
-        final String text;
-        {
-            final StringWriter sw = new StringWriter();
-            final ElementWriter writer = new CsvElementInOut(
-                    new DefaultCsvSetting()).openWriter(sw);
-            writer.writeRecord(a("aaa", "ymd", "hms"));
-            writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
-            writer.writeRecord(a("b", "2011-09-14", ""));
-            writer.writeRecord(a("c", "", "12:22:33"));
-            writer.close();
-            text = sw.toString();
-        }
+        final String text = _calendar2_text();
 
         // ## Act ##
         final RecordReader<AnnotatedCalendarBean> csvReader = layout
@@ -1550,6 +1567,44 @@ public class BeanCsvReaderTest {
         csvReader.read(bean);
         assertEquals("c", bean.getAaa());
         assertEquals(null, bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * ConverterRepositoryでCompositeカラムへconverterを設定できること。
+     */
+    @Test
+    public void read_calendar4() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AnnotatedCalendarBean> layout = BeanCsvLayout
+                .getInstance(AnnotatedCalendarBean.class);
+        final DefaultConverterRepository converterRepository = new DefaultConverterRepository();
+        converterRepository.register(new CalendarConverter());
+        layout.setConverterRepository(converterRepository);
+
+        final String text = _calendar1_text();
+
+        // ## Act ##
+        final RecordReader<AnnotatedCalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final AnnotatedCalendarBean bean = new AnnotatedCalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/09/13 17:54:01",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals("2011/01/01 00:00:59",
+                format.format(bean.getBbb().getTime()));
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
@@ -1642,6 +1697,29 @@ public class BeanCsvReaderTest {
     static InputStream getResourceAsStream(final String suffix, final String ext) {
         return ResourceUtil.getResourceAsStream(
                 BeanCsvReaderTest.class.getName() + suffix, ext);
+    }
+
+    @Test
+    public void generic_learning() throws Throwable {
+        final Converter c = new BigDecimalConverter();
+        {
+            final Type genericSuperclass = c.getClass().getGenericSuperclass();
+            assertEquals(Object.class, genericSuperclass);
+        }
+        final Type[] genericInterfaces = c.getClass().getGenericInterfaces();
+        assertEquals(1, genericInterfaces.length);
+        final Type type = genericInterfaces[0];
+        // これは環境によっては通らないかも...
+        assertEquals(
+                "jp.sourceforge.hotchpotch.coopie.csv.Converter<java.math.BigDecimal, java.lang.String>",
+                type.toString());
+        final ParameterizedType pType = (ParameterizedType) type;
+        assertEquals(null, pType.getOwnerType());
+        assertEquals(Converter.class, pType.getRawType());
+        final Type[] actualTypeArguments = pType.getActualTypeArguments();
+        assertEquals(2, actualTypeArguments.length);
+        assertEquals(BigDecimal.class, actualTypeArguments[0]);
+        assertEquals(String.class, actualTypeArguments[1]);
     }
 
     public static class AaaBean {

@@ -19,6 +19,8 @@ public abstract class AbstractCsvLayout<BEAN> {
     private CsvRecordDef recordDef_;
     private PropertyBindingFactory<BEAN> propertyBindingFactory_;
     private RecordType<BEAN> recordType_;
+    private ConverterRepository converterRepository_ = NullConverterRepository
+            .getInstance();
 
     private boolean withHeader_ = true;
     private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
@@ -121,6 +123,15 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
     }
 
+    protected ConverterRepository getConverterRepository() {
+        return converterRepository_;
+    }
+
+    public void setConverterRepository(
+            final ConverterRepository converterRepository) {
+        converterRepository_ = converterRepository;
+    }
+
     protected RecordDesc<BEAN> createRecordDesc(final CsvRecordDef recordDef) {
         final PropertyBindingFactory<BEAN> pbf = getPropertyBindingFactory();
         final RecordType<BEAN> recordType = getRecordType();
@@ -167,6 +178,10 @@ public abstract class AbstractCsvLayout<BEAN> {
             }
             final PropertyBinding<BEAN, Object> pb = pbf
                     .getPropertyBinding(columnsDef.getPropertyName());
+            if (!columnsDef.hasConverter()) {
+                throw new IllegalStateException(
+                        "composite column should have converter");
+            }
             final ColumnDesc<BEAN>[] cds = CompositeColumnDesc
                     .newCompositeColumnDesc(columnNames, pb,
                             columnsDef.getConverter());
@@ -384,4 +399,25 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
 
     }
+
+    private static class NullConverterRepository implements ConverterRepository {
+
+        private static final ConverterRepository INSTANCE = new NullConverterRepository();
+
+        public static ConverterRepository getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public Converter detect(final CsvColumnDef columnDef) {
+            return null;
+        }
+
+        @Override
+        public Converter detect(final CsvColumnsDef columnsDef) {
+            return null;
+        }
+
+    }
+
 }

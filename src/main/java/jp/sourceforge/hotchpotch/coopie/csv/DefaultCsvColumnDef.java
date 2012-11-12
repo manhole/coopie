@@ -54,6 +54,17 @@ class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
     }
 
     @Override
+    public boolean hasConverter() {
+        if (converter_ == null) {
+            return false;
+        }
+        if (converter_ instanceof PassthroughStringConverter) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public Converter<?, ?> getConverter() {
         return converter_;
     }
