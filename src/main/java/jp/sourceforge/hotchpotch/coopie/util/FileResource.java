@@ -19,18 +19,22 @@ package jp.sourceforge.hotchpotch.coopie.util;
 public interface FileResource {
 
     /**
-     * ファイルの拡張子を返します。
+     * ファイル名の拡張子より手前を返します。
      * 
-     * "foo.txt" → "txt"
-     * "foo.bar.txt" → "txt"
+     * "foo.txt" → "foo"
+     * "foo.bar.txt" → "foo.bar"
+     * ".cvsignore" → null
+     * "hosts" → "hosts"
      */
     String getPrefix();
 
     /**
-     * ファイルの拡張子を返します。
+     * ファイル名の拡張子を返します。
      * 
      * "foo.txt" → "txt"
      * "foo.bar.txt" → "txt"
+     * ".cvsignore" → "cvsignore"
+     * "hosts" → null
      */
     String getExtension();
 
