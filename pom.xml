@@ -142,9 +142,15 @@
 
   <repositories>
     <repository>
-      <id>maven.t2framework.org</id>
-      <name>The T2 Project Maven2 Repository</name>
-      <url>http://maven.t2framework.org/maven2</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>release.hotchpotch.sourceforge.jp</id>
+      <name>hotchpotch.sourceforge.jp Maven2 Repository</name>
+      <url>http://hotchpotch.sourceforge.jp/maven2/release</url>
     </repository>
   </repositories>
 

@@ -11,7 +11,7 @@ compileTestJava.options.encoding = sourceEncoding
 
 repositories {
     mavenCentral()
-    mavenRepo url: "http://maven.t2framework.org/maven2"
+    mavenRepo url: "http://hotchpotch.sourceforge.jp/maven2/release"
 }
 
 def versions = [slf4j: "1.6.1", logback: "0.9.24"]
