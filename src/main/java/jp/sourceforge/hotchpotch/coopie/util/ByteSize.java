@@ -50,7 +50,7 @@ public class ByteSize {
 
     private final long size_;
     private ToStringMode toStringMode_ = DETAIL;
-    private UnitsTable unitsTable_ = BaseType.BINARY.getUnitsTable();
+    private BaseType baseType_ = BaseType.BINARY;
 
     public ByteSize(final long size) {
         size_ = size;
@@ -92,11 +92,6 @@ public class ByteSize {
         return toStringMode.toString(this);
     }
 
-    private ByteSizeUnit detectUnit(final long size) {
-        final ByteSizeUnit unit = unitsTable_.detectUnit(size);
-        return unit;
-    }
-
     public void setToStringMode(final ToStringMode toStringMode) {
         if (toStringMode == null) {
             throw new NullPointerException("toStringMode");
@@ -104,8 +99,12 @@ public class ByteSize {
         toStringMode_ = toStringMode;
     }
 
+    public BaseType getBaseType() {
+        return baseType_;
+    }
+
     public void setBaseType(final BaseType baseType) {
-        unitsTable_ = baseType.getUnitsTable();
+        baseType_ = baseType;
     }
 
     public static enum BaseType {
@@ -325,7 +324,8 @@ public class ByteSize {
         @Override
         public String toString(final ByteSize byteSize) {
             final long size = byteSize.getSize();
-            final ByteSizeUnit unit = byteSize.detectUnit(size);
+            final ByteSizeUnit unit = byteSize.getBaseType().getUnitsTable()
+                    .detectUnit(size);
             final StringBuilder sb = new StringBuilder();
             appendTo(unit, size, sb);
             if (unit == B) {
@@ -345,7 +345,8 @@ public class ByteSize {
         @Override
         public String toString(final ByteSize byteSize) {
             final long size = byteSize.getSize();
-            final ByteSizeUnit unit = byteSize.detectUnit(size);
+            final ByteSizeUnit unit = byteSize.getBaseType().getUnitsTable()
+                    .detectUnit(size);
             final StringBuilder sb = new StringBuilder();
             appendTo(unit, size, sb);
             return sb.toString();
