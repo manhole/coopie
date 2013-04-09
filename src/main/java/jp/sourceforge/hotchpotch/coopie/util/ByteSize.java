@@ -80,12 +80,16 @@ public class ByteSize {
     }
 
     public String toHumanReadableString() {
-        return HUMAN_READABLE.toString(this);
+        return toString(HUMAN_READABLE);
     }
 
     @Override
     public String toString() {
-        return toStringMode_.toString(this);
+        return toString(toStringMode_);
+    }
+
+    private String toString(final ToStringMode toStringMode) {
+        return toStringMode.toString(this);
     }
 
     private ByteSizeUnit detectUnit(final long size) {
