@@ -14,6 +14,28 @@ repositories {
     mavenRepo url: "http://hotchpotch.sourceforge.jp/maven2/release"
 }
 
+jar {
+    def p = "git rev-parse --verify --short=8 HEAD".execute()
+    def w = new java.io.StringWriter();
+    p.waitForProcessOutput(w, System.err);
+    //println "exitValue=${p.exitValue()}"
+    if (p.exitValue() != 0) {
+        throw new Exception();
+    }
+    def buildNumber = w.toString().trim();
+    w.close();
+
+    manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
+    manifest.attributes["Created-By"] = "Gradle"
+    manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
+    manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})"
+    manifest.attributes["Implementation-Title"] = project.name
+    manifest.attributes["Implementation-Version"] = project.version
+    manifest.attributes["Implementation-Vendor-Id"] = project.group
+    manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(new Date())
+    manifest.attributes["SCM-Revision"] = buildNumber
+}
+
 def versions = [slf4j: "1.6.1", logback: "0.9.24"]
 
 dependencies {
