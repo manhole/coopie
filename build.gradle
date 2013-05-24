@@ -14,7 +14,16 @@ repositories {
     mavenRepo url: "http://hotchpotch.sourceforge.jp/maven2/release"
 }
 
-jar {
+task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+tasks.withType (Jar).each {
     def p = "git rev-parse --verify --short=8 HEAD".execute()
     def w = new java.io.StringWriter();
     p.waitForProcessOutput(w, System.err);
@@ -25,15 +34,15 @@ jar {
     def buildNumber = w.toString().trim();
     w.close();
 
-    manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
-    manifest.attributes["Created-By"] = "Gradle"
-    manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
-    manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})"
-    manifest.attributes["Implementation-Title"] = project.name
-    manifest.attributes["Implementation-Version"] = project.version
-    manifest.attributes["Implementation-Vendor-Id"] = project.group
-    manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(new Date())
-    manifest.attributes["SCM-Revision"] = buildNumber
+    it.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
+    it.manifest.attributes["Created-By"] = "Gradle"
+    it.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
+    it.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})"
+    it.manifest.attributes["Implementation-Title"] = project.name
+    it.manifest.attributes["Implementation-Version"] = project.version
+    it.manifest.attributes["Implementation-Vendor-Id"] = project.group
+    it.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(new Date())
+    it.manifest.attributes["SCM-Revision"] = buildNumber
 }
 
 def versions = [slf4j: "1.6.1", logback: "0.9.24"]
@@ -59,3 +68,4 @@ dependencies {
         exclude group: "xerces", module: "xmlParserAPIs"
     }
 }
+
