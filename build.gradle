@@ -72,7 +72,7 @@ dependencies {
 
 publishing {
     publications {
-        myPublication(MavenPublication) {
+        maven(MavenPublication) {
             from components.java
             artifact sourcesJar
             pom.withXml {
@@ -91,7 +91,7 @@ publishing {
         mavenLocal()
         if (!project.version.contains("-SNAPSHOT")) {
             maven {
-                name "local"
+                name "coopieLocal"
                 url "file:../site/maven2/release"
             }
         }
