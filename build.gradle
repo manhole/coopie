@@ -1,6 +1,5 @@
 apply plugin: "java"
 apply plugin: 'eclipse'
-apply plugin: "maven"
 apply plugin: "maven-publish"
 
 group = "jp.sourceforge.hotchpotch"
@@ -89,7 +88,6 @@ publishing {
         }
     }
     repositories {
-        mavenLocal()
         if (!project.version.contains("-SNAPSHOT")) {
             maven {
                 name "coopieLocal"
