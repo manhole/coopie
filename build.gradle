@@ -97,21 +97,23 @@ publishing {
                         url "https://github.com/manhole/coopie"
                     }
                     dependencies {
-                        project.configurations["compile"].dependencies.each { dep ->
-                            dependency {
-                                groupId dep.group
-                                artifactId dep.name
-                                version dep.version
-                                scope "compile"
-                                if ("poi" == dep.name) {
-                                    optional true
-                                }
-                                if (dep.excludeRules) {
-                                    exclusions {
-                                        dep.excludeRules.each { excludeRule ->
-                                            exclusion {
-                                                groupId excludeRule.group
-                                                artifactId excludeRule.module
+                        ["compile":"compile", "testCompile":"test"].each { configName, scopeValue ->
+                            project.configurations[configName].dependencies.each { dep ->
+                                dependency {
+                                    groupId dep.group
+                                    artifactId dep.name
+                                    version dep.version
+                                    scope scopeValue
+                                    if ("poi" == dep.name) {
+                                        optional true
+                                    }
+                                    if (dep.excludeRules) {
+                                        exclusions {
+                                            dep.excludeRules.each { excludeRule ->
+                                                exclusion {
+                                                    groupId excludeRule.group
+                                                    artifactId excludeRule.module
+                                                }
                                             }
                                         }
                                     }
