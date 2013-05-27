@@ -38,7 +38,7 @@ tasks.withType (Jar).each {
     it.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
     it.manifest.attributes["Created-By"] = "Gradle"
     it.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
-    it.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})"
+    it.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
     it.manifest.attributes["Implementation-Title"] = project.name
     it.manifest.attributes["Implementation-Version"] = project.version
     it.manifest.attributes["Implementation-Vendor-Id"] = project.group
