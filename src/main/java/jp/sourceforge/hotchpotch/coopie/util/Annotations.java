@@ -17,7 +17,9 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.t2framework.commons.meta.PropertyDesc;
 
@@ -29,7 +31,7 @@ public class Annotations {
         return INSTANCE;
     }
 
-    private static class DefaultPropertyAnnotationReader implements
+    public static class DefaultPropertyAnnotationReader implements
             PropertyAnnotationReader {
 
         @Override
@@ -53,6 +55,43 @@ public class Annotations {
             return null;
         }
 
+    }
+
+    /*
+     * Groovy用。
+     * setter/getter両方を持つときに、property名のfieldからアノテーションを取得する。
+     * 
+     * groovyのbeanでsetter/getterを生成させる場合にpropertyへアノテーションを付けざるをえないため。
+     */
+    public static class FieldPropertyAnnotationReader implements
+            PropertyAnnotationReader {
+
+        @Override
+        public <ANN extends Annotation> ANN getAnnotation(
+                final PropertyDesc<?> propertyDesc,
+                final Class<ANN> annotationClass) {
+            if (propertyDesc.isReadable() && propertyDesc.isWritable()) {
+                Class<?> targetClass = propertyDesc.getTargetClass();
+                while (targetClass != Object.class) {
+                    final Field[] fields = targetClass.getDeclaredFields();
+                    for (final Field field : fields) {
+                        if (field.getName().equals(
+                                propertyDesc.getPropertyName())) {
+                            if ((field.getModifiers() & Modifier.PRIVATE) == Modifier.PRIVATE) {
+                                final ANN ann = field
+                                        .getAnnotation(annotationClass);
+                                if (ann != null) {
+                                    return ann;
+                                }
+                            }
+                        }
+                    }
+
+                    targetClass = targetClass.getSuperclass();
+                }
+            }
+            return null;
+        }
     }
 
 }
