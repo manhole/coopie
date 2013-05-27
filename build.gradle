@@ -75,12 +75,46 @@ publishing {
             from components.java
             artifact sourcesJar
             pom.withXml {
-                asNode().children().last() + {
+                /*
+                 * "maven-publish"が用意する<dependencies>を破棄して、作り変える。
+                 * 1. compile scopeがruntimeになってしまう。
+                 * 2. optionalを指定できない。
+                 * 3. excludeを指定できない。
+                 */
+                def NodeList depends = asNode().get("dependencies")
+                def newDepends = depends.replaceNode {
                     resolveStrategy = Closure.DELEGATE_FIRST
+
+                    name project.name
+                    packaging "jar"
+                    url "https://github.com/manhole/coopie"
                     scm {
                         connection "scm:git:git@github.com:manhole/coopie.git"
                         developerConnection "scm:git:git@github.com:manhole/coopie.git"
                         url "https://github.com/manhole/coopie"
+                    }
+                    dependencies {
+                        project.configurations["compile"].dependencies.each { dep ->
+                            dependency {
+                                groupId dep.group
+                                artifactId dep.name
+                                version dep.version
+                                scope "compile"
+                                if ("poi" == dep.name) {
+                                    optional true
+                                }
+                                if (dep.excludeRules) {
+                                    exclusions {
+                                        dep.excludeRules.each { excludeRule ->
+                                            exclusion {
+                                                groupId excludeRule.group
+                                                artifactId excludeRule.module
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
