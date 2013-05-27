@@ -23,23 +23,44 @@ import org.t2framework.commons.meta.PropertyDesc;
 
 public class Annotations {
 
-    public static <ANN extends Annotation> ANN getAnnotation(
-            final PropertyDesc<?> propertyDesc, final Class<ANN> annotationClass) {
-        if (propertyDesc.isReadable()) {
-            final Method reader = propertyDesc.getReadMethod();
-            final ANN annotation = reader.getAnnotation(annotationClass);
-            if (annotation != null) {
-                return annotation;
+    private static PropertyAnnotationReader INSTANCE = new DefaultPropertyAnnotationReader();
+
+    public static PropertyAnnotationReader getPropertyAnnotationReader() {
+        return INSTANCE;
+    }
+
+    public interface PropertyAnnotationReader {
+
+        <ANN extends Annotation> ANN getAnnotation(
+                final PropertyDesc<?> propertyDesc,
+                final Class<ANN> annotationClass);
+
+    }
+
+    private static class DefaultPropertyAnnotationReader implements
+            PropertyAnnotationReader {
+
+        @Override
+        public <ANN extends Annotation> ANN getAnnotation(
+                final PropertyDesc<?> propertyDesc,
+                final Class<ANN> annotationClass) {
+            if (propertyDesc.isReadable()) {
+                final Method reader = propertyDesc.getReadMethod();
+                final ANN annotation = reader.getAnnotation(annotationClass);
+                if (annotation != null) {
+                    return annotation;
+                }
             }
-        }
-        if (propertyDesc.isWritable()) {
-            final Method writer = propertyDesc.getWriteMethod();
-            final ANN annotation = writer.getAnnotation(annotationClass);
-            if (annotation != null) {
-                return annotation;
+            if (propertyDesc.isWritable()) {
+                final Method writer = propertyDesc.getWriteMethod();
+                final ANN annotation = writer.getAnnotation(annotationClass);
+                if (annotation != null) {
+                    return annotation;
+                }
             }
+            return null;
         }
-        return null;
+
     }
 
 }

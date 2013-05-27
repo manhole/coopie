@@ -30,6 +30,8 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
     private final BeanDesc<BEAN> beanDesc_;
     private CsvRecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
             .getInstance();
+    private Annotations.PropertyAnnotationReader propertyAnnotationReader_ = Annotations
+            .getPropertyAnnotationReader();
 
     public AbstractBeanCsvLayout(final Class<BEAN> beanClass) {
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
@@ -112,8 +114,8 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
         final DefaultCsvRecordDef recordDef = new DefaultCsvRecordDef();
         final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<BEAN> pd : pds) {
-            final CsvColumns columns = Annotations.getAnnotation(pd,
-                    CsvColumns.class);
+            final CsvColumns columns = getPropertyAnnotationReader()
+                    .getAnnotation(pd, CsvColumns.class);
             if (columns != null) {
                 final DefaultCsvColumnsDef columnsDef = new DefaultCsvColumnsDef();
                 columnsDef.setup(columns, pd);
@@ -122,8 +124,8 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
             }
             // TODO: CsvColumnとCsvColumnsの両方があったら例外にすること
 
-            final CsvColumn column = Annotations.getAnnotation(pd,
-                    CsvColumn.class);
+            final CsvColumn column = getPropertyAnnotationReader()
+                    .getAnnotation(pd, CsvColumn.class);
             if (column != null) {
                 final DefaultCsvColumnDef columnDef = new DefaultCsvColumnDef();
                 columnDef.setup(column, pd);
@@ -154,6 +156,15 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
 
     public void setCustomizer(final CsvRecordDefCustomizer columnCustomizer) {
         customizer_ = columnCustomizer;
+    }
+
+    public Annotations.PropertyAnnotationReader getPropertyAnnotationReader() {
+        return propertyAnnotationReader_;
+    }
+
+    public void setPropertyAnnotationReader(
+            final Annotations.PropertyAnnotationReader propertyAnnotationReader) {
+        propertyAnnotationReader_ = propertyAnnotationReader;
     }
 
     static class CsvColumnDefComparator implements Comparator<CsvColumnDef> {

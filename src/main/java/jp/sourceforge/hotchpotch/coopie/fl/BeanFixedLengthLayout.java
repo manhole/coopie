@@ -38,6 +38,8 @@ public class BeanFixedLengthLayout<BEAN> extends
         AbstractFixedLengthLayout<BEAN> implements RecordInOut<BEAN> {
 
     private final BeanDesc<BEAN> beanDesc_;
+    private Annotations.PropertyAnnotationReader propertyAnnotationReader_ = Annotations
+            .getPropertyAnnotationReader();
 
     public static <BEAN> BeanFixedLengthLayout<BEAN> getInstance(
             final Class<BEAN> beanClass) {
@@ -138,8 +140,8 @@ public class BeanFixedLengthLayout<BEAN> extends
         final DefaultFixedLengthRecordDef recordDef = new DefaultFixedLengthRecordDef();
         final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<BEAN> pd : pds) {
-            final FixedLengthColumn column = Annotations.getAnnotation(pd,
-                    FixedLengthColumn.class);
+            final FixedLengthColumn column = getPropertyAnnotationReader()
+                    .getAnnotation(pd, FixedLengthColumn.class);
             if (column == null) {
                 continue;
             }
@@ -154,6 +156,15 @@ public class BeanFixedLengthLayout<BEAN> extends
         }
 
         return recordDef;
+    }
+
+    public Annotations.PropertyAnnotationReader getPropertyAnnotationReader() {
+        return propertyAnnotationReader_;
+    }
+
+    public void setPropertyAnnotationReader(
+            final Annotations.PropertyAnnotationReader propertyAnnotationReader) {
+        propertyAnnotationReader_ = propertyAnnotationReader;
     }
 
 }
