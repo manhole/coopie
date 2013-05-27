@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -29,14 +29,6 @@ public class Annotations {
         return INSTANCE;
     }
 
-    public interface PropertyAnnotationReader {
-
-        <ANN extends Annotation> ANN getAnnotation(
-                final PropertyDesc<?> propertyDesc,
-                final Class<ANN> annotationClass);
-
-    }
-
     private static class DefaultPropertyAnnotationReader implements
             PropertyAnnotationReader {
 
@@ -45,15 +37,15 @@ public class Annotations {
                 final PropertyDesc<?> propertyDesc,
                 final Class<ANN> annotationClass) {
             if (propertyDesc.isReadable()) {
-                final Method reader = propertyDesc.getReadMethod();
-                final ANN annotation = reader.getAnnotation(annotationClass);
+                final Method method = propertyDesc.getReadMethod();
+                final ANN annotation = method.getAnnotation(annotationClass);
                 if (annotation != null) {
                     return annotation;
                 }
             }
             if (propertyDesc.isWritable()) {
-                final Method writer = propertyDesc.getWriteMethod();
-                final ANN annotation = writer.getAnnotation(annotationClass);
+                final Method method = propertyDesc.getWriteMethod();
+                final ANN annotation = method.getAnnotation(annotationClass);
                 if (annotation != null) {
                     return annotation;
                 }

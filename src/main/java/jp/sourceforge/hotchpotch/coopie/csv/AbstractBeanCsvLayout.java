@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.util.Annotations;
+import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader;
+
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
@@ -30,7 +33,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
     private final BeanDesc<BEAN> beanDesc_;
     private CsvRecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
             .getInstance();
-    private Annotations.PropertyAnnotationReader propertyAnnotationReader_ = Annotations
+    private PropertyAnnotationReader propertyAnnotationReader_ = Annotations
             .getPropertyAnnotationReader();
 
     public AbstractBeanCsvLayout(final Class<BEAN> beanClass) {
@@ -158,12 +161,12 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
         customizer_ = columnCustomizer;
     }
 
-    public Annotations.PropertyAnnotationReader getPropertyAnnotationReader() {
+    public PropertyAnnotationReader getPropertyAnnotationReader() {
         return propertyAnnotationReader_;
     }
 
     public void setPropertyAnnotationReader(
-            final Annotations.PropertyAnnotationReader propertyAnnotationReader) {
+            final PropertyAnnotationReader propertyAnnotationReader) {
         propertyAnnotationReader_ = propertyAnnotationReader;
     }
 

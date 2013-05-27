@@ -18,7 +18,6 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.csv.Annotations;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
@@ -29,6 +28,8 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
+import jp.sourceforge.hotchpotch.coopie.util.Annotations;
+import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader;
 
 import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
@@ -38,7 +39,7 @@ public class BeanFixedLengthLayout<BEAN> extends
         AbstractFixedLengthLayout<BEAN> implements RecordInOut<BEAN> {
 
     private final BeanDesc<BEAN> beanDesc_;
-    private Annotations.PropertyAnnotationReader propertyAnnotationReader_ = Annotations
+    private PropertyAnnotationReader propertyAnnotationReader_ = Annotations
             .getPropertyAnnotationReader();
 
     public static <BEAN> BeanFixedLengthLayout<BEAN> getInstance(
@@ -158,12 +159,12 @@ public class BeanFixedLengthLayout<BEAN> extends
         return recordDef;
     }
 
-    public Annotations.PropertyAnnotationReader getPropertyAnnotationReader() {
+    public PropertyAnnotationReader getPropertyAnnotationReader() {
         return propertyAnnotationReader_;
     }
 
     public void setPropertyAnnotationReader(
-            final Annotations.PropertyAnnotationReader propertyAnnotationReader) {
+            final PropertyAnnotationReader propertyAnnotationReader) {
         propertyAnnotationReader_ = propertyAnnotationReader;
     }
 
