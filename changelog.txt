@@ -13,6 +13,8 @@
 - PropertyとColumnの関係を、Property側を1に対して、Column側をn持てるようにしました。
 - 設定情報をRecordDefへ持たせるようにして、RecordDefからRecordDescを作るよう内部処理を変更しました。
 - ライセンスをASL 2.0にしました。
+- groovyから利用するため、@CsvColumnをFIELDにも付けられるようにしました。
+- gradleでjarとpomを作成できるようにしました。
 
 0.2.1 2012/02/23
 
