@@ -1,5 +1,20 @@
-0.2.2 2012/XX/XX
+0.2.2 2013/05/27
 
+- rename: DurationMeasurer -> DurationMeasure
+- Converterを追加。カラムとプロパティ間の型を変換できるようにし、String以外の型をプロパティに使用できるようにしました。
+- CsvColumnSetup#column(String propertyName, String label) を廃止。
+  カラム名とプロパティ名が異なる場合は明示的にtoPropertyを呼んでください。
+- PropertyBinding, PropertyBindingFactoryを追加。
+- ColumnNameMatcherを追加。
+- CsvRecordDefCustomizerを導入。
+  property情報やアノテーションから構築したCsvRecordDefを、変更できるようにしました。
+- @CsvColumnsアノテーションを追加。
+  アノテーションでも1プロパティを複数カラムへ対応付けられるようにしました。
+- PropertyとColumnの関係を、Property側を1に対して、Column側をn持てるようにしました。
+- 設定情報をRecordDefへ持たせるようにして、RecordDefからRecordDescを作るよう内部処理を変更しました。
+- ライセンスをASL 2.0にしました。
+- groovyから利用するため、@CsvColumnをFIELDにも付けられるようにしました。
+- gradleでjarとpomを作成できるようにしました。
 
 0.2.1 2012/02/23
 

@@ -1,5 +1,22 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -9,12 +26,26 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.PropertyNotFoundException;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CsvCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
@@ -23,6 +54,7 @@ import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.t2framework.commons.exception.ParseRuntimeException;
 import org.t2framework.commons.util.ResourceUtil;
 
 /*
@@ -125,9 +157,9 @@ public class BeanCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("bbb", "いい");
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
+                setup.column("いい").toProperty("bbb");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
             }
         });
 
@@ -155,24 +187,12 @@ public class BeanCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column(new LazyColumnName("bbb") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("い");
-                    }
-                });
-                setup.column(new LazyColumnName("aaa") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("あ");
-                    }
-                });
-                setup.column(new LazyColumnName("ccc") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("う");
-                    }
-                });
+                setup.column("bbb").withColumnNameMatcher(
+                        new ContainsNameMatcher("い"));
+                setup.column("aaa").withColumnNameMatcher(
+                        new ContainsNameMatcher("あ"));
+                setup.column("ccc").withColumnNameMatcher(
+                        new ContainsNameMatcher("う"));
             }
         });
 
@@ -184,18 +204,44 @@ public class BeanCsvReaderTest {
         assertRead2(csvReader, bean);
     }
 
-    static class LazyColumnName extends SimpleColumnName {
+    /**
+     * ヘッダがBeanのプロパティ名と異なる場合。
+     * ヘッダ名とbeanのプロパティ名をマッピングすること。
+     * 
+     * ヘッダ名が事前に決まらない(ロケールにより決定するなどで何パターンか有り得る)場合。
+     * Customizerでの実装。
+     * TODO CSV列名とのマッチングを確定する方法は、この書き方では手間なので、改善したい。
+     */
+    @Test
+    public void read2_3() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-2", "tsv");
 
-        public LazyColumnName(final String labelAndName) {
-            setLabel(labelAndName);
-            setName(labelAndName);
-        }
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
 
-        @Override
-        public boolean labelEquals(final String label) {
-            throw new AssertionError("should override");
-        }
+        layout.setCustomizer(new CsvRecordDefCustomizer() {
+            @Override
+            public void customize(final CsvRecordDef recordDef) {
+                for (final CsvColumnDef def : recordDef.getAllColumnDefs()) {
+                    final String pn = def.getLabel();
+                    if ("aaa".equals(pn)) {
+                        def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
+                    } else if ("bbb".equals(pn)) {
+                        def.setColumnNameMatcher(new ContainsNameMatcher("いい"));
+                    } else if ("ccc".equals(pn)) {
+                        def.setColumnNameMatcher(new ContainsNameMatcher("ううう"));
+                    }
+                }
+            }
+        });
 
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+
+        // ## Assert ##
+        final AaaBean bean = new AaaBean();
+        assertRead2(csvReader, bean);
     }
 
     public static void assertRead2(final RecordReader<AaaBean> csvReader,
@@ -313,9 +359,9 @@ public class BeanCsvReaderTest {
                 /*
                  * CSVの列順
                  */
-                setup.column("ccc", "ううう");
-                setup.column("aaa", "あ");
-                setup.column("bbb", "いい");
+                setup.column("ううう").toProperty("ccc");
+                setup.column("あ").toProperty("aaa");
+                setup.column("いい").toProperty("bbb");
             }
         });
 
@@ -500,8 +546,8 @@ public class BeanCsvReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
             }
         });
 
@@ -548,7 +594,7 @@ public class BeanCsvReaderTest {
             @Override
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
-                setup.column("ccc", "ddd");
+                setup.column("ddd").toProperty("ccc");
             }
         });
 
@@ -592,13 +638,14 @@ public class BeanCsvReaderTest {
 
         // ## Act ##
         // ## Assert ##
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("bad_property_name");
+            }
+        });
         try {
-            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-                @Override
-                public void setup(final CsvColumnSetup setup) {
-                    setup.column("bad_property_name");
-                }
-            });
+            layout.prepareOpen();
             fail();
         } catch (final PropertyNotFoundException e) {
             logger.debug(e.getMessage());
@@ -888,8 +935,9 @@ public class BeanCsvReaderTest {
         assertReadAfterLast(csvReader, bean);
     }
 
-    public static <T> void assertReadAfterLast(final RecordReader<T> csvReader,
-            final T bean) throws Throwable {
+    public static <BEAN> void assertReadAfterLast(
+            final RecordReader<BEAN> csvReader, final BEAN bean)
+            throws Throwable {
         csvReader.read(bean);
         csvReader.read(bean);
         csvReader.read(bean);
@@ -1210,6 +1258,445 @@ public class BeanCsvReaderTest {
         }
     }
 
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void read_bigDecimal1() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<BigDecimalBean>(
+                BigDecimalBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa").withConverter(new BigDecimalConverter());
+                setup.column("bbb");
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<BigDecimalBean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimalBean bean = new BigDecimalBean();
+
+        assertBigDecimal(csvReader, bean);
+    }
+
+    private <T extends BigDecimalBean> void assertBigDecimal(
+            final RecordReader<T> csvReader, final T bean) throws IOException {
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("11.10", bean.getAaa().toPlainString());
+        assertEquals("21.02", bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals(null, bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("1101.45", bean.getAaa().toPlainString());
+        assertEquals("1,201.56", bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * setupColumnsを使わない方法。
+     * 
+     * Columnアノテーションが付いていないBeanの場合
+     */
+    @Test
+    public void read_bigDecimal2() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimalBean> layout = BeanCsvLayout
+                .getInstance(BigDecimalBean.class);
+        final BigDecimalConverter converter = new BigDecimalConverter();
+        layout.setCustomizer(new CsvRecordDefCustomizer() {
+            @Override
+            public void customize(final CsvRecordDef recordDef) {
+                for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
+                    final Class<?> propertyType = columnDef.getPropertyType();
+                    if (propertyType.isAssignableFrom(BigDecimal.class)) {
+                        columnDef.setConverter(converter);
+                    }
+                }
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<BigDecimalBean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimalBean bean = new BigDecimalBean();
+
+        assertBigDecimal(csvReader, bean);
+    }
+
+    /**
+     * setupColumnsを使わない方法。
+     * 
+     * Columnアノテーションが付いているBeanの場合
+     */
+    @Test
+    public void read_bigDecimal3() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
+                .getInstance(BigDecimal2Bean.class);
+        final BigDecimalConverter converter = new BigDecimalConverter();
+        layout.setCustomizer(new CsvRecordDefCustomizer() {
+            @Override
+            public void customize(final CsvRecordDef recordDef) {
+                for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
+                    final Class<?> propertyType = columnDef.getPropertyType();
+                    if (propertyType.isAssignableFrom(BigDecimal.class)) {
+                        columnDef.setConverter(converter);
+                    }
+                }
+            }
+        });
+
+        // ## Act ##
+        final RecordReader<BigDecimal2Bean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimal2Bean bean = new BigDecimal2Bean();
+
+        assertBigDecimal(csvReader, bean);
+    }
+
+    /**
+     * ConverterRepositoryを使う方法
+     */
+    @Test
+    public void read_bigDecimal4() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout
+                .getInstance(BigDecimal2Bean.class);
+        final DefaultConverterRepository converterRepository = new DefaultConverterRepository();
+        converterRepository.register(new BigDecimalConverter());
+        layout.setConverterRepository(converterRepository);
+
+        // ## Act ##
+        final RecordReader<BigDecimal2Bean> csvReader = layout
+                .openReader(getResourceAsReader("-12", "tsv"));
+
+        // ## Assert ##
+        final BigDecimal2Bean bean = new BigDecimal2Bean();
+
+        assertBigDecimal(csvReader, bean);
+    }
+
+    /**
+     * CSV側が2カラムで、対応するJava側が1プロパティの場合。
+     * 年月日と時分秒で列が別れているとする。
+     */
+    @Test
+    public void read_calendar1() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                // CSVの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+                // 2列 <=> 1プロパティ の変換にConverterを使用する。
+                setup.columns(
+                        new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
+                            @Override
+                            public void setup(
+                                    final CsvCompositeColumnSetup setup) {
+                                setup.column("ymd");
+                                setup.column("hms");
+                            }
+                        }).toProperty("bbb")
+                        .withConverter(new CalendarConverter());
+            }
+        });
+        final String text = _calendar1_text();
+
+        // ## Act ##
+        final RecordReader<CalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final CalendarBean bean = new CalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/09/13 17:54:01",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals("2011/01/01 00:00:59",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    private String _calendar1_text() throws IOException {
+        final StringWriter sw = new StringWriter();
+        final ElementWriter writer = new CsvElementInOut(
+                new DefaultCsvSetting()).openWriter(sw);
+
+        writer.writeRecord(a("aaa", "ymd", "hms"));
+        writer.writeRecord(a("a", "2011-09-13", "17:54:01"));
+        writer.writeRecord(a("b", "2011-01-01", "00:00:59"));
+        writer.close();
+        final String text = sw.toString();
+        return text;
+    }
+
+    /**
+     * 複数カラムを1プロパティへ対応づけている時に、一部カラムがnullの場合の挙動
+     */
+    @Test
+    public void read_calendar2() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                // TODO CsvColumnCustomizerと単位が合わない
+                setup.columns(
+                        new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
+                            @Override
+                            public void setup(
+                                    final CsvCompositeColumnSetup setup) {
+                                setup.column("ymd");
+                                setup.column("hms");
+                            }
+                        }).toProperty("bbb")
+                        .withConverter(new CalendarConverter());
+            }
+        });
+
+        final String text = _calendar2_text();
+
+        // ## Act ##
+        final RecordReader<CalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final CalendarBean bean = new CalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/08/13 11:22:33",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("c", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    private String _calendar2_text() throws IOException {
+        final StringWriter sw = new StringWriter();
+        final ElementWriter writer = new CsvElementInOut(
+                new DefaultCsvSetting()).openWriter(sw);
+        writer.writeRecord(a("aaa", "ymd", "hms"));
+        writer.writeRecord(a("a", "2011-08-13", "11:22:33"));
+        writer.writeRecord(a("b", "2011-09-14", ""));
+        writer.writeRecord(a("c", "", "12:22:33"));
+        writer.close();
+        final String text = sw.toString();
+        return text;
+    }
+
+    /**
+     * 複数カラムを1プロパティへ対応づけている時に、一部カラムがnullの場合の挙動
+     * 
+     * setupColumnsを使わない方法。
+     * 
+     * Columnアノテーションが付いているBeanの場合
+     */
+    @Test
+    public void read_calendar3() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AnnotatedCalendarBean> layout = new BeanCsvLayout<AnnotatedCalendarBean>(
+                AnnotatedCalendarBean.class);
+        final AtomicBoolean called = new AtomicBoolean();
+        layout.setCustomizer(new CsvRecordDefCustomizer() {
+            @Override
+            public void customize(final CsvRecordDef recordDef) {
+                for (final CsvColumnsDef columnsDef : recordDef
+                        .getColumnsDefs()) {
+                    final String propertyName = columnsDef.getPropertyName();
+                    called.set(true);
+                    if ("bbb".equals(propertyName)) {
+                        columnsDef.setConverter(new CalendarConverter());
+                    }
+                }
+            }
+        });
+        assertEquals(false, called.get());
+
+        final String text = _calendar2_text();
+
+        // ## Act ##
+        final RecordReader<AnnotatedCalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        assertEquals(true, called.get());
+
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final AnnotatedCalendarBean bean = new AnnotatedCalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/08/13 11:22:33",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("c", bean.getAaa());
+        assertEquals(null, bean.getBbb());
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * ConverterRepositoryでCompositeカラムへconverterを設定できること。
+     */
+    @Test
+    public void read_calendar4() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AnnotatedCalendarBean> layout = BeanCsvLayout
+                .getInstance(AnnotatedCalendarBean.class);
+        final DefaultConverterRepository converterRepository = new DefaultConverterRepository();
+        converterRepository.register(new CalendarConverter());
+        layout.setConverterRepository(converterRepository);
+
+        final String text = _calendar1_text();
+
+        // ## Act ##
+        final RecordReader<AnnotatedCalendarBean> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final AnnotatedCalendarBean bean = new AnnotatedCalendarBean();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.getAaa());
+        assertEquals("2011/09/13 17:54:01",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.getAaa());
+        assertEquals("2011/01/01 00:00:59",
+                format.format(bean.getBbb().getTime()));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 複数カラムに対応する
+     * propertyを呼び忘れた場合
+     */
+    @Test
+    public void invalid_columns_setup_property() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+                @Override
+                public void setup(final CsvColumnSetup setup) {
+                    setup.column("aaa");
+                    // property設定し忘れ
+                    setup.columns(new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
+                        @Override
+                        public void setup(final CsvCompositeColumnSetup setup) {
+                            setup.column("ymd");
+                            setup.column("hms");
+                        }
+                    });
+                }
+            });
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
+    /**
+     * 複数カラムに対応する
+     * converterを呼び忘れた場合
+     * 
+     * プロダクトコードが追いついていないため@Ignoreにしておく
+     */
+    @Test
+    @Ignore
+    public void invalid_columns_setup_converter() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+                @Override
+                public void setup(final CsvColumnSetup setup) {
+                    setup.column("aaa");
+                    // converter設定し忘れ
+                    setup.columns(
+                            new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
+                                @Override
+                                public void setup(
+                                        final CsvCompositeColumnSetup setup) {
+                                    setup.column("ymd");
+                                    setup.column("hms");
+                                }
+                            }).toProperty("bbb");
+                }
+            });
+            fail();
+        } catch (final IllegalStateException e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
     static Reader getResourceAsReader(final String suffix, final String ext) {
         final Charset charset = Charset.forName("UTF-8");
         final Reader reader = getResourceAsReader(suffix, ext, charset);
@@ -1226,6 +1713,29 @@ public class BeanCsvReaderTest {
     static InputStream getResourceAsStream(final String suffix, final String ext) {
         return ResourceUtil.getResourceAsStream(
                 BeanCsvReaderTest.class.getName() + suffix, ext);
+    }
+
+    @Test
+    public void generic_learning() throws Throwable {
+        final Converter c = new BigDecimalConverter();
+        {
+            final Type genericSuperclass = c.getClass().getGenericSuperclass();
+            assertEquals(Object.class, genericSuperclass);
+        }
+        final Type[] genericInterfaces = c.getClass().getGenericInterfaces();
+        assertEquals(1, genericInterfaces.length);
+        final Type type = genericInterfaces[0];
+        // これは環境によっては通らないかも...
+        assertEquals(
+                "jp.sourceforge.hotchpotch.coopie.csv.Converter<java.math.BigDecimal, java.lang.String>",
+                type.toString());
+        final ParameterizedType pType = (ParameterizedType) type;
+        assertEquals(null, pType.getOwnerType());
+        assertEquals(Converter.class, pType.getRawType());
+        final Type[] actualTypeArguments = pType.getActualTypeArguments();
+        assertEquals(2, actualTypeArguments.length);
+        assertEquals(BigDecimal.class, actualTypeArguments[0]);
+        assertEquals(String.class, actualTypeArguments[1]);
     }
 
     public static class AaaBean {
@@ -1419,6 +1929,222 @@ public class BeanCsvReaderTest {
         @Override
         public String toString() {
             return toStringFormat.format(this);
+        }
+
+    }
+
+    public static class BigDecimalBean {
+
+        private BigDecimal aaa_;
+        private String bbb_;
+
+        public BigDecimal getAaa() {
+            return aaa_;
+        }
+
+        public void setAaa(final BigDecimal aaa) {
+            aaa_ = aaa;
+        }
+
+        public String getBbb() {
+            return bbb_;
+        }
+
+        public void setBbb(final String bbb) {
+            bbb_ = bbb;
+        }
+
+    }
+
+    public static class BigDecimal2Bean extends BigDecimalBean {
+
+        @Override
+        @CsvColumn
+        public BigDecimal getAaa() {
+            return super.getAaa();
+        }
+
+        @Override
+        @CsvColumn
+        public String getBbb() {
+            return super.getBbb();
+        }
+
+    }
+
+    public static class BigDecimalConverter implements
+            Converter<BigDecimal, String> {
+
+        private final DecimalFormat format_;
+
+        public BigDecimalConverter() {
+            format_ = (DecimalFormat) NumberFormat.getNumberInstance();
+            format_.setMinimumFractionDigits(2);
+            format_.setMaximumFractionDigits(2);
+            format_.setGroupingUsed(true);
+            format_.setGroupingSize(3);
+            format_.setParseBigDecimal(true);
+        }
+
+        @Override
+        public String convertTo(final BigDecimal from) {
+            if (from == null) {
+                return null;
+            }
+            final String s = format_.format(from);
+            return s;
+        }
+
+        @Override
+        public BigDecimal convertFrom(final String from) {
+            if (from == null) {
+                return null;
+            }
+            final ParsePosition pp = new ParsePosition(0);
+            final Number parse = format_.parse(from, pp);
+            if (parse == null || pp.getIndex() != from.length()) {
+                // パースエラー
+                throw new ParseRuntimeException(new ParseException(from,
+                        pp.getIndex()));
+            }
+            final BigDecimal o = (BigDecimal) parse;
+            return o;
+        }
+
+    }
+
+    public static class CalendarBean {
+
+        private String aaa_;
+        private Calendar bbb_;
+
+        public String getAaa() {
+            return aaa_;
+        }
+
+        public void setAaa(final String aaa) {
+            aaa_ = aaa;
+        }
+
+        public Calendar getBbb() {
+            return bbb_;
+        }
+
+        public void setBbb(final Calendar bbb) {
+            bbb_ = bbb;
+        }
+
+    }
+
+    public static class AnnotatedCalendarBean {
+
+        private String aaa_;
+        private Calendar bbb_;
+
+        @CsvColumn
+        public String getAaa() {
+            return aaa_;
+        }
+
+        public void setAaa(final String aaa) {
+            aaa_ = aaa;
+        }
+
+        @CsvColumns({ @CsvColumn(label = "ymd"), @CsvColumn(label = "hms") })
+        public Calendar getBbb() {
+            return bbb_;
+        }
+
+        public void setBbb(final Calendar bbb) {
+            bbb_ = bbb;
+        }
+
+    }
+
+    public static class CalendarConverter implements
+            Converter<Calendar, String[]> {
+
+        private final DateFormat dayFormat_;
+        private final DateFormat timeFormat_;
+
+        public CalendarConverter() {
+            dayFormat_ = new SimpleDateFormat("yyyy-MM-dd");
+            timeFormat_ = new SimpleDateFormat("HH:mm:ss");
+        }
+
+        /*
+         * Calendarがnullの場合は年月日と時分秒をどちらもnullとする
+         */
+        @Override
+        public String[] convertTo(final Calendar from) {
+            final Calendar o = from;
+            final String[] to = new String[2];
+            if (o == null) {
+                return to;
+            }
+
+            final Date date = o.getTime();
+            {
+                final String s = dayFormat_.format(date);
+                to[0] = s;
+            }
+            {
+                final String s = timeFormat_.format(date);
+                to[1] = s;
+            }
+            return to;
+        }
+
+        /*
+         * 年月日と時分秒の一方でもnullの場合はCalendarをnullとする
+         */
+        @Override
+        public Calendar convertFrom(final String[] from) {
+
+            final Calendar cal = Calendar.getInstance();
+            cal.clear();
+            {
+                final String s = from[0];
+                if (s == null) {
+                    return null;
+                }
+                final Date date = parse(s, dayFormat_);
+                final Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                copy(c, cal, Calendar.YEAR);
+                copy(c, cal, Calendar.MONTH);
+                copy(c, cal, Calendar.DATE);
+            }
+            {
+                final String s = from[1];
+                if (s == null) {
+                    return null;
+                }
+                final Date date = parse(s, timeFormat_);
+                final Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                copy(c, cal, Calendar.HOUR_OF_DAY);
+                copy(c, cal, Calendar.MINUTE);
+                copy(c, cal, Calendar.SECOND);
+            }
+            return cal;
+        }
+
+        private void copy(final Calendar src, final Calendar dest,
+                final int field) {
+            final int v = src.get(field);
+            dest.set(field, v);
+        }
+
+        private Date parse(final String s, final DateFormat format) {
+            final ParsePosition pp = new ParsePosition(0);
+            final Date date = format.parse(s, pp);
+            if (date == null || pp.getIndex() != s.length()) {
+                // パースエラー
+                throw new ParseRuntimeException(new ParseException(s,
+                        pp.getIndex()));
+            }
+            return date;
         }
 
     }

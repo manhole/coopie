@@ -1,7 +1,24 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -10,7 +27,6 @@ import java.io.InputStream;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
-import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.LazyColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
@@ -22,6 +38,23 @@ import org.slf4j.Logger;
 public class BeanExcelReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
+
+    @Test
+    public void read_open_null() throws Throwable {
+        // ## Arrange ##
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openReader(null);
+            fail();
+        } catch (final NullPointerException npe) {
+            assertTrue(npe.getMessage() != null
+                    && 0 < npe.getMessage().length());
+        }
+    }
 
     /**
      * ヘッダがBeanのプロパティ名と同じ場合。
@@ -60,9 +93,9 @@ public class BeanExcelReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("bbb", "いい");
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
+                setup.column("いい").toProperty("bbb");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
             }
         });
 
@@ -91,24 +124,24 @@ public class BeanExcelReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column(new LazyColumnName("bbb") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("い");
-                    }
-                });
-                setup.column(new LazyColumnName("aaa") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("あ");
-                    }
-                });
-                setup.column(new LazyColumnName("ccc") {
-                    @Override
-                    public boolean labelEquals(final String label) {
-                        return label.contains("う");
-                    }
-                });
+                {
+                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                    def.setPropertyName("bbb");
+                    def.setColumnNameMatcher(new ContainsNameMatcher("い"));
+                    setup.column(def);
+                }
+                {
+                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                    def.setPropertyName("aaa");
+                    def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
+                    setup.column(def);
+                }
+                {
+                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                    def.setPropertyName("ccc");
+                    def.setColumnNameMatcher(new ContainsNameMatcher("う"));
+                    setup.column(def);
+                }
             }
         });
 
@@ -159,9 +192,9 @@ public class BeanExcelReaderTest {
                 /*
                  * CSVの列順
                  */
-                setup.column("ccc", "ううう");
-                setup.column("aaa", "あ");
-                setup.column("bbb", "いい");
+                setup.column("ううう").toProperty("ccc");
+                setup.column("あ").toProperty("aaa");
+                setup.column("いい").toProperty("bbb");
             }
         });
 
@@ -211,8 +244,8 @@ public class BeanExcelReaderTest {
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
             }
         });
 
@@ -239,7 +272,7 @@ public class BeanExcelReaderTest {
             @Override
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
-                setup.column("ccc", "ddd");
+                setup.column("ddd").toProperty("ccc");
             }
         });
 

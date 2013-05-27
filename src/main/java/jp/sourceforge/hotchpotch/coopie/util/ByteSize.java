@@ -1,3 +1,19 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.io.IOException;
@@ -34,7 +50,7 @@ public class ByteSize {
 
     private final long size_;
     private ToStringMode toStringMode_ = DETAIL;
-    private UnitsTable unitsTable_ = BaseType.BINARY.getUnitsTable();
+    private BaseType baseType_ = BaseType.BINARY;
 
     public ByteSize(final long size) {
         size_ = size;
@@ -64,27 +80,16 @@ public class ByteSize {
     }
 
     public String toHumanReadableString() {
-        return HUMAN_READABLE.toString(this);
+        return toString(HUMAN_READABLE);
     }
 
     @Override
     public String toString() {
-        return toStringMode_.toString(this);
+        return toString(toStringMode_);
     }
 
-    private void appendTo(final ByteSizeUnit unit, final long size,
-            final StringBuilder sb) {
-        sb.append(unit.format(size));
-        if (unit == B) {
-            return;
-        }
-        sb.append(" ");
-        sb.append(unit.getUnitLabel());
-    }
-
-    private ByteSizeUnit detectUnit(final long size) {
-        final ByteSizeUnit unit = unitsTable_.detectUnit(size);
-        return unit;
+    private String toString(final ToStringMode toStringMode) {
+        return toStringMode.toString(this);
     }
 
     public void setToStringMode(final ToStringMode toStringMode) {
@@ -94,8 +99,12 @@ public class ByteSize {
         toStringMode_ = toStringMode;
     }
 
+    public BaseType getBaseType() {
+        return baseType_;
+    }
+
     public void setBaseType(final BaseType baseType) {
-        unitsTable_ = baseType.getUnitsTable();
+        baseType_ = baseType;
     }
 
     public static enum BaseType {
@@ -296,46 +305,62 @@ public class ByteSize {
 
     }
 
-    static class DetailMode implements ToStringMode {
+    static abstract class AbstractToStringMode implements ToStringMode {
+
+        protected void appendTo(final ByteSizeUnit unit, final long size,
+                final StringBuilder sb) {
+            sb.append(unit.format(size));
+            if (unit == B) {
+                return;
+            }
+            sb.append(" ");
+            sb.append(unit.getUnitLabel());
+        }
+
+    }
+
+    static class DetailMode extends AbstractToStringMode {
 
         @Override
         public String toString(final ByteSize byteSize) {
             final long size = byteSize.getSize();
-            final ByteSizeUnit unit = byteSize.detectUnit(size);
+            final ByteSizeUnit unit = byteSize.getBaseType().getUnitsTable()
+                    .detectUnit(size);
             final StringBuilder sb = new StringBuilder();
-            byteSize.appendTo(unit, size, sb);
+            appendTo(unit, size, sb);
             if (unit == B) {
                 return sb.toString();
             }
 
             sb.append(" (");
-            byteSize.appendTo(B, size, sb);
+            appendTo(B, size, sb);
             sb.append(")");
             return sb.toString();
         }
 
     }
 
-    static class HumanReadableMode implements ToStringMode {
+    static class HumanReadableMode extends AbstractToStringMode {
 
         @Override
         public String toString(final ByteSize byteSize) {
             final long size = byteSize.getSize();
-            final ByteSizeUnit unit = byteSize.detectUnit(size);
+            final ByteSizeUnit unit = byteSize.getBaseType().getUnitsTable()
+                    .detectUnit(size);
             final StringBuilder sb = new StringBuilder();
-            byteSize.appendTo(unit, size, sb);
+            appendTo(unit, size, sb);
             return sb.toString();
         }
 
     }
 
-    static class ByteMode implements ToStringMode {
+    static class ByteMode extends AbstractToStringMode {
 
         @Override
         public String toString(final ByteSize byteSize) {
             final long size = byteSize.getSize();
             final StringBuilder sb = new StringBuilder();
-            byteSize.appendTo(B, size, sb);
+            appendTo(B, size, sb);
             return sb.toString();
         }
 

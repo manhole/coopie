@@ -1,3 +1,19 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
@@ -6,7 +22,7 @@ import jp.sourceforge.hotchpotch.coopie.util.Closable;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
-public class AbstractRecordWriter<T> implements Closable, RecordWriter<T> {
+public class AbstractRecordWriter<BEAN> implements Closable, RecordWriter<BEAN> {
 
     private boolean closed_ = true;
     @SuppressWarnings("unused")
@@ -23,22 +39,22 @@ public class AbstractRecordWriter<T> implements Closable, RecordWriter<T> {
     private boolean withHeader_;
     private boolean writtenHeader_;
 
-    private RecordDesc<T> recordDesc_;
+    private RecordDesc<BEAN> recordDesc_;
 
-    public AbstractRecordWriter(final RecordDesc<T> recordDesc) {
+    public AbstractRecordWriter(final RecordDesc<BEAN> recordDesc) {
         recordDesc_ = recordDesc;
     }
 
     /*
      * 1レコード目を出力するときに、このメソッドが呼ばれる。
      */
-    protected void writeHeader(final T bean) {
+    protected void writeHeader(final BEAN bean) {
         final String[] line = recordDesc_.getHeaderValues();
         elementWriter_.writeRecord(line);
     }
 
     @Override
-    public void write(final T bean) {
+    public void write(final BEAN bean) {
         if (firstRecord_) {
             firstRecord_ = false;
             recordDesc_ = recordDesc_.setupByBean(bean);

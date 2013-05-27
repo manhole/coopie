@@ -1,3 +1,19 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.util;
 
 import static org.hamcrest.Matchers.containsString;
@@ -316,26 +332,26 @@ public class ToStringFormatTest {
     }
 
     @Test
-    public void composit1() throws Throwable {
+    public void composite1() throws Throwable {
         // ## Arrange ##
-        final Composit c1 = new Composit("c1");
-        c1.setComposit(c1);
+        final Composite c1 = new Composite("c1");
+        c1.setComposite(c1);
 
         // ## Act ##
         final ToStringFormat format = new ToStringFormat();
         final String actual = format.format(c1);
 
         // ## Assert ##
-        assertEquals("Composit[composit=<..>, name=c1]", actual);
+        assertEquals("Composite[composite=<..>, name=c1]", actual);
     }
 
     @Test
-    public void composit2() throws Throwable {
+    public void composite2() throws Throwable {
         // ## Arrange ##
-        final Composit c1 = new Composit("c1");
-        final Composit c2 = new Composit("c2");
-        c1.setComposit(c2);
-        c2.setComposit(c1);
+        final Composite c1 = new Composite("c1");
+        final Composite c2 = new Composite("c2");
+        c1.setComposite(c2);
+        c2.setComposite(c1);
 
         // ## Act ##
         final ToStringFormat format = new ToStringFormat();
@@ -343,22 +359,22 @@ public class ToStringFormatTest {
 
         // ## Assert ##
         // 実際はこのような値
-        // Composit[composit=Composit@f2a55aa, name=c1]
+        // Composite[composite=Composite@f2a55aa, name=c1]
         logger.debug(actual);
-        assertThat(actual, containsString("Composit[composit=Composit@"));
+        assertThat(actual, containsString("Composite[composite=Composite@"));
         assertThat(actual, containsString(", name=c1]"));
-        assertThat(actual, startsWith("Composit[composit=Composit@"));
+        assertThat(actual, startsWith("Composite[composite=Composite@"));
         assertThat(actual, endsWith(", name=c1]"));
-        //assertEquals("Composit[composit=Composit@xxxxxx, name=c1]", actual);
+        //assertEquals("Composite[composite=Composite@xxxxxx, name=c1]", actual);
     }
 
     @Test
-    public void composit3() throws Throwable {
+    public void composite3() throws Throwable {
         // ## Arrange ##
-        final Composit c1 = new Composit("c1");
-        final Composit c2 = new Composit("c2");
-        c1.setComposit(c2);
-        c2.setComposit(c1);
+        final Composite c1 = new Composite("c1");
+        final Composite c2 = new Composite("c2");
+        c1.setComposite(c2);
+        c2.setComposite(c1);
 
         // ## Act ##
         final ToStringFormat format = new ToStringFormat();
@@ -367,7 +383,7 @@ public class ToStringFormatTest {
 
         // ## Assert ##
         assertEquals(
-                "Composit[composit=Composit[composit=<..>, name=c2], name=c1]",
+                "Composite[composite=Composite[composite=<..>, name=c2], name=c1]",
                 actual);
     }
 
@@ -484,12 +500,12 @@ public class ToStringFormatTest {
 
     }
 
-    public static class Composit {
+    public static class Composite {
 
         private String name;
-        private Composit composit;
+        private Composite composite;
 
-        public Composit(final String name) {
+        public Composite(final String name) {
             this.name = name;
         }
 
@@ -501,12 +517,12 @@ public class ToStringFormatTest {
             this.name = name;
         }
 
-        public Composit getComposit() {
-            return composit;
+        public Composite getComposit() {
+            return composite;
         }
 
-        public void setComposit(final Composit composit) {
-            this.composit = composit;
+        public void setComposite(final Composite composit) {
+            composite = composit;
         }
 
         @Override

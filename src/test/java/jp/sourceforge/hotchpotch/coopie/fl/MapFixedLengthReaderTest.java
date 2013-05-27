@@ -1,20 +1,45 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.SkipEmptyLineReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.MapCsvReaderTest;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
+import jp.sourceforge.hotchpotch.coopie.fl.FixedLengthColumnSetup.FixedLengthCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.CharSequenceWriter;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,6 +49,22 @@ public class MapFixedLengthReaderTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
+    @Test
+    public void read_open_null() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openReader(null);
+            fail();
+        } catch (final NullPointerException npe) {
+            assertTrue(npe.getMessage() != null
+                    && 0 < npe.getMessage().length());
+        }
+    }
+
     /**
      * setupしないでopenしようとしたら、エラーにする。
      */
@@ -32,15 +73,19 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
 
         // ## Act ##
         // ## Assert ##
+        boolean success = false;
         try {
             layout.openReader(r);
-            fail();
-        } catch (final IllegalStateException e) {
+            success = true;
+        } catch (final AssertionError e) {
             logger.debug(e.getMessage());
+        }
+        if (success) {
+            fail();
         }
     }
 
@@ -54,7 +99,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -85,7 +130,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -115,7 +160,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-3", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -145,7 +190,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-4", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -194,7 +239,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read_empty() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -225,7 +270,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -253,7 +298,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -280,7 +325,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -308,7 +353,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -359,7 +404,7 @@ public class MapFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -402,7 +447,7 @@ public class MapFixedLengthReaderTest {
     @Test
     public void setup_invalid_readeditor() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout layout = new MapFixedLengthLayout();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
 
         // ## Act ##
         // ## Assert ##
@@ -412,6 +457,188 @@ public class MapFixedLengthReaderTest {
         } catch (final IllegalArgumentException e) {
             logger.debug(e.getMessage());
         }
+    }
+
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void read_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 10).withConverter(
+                        new BigDecimalConverter());
+                setup.column("bbb", 10, 20);
+            }
+        });
+        layout.setWithHeader(true);
+
+        String text;
+        {
+            final CharSequenceWriter w = new CharSequenceWriter();
+            w.writeLine("aaa       bbb       ");
+            w.writeLine("11.10     21.02     ");
+            w.writeLine("                    ");
+            w.writeLine("1,101.45    1,201.56");
+            text = w.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<Map<String, Object>> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final Map<String, Object> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("11.10", ((BigDecimal) bean.get("aaa")).toPlainString());
+        assertEquals("21.02", bean.get("bbb"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals(null, bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("1101.45", ((BigDecimal) bean.get("aaa")).toPlainString());
+        assertEquals("1,201.56", bean.get("bbb"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * テキスト側が2カラムで、対応するJava側が1プロパティの場合。
+     * 年月日と時分秒で列が別れているとする。
+     */
+    @Test
+    public void read_calendar1() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+                // 2列 <=> 1プロパティ の変換にConverterを使用する。
+                // TODO ここでpropertyを呼び忘れた場合のエラーを、わかりやすくする
+                setup.columns(
+                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                            @Override
+                            public void setup(
+                                    final FixedLengthCompositeColumnSetup compositeSetup) {
+                                compositeSetup.column("ymd", 5, 20);
+                                compositeSetup.column("hms", 20, 35);
+                            }
+                        }).toProperty("bbb")
+                        .withConverter(new CalendarConverter());
+            }
+        });
+        layout.setWithHeader(true);
+
+        String text;
+        {
+            final CharSequenceWriter w = new CharSequenceWriter();
+            w.writeLine("  aaa            ymd            hms");
+            w.writeLine("    a     2011-09-13       17:54:01");
+            w.writeLine("    b     2011-01-01       00:00:59");
+            text = w.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<Map<String, Object>> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final Map<String, Object> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        logger.debug("{}", bean);
+        assertEquals("a", bean.get("aaa"));
+        assertEquals("2011/09/13 17:54:01",
+                format.format(((Calendar) bean.get("bbb")).getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.get("aaa"));
+        assertEquals("2011/01/01 00:00:59",
+                format.format(((Calendar) bean.get("bbb")).getTime()));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
+    }
+
+    /**
+     * 複数カラムを1プロパティへ対応づけている時に、一部カラムがnullの場合の挙動
+     */
+    @Test
+    public void read_calendar2() throws Throwable {
+        // ## Arrange ##
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+                // 2列 <=> 1プロパティ の変換にConverterを使用する。
+                setup.columns(
+                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+
+                            @Override
+                            public void setup(
+                                    final FixedLengthCompositeColumnSetup compositeSetup) {
+                                compositeSetup.column("ymd", 5, 20);
+                                compositeSetup.column("hms", 20, 35);
+                            }
+                        }).toProperty("bbb")
+                        .withConverter(new CalendarConverter());
+            }
+        });
+        layout.setWithHeader(true);
+
+        final String text;
+        {
+            final CharSequenceWriter w = new CharSequenceWriter();
+            w.writeLine("  aaa            ymd            hms");
+            w.writeLine("    a     2011-08-13       11:22:33");
+            w.writeLine("    b     2011-09-14               ");
+            w.writeLine("    c                      12:22:33");
+            text = w.toString();
+        }
+
+        // ## Act ##
+        final RecordReader<Map<String, Object>> csvReader = layout
+                .openReader(new StringReader(text));
+
+        // ## Assert ##
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        final Map<String, Object> bean = CollectionsUtil.newHashMap();
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("a", bean.get("aaa"));
+        assertEquals("2011/08/13 11:22:33",
+                format.format(((Calendar) bean.get("bbb")).getTime()));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("b", bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+
+        assertEquals(true, csvReader.hasNext());
+        csvReader.read(bean);
+        assertEquals("c", bean.get("aaa"));
+        assertEquals(null, bean.get("bbb"));
+
+        assertEquals(false, csvReader.hasNext());
+        csvReader.close();
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {

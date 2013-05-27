@@ -1,9 +1,27 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -23,8 +41,26 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.junit.Test;
+import org.t2framework.commons.util.ResourceUtil;
 
 public class BeanExcelWriterTest {
+
+    @Test
+    public void write_open_null() throws Throwable {
+        // ## Arrange ##
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openWriter(null);
+            fail();
+        } catch (final NullPointerException npe) {
+            assertTrue(npe.getMessage() != null
+                    && 0 < npe.getMessage().length());
+        }
+    }
 
     /**
      * カラム順を設定できること。
@@ -275,8 +311,9 @@ public class BeanExcelWriterTest {
         // nullカラムの色が変わっていること
         final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
                 baos.toByteArray()));
+        final File dir = ResourceUtil.getBuildDir(getClass());
         final BufferedOutputStream os = new FileOperation()
-                .openBufferedOutputStream(new File("target/test.xls"));
+                .openBufferedOutputStream(new File(dir, "test.xls"));
         book.write(os);
         os.close();
         assertEquals(1, book.getNumberOfSheets());

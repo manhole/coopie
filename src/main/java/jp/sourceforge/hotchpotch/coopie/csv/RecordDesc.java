@@ -1,16 +1,32 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-public interface RecordDesc<T> {
+public interface RecordDesc<BEAN> {
 
     /**
      * ファイル 1レコードぶんの文字列を、オブジェクトから構築します。
      */
-    String[] getValues(T bean);
+    String[] getValues(BEAN bean);
 
     /**
      * ファイル 1レコードぶんの文字列を、オブジェクトへセットします。
      */
-    void setValues(T bean, String[] values);
+    void setValues(BEAN bean, String[] values);
 
     /**
      * ヘッダ行の文字列を返します。
@@ -26,17 +42,17 @@ public interface RecordDesc<T> {
     /**
      * ファイルを読む際に、ヘッダ行からrecord定義を修正します。
      */
-    RecordDesc<T> setupByHeader(String[] header);
+    RecordDesc<BEAN> setupByHeader(String[] header);
 
     /**
      * ファイルへ書く際に、1行目のオブジェクトからrecord定義を修正します。
      */
-    RecordDesc<T> setupByBean(T bean);
+    RecordDesc<BEAN> setupByBean(BEAN bean);
 
     /**
      * 1レコードぶんのオブジェクトを生成します。
      */
-    T newInstance();
+    BEAN newInstance();
 
     public enum OrderSpecified {
 

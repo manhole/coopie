@@ -1,3 +1,19 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
@@ -11,8 +27,8 @@ import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractRecordReader<T> implements Closable,
-        RecordReader<T> {
+public abstract class AbstractRecordReader<BEAN> implements Closable,
+        RecordReader<BEAN> {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
@@ -21,7 +37,7 @@ public abstract class AbstractRecordReader<T> implements Closable,
      */
     private boolean closeReader_ = true;
 
-    private RecordDesc<T> recordDesc_;
+    private RecordDesc<BEAN> recordDesc_;
     private boolean closed_ = true;
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
@@ -38,12 +54,12 @@ public abstract class AbstractRecordReader<T> implements Closable,
 
     private ElementEditor elementEditor_;
 
-    public AbstractRecordReader(final RecordDesc<T> recordDesc) {
+    public AbstractRecordReader(final RecordDesc<BEAN> recordDesc) {
         recordDesc_ = recordDesc;
     }
 
     @Override
-    public void read(final T bean) {
+    public void read(final BEAN bean) {
         if (!hasNext()) {
             throw new NoSuchElementException("no element");
         }
@@ -59,13 +75,13 @@ public abstract class AbstractRecordReader<T> implements Closable,
     }
 
     @Override
-    public T read() {
-        final T bean = newInstance();
+    public BEAN read() {
+        final BEAN bean = newInstance();
         read(bean);
         return bean;
     }
 
-    protected T newInstance() {
+    protected BEAN newInstance() {
         return recordDesc_.newInstance();
     }
 

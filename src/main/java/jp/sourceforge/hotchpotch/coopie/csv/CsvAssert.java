@@ -1,3 +1,19 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.File;
@@ -34,8 +50,8 @@ public class CsvAssert {
         }
 
         try {
-            final RecordReader<Map<String, String>> actualCsvReader = openMapReader(actualReader);
-            final RecordReader<Map<String, String>> expectedCsvReader = openMapReader(expectedReader);
+            final RecordReader<Map<String, Object>> actualCsvReader = openMapReader(actualReader);
+            final RecordReader<Map<String, Object>> expectedCsvReader = openMapReader(expectedReader);
             try {
                 assertCsvEquals(expectedCsvReader, actualCsvReader);
             } finally {
@@ -48,23 +64,23 @@ public class CsvAssert {
         }
     }
 
-    private RecordReader<Map<String, String>> openMapReader(
+    private RecordReader<Map<String, Object>> openMapReader(
             final Reader actualReader) {
-        final MapCsvLayout layout = new MapCsvLayout();
+        final MapCsvLayout<Object> layout = new MapCsvLayout<Object>();
         layout.setWithHeader(true);
         layout.setElementSeparator(elementSeparator_);
-        final RecordReader<Map<String, String>> csvReader = layout
+        final RecordReader<Map<String, Object>> csvReader = layout
                 .openReader(actualReader);
         return csvReader;
     }
 
     private void assertCsvEquals(
-            final RecordReader<Map<String, String>> expectedCsvReader,
-            final RecordReader<Map<String, String>> actualCsvReader) {
+            final RecordReader<Map<String, Object>> expectedCsvReader,
+            final RecordReader<Map<String, Object>> actualCsvReader) {
 
         while (expectedCsvReader.hasNext() && actualCsvReader.hasNext()) {
-            final Map<String, String> exp = expectedCsvReader.read();
-            final Map<String, String> act = actualCsvReader.read();
+            final Map<String, Object> exp = expectedCsvReader.read();
+            final Map<String, Object> act = actualCsvReader.read();
             if (!exp.equals(act)) {
                 throw new CsvAssertionError("expected:<" + exp + "> but was:<"
                         + act + ">");

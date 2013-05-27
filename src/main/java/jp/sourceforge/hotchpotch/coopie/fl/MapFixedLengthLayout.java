@@ -1,28 +1,48 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.fl;
 
-import java.util.List;
 import java.util.Map;
 
-import jp.sourceforge.hotchpotch.coopie.csv.AbstractMapCsvLayout;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnDesc;
-import jp.sourceforge.hotchpotch.coopie.csv.ColumnName;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
+import jp.sourceforge.hotchpotch.coopie.csv.MapPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.MapRecordType;
+import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
-public class MapFixedLengthLayout extends
-        AbstractFixedLengthLayout<Map<String, String>> implements
-        RecordInOut<Map<String, String>> {
+public class MapFixedLengthLayout<PROP> extends
+        AbstractFixedLengthLayout<Map<String, PROP>> implements
+        RecordInOut<Map<String, PROP>> {
 
     @Override
-    public RecordReader<Map<String, String>> openReader(final Readable readable) {
-        final RecordDesc<Map<String, String>> rd = myRecordDesc();
-        final DefaultRecordReader<Map<String, String>> r = new DefaultRecordReader<Map<String, String>>(
+    public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
+        if (readable == null) {
+            throw new NullPointerException("readable");
+        }
+
+        prepareOpen();
+        final RecordDesc<Map<String, PROP>> rd = getRecordDesc();
+        final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
                 rd);
         r.setWithHeader(isWithHeader());
         r.setElementInOut(createElementInOut());
@@ -32,11 +52,16 @@ public class MapFixedLengthLayout extends
     }
 
     @Override
-    public RecordWriter<Map<String, String>> openWriter(
+    public RecordWriter<Map<String, PROP>> openWriter(
             final Appendable appendable) {
-        final RecordDesc<Map<String, String>> rd = myRecordDesc();
+        if (appendable == null) {
+            throw new NullPointerException("appendable");
+        }
+
+        prepareOpen();
+        final RecordDesc<Map<String, PROP>> rd = getRecordDesc();
         final ElementInOut es = createElementInOut();
-        final DefaultRecordWriter<Map<String, String>> w = new DefaultRecordWriter<Map<String, String>>(
+        final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(
                 rd);
         w.setWithHeader(isWithHeader());
         w.setElementInOut(es);
@@ -45,38 +70,33 @@ public class MapFixedLengthLayout extends
         return w;
     }
 
-    protected RecordDesc<Map<String, String>> myRecordDesc() {
-        final RecordDesc<Map<String, String>> recordDesc = super
-                .getRecordDesc();
-        if (recordDesc == null) {
-            throw new IllegalStateException("recordDesc");
+    protected void prepareOpen() {
+        if (getRecordDesc() == null) {
+            final FixedLengthRecordDef recordDef = getRecordDef();
+            if (recordDef != null) {
+                {
+                    final FixedLengthElementDesc[] elementDescs = recordDefToElementDescs(recordDef);
+                    setFixedLengthElementDescs(elementDescs);
+                }
+
+                final RecordDesc<Map<String, PROP>> recordDesc = createRecordDesc(recordDef);
+                setRecordDesc(recordDesc);
+            }
         }
-        return recordDesc;
+
+        if (getRecordDesc() == null) {
+            throw new AssertionError("recordDesc");
+        }
     }
 
     @Override
-    protected FixedLengthRecordDescSetup getRecordDescSetup() {
-        return new MapFixedLengthRecordDescSetup();
+    protected PropertyBindingFactory<Map<String, PROP>> createPropertyBindingFactory() {
+        return MapPropertyBinding.Factory.getInstance();
     }
 
-    private static class MapFixedLengthRecordDescSetup extends
-            AbstractFixedLengthRecordDescSetup<Map<String, String>> {
-
-        private final MapRecordType recordType_ = new MapRecordType();
-
-        @Override
-        protected MapRecordType getRecordType() {
-            return recordType_;
-        }
-
-        @Override
-        protected ColumnDesc<Map<String, String>>[] createColumnDescs(
-                final List<ColumnName> columnNames) {
-            final ColumnDesc<Map<String, String>>[] cds = AbstractMapCsvLayout
-                    .toColumnDescs(columnNames);
-            return cds;
-        }
-
+    @Override
+    protected RecordType<Map<String, PROP>> createRecordType() {
+        return new MapRecordType<PROP>();
     }
 
 }

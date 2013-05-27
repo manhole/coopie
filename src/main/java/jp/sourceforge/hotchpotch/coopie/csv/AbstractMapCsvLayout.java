@@ -1,108 +1,71 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractMapCsvLayout extends
-        AbstractCsvLayout<Map<String, String>> {
-
-    @Override
-    protected AbstractCsvRecordDescSetup<Map<String, String>> getRecordDescSetup() {
-        return new MapCsvRecordDescSetup();
-    }
+public abstract class AbstractMapCsvLayout<PROP> extends
+        AbstractCsvLayout<Map<String, PROP>> {
 
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
-            /*
-             * カラム名が設定されていない場合は、
-             * Readの場合はヘッダから、
-             * Writeの場合は1件目から、
-             * カラム名を構築する。
-             */
-            setRecordDesc(new LazyMapRecordDesc(this));
+            final CsvRecordDef recordDef = getRecordDef();
+            if (recordDef != null) {
+                final RecordDesc<Map<String, PROP>> recordDesc = createRecordDesc(recordDef);
+                setRecordDesc(recordDesc);
+            } else {
+                /*
+                 * カラム名が設定されていない場合は、
+                 * Readの場合はヘッダから、
+                 * Writeの場合は1件目から、
+                 * カラム名を構築する。
+                 */
+                setRecordDesc(new LazyMapRecordDesc<PROP>(this));
+            }
+        }
+
+        if (getRecordDesc() == null) {
+            throw new AssertionError("recordDesc");
         }
     }
 
-    protected static ColumnDesc<Map<String, String>> newMapColumnDesc(
-            final ColumnName columnName) {
-        final MapColumnDesc cd = new MapColumnDesc();
-        cd.setName(columnName);
-        return cd;
+    @Override
+    protected PropertyBindingFactory<Map<String, PROP>> createPropertyBindingFactory() {
+        return MapPropertyBinding.Factory.getInstance();
     }
 
-    static class MapCsvRecordDescSetup extends
-            AbstractCsvRecordDescSetup<Map<String, String>> {
-
-        @Override
-        public RecordDesc<Map<String, String>> getRecordDesc() {
-            /*
-             * 設定されているプロパティ名を対象に。
-             */
-            final ColumnDesc<Map<String, String>>[] cds = toColumnDescs(columnNames_);
-
-            return new DefaultRecordDesc<Map<String, String>>(cds,
-                    OrderSpecified.SPECIFIED, new MapRecordType());
-        }
-
+    @Override
+    protected RecordType<Map<String, PROP>> createRecordType() {
+        return new MapRecordType<PROP>();
     }
 
-    // TODO
-    public static ColumnDesc<Map<String, String>>[] toColumnDescs(
-            final Collection<? extends ColumnName> columns) {
-        final ColumnDesc<Map<String, String>>[] cds = ColumnDescs
-                .newColumnDescs(columns.size());
-        int i = 0;
-        for (final ColumnName columnName : columns) {
-            final ColumnDesc<Map<String, String>> cd = newMapColumnDesc(columnName);
-            cds[i] = cd;
-            i++;
-        }
-        return cds;
-    }
-
-    static class MapColumnDesc implements ColumnDesc<Map<String, String>> {
-
-        /**
-         * CSV列名。
-         */
-        private ColumnName name_;
-
-        @Override
-        public ColumnName getName() {
-            return name_;
-        }
-
-        public void setName(final ColumnName name) {
-            name_ = name;
-        }
-
-        @Override
-        public String getValue(final Map<String, String> bean) {
-            final String propertyName = name_.getName();
-            return bean.get(propertyName);
-        }
-
-        @Override
-        public void setValue(final Map<String, String> bean, final String value) {
-            final String propertyName = name_.getName();
-            bean.put(propertyName, value);
-        }
-
-    }
-
-    static class LazyMapRecordDesc implements RecordDesc<Map<String, String>> {
+    static class LazyMapRecordDesc<PROP> implements
+            RecordDesc<Map<String, PROP>> {
 
         private static final Logger logger = LoggerFactory.getLogger();
-        private final AbstractMapCsvLayout layout_;
+        private final AbstractMapCsvLayout<PROP> layout_;
 
-        public LazyMapRecordDesc(final AbstractMapCsvLayout layout) {
+        public LazyMapRecordDesc(final AbstractMapCsvLayout<PROP> layout) {
             layout_ = layout;
         }
 
@@ -110,9 +73,7 @@ public abstract class AbstractMapCsvLayout extends
          * CSVを読むとき
          */
         @Override
-        public RecordDesc<Map<String, String>> setupByHeader(
-                final String[] header) {
-
+        public RecordDesc<Map<String, PROP>> setupByHeader(final String[] header) {
             logger.debug("setupByHeader: {}", Arrays.toString(header));
 
             /*
@@ -131,8 +92,10 @@ public abstract class AbstractMapCsvLayout extends
                 }
             });
 
-            final RecordDesc<Map<String, String>> built = layout_
-                    .getRecordDesc();
+            // TODO 素直にRecordDescを取得したい
+            layout_.prepareOpen();
+
+            final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();
@@ -149,8 +112,8 @@ public abstract class AbstractMapCsvLayout extends
          * (列名が設定されている場合は、そもそもこのクラスが使われない)
          */
         @Override
-        public RecordDesc<Map<String, String>> setupByBean(
-                final Map<String, String> bean) {
+        public RecordDesc<Map<String, PROP>> setupByBean(
+                final Map<String, PROP> bean) {
             /*
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
@@ -165,8 +128,10 @@ public abstract class AbstractMapCsvLayout extends
                 }
             });
 
-            final RecordDesc<Map<String, String>> built = layout_
-                    .getRecordDesc();
+            // TODO 素直にRecordDescを取得したい
+            layout_.prepareOpen();
+
+            final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();
@@ -185,18 +150,18 @@ public abstract class AbstractMapCsvLayout extends
         }
 
         @Override
-        public String[] getValues(final Map<String, String> bean) {
+        public String[] getValues(final Map<String, PROP> bean) {
             throw new AssertionError();
         }
 
         @Override
-        public void setValues(final Map<String, String> bean,
+        public void setValues(final Map<String, PROP> bean,
                 final String[] values) {
             throw new AssertionError();
         }
 
         @Override
-        public Map<String, String> newInstance() {
+        public Map<String, PROP> newInstance() {
             throw new AssertionError();
         }
 

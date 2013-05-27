@@ -1,6 +1,25 @@
+/*
+ * Copyright 2010 manhole
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -9,11 +28,20 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CccBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.DddBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.EeeBean;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CsvCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.junit.Test;
@@ -133,9 +161,9 @@ public class BeanCsvWriterTest {
                 /*
                  * プロパティ名, CSV項目名 の順
                  */
-                setup.column("aaa", "あ");
-                setup.column("ccc", "ううう");
-                setup.column("bbb", "いい");
+                setup.column("あ").toProperty("aaa");
+                setup.column("ううう").toProperty("ccc");
+                setup.column("いい").toProperty("bbb");
             }
         });
 
@@ -300,9 +328,9 @@ public class BeanCsvWriterTest {
     static class AaaBeanBasicSetup implements SetupBlock<CsvColumnSetup> {
         @Override
         public void setup(final CsvColumnSetup setup) {
-            setup.column("aaa", "a");
-            setup.column("bbb", "b");
-            setup.column("ccc", "c");
+            setup.column("a").toProperty("aaa");
+            setup.column("b").toProperty("bbb");
+            setup.column("c").toProperty("ccc");
         }
     }
 
@@ -431,6 +459,37 @@ public class BeanCsvWriterTest {
         assertEquals(V_WRITE_QUOTECHAR_SINGLE, lines);
     }
 
+    @Test
+    public void write_quotemode_minimum() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
+                .getInstance(AaaBean.class);
+        layout.setupColumns(new AaaBeanBasicSetup());
+        layout.setElementSeparator(CsvSetting.COMMA);
+        layout.setQuoteMode(QuoteMode.MINIMUM);
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+
+        final AaaBean bean = new AaaBean();
+        setTo(bean, "a1", "b1", "c\"1");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+        assert_write_quotemode_minimum(lines);
+    }
+
+    static final String V_WRITE_QUOTEMODE_MINIMUM = "a,b,c" + CRLF
+            + "a1,b1,\"c\"\"1\"" + CRLF;
+
+    static void assert_write_quotemode_minimum(final String lines) {
+        assertEquals(V_WRITE_QUOTEMODE_MINIMUM, lines);
+    }
+
     private void setTo(final AaaBean bean, final String a, final String b,
             final String c) {
         bean.setAaa(a);
@@ -540,6 +599,128 @@ public class BeanCsvWriterTest {
         final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
         final String expected = ReaderUtil.readText(reader);
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Bean側をBigDecimalで扱えること
+     */
+    @Test
+    public void write_bigDecimal() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<BigDecimalBean>(
+                BigDecimalBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa").withConverter(new BigDecimalConverter());
+                setup.column("bbb");
+            }
+        });
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<BigDecimalBean> csvWriter = layout
+                .openWriter(writer);
+
+        final BigDecimalBean bean = new BigDecimalBean();
+        bean.setAaa(new BigDecimal("11.1"));
+        bean.setBbb("21.02");
+        csvWriter.write(bean);
+
+        bean.setAaa(null);
+        bean.setBbb(null);
+        csvWriter.write(bean);
+
+        bean.setAaa(new BigDecimal("1101.45"));
+        bean.setBbb("1,201.56");
+        csvWriter.write(bean);
+
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+
+        {
+            final ElementReader reader = new CsvElementInOut(
+                    new DefaultCsvSetting())
+                    .openReader(new StringReader(lines));
+            assertArrayEquals(a("aaa", "bbb"), reader.readRecord());
+            assertArrayEquals(a("11.10", "21.02"), reader.readRecord());
+            assertArrayEquals(a("", ""), reader.readRecord());
+            assertArrayEquals(a("1,101.45", "1,201.56"), reader.readRecord());
+            assertNull(reader.readRecord());
+            reader.close();
+        }
+    }
+
+    /**
+     * CSV側が2カラムで、対応するJava側が1プロパティの場合。
+     * 年月日と時分秒で列が別れているとする。
+     */
+    @Test
+    public void write_calendar() throws Throwable {
+        // ## Arrange ##
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
+                CalendarBean.class);
+        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            @Override
+            public void setup(final CsvColumnSetup setup) {
+                setup.column("aaa");
+                setup.columns(new SetupBlock<CsvCompositeColumnSetup>() {
+                    @Override
+                    public void setup(
+                            final CsvCompositeColumnSetup compositeSetup) {
+                        compositeSetup.column("ymd");
+                        compositeSetup.column("hms");
+                    }
+                }).toProperty("bbb").withConverter(new CalendarConverter());
+            }
+        });
+        final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+        // ## Act ##
+        final StringWriter writer = new StringWriter();
+        final RecordWriter<CalendarBean> csvWriter = layout.openWriter(writer);
+
+        final CalendarBean bean = new CalendarBean();
+        bean.setAaa("a");
+        {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(format.parse("2011/09/13 17:54:01"));
+            bean.setBbb(c);
+        }
+        csvWriter.write(bean);
+
+        bean.setAaa("b");
+        {
+            final Calendar c = Calendar.getInstance();
+            c.setTime(format.parse("2011/01/01 00:00:59"));
+            bean.setBbb(c);
+        }
+        csvWriter.write(bean);
+
+        bean.setAaa("c");
+        bean.setBbb(null);
+        csvWriter.write(bean);
+        csvWriter.close();
+
+        // ## Assert ##
+        final String lines = writer.toString();
+
+        {
+            final ElementReader reader = new CsvElementInOut(
+                    new DefaultCsvSetting())
+                    .openReader(new StringReader(lines));
+            assertArrayEquals(a("aaa", "ymd", "hms"), reader.readRecord());
+            assertArrayEquals(a("a", "2011-09-13", "17:54:01"),
+                    reader.readRecord());
+            assertArrayEquals(a("b", "2011-01-01", "00:00:59"),
+                    reader.readRecord());
+            assertArrayEquals(a("c", "", ""), reader.readRecord());
+            assertNull(reader.readRecord());
+            reader.close();
+        }
+
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
