@@ -1,4 +1,4 @@
-0.2.2 2012/XX/XX
+0.2.2 2013/05/27
 
 - rename: DurationMeasurer -> DurationMeasure
 - Converterを追加。カラムとプロパティ間の型を変換できるようにし、String以外の型をプロパティに使用できるようにしました。

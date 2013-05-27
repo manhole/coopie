@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: "maven-publish"
 
 group = "jp.sourceforge.hotchpotch"
-version = "0.2.2-SNAPSHOT"
+version = "0.2.2"
 sourceCompatibility = "1.6"
 
 def sourceEncoding = "UTF-8"
