@@ -124,7 +124,7 @@ publishing {
         }
     }
     repositories {
-        if (!project.version.contains("-SNAPSHOT")) {
+        if (!project.version.endsWith("-SNAPSHOT")) {
             maven {
                 name "coopieLocal"
                 url "file:../site/maven2/release"
