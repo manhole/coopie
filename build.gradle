@@ -26,14 +26,14 @@ artifacts {
 
 tasks.withType (Jar).each {
     def p = "git rev-parse --verify --short=8 HEAD".execute()
-    def w = new java.io.StringWriter();
-    p.waitForProcessOutput(w, System.err);
+    def w = new java.io.StringWriter()
+    p.waitForProcessOutput(w, System.err)
     //println "exitValue=${p.exitValue()}"
     if (p.exitValue() != 0) {
-        throw new Exception();
+        throw new Exception()
     }
-    def buildNumber = w.toString().trim();
-    w.close();
+    def buildNumber = w.toString().trim()
+    w.close()
 
     it.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
     it.manifest.attributes["Created-By"] = "Gradle"
