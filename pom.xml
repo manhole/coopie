@@ -19,10 +19,9 @@
   <inceptionYear>2010</inceptionYear>
 
   <scm>
-    <connection>scm:svn:http://svn.sourceforge.jp/svnroot/hotchpotch/dev/trunk/coopie/</connection>
-    <!-- svn+ssh://svn.sourceforge.jp/svnroot/hotchpotch/dev/trunk/coopie -->
-    <developerConnection>scm:svn:https://svn.sourceforge.jp/svnroot/hotchpotch/dev/trunk/coopie/</developerConnection>
-    <url>http://svn.sourceforge.jp/svnroot/hotchpotch/dev/trunk/coopie/</url>
+    <connection>scm:git:git@github.com:manhole/coopie.git</connection>
+    <developerConnection>scm:git:git@github.com:manhole/coopie.git</developerConnection>
+    <url>https://github.com/manhole/coopie</url>
   </scm>
 
   <build>
@@ -103,6 +102,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.1</version>
         <executions>
           <execution>
             <phase>prepare-package</phase>
@@ -112,8 +112,9 @@
           </execution>
         </executions>
         <configuration>
-          <doCheck>true</doCheck>
-          <doUpdate>true</doUpdate>
+          <shortRevisionLength>8</shortRevisionLength>
+          <doCheck>false</doCheck>
+          <doUpdate>false</doUpdate>
           <timestampFormat>{0,date,yyyy/MM/dd HH:mm:ss.SSS Z (z)}</timestampFormat>
           <!--
           <providerImplementations>
