@@ -53,7 +53,6 @@ dependencies {
         exclude group: "ch.qos.logback", module: "logback-core"
         exclude group: "org.slf4j", module: "slf4j-api"
     }
-    compile ("net.sf.opencsv:opencsv:2.1")
     compile ("org.slf4j:slf4j-api:${versions.slf4j}")
     compile ("ch.qos.logback:logback-core:${versions.logback}")
     compile ("ch.qos.logback:logback-classic:${versions.logback}")
