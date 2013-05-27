@@ -81,8 +81,11 @@ publishing {
                  * 2. optionalを指定できない。
                  * 3. excludeを指定できない。
                  */
-                def NodeList depends = asNode().get("dependencies")
-                def newDepends = depends.replaceNode {
+                def NodeList children = asNode().children()
+                _findAll(children) { node ->
+                    node.name().localPart != "dependencies"
+                }
+                children.last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
 
                     name project.name
@@ -130,3 +133,8 @@ publishing {
     }
 }
 
+def _findAll(Collection items, Closure block) {
+    def founds = items.findAll(block)
+    items.clear()
+    items.addAll(founds)
+}
