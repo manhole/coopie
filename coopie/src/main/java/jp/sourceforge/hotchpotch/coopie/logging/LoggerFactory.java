@@ -30,6 +30,12 @@ public class LoggerFactory {
         return logger;
     }
 
+    public static Logger getLogger(final Class clazz) {
+        final String className = clazz.getName();
+        final Logger logger = getLogger(className);
+        return logger;
+    }
+
     private static Logger getLogger(final String name) {
         final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(name);
         return new LoggerWrapper(logger);
