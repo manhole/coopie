@@ -1,3 +1,11 @@
+0.3.0 2013/XX/XX
+
+- gradleのmultiproject構成にしました。maven2(maven3)のpom.xmlは廃止しました。
+- coopie-groovyを追加。
+- slf4jとlogbackのバージョンを、それぞれ1.6.4と1.0.0にしました。
+  (0.2.2でgradleでデプロイした際に戻ってしまっていた。)
+
+
 0.2.2 2013/05/27
 
 - rename: DurationMeasurer -> DurationMeasure
