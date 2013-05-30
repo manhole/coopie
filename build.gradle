@@ -83,7 +83,8 @@ subprojects {
 									dependency {
 										groupId dep.group
 										artifactId dep.name
-										version dep.version
+										// delegateを書かないとsubprojectのversionが対象になってしまう。
+										delegate.version dep.version
 										scope scopeValue
 										if ("poi" == dep.name) {
 											optional true
