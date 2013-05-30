@@ -1,0 +1,56 @@
+apply plugin: "java"
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+
+group = "jp.sourceforge.hotchpotch"
+version = "0.2.2-SNAPSHOT"
+
+/*
+ * tasks.eclipse {...} ではダメ
+ * このとき、ブロックに渡されるのはtaskインスタンス。
+ * task ':eclipse'
+ * class org.gradle.api.DefaultTask_Decorated
+ * tasks.eclipse.configure {...}も同様にtaskインスタンス
+ * 
+ * eclipse {...} ではmodelというものがブロックに渡される。
+ * org.gradle.plugins.ide.eclipse.model.EclipseModel_Decorated@18247418
+ */
+eclipse {
+	// EclipseのJava > Build Path > Classpath VariablesにGRADLE_USER_HOMEを ~/.gradle(展開したフルパス) に設定しておく
+	pathVariables 'GRADLE_USER_HOME': gradle.gradleUserHomeDir
+}
+
+tasks.eclipse << {
+	// 個々の要素はorg.gradle.api.internal.tasks.DefaultSourceSet_Decoratedクラスのインスタンス
+	sourceSets.each { src ->
+		[ "java", "groovy", "resources" ].each { subdir ->
+			def dir = new File("src/${src.name}/${subdir}");
+			if (!dir.exists()) {
+				if (dir.mkdirs()) {
+					println "create: [${dir}]"
+				} else {
+					println "ERROR: failed to create [${dir}]"
+				}
+			}
+		}
+	}
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	mavenRepo url: "http://hotchpotch.sourceforge.jp/maven2/release/"
+}
+
+def versions = [slf4j: "1.6.4", logback: "1.0.0"]
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy-all:2.1.3'
+	compile ("jp.sourceforge.hotchpotch:coopie:0.2.2")
+	testCompile ("ch.qos.logback:logback-core:${versions.logback}")
+	testCompile ("ch.qos.logback:logback-classic:${versions.logback}")
+	testCompile ("junit:junit-dep:4.10")
+	testCompile ("org.hamcrest:hamcrest-core:1.2.1")
+	testCompile ("org.hamcrest:hamcrest-library:1.2.1")
+
+}

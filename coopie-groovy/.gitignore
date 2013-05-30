@@ -1,0 +1,13 @@
+/bin
+/build
+/target
+/work
+*.log
+*.ser
+*.bak
+.classpath
+.project
+.gradle
+profiles.xml
+.DS_Store
+
