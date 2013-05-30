@@ -82,7 +82,7 @@ subprojects {
 										// delegateを書かないとsubprojectのversionが対象になってしまう。
 										delegate.version dep.version
 										scope scopeValue
-										if ("poi" == dep.name) {
+										if (dep.ext.has("optional") && dep.optional) {
 											optional true
 										}
 										if (dep.excludeRules) {
@@ -150,6 +150,7 @@ project(":coopie") {
 		compile ("org.apache.poi:poi:3.1-FINAL") {
 			exclude group: "avalon-framework", module: "avalon-framework"
 			exclude group: "log4j", module: "log4j"
+			ext.optional = true
 		}
 		testCompile ("junit:junit-dep:4.10")
 		testCompile ("org.hamcrest:hamcrest-core:1.2.1")
