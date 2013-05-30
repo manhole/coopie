@@ -1,0 +1,5 @@
+*.log
+*.ser
+*.bak
+.gradle/
+.DS_Store
