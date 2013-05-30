@@ -17,8 +17,9 @@
 package jp.sourceforge.hotchpotch.coopie.logging;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.containsString;
 import jp.sourceforge.hotchpotch.coopie.util.StdOutBlock;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
@@ -28,6 +29,11 @@ import org.t2framework.commons.util.task.EasyTask;
 public class LoggerFactoryTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
+
+    @Test
+    public void loggerName() {
+        assertThat(logger.getName(), is(LoggerFactoryTest.class.getName()));
+    }
 
     @Test
     public void debug1() {
