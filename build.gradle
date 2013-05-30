@@ -110,7 +110,7 @@ subprojects {
 			if (!project.version.endsWith("-SNAPSHOT")) {
 				maven {
 					name "coopieLocal"
-					url "file:../site/maven2/release"
+					url "file:${rootDir}/../site/maven2/release"
 				}
 			}
 		}
