@@ -1,8 +1,4 @@
-allprojects {
-	// allprojectsの中では"project"が割り当てられている
-	assert project
-	assert it == project
-
+allprojects { project ->
 	group = "jp.sourceforge.hotchpotch"
 	version = "0.3.0-SNAPSHOT"
 
@@ -29,11 +25,7 @@ allprojects {
 	}
 }
 
-subprojects {
-	// subprojectsの中では"project"が割り当てられている
-	assert project
-	assert it == project
-
+subprojects { project ->
 	apply plugin: "java"
 	apply plugin: "maven-publish"
 
