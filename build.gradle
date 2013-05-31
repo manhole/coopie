@@ -44,6 +44,27 @@ subprojects {
 		from sourceSets.main.allSource
 	}
 
+	tasks.withType (Jar).each {
+		def p = "git rev-parse --verify --short=8 HEAD".execute()
+		def w = new java.io.StringWriter()
+		p.waitForProcessOutput(w, System.err)
+		if (p.exitValue() != 0) {
+			throw new Exception()
+		}
+		def buildNumber = w.toString().trim()
+		w.close()
+
+		it.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
+		it.manifest.attributes["Created-By"] = "Gradle"
+		it.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
+		it.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
+		it.manifest.attributes["Implementation-Title"] = project.name
+		it.manifest.attributes["Implementation-Version"] = project.version
+		it.manifest.attributes["Implementation-Vendor-Id"] = project.group
+		it.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(new Date())
+		it.manifest.attributes["SCM-Revision"] = buildNumber
+	}
+
 	artifacts { archives sourcesJar }
 
 	publishing {
@@ -114,27 +135,6 @@ subprojects {
 	}
 }
 
-tasks.withType (Jar).each {
-	def p = "git rev-parse --verify --short=8 HEAD".execute()
-	def w = new java.io.StringWriter()
-	p.waitForProcessOutput(w, System.err)
-	if (p.exitValue() != 0) {
-		throw new Exception()
-	}
-	def buildNumber = w.toString().trim()
-	w.close()
-
-	it.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
-	it.manifest.attributes["Created-By"] = "Gradle"
-	it.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
-	it.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
-	it.manifest.attributes["Implementation-Title"] = project.name
-	it.manifest.attributes["Implementation-Version"] = project.version
-	it.manifest.attributes["Implementation-Vendor-Id"] = project.group
-	it.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(new Date())
-	it.manifest.attributes["SCM-Revision"] = buildNumber
-}
-
 def versions = [slf4j: "1.6.4", logback: "1.0.0"]
 
 project(":coopie") {
@@ -190,7 +190,7 @@ subprojects { project ->
 	 */
 	tasks.eclipseJdt {
 		assert "org.eclipse.jdt.core.prefs" == outputFile.name
-		ext.originalOutputFile = outputFile;
+		ext.originalOutputFile = outputFile
 		outputFile = (outputFile.absolutePath + ".tmp") as File
 	}
 	tasks.eclipseJdt << {
