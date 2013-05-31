@@ -125,6 +125,35 @@ subprojects { project ->
 			}
 		}
 	}
+
+	/*
+	 * Eclipseは"org.eclipse.jdt.core.prefs"ファイルをソートして出力するが、gradleプラグインは
+	 * (java.util.Propertiesを使っているため)ソートしてくれない。
+	 * そのため内容が変わっていなくてもgit変更対象に上がってしまう。
+	 * ここではgradle側の出力をソートして、Eclipseに合わせる。
+	 * 
+	 * eclipse.jdt.file.whenMergedで取得できるorg.gradle.plugins.ide.eclipse.model.Jdtや、
+	 * eclipse.jdt.file.withPropertiesで取得できるjava.util.Propertiesからは
+	 * ソートできないため。
+	 */
+	tasks.eclipseJdt {
+		assert "org.eclipse.jdt.core.prefs" == outputFile.name
+		ext.originalOutputFile = outputFile
+		outputFile = (outputFile.absolutePath + ".tmp") as File
+	}
+	tasks.eclipseJdt << {
+		assert "org.eclipse.jdt.core.prefs.tmp" == outputFile.name
+		assert "org.eclipse.jdt.core.prefs" == ext.originalOutputFile.name
+		List lines = outputFile.readLines("UTF-8")
+		Collections.sort(lines)
+		ext.originalOutputFile.withWriter("UTF-8") { writer ->
+			lines.each { line ->
+				writer << line
+				writer << "\r\n"
+			}
+		}
+		assert outputFile.delete()
+	}
 }
 
 def versions = [slf4j: "1.6.4", logback: "1.0.0"]
@@ -166,37 +195,6 @@ project (":coopie-groovy") {
 		testCompile ("junit:junit-dep:4.10")
 		testCompile ("org.hamcrest:hamcrest-core:1.2.1")
 		testCompile ("org.hamcrest:hamcrest-library:1.2.1")
-	}
-}
-
-subprojects { project ->
-	/*
-	 * Eclipseは"org.eclipse.jdt.core.prefs"ファイルをソートして出力するが、gradleプラグインは
-	 * (java.util.Propertiesを使っているため)ソートしてくれない。
-	 * そのため内容が変わっていなくてもgit変更対象に上がってしまう。
-	 * ここではgradle側の出力をソートして、Eclipseに合わせる。
-	 * 
-	 * eclipse.jdt.file.whenMergedで取得できるorg.gradle.plugins.ide.eclipse.model.Jdtや、
-	 * eclipse.jdt.file.withPropertiesで取得できるjava.util.Propertiesからは
-	 * ソートできないため。
-	 */
-	tasks.eclipseJdt {
-		assert "org.eclipse.jdt.core.prefs" == outputFile.name
-		ext.originalOutputFile = outputFile
-		outputFile = (outputFile.absolutePath + ".tmp") as File
-	}
-	tasks.eclipseJdt << {
-		assert "org.eclipse.jdt.core.prefs.tmp" == outputFile.name
-		assert "org.eclipse.jdt.core.prefs" == ext.originalOutputFile.name
-		List lines = outputFile.readLines("UTF-8")
-		Collections.sort(lines)
-		ext.originalOutputFile.withWriter("UTF-8") { writer ->
-			lines.each { line ->
-				writer << line
-				writer << "\r\n"
-			}
-		}
-		assert outputFile.delete()
 	}
 }
 
