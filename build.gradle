@@ -31,12 +31,12 @@ subprojects { project ->
 
 	sourceCompatibility = "1.6"
 
-	task sourcesJar(type: Jar, dependsOn:classes) {
+	task sourcesJar(type:Jar, dependsOn:classes) {
 		classifier = "sources"
 		from sourceSets.main.allSource
 	}
 
-	tasks.withType (Jar).each {
+	task buildNumberTask << {
 		def p = "git rev-parse --verify --short=8 HEAD".execute()
 		def w = new java.io.StringWriter()
 		p.waitForProcessOutput(w, System.err)
@@ -46,16 +46,28 @@ subprojects { project ->
 		def buildNumber = w.toString().trim()
 		w.close()
 
-		it.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
-		it.manifest.attributes["Created-By"] = "Gradle"
-		it.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
-		it.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
-		it.manifest.attributes["Implementation-Title"] = project.name
-		it.manifest.attributes["Implementation-Version"] = project.version
-		it.manifest.attributes["Implementation-Vendor-Id"] = project.group
-		it.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(new Date())
-		it.manifest.attributes["SCM-Revision"] = buildNumber
+		def timestamp = new Date()
+
+		project.tasks.withType(Jar).each { t ->
+			t.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
+			t.manifest.attributes["Created-By"] = "Gradle"
+			t.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
+			t.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
+			t.manifest.attributes["Implementation-Title"] = project.name
+			t.manifest.attributes["Implementation-Version"] = project.version
+			t.manifest.attributes["Implementation-Vendor-Id"] = project.group
+			t.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(timestamp)
+			t.manifest.attributes["SCM-Revision"] = buildNumber
+		}
 	}
+	/*
+	 * jarを作る前にbuildNumberを実行したい。
+	 * jarタスクのdoLastのタイミングでは遅い。(既にjarが作られた後。)
+	 * doFirstでも、先にjarを作る処理が動いてしまっている。
+	 * 
+	 * jar, sourcesJarを対象。
+	 */
+	tasks.withType(Jar).each { it.dependsOn buildNumberTask }
 
 	artifacts { archives sourcesJar }
 
