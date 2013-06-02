@@ -1,3 +1,9 @@
+buildscript {
+	repositories { mavenCentral() }
+
+	dependencies { classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' }
+}
+
 allprojects { project ->
 	group = "jp.sourceforge.hotchpotch"
 	version = "0.3.0-SNAPSHOT"
@@ -22,6 +28,17 @@ allprojects { project ->
 		// .classpathを共有するための設定。ユーザホームへのフルパスが書かれないようにする。
 		// EclipseのJava > Build Path > Classpath VariablesにGRADLE_USER_HOMEを ~/.gradle(展開したフルパス) に設定しておくこと。
 		pathVariables "GRADLE_USER_HOME": gradle.gradleUserHomeDir
+	}
+
+	apply plugin: "license"
+	license {
+		header rootProject.file("HEADER.txt")
+		strictCheck true
+		useDefaultMappings false
+		mapping {
+			java= "SLASHSTAR_STYLE"
+			groovy= "SLASHSTAR_STYLE"
+		}
 	}
 }
 
