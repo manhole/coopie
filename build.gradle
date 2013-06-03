@@ -111,6 +111,13 @@ subprojects { project ->
 						packaging "jar"
 						url "https://github.com/manhole/coopie"
 						inceptionYear 2010
+						licenses {
+							license {
+								name "The Apache Software License, Version 2.0"
+								url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+								distribution "repo"
+							}
+						}
 						scm {
 							connection "scm:git:git@github.com:manhole/coopie.git"
 							developerConnection "scm:git:git@github.com:manhole/coopie.git"
