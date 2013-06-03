@@ -110,6 +110,7 @@ subprojects { project ->
 						name project.name
 						packaging "jar"
 						url "https://github.com/manhole/coopie"
+						inceptionYear 2010
 						scm {
 							connection "scm:git:git@github.com:manhole/coopie.git"
 							developerConnection "scm:git:git@github.com:manhole/coopie.git"
