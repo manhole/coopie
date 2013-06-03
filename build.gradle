@@ -104,6 +104,7 @@ subprojects { project ->
 					_findAll(children) { node ->
 						node.name().localPart != "dependencies"
 					}
+					// http://maven.apache.org/ref/3.0.5/maven-model/maven.html
 					children.last() + {
 						resolveStrategy = Closure.DELEGATE_FIRST
 
@@ -116,6 +117,13 @@ subprojects { project ->
 								name "The Apache Software License, Version 2.0"
 								url "http://www.apache.org/licenses/LICENSE-2.0.txt"
 								distribution "repo"
+							}
+						}
+						developers {
+							developer {
+								id "manhole"
+								name "HONMA Hirotaka"
+								email "manholex@gmail.com"
 							}
 						}
 						scm {
