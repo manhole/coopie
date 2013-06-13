@@ -108,8 +108,9 @@ subprojects { project ->
 					children.last() + {
 						resolveStrategy = Closure.DELEGATE_FIRST
 
-						name project.name
 						packaging "jar"
+						name project.name
+						description project.description
 						url "https://github.com/manhole/coopie"
 						inceptionYear 2010
 						licenses {
@@ -204,6 +205,7 @@ subprojects { project ->
 def versions = [slf4j: "1.6.4", logback: "1.0.0"]
 
 project(":coopie") {
+	description = "Read/Write library for two-dimensional arrays of data."
 	_setupEncoding(project)
 	dependencies {
 		compile ("org.t2framework.commons:commons:0.6.7-ga") {
@@ -229,6 +231,7 @@ project(":coopie") {
 }
 
 project (":coopie-groovy") {
+	description = "easy to use coopie from Groovy"
 	apply plugin: "groovy"
 
 	_setupEncoding(project)
