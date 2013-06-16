@@ -36,6 +36,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
@@ -362,7 +364,7 @@ public class FileOperation {
 
         walker.enter(dir);
         try {
-            final File[] children = dir.listFiles();
+            final File[] children = listFiles(dir);
             if (children == null) {
                 return;
             }
@@ -384,6 +386,12 @@ public class FileOperation {
         }
     }
 
+    private File[] listFiles(final File dir) {
+        final File[] files = dir.listFiles();
+        Arrays.sort(files, FileNameComparator.getInstance());
+        return files;
+    }
+
     private void walkFile(final File file, final FileWalker walker) {
         walker.file(file);
     }
@@ -394,7 +402,7 @@ public class FileOperation {
     }
 
     private void walkDescendant(final File parent, final FileWalker fileWalker) {
-        final File[] children = parent.listFiles();
+        final File[] children = listFiles(parent);
         if (children == null) {
             return;
         }
@@ -820,6 +828,21 @@ public class FileOperation {
         @Override
         public String getExtension() {
             return extension_;
+        }
+
+    }
+
+    public static class FileNameComparator implements Comparator<File> {
+
+        private static FileNameComparator INSTANCE = new FileNameComparator();
+
+        public static FileNameComparator getInstance() {
+            return INSTANCE;
+        }
+
+        @Override
+        public int compare(final File o1, final File o2) {
+            return o1.getName().compareTo(o2.getName());
         }
 
     }
