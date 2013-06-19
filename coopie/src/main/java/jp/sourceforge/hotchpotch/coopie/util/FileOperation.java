@@ -649,7 +649,7 @@ public class FileOperation {
 
             @Override
             public ByteSize getDeletedTotalSize() {
-                return new ByteSize(totalBytes_);
+                return ByteSize.create(totalBytes_);
             }
 
             @Override

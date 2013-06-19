@@ -33,8 +33,12 @@ public class ByteSize {
     private ToStringMode toStringMode_ = DETAIL;
     private BaseType baseType_ = BaseType.BINARY;
 
-    public ByteSize(final long size) {
+    private ByteSize(final long size) {
         size_ = size;
+    }
+
+    public static ByteSize create(final long size) {
+        return new ByteSize(size);
     }
 
     public static ByteSize create(final InputStream is) {
@@ -48,7 +52,7 @@ public class ByteSize {
                 }
                 l += len;
             }
-            return new ByteSize(l);
+            return ByteSize.create(l);
         } catch (final IOException e) {
             throw new IORuntimeException(e);
         } finally {

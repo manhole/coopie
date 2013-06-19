@@ -238,7 +238,7 @@ public class ByteSizeUnits {
 
         @Override
         public ByteSize multiply(final int size) {
-            return new ByteSize(coefficient_ * size);
+            return ByteSize.create(coefficient_ * size);
         }
 
         protected NumberFormat getNumberFormat() {
