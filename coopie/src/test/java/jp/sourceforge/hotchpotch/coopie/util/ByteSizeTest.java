@@ -67,6 +67,30 @@ public class ByteSizeTest {
     }
 
     @Test
+    public void asKiloBinary2() throws Throwable {
+        // ## Arrange ##
+        final ByteSize byteSize = ByteSize.create(1024);
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("1.00 KiB (1,024)", byteSize.toString());
+        assertEquals("1.00 KiB", byteSize.toHumanReadableString());
+    }
+
+    @Test
+    public void asKiloByte2() throws Throwable {
+        // ## Arrange ##
+        final ByteSize byteSize = ByteSize.create(1000L);
+
+        // ## Act ##
+        byteSize.setBaseType(BaseType.DECIMAL);
+
+        // ## Assert ##
+        assertEquals("1.00 kB (1,000)", byteSize.toString());
+        assertEquals("1.00 kB", byteSize.toHumanReadableString());
+    }
+
+    @Test
     public void asMegaBinary() throws Throwable {
         // ## Arrange ##
         final ByteSize byteSize = ByteSize.create(76543210L);

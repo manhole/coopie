@@ -178,15 +178,15 @@ public class ByteSizeUnits {
 
         @Override
         public ByteSizeUnit detectUnit(final long size) {
-            if (KB.lessThan(size)) {
+            if (size < KB.getCoefficient()) {
                 return B;
-            } else if (MB.lessThan(size)) {
+            } else if (size < MB.getCoefficient()) {
                 return KB;
-            } else if (GB.lessThan(size)) {
+            } else if (size < GB.getCoefficient()) {
                 return MB;
-            } else if (TB.lessThan(size)) {
+            } else if (size < TB.getCoefficient()) {
                 return GB;
-            } else if (PB.lessThan(size)) {
+            } else if (size < PB.getCoefficient()) {
                 return TB;
             }
             return PB;
@@ -225,15 +225,15 @@ public class ByteSizeUnits {
 
         @Override
         public ByteSizeUnit detectUnit(final long size) {
-            if (KB.lessThan(size)) {
+            if (size < KB.getCoefficient()) {
                 return B;
-            } else if (MB.lessThan(size)) {
+            } else if (size < MB.getCoefficient()) {
                 return KB;
-            } else if (GB.lessThan(size)) {
+            } else if (size < GB.getCoefficient()) {
                 return MB;
-            } else if (TB.lessThan(size)) {
+            } else if (size < TB.getCoefficient()) {
                 return GB;
-            } else if (PB.lessThan(size)) {
+            } else if (size < PB.getCoefficient()) {
                 return TB;
             }
             return PB;
@@ -278,8 +278,8 @@ public class ByteSizeUnits {
         }
 
         @Override
-        public boolean lessThan(final long value) {
-            return value < coefficient_;
+        public long getCoefficient() {
+            return coefficient_;
         }
 
         @Override

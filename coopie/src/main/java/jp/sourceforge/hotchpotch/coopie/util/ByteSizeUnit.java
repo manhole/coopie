@@ -22,7 +22,7 @@ public interface ByteSizeUnit {
 
     String getUnitLabel();
 
-    boolean lessThan(long value);
+    long getCoefficient();
 
     ByteSize multiply(int size);
 
