@@ -89,6 +89,9 @@ public class ByteSize {
     }
 
     public void setBaseType(final ByteSizeUnits.BaseType baseType) {
+        if (baseType == null) {
+            throw new NullPointerException("baseType");
+        }
         baseType_ = baseType;
     }
 
@@ -117,8 +120,7 @@ public class ByteSize {
         @Override
         public String toString(final ByteSize byteSize) {
             final long size = byteSize.getSize();
-            final ByteSizeUnit unit = byteSize.getBaseType().getUnitsTable()
-                    .detectUnit(size);
+            final ByteSizeUnit unit = ByteSizeUnits.detectUnit(byteSize);
             final StringBuilder sb = new StringBuilder();
             appendTo(unit, size, sb);
             if (unit == ByteSizeUnits.B) {
@@ -138,8 +140,7 @@ public class ByteSize {
         @Override
         public String toString(final ByteSize byteSize) {
             final long size = byteSize.getSize();
-            final ByteSizeUnit unit = byteSize.getBaseType().getUnitsTable()
-                    .detectUnit(size);
+            final ByteSizeUnit unit = ByteSizeUnits.detectUnit(byteSize);
             final StringBuilder sb = new StringBuilder();
             appendTo(unit, size, sb);
             return sb.toString();

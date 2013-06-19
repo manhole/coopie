@@ -21,7 +21,8 @@ import java.text.NumberFormat;
 
 public class ByteSizeUnits {
 
-    public static final ByteSizeUnit B = new SimpleByteSizeUnit("B", 0) {
+    public static final ByteSizeUnit B = new SimpleByteSizeUnit("B", 0,
+            BaseType.DECIMAL) {
 
         @Override
         protected double convert(final long value) {
@@ -80,23 +81,42 @@ public class ByteSizeUnits {
      */
     public static final ByteSizeUnit PiB = BinaryUnits.PB;
 
+    public static ByteSizeUnit detectUnit(final ByteSize byteSize) {
+        final long size = byteSize.getSize();
+        final BaseType baseType = byteSize.getBaseType();
+        return detectUnit(size, baseType);
+    }
+
+    private static ByteSizeUnit detectUnit(final long size,
+            final BaseType baseType) {
+        final UnitsTable unitsTable = _unitsTable(baseType);
+        final ByteSizeUnit unit = unitsTable.detectUnit(size);
+        return unit;
+    }
+
+    private static UnitsTable _unitsTable(final BaseType baseType)
+            throws AssertionError {
+        final UnitsTable unitsTable;
+        switch (baseType) {
+        case BINARY:
+            unitsTable = BinaryUnits.getInstance();
+            break;
+        case DECIMAL:
+            unitsTable = DecimalUnits.getInstance();
+            break;
+        default:
+            throw new AssertionError();
+        }
+        return unitsTable;
+    }
+
     public static enum BaseType {
 
-        BINARY(BinaryUnits.getInstance()),
+        BINARY(),
 
-        DECIMAL(DecimalUnits.getInstance())
+        DECIMAL()
 
         ;
-
-        private final UnitsTable unitsTable_;
-
-        private BaseType(final UnitsTable unitsTable) {
-            unitsTable_ = unitsTable;
-        }
-
-        public UnitsTable getUnitsTable() {
-            return unitsTable_;
-        }
 
     }
 
@@ -130,6 +150,7 @@ public class ByteSizeUnits {
 
         private static final Coefficient COEFFICIENT = new Coefficient(1024);
         private static final BinaryUnits INSTANCE = new BinaryUnits();
+        private static final BaseType baseType_ = BaseType.BINARY;
 
         public static BinaryUnits getInstance() {
             return INSTANCE;
@@ -137,18 +158,18 @@ public class ByteSizeUnits {
 
         // kilobinary
         private static final ByteSizeUnit KB = new SimpleByteSizeUnit("KiB",
-                COEFFICIENT.pow(1));
+                COEFFICIENT.pow(1), baseType_);
         // megabinary
         private static final ByteSizeUnit MB = new SimpleByteSizeUnit("MiB",
-                COEFFICIENT.pow(2));
+                COEFFICIENT.pow(2), baseType_);
         // gigabinary
         private static final ByteSizeUnit GB = new SimpleByteSizeUnit("GiB",
-                COEFFICIENT.pow(3));
+                COEFFICIENT.pow(3), baseType_);
         // terabinary
         private static final ByteSizeUnit TB = new SimpleByteSizeUnit("TiB",
-                COEFFICIENT.pow(4));
+                COEFFICIENT.pow(4), baseType_);
         private static final ByteSizeUnit PB = new SimpleByteSizeUnit("PiB",
-                COEFFICIENT.pow(5));
+                COEFFICIENT.pow(5), baseType_);
 
         @Override
         public ByteSizeUnit detectUnit(final long size) {
@@ -176,6 +197,7 @@ public class ByteSizeUnits {
 
         private static final Coefficient COEFFICIENT = new Coefficient(1000);
         private static final DecimalUnits INSTANCE = new DecimalUnits();
+        private static final BaseType baseType_ = BaseType.DECIMAL;
 
         public static DecimalUnits getInstance() {
             return INSTANCE;
@@ -183,19 +205,19 @@ public class ByteSizeUnits {
 
         // Kilobyte
         private static final ByteSizeUnit KB = new SimpleByteSizeUnit("kB",
-                COEFFICIENT.pow(1));
+                COEFFICIENT.pow(1), baseType_);
         // Megabyte
         private static final ByteSizeUnit MB = new SimpleByteSizeUnit("MB",
-                COEFFICIENT.pow(2));
+                COEFFICIENT.pow(2), baseType_);
         // Gigabyte
         private static final ByteSizeUnit GB = new SimpleByteSizeUnit("GB",
-                COEFFICIENT.pow(3));
+                COEFFICIENT.pow(3), baseType_);
         // Terabyte
         private static final ByteSizeUnit TB = new SimpleByteSizeUnit("TB",
-                COEFFICIENT.pow(4));
+                COEFFICIENT.pow(4), baseType_);
         // Petabyte
         private static final ByteSizeUnit PB = new SimpleByteSizeUnit("PB",
-                COEFFICIENT.pow(5));
+                COEFFICIENT.pow(5), baseType_);
 
         @Override
         public ByteSizeUnit detectUnit(final long size) {
@@ -220,10 +242,13 @@ public class ByteSizeUnits {
         private final String label_;
         private final long coefficient_;
         private final NumberFormat format_;
+        private final BaseType baseType_;
 
-        SimpleByteSizeUnit(final String label, final long coefficient) {
+        SimpleByteSizeUnit(final String label, final long coefficient,
+                final BaseType baseType) {
             label_ = label;
             coefficient_ = coefficient;
+            baseType_ = baseType;
             format_ = NumberFormat.getNumberInstance();
             initialize();
         }
@@ -258,7 +283,9 @@ public class ByteSizeUnits {
 
         @Override
         public ByteSize multiply(final int size) {
-            return ByteSize.create(coefficient_ * size);
+            final ByteSize byteSize = ByteSize.create(coefficient_ * size);
+            byteSize.setBaseType(baseType_);
+            return byteSize;
         }
 
         protected NumberFormat getNumberFormat() {
