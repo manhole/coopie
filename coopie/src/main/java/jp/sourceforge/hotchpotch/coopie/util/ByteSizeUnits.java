@@ -80,6 +80,26 @@ public class ByteSizeUnits {
      */
     public static final ByteSizeUnit PiB = BinaryUnits.PB;
 
+    public static enum BaseType {
+
+        BINARY(BinaryUnits.getInstance()),
+
+        DECIMAL(DecimalUnits.getInstance())
+
+        ;
+
+        private final UnitsTable unitsTable_;
+
+        private BaseType(final UnitsTable unitsTable) {
+            unitsTable_ = unitsTable;
+        }
+
+        public UnitsTable getUnitsTable() {
+            return unitsTable_;
+        }
+
+    }
+
     private static class Coefficient {
 
         private final int base_;

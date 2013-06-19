@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 
-import jp.sourceforge.hotchpotch.coopie.util.ByteSize.BaseType;
+import jp.sourceforge.hotchpotch.coopie.util.ByteSizeUnits.BaseType;
 
 import org.junit.Test;
 

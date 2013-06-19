@@ -31,7 +31,7 @@ public class ByteSize {
 
     private final long size_;
     private ToStringMode toStringMode_ = DETAIL;
-    private BaseType baseType_ = BaseType.BINARY;
+    private ByteSizeUnits.BaseType baseType_ = ByteSizeUnits.BaseType.BINARY;
 
     private ByteSize(final long size) {
         size_ = size;
@@ -84,32 +84,12 @@ public class ByteSize {
         toStringMode_ = toStringMode;
     }
 
-    public BaseType getBaseType() {
+    public ByteSizeUnits.BaseType getBaseType() {
         return baseType_;
     }
 
-    public void setBaseType(final BaseType baseType) {
+    public void setBaseType(final ByteSizeUnits.BaseType baseType) {
         baseType_ = baseType;
-    }
-
-    public static enum BaseType {
-
-        BINARY(ByteSizeUnits.BinaryUnits.getInstance()),
-
-        DECIMAL(ByteSizeUnits.DecimalUnits.getInstance())
-
-        ;
-
-        private final ByteSizeUnits.UnitsTable unitsTable_;
-
-        private BaseType(final ByteSizeUnits.UnitsTable unitsTable) {
-            unitsTable_ = unitsTable;
-        }
-
-        public ByteSizeUnits.UnitsTable getUnitsTable() {
-            return unitsTable_;
-        }
-
     }
 
     public static interface ToStringMode {
