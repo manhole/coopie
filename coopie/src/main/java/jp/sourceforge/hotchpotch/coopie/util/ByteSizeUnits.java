@@ -236,6 +236,11 @@ public class ByteSizeUnits {
             return s;
         }
 
+        @Override
+        public ByteSize multiply(final int size) {
+            return new ByteSize(coefficient_ * size);
+        }
+
         protected NumberFormat getNumberFormat() {
             return format_;
         }

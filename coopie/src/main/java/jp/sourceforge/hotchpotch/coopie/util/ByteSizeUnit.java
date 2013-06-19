@@ -24,4 +24,6 @@ public interface ByteSizeUnit {
 
     boolean lessThan(long value);
 
+    ByteSize multiply(int size);
+
 }
