@@ -42,44 +42,44 @@ public class ByteSizeUnits {
     /**
      * Kilobyte
      */
-    public static final ByteSizeUnit KB = DecimalUnits.KB;
+    public static final ByteSizeUnit KB = DecimalUnits.getInstance().KB;
     /**
      * Megabyte
      */
-    public static final ByteSizeUnit MB = DecimalUnits.MB;
+    public static final ByteSizeUnit MB = DecimalUnits.getInstance().MB;
     /**
      * Gigabyte
      */
-    public static final ByteSizeUnit GB = DecimalUnits.GB;
+    public static final ByteSizeUnit GB = DecimalUnits.getInstance().GB;
     /**
      * Terabyte
      */
-    public static final ByteSizeUnit TB = DecimalUnits.TB;
+    public static final ByteSizeUnit TB = DecimalUnits.getInstance().TB;
     /**
      * Petabyte
      */
-    public static final ByteSizeUnit PB = DecimalUnits.PB;
+    public static final ByteSizeUnit PB = DecimalUnits.getInstance().PB;
 
     /**
      * kilobinary
      */
-    public static final ByteSizeUnit KiB = BinaryUnits.KB;
+    public static final ByteSizeUnit KiB = BinaryUnits.getInstance().KB;
     /**
      * megabinary
      */
-    public static final ByteSizeUnit MiB = BinaryUnits.MB;
+    public static final ByteSizeUnit MiB = BinaryUnits.getInstance().MB;
     /**
      * gigabinary
      */
-    public static final ByteSizeUnit GiB = BinaryUnits.GB;
+    public static final ByteSizeUnit GiB = BinaryUnits.getInstance().GB;
     /**
      * terabinary
      */
-    public static final ByteSizeUnit TiB = BinaryUnits.TB;
+    public static final ByteSizeUnit TiB = BinaryUnits.getInstance().TB;
     /**
      * petabinary
      */
-    public static final ByteSizeUnit PiB = BinaryUnits.PB;
+    public static final ByteSizeUnit PiB = BinaryUnits.getInstance().PB;
 
     public static ByteSizeUnit detectUnit(final ByteSize byteSize) {
         final long size = byteSize.getSize();
@@ -159,22 +159,22 @@ public class ByteSizeUnits {
     static class BinaryUnits implements UnitsTable {
 
         private static final BinaryUnits INSTANCE = new BinaryUnits();
-        private static final BaseType baseType_ = BaseType.BINARY;
+        private final BaseType baseType_ = BaseType.BINARY;
 
         public static BinaryUnits getInstance() {
             return INSTANCE;
         }
 
         // kilobinary
-        private static final ByteSizeUnit KB = _createUnit("KiB", 10);
+        private final ByteSizeUnit KB = _createUnit("KiB", 10);
         // megabinary
-        private static final ByteSizeUnit MB = _createUnit("MiB", 20);
+        private final ByteSizeUnit MB = _createUnit("MiB", 20);
         // gigabinary
-        private static final ByteSizeUnit GB = _createUnit("GiB", 30);
+        private final ByteSizeUnit GB = _createUnit("GiB", 30);
         // terabinary
-        private static final ByteSizeUnit TB = _createUnit("TiB", 40);
+        private final ByteSizeUnit TB = _createUnit("TiB", 40);
         // petabinary
-        private static final ByteSizeUnit PB = _createUnit("PiB", 50);
+        private final ByteSizeUnit PB = _createUnit("PiB", 50);
 
         @Override
         public ByteSizeUnit detectUnit(final long size) {
@@ -192,8 +192,7 @@ public class ByteSizeUnits {
             return PB;
         }
 
-        private static ByteSizeUnit _createUnit(final String label,
-                final int exponent) {
+        private ByteSizeUnit _createUnit(final String label, final int exponent) {
             return new SimpleByteSizeUnit(label, baseType_.power(exponent),
                     baseType_);
         }
@@ -207,22 +206,22 @@ public class ByteSizeUnits {
     static class DecimalUnits implements UnitsTable {
 
         private static final DecimalUnits INSTANCE = new DecimalUnits();
-        private static final BaseType baseType_ = BaseType.DECIMAL;
+        private final BaseType baseType_ = BaseType.DECIMAL;
 
         public static DecimalUnits getInstance() {
             return INSTANCE;
         }
 
         // Kilobyte
-        private static final ByteSizeUnit KB = _createUnit("kB", 3);
+        private final ByteSizeUnit KB = _createUnit("kB", 3);
         // Megabyte
-        private static final ByteSizeUnit MB = _createUnit("MB", 6);
+        private final ByteSizeUnit MB = _createUnit("MB", 6);
         // Gigabyte
-        private static final ByteSizeUnit GB = _createUnit("GB", 9);
+        private final ByteSizeUnit GB = _createUnit("GB", 9);
         // Terabyte
-        private static final ByteSizeUnit TB = _createUnit("TB", 12);
+        private final ByteSizeUnit TB = _createUnit("TB", 12);
         // Petabyte
-        private static final ByteSizeUnit PB = _createUnit("PB", 15);
+        private final ByteSizeUnit PB = _createUnit("PB", 15);
 
         @Override
         public ByteSizeUnit detectUnit(final long size) {
@@ -240,8 +239,7 @@ public class ByteSizeUnits {
             return PB;
         }
 
-        private static ByteSizeUnit _createUnit(final String label,
-                final int exponent) {
+        private ByteSizeUnit _createUnit(final String label, final int exponent) {
             return new SimpleByteSizeUnit(label, baseType_.power(exponent),
                     baseType_);
         }
