@@ -21,7 +21,7 @@ import java.text.NumberFormat;
 
 public class ByteSizeUnits {
 
-    static final ByteSizeUnit B = new SimpleByteSizeUnit("B", 0) {
+    public static final ByteSizeUnit B = new SimpleByteSizeUnit("B", 0) {
 
         @Override
         protected double convert(final long value) {
@@ -37,6 +37,48 @@ public class ByteSizeUnits {
         }
 
     };
+
+    /**
+     * Kilobyte
+     */
+    public static final ByteSizeUnit KB = DecimalUnits.KB;
+    /**
+     * Megabyte
+     */
+    public static final ByteSizeUnit MB = DecimalUnits.MB;
+    /**
+     * Gigabyte
+     */
+    public static final ByteSizeUnit GB = DecimalUnits.GB;
+    /**
+     * Terabyte
+     */
+    public static final ByteSizeUnit TB = DecimalUnits.TB;
+    /**
+     * Petabyte
+     */
+    public static final ByteSizeUnit PB = DecimalUnits.PB;
+
+    /**
+     * kilobinary
+     */
+    public static final ByteSizeUnit KiB = BinaryUnits.KB;
+    /**
+     * megabinary
+     */
+    public static final ByteSizeUnit MiB = BinaryUnits.MB;
+    /**
+     * gigabinary
+     */
+    public static final ByteSizeUnit GiB = BinaryUnits.GB;
+    /**
+     * terabinary
+     */
+    public static final ByteSizeUnit TiB = BinaryUnits.TB;
+    /**
+     * petabinary
+     */
+    public static final ByteSizeUnit PiB = BinaryUnits.PB;
 
     private static class Coefficient {
 
