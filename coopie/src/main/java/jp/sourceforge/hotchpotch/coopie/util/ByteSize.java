@@ -242,16 +242,6 @@ public class ByteSize {
 
     }
 
-    static interface ByteSizeUnit {
-
-        String format(long value);
-
-        String getUnitLabel();
-
-        boolean lessThan(long value);
-
-    }
-
     private static class SimpleByteSizeUnit implements ByteSizeUnit {
 
         private final String label_;
