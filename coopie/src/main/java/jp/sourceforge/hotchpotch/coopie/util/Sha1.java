@@ -58,20 +58,19 @@ public class Sha1 {
     private String toHexString(final byte[] digest) {
         final StringBuilder sb = new StringBuilder();
         for (final byte b : digest) {
-            final String s = toHexString(b);
-            sb.append(s);
+            toHexString(b, sb);
         }
         final String s = sb.toString();
         return s;
     }
 
-    private String toHexString(final byte b) {
+    private void toHexString(final byte b, final StringBuilder sb) {
         final int i = byteToInt(b);
         final String s = Integer.toHexString(i);
         if (s.length() == 1) {
-            return "0" + s;
+            sb.append('0');
         }
-        return s;
+        sb.append(s);
     }
 
     private int byteToInt(final byte b) {
