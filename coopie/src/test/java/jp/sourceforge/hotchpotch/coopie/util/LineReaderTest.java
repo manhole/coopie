@@ -25,12 +25,12 @@ import java.io.StringReader;
 
 import org.junit.Test;
 
-public class LineReadableTest {
+public class LineReaderTest {
 
     @Test
     public void readLineBody1() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("0123456789");
+        final LineReader r = create("0123456789");
         assertEquals(0, r.getLineNumber());
 
         // ## Act ##
@@ -51,7 +51,7 @@ public class LineReadableTest {
     @Test
     public void readLineBody2() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("0123456789\r\n");
+        final LineReader r = create("0123456789\r\n");
         assertEquals(0, r.getLineNumber());
         assertEquals(null, r.getLineSeparator());
 
@@ -71,7 +71,7 @@ public class LineReadableTest {
     @Test
     public void readLineBody3() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("0123\r\n45678\r\n\r\n9\r\n");
+        final LineReader r = create("0123\r\n45678\r\n\r\n9\r\n");
 
         // ## Act ##
         // ## Assert ##
@@ -110,7 +110,7 @@ public class LineReadableTest {
     @Test
     public void readLine3_1() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("0123\r\n45678\r\n\r\n9\r\n");
+        final LineReader r = create("0123\r\n45678\r\n\r\n9\r\n");
 
         // ## Act ##
         // ## Assert ##
@@ -150,7 +150,7 @@ public class LineReadableTest {
     @Test
     public void readLine3_2() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("0123\r\n45678\r\n\r\n9\r\n");
+        final LineReader r = create("0123\r\n45678\r\n\r\n9\r\n");
 
         // ## Act ##
         // ## Assert ##
@@ -194,7 +194,7 @@ public class LineReadableTest {
     @Test
     public void readLineBody4() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("\n0123\n\n456\r789");
+        final LineReader r = create("\n0123\n\n456\r789");
 
         // ## Act ##
         // ## Assert ##
@@ -243,7 +243,7 @@ public class LineReadableTest {
     @Test
     public void readLineBody5() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("");
+        final LineReader r = create("");
         assertEquals(0, r.getLineNumber());
 
         // ## Act ##
@@ -267,7 +267,7 @@ public class LineReadableTest {
     @Test
     public void readLineBody6() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create(" ");
+        final LineReader r = create(" ");
         assertEquals(0, r.getLineNumber());
 
         // ## Act ##
@@ -288,7 +288,7 @@ public class LineReadableTest {
     @Test
     public void readLine_endsWithCR() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("abc\r");
+        final LineReader r = create("abc\r");
 
         // ## Act ##
         // ## Assert ##
@@ -310,7 +310,7 @@ public class LineReadableTest {
     @Test
     public void readLine_endsWithLF() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("abc\n");
+        final LineReader r = create("abc\n");
 
         // ## Act ##
         // ## Assert ##
@@ -332,8 +332,7 @@ public class LineReadableTest {
     @Test
     public void pushback1() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("a1\r\n" + "a2\r" + "a3\n" + "a4\n"
-                + "a5");
+        final LineReader r = create("a1\r\n" + "a2\r" + "a3\n" + "a4\n" + "a5");
 
         // ## Act ##
         // ## Assert ##
@@ -363,8 +362,7 @@ public class LineReadableTest {
     @Test
     public void pushback2() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("a1\r\n" + "a2\r" + "a3\n" + "a4\n"
-                + "a5");
+        final LineReader r = create("a1\r\n" + "a2\r" + "a3\n" + "a4\n" + "a5");
 
         // ## Act ##
         // ## Assert ##
@@ -388,9 +386,9 @@ public class LineReadableTest {
         r.close();
     }
 
-    private LineReadable create(final String in) {
+    private LineReader create(final String in) {
         final Readable readable = new StringReader(in);
-        return new LineReadable(readable);
+        return new LineReader(readable);
     }
 
 }

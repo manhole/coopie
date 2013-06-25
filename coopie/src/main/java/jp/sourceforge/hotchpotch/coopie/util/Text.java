@@ -49,7 +49,7 @@ public class Text {
 
     private Line[] toLines(final String s) {
         final List<Line> l = CollectionsUtil.newArrayList();
-        final LineReader reader = new LineReadable(new StringReader(s));
+        final LineReadable reader = new LineReader(new StringReader(s));
         try {
             while (true) {
                 final Line line = reader.readLine();

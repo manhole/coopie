@@ -19,7 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.IOException;
 
 import jp.sourceforge.hotchpotch.coopie.util.Line;
-import jp.sourceforge.hotchpotch.coopie.util.LineReader;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
 public class DefaultReaderHandler implements ElementReaderHandler,
         LineReaderHandler, ElementEditor {
@@ -43,7 +43,7 @@ public class DefaultReaderHandler implements ElementReaderHandler,
     }
 
     @Override
-    public Line readLine(final LineReader lineReader, final Line reusableLine)
+    public Line readLine(final LineReadable lineReader, final Line reusableLine)
             throws IOException {
         return lineReaderHandler_.readLine(lineReader, reusableLine);
     }

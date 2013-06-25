@@ -18,16 +18,16 @@ package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.io.IOException;
 
-public class FilterLineReader implements LineReader {
+public class FilterLineReader implements LineReadable {
 
     private boolean closed_;
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    private final LineReader lineReader_;
+    private final LineReadable lineReader_;
     private final LineFilter lineFilter_;
 
-    public FilterLineReader(final LineReader lineReader,
+    public FilterLineReader(final LineReadable lineReader,
             final LineFilter lineFilter) {
         lineReader_ = lineReader;
         lineFilter_ = lineFilter;

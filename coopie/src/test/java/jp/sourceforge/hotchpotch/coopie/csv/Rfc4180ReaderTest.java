@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import jp.sourceforge.hotchpotch.coopie.util.Line;
-import jp.sourceforge.hotchpotch.coopie.util.LineReader;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
 import org.junit.Test;
 
@@ -639,7 +639,7 @@ public class Rfc4180ReaderTest {
         final LineReaderHandler lineReaderHandler = new LineReaderHandler() {
 
             @Override
-            public Line readLine(final LineReader lineReader, final Line line)
+            public Line readLine(final LineReadable lineReader, final Line line)
                     throws IOException {
                 return lineReader.readLine(line);
             }
