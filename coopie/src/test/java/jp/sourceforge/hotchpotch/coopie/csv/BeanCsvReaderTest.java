@@ -48,7 +48,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CsvCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
-import jp.sourceforge.hotchpotch.coopie.util.LineReader;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 
 import org.junit.Ignore;
@@ -741,7 +741,7 @@ public class BeanCsvReaderTest {
     static class TestReadEditor extends DefaultReaderHandler {
 
         @Override
-        public Line readLine(final LineReader lineReader,
+        public Line readLine(final LineReadable lineReader,
                 final Line reusableLine) throws IOException {
             if (lineReader.getLineNumber() == 0) {
                 // 3行あるheader部をskip

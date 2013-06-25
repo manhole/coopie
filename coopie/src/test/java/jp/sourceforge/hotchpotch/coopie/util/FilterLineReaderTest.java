@@ -32,12 +32,12 @@ public class FilterLineReaderTest {
     @Test
     public void filter1() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
                 + "\r\n" + "a3" + "\n" + "\r");
 
         // ## Act ##
         final LineFilter filter = new SkipLineFilter();
-        final LineReader rr = new FilterLineReader(r, filter);
+        final LineReadable rr = new FilterLineReader(r, filter);
 
         // ## Assert ##
         assertEquals("a1", rr.readLine().getBody());
@@ -53,13 +53,13 @@ public class FilterLineReaderTest {
     @Test
     public void filter2() throws Throwable {
         // ## Arrange ##
-        final LineReadable r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
                 + "\r\n" + "a3" + "\n" + "\r");
 
         // ## Act ##
         final Line line = new LineImpl();
         final LineFilter filter = new SkipLineFilter();
-        final LineReader rr = new FilterLineReader(r, filter);
+        final LineReadable rr = new FilterLineReader(r, filter);
 
         // ## Assert ##
         assertEquals("a1", rr.readLine(line).getBody());
@@ -72,9 +72,9 @@ public class FilterLineReaderTest {
         rr.close();
     }
 
-    private LineReadable create(final String in) {
+    private LineReader create(final String in) {
         final Readable readable = new StringReader(in);
-        return new LineReadable(readable);
+        return new LineReader(readable);
     }
 
     private static class SkipLineFilter implements LineFilter {

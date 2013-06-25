@@ -26,7 +26,7 @@ import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineImpl;
-import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
+import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
 import org.t2framework.commons.exception.IORuntimeException;
 
@@ -36,7 +36,7 @@ public class FixedLengthReader implements ElementReader {
     @SuppressWarnings("unused")
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-    private LineReadable reader_;
+    private LineReader reader_;
     private final FixedLengthElementDesc[] elementDescs_;
     private int lineNo_;
     private final Line line_ = new LineImpl();
@@ -51,7 +51,7 @@ public class FixedLengthReader implements ElementReader {
     }
 
     public void open(final Readable readable) {
-        reader_ = new LineReadable(readable);
+        reader_ = new LineReader(readable);
         closed_ = false;
     }
 

@@ -19,7 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.IOException;
 
 import jp.sourceforge.hotchpotch.coopie.util.Line;
-import jp.sourceforge.hotchpotch.coopie.util.LineReader;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 
 public interface LineReaderHandler {
 
@@ -30,7 +30,8 @@ public interface LineReaderHandler {
      */
     // 当メソッドが返却した値が、 {@link #readRecord(ElementReader)} へ流れていきます。
     // (当メソッドにて読み飛ばした行は、{@link #readRecord(ElementReader)} へ流れません。)
-    Line readLine(LineReader lineReader, Line reusableLine) throws IOException;
+    Line readLine(LineReadable lineReader, Line reusableLine)
+            throws IOException;
 
     /**
      * 1行読むタイミングで呼ばれます。

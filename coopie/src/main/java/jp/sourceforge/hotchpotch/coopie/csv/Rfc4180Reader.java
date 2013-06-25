@@ -62,7 +62,7 @@ public class Rfc4180Reader implements ElementReader {
     private boolean eof_;
 
     private RecordState recordState_;
-    private LineReadable pushback_;
+    private LineReader pushback_;
     private RecordBuffer rb_;
 
     public void open(final Readable readable) {
@@ -388,7 +388,7 @@ public class Rfc4180Reader implements ElementReader {
                 sb.append(l.getBodyAndSeparator());
             }
         }
-        pushback_ = new LineReadable(new StringReader(sb.toString()));
+        pushback_ = new LineReader(new StringReader(sb.toString()));
         rc.savedLines = null;
         rc.elemBuff = null;
         if (eof_) {
@@ -588,7 +588,7 @@ public class Rfc4180Reader implements ElementReader {
 
     private static class CharacterReadable implements Closable {
 
-        private final LineReader reader_;
+        private final LineReadable reader_;
         private final LineReaderHandler lineReaderHandler_;
 
         private boolean closed_;
@@ -600,7 +600,7 @@ public class Rfc4180Reader implements ElementReader {
         CharacterReadable(final Readable readable,
                 final LineReaderHandler lineReaderHandler,
                 final ElementParserContext parserContext) {
-            reader_ = new LineReadable(readable);
+            reader_ = new LineReader(readable);
             lineReaderHandler_ = lineReaderHandler;
             parserContext_ = parserContext;
         }

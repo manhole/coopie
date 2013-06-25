@@ -39,7 +39,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.fl.FixedLengthColumnSetup.FixedLengthCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
-import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
+import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -317,8 +317,7 @@ public class MapFixedLengthWriterTest {
         final String lines = writer.toString();
 
         {
-            final LineReadable reader = new LineReadable(
-                    new StringReader(lines));
+            final LineReader reader = new LineReader(new StringReader(lines));
             assertEquals("       aaa       bbb", reader.readLineBody());
             assertEquals("     11.10     21.02", reader.readLineBody());
             assertEquals("                    ", reader.readLineBody());
@@ -389,7 +388,7 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String lines = writer.toString();
 
-        final LineReadable reader = new LineReadable(new StringReader(lines));
+        final LineReader reader = new LineReader(new StringReader(lines));
         assertEquals("  aaa            ymd            hms",
                 reader.readLineBody());
         assertEquals("    a     2011-09-13       17:54:01",
