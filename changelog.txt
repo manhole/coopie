@@ -4,7 +4,8 @@
 - coopie-groovyを追加。
 - slf4jとlogbackのバージョンを、それぞれ1.6.4と1.0.0にしました。
   (0.2.2でgradleでデプロイした際に戻ってしまっていた。)
-
+- ByteSizeUnit, ByteSizeUnitsを別ファイルへ分離。
+  ByteSizeUnit#multiplyを追加。
 
 0.2.2 2013/05/27
 
