@@ -1,7 +1,7 @@
-0.3.0 2013/XX/XX
+0.3.0 2013/07/29
 
 - gradleのmultiproject構成にしました。maven2(maven3)のpom.xmlは廃止しました。
-- coopie-groovyを追加。
+- coopie-groovyを追加しました。
 - slf4jとlogbackのバージョンを、それぞれ1.6.4と1.0.0にしました。
   (0.2.2でgradleでデプロイした際に戻ってしまっていた。)
 - ByteSizeUnit, ByteSizeUnitsを別ファイルへ分離。
