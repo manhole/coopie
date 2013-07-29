@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 
-import jp.sourceforge.hotchpotch.coopie.util.ByteSize.BaseType;
+import jp.sourceforge.hotchpotch.coopie.util.ByteSizeUnits.BaseType;
 
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class ByteSizeTest {
     @Test
     public void asByte() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(123L);
+        final ByteSize byteSize = ByteSize.create(123L);
 
         // ## Act ##
         // ## Assert ##
@@ -43,7 +43,7 @@ public class ByteSizeTest {
     @Test
     public void asKiloBinary() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(543210L);
+        final ByteSize byteSize = ByteSize.create(543210L);
 
         // ## Act ##
         // ## Assert ##
@@ -55,7 +55,7 @@ public class ByteSizeTest {
     @Test
     public void asKiloByte() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(543210L);
+        final ByteSize byteSize = ByteSize.create(543210L);
 
         // ## Act ##
         byteSize.setBaseType(BaseType.DECIMAL);
@@ -67,9 +67,33 @@ public class ByteSizeTest {
     }
 
     @Test
+    public void asKiloBinary2() throws Throwable {
+        // ## Arrange ##
+        final ByteSize byteSize = ByteSize.create(1024);
+
+        // ## Act ##
+        // ## Assert ##
+        assertEquals("1.00 KiB (1,024)", byteSize.toString());
+        assertEquals("1.00 KiB", byteSize.toHumanReadableString());
+    }
+
+    @Test
+    public void asKiloByte2() throws Throwable {
+        // ## Arrange ##
+        final ByteSize byteSize = ByteSize.create(1000L);
+
+        // ## Act ##
+        byteSize.setBaseType(BaseType.DECIMAL);
+
+        // ## Assert ##
+        assertEquals("1.00 kB (1,000)", byteSize.toString());
+        assertEquals("1.00 kB", byteSize.toHumanReadableString());
+    }
+
+    @Test
     public void asMegaBinary() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(76543210L);
+        final ByteSize byteSize = ByteSize.create(76543210L);
 
         // ## Act ##
         // ## Assert ##
@@ -81,7 +105,7 @@ public class ByteSizeTest {
     @Test
     public void asMegaByte() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(76543210L);
+        final ByteSize byteSize = ByteSize.create(76543210L);
 
         // ## Act ##
         byteSize.setBaseType(BaseType.DECIMAL);
@@ -94,7 +118,7 @@ public class ByteSizeTest {
     @Test
     public void asGigaBinary() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(9876543210L);
+        final ByteSize byteSize = ByteSize.create(9876543210L);
 
         // ## Act ##
         // ## Assert ##
@@ -106,7 +130,7 @@ public class ByteSizeTest {
     @Test
     public void asGigaByte() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(9876543210L);
+        final ByteSize byteSize = ByteSize.create(9876543210L);
 
         // ## Act ##
         byteSize.setBaseType(BaseType.DECIMAL);
@@ -119,7 +143,7 @@ public class ByteSizeTest {
     @Test
     public void asTeraBinary() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(98765432101234L);
+        final ByteSize byteSize = ByteSize.create(98765432101234L);
 
         // ## Act ##
         // ## Assert ##
@@ -131,7 +155,7 @@ public class ByteSizeTest {
     @Test
     public void asTeraByte() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(98765432101234L);
+        final ByteSize byteSize = ByteSize.create(98765432101234L);
 
         // ## Act ##
         byteSize.setBaseType(BaseType.DECIMAL);
@@ -144,7 +168,7 @@ public class ByteSizeTest {
     @Test
     public void asPetaBinary() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(1298765432101234L);
+        final ByteSize byteSize = ByteSize.create(1298765432101234L);
 
         // ## Act ##
         // ## Assert ##
@@ -156,7 +180,7 @@ public class ByteSizeTest {
     @Test
     public void asPetaByte() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(1298765432101234L);
+        final ByteSize byteSize = ByteSize.create(1298765432101234L);
 
         // ## Act ##
         byteSize.setBaseType(BaseType.DECIMAL);
@@ -169,7 +193,7 @@ public class ByteSizeTest {
     @Test
     public void toStringMode() throws Throwable {
         // ## Arrange ##
-        final ByteSize byteSize = new ByteSize(76543211L);
+        final ByteSize byteSize = ByteSize.create(76543211L);
 
         // ## Act ##
         // ## Assert ##
