@@ -1,0 +1,7 @@
+/bin/
+/build/
+/target/
+/work/
+.classpath
+.project
+profiles.xml

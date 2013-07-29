@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.out</target>
+    <!--
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%-5level %d{ISO8601} %9r [%thread] %logger{0} - %msg%n</pattern>
+    </layout>
+    -->
+    <!-- 
+    %d{ISO8601}         yyyy-MM-dd HH:mm:ss,SS
+    %d{HH:mm:ss,SSS}
+     -->
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%-5level %d{HH:mm:ss,SSS} %9r [%thread] %logger{0} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!--
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>C:/log/coopie-test.log</file>
+    <encoding>UTF-8</encoding>
+    <append>true</append>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%-5level %d{ISO8601} %9r [%thread] %logger{0} - %msg%n</pattern>
+    </layout>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>C:/log/coopie-test_%d{yyyyMMdd}.log</fileNamePattern>
+    </rollingPolicy>
+  </appender>
+  -->
+
+  <logger name="jp.sourceforge.hotchpotch.coopie" additivity="false">
+    <level value="debug" />
+    <appender-ref ref="STDOUT" />
+    <!--
+    <appender-ref ref="FILE" />
+    -->
+  </logger>
+
+  <root>
+    <level value="info" />
+    <appender-ref ref="STDOUT" />
+    <!--
+    <appender-ref ref="FILE" />
+    -->
+  </root>
+
+</configuration>

@@ -1,0 +1,4 @@
+rootProject.name = "coopie-project"
+
+include "coopie"
+include "coopie-groovy"
