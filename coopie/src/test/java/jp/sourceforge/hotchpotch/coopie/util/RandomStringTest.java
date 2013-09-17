@@ -130,6 +130,24 @@ public class RandomStringTest {
         assertThat(r.toString(2003), is("3723"));
     }
 
+    /*
+     * 数字が1つ大きい方向にずれている10進数
+     */
+    @Test
+    public void radix3() throws Throwable {
+        // ## Arrange ##
+        // 10進数
+        final CustomRadixString r = new CustomRadixString("1234567890");
+
+        // ## Act ##
+        // ## Assert ##
+        assertThat(r.toString(0), is("1"));
+        assertThat(r.toString(5), is("6"));
+        assertThat(r.toString(9), is("0"));
+        assertThat(r.toString(10), is("21"));
+        assertThat(r.toString(2003), is("3114"));
+    }
+
     private static class AsciiCodeBlock {
 
         private boolean symbolCharacter_;
@@ -234,7 +252,8 @@ public class RandomStringTest {
                 final BigDecimal[] ret = quotient.divideAndRemainder(radix);
                 quotient = ret[0];
                 remainder = ret[1];
-                sb.append(remainder.toPlainString());
+                final int pos = remainder.intValue();
+                sb.append(chars_.charAt(pos));
                 if (BigDecimal.ZERO.compareTo(quotient) == 0) {
                     break;
                 }
