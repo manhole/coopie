@@ -18,12 +18,14 @@ package jp.sourceforge.hotchpotch.coopie.util;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.t2framework.commons.util.StringUtil;
 
 public class RandomStringTest {
 
@@ -99,6 +101,15 @@ public class RandomStringTest {
 
         // ## Assert ##
         assertThat(chars, is((upperChars + lowerChars).toCharArray()));
+    }
+
+    @Test
+    public void radix_empty() throws Throwable {
+        try {
+            new CustomRadixString("");
+            fail();
+        } catch (final IllegalArgumentException e) {
+        }
     }
 
     @Test
@@ -231,6 +242,9 @@ public class RandomStringTest {
         private final int radix_;
 
         public CustomRadixString(final String chars) {
+            if (StringUtil.isEmpty(chars)) {
+                throw new IllegalArgumentException(String.valueOf(chars));
+            }
             chars_ = chars;
             radix_ = chars.length();
         }
