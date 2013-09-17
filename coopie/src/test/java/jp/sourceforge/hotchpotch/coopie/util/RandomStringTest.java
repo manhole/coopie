@@ -39,6 +39,19 @@ public class RandomStringTest {
         assertThat(chars, is("0123456789".toCharArray()));
     }
 
+    @Test
+    public void letter1() throws Throwable {
+        // ## Arrange ##
+        final AsciiCodeBlock codes = new AsciiCodeBlock();
+
+        // ## Act ##
+        codes.setLowerCaseLetter(true);
+        final char[] chars = codes.toCharArray();
+
+        // ## Assert ##
+        assertThat(chars, is("abcdefghijklmnopqrstuvwxyz".toCharArray()));
+    }
+
     private static class AsciiCodeBlock {
 
         private boolean controlCharacter_;
@@ -84,6 +97,11 @@ public class RandomStringTest {
                 final char c = (char) i;
                 if (digit_) {
                     if (Character.isDigit(i)) {
+                        list.add(c);
+                    }
+                }
+                if (lowerCaseLetter_) {
+                    if (Character.isLowerCase(i)) {
                         list.add(c);
                     }
                 }
