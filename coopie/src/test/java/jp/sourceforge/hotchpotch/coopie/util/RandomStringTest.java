@@ -112,6 +112,22 @@ public class RandomStringTest {
         assertThat(r.toString(0), is("0"));
         assertThat(r.toString(5), is("5"));
         assertThat(r.toString(10), is("10"));
+        assertThat(r.toString(2003), is("2003"));
+    }
+
+    @Test
+    public void radix2() throws Throwable {
+        // ## Arrange ##
+        // 10進数
+        final CustomRadixString r = new CustomRadixString("01234567");
+
+        // ## Act ##
+        // ## Assert ##
+        assertThat(r.toString(0), is("0"));
+        assertThat(r.toString(5), is("5"));
+        assertThat(r.toString(8), is("10"));
+        assertThat(r.toString(10), is("12"));
+        assertThat(r.toString(2003), is("3723"));
     }
 
     private static class AsciiCodeBlock {
