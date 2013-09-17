@@ -52,6 +52,19 @@ public class RandomStringTest {
         assertThat(chars, is("abcdefghijklmnopqrstuvwxyz".toCharArray()));
     }
 
+    @Test
+    public void letter2() throws Throwable {
+        // ## Arrange ##
+        final AsciiCodeBlock codes = new AsciiCodeBlock();
+
+        // ## Act ##
+        codes.setUpperCaseLetter(true);
+        final char[] chars = codes.toCharArray();
+
+        // ## Assert ##
+        assertThat(chars, is("ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()));
+    }
+
     private static class AsciiCodeBlock {
 
         private boolean controlCharacter_;
@@ -102,6 +115,11 @@ public class RandomStringTest {
                 }
                 if (lowerCaseLetter_) {
                     if (Character.isLowerCase(i)) {
+                        list.add(c);
+                    }
+                }
+                if (upperCaseLetter_) {
+                    if (Character.isUpperCase(i)) {
                         list.add(c);
                     }
                 }
