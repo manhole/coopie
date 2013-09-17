@@ -65,19 +65,33 @@ public class RandomStringTest {
         assertThat(chars, is("ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()));
     }
 
+    @Test
+    public void symbol1() throws Throwable {
+        // ## Arrange ##
+        final AsciiCodeBlock codes = new AsciiCodeBlock();
+
+        // ## Act ##
+        codes.setSymbolCharacter(true);
+        final char[] chars = codes.toCharArray();
+
+        // ## Assert ##
+        assertThat(chars, is(("!\"#$%&'()*+,-./" + ":;<=>?@" + "[\\]^_`"
+                + "{|}~").toCharArray()));
+    }
+
     private static class AsciiCodeBlock {
 
-        private boolean controlCharacter_;
+        private boolean symbolCharacter_;
         private boolean upperCaseLetter_;
         private boolean lowerCaseLetter_;
         private boolean digit_;
 
         public boolean isControlCharacter() {
-            return controlCharacter_;
+            return symbolCharacter_;
         }
 
-        public void setControlCharacter(final boolean controlCharacter) {
-            controlCharacter_ = controlCharacter;
+        public void setSymbolCharacter(final boolean controlCharacter) {
+            symbolCharacter_ = controlCharacter;
         }
 
         public boolean isUpperCaseLetter() {
@@ -108,18 +122,21 @@ public class RandomStringTest {
             final List<Character> list = new ArrayList<Character>();
             for (int i = 0; i <= 127; i++) {
                 final char c = (char) i;
-                if (digit_) {
-                    if (Character.isDigit(i)) {
+                if (Character.isDigit(i)) {
+                    if (digit_) {
                         list.add(c);
                     }
-                }
-                if (lowerCaseLetter_) {
-                    if (Character.isLowerCase(i)) {
+                } else if (Character.isLowerCase(i)) {
+                    if (lowerCaseLetter_) {
                         list.add(c);
                     }
-                }
-                if (upperCaseLetter_) {
-                    if (Character.isUpperCase(i)) {
+                } else if (Character.isUpperCase(i)) {
+                    if (upperCaseLetter_) {
+                        list.add(c);
+                    }
+                } else if (!Character.isISOControl(i)
+                        && !Character.isSpaceChar(i)) {
+                    if (symbolCharacter_) {
                         list.add(c);
                     }
                 }
