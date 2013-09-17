@@ -19,6 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +101,19 @@ public class RandomStringTest {
         assertThat(chars, is((upperChars + lowerChars).toCharArray()));
     }
 
+    @Test
+    public void radix1() throws Throwable {
+        // ## Arrange ##
+        // 10進数
+        final CustomRadixString r = new CustomRadixString("0123456789");
+
+        // ## Act ##
+        // ## Assert ##
+        assertThat(r.toString(0), is("0"));
+        assertThat(r.toString(5), is("5"));
+        assertThat(r.toString(10), is("10"));
+    }
+
     private static class AsciiCodeBlock {
 
         private boolean symbolCharacter_;
@@ -174,6 +188,43 @@ public class RandomStringTest {
                 i++;
             }
             return chars;
+        }
+    }
+
+    private static class CustomRadixString {
+
+        private final String chars_;
+        private final int radix_;
+
+        public CustomRadixString(final String chars) {
+            chars_ = chars;
+            radix_ = chars.length();
+        }
+
+        /*
+         * 剰余を連結したものが結果となる。
+         * 例: 2003
+         * 2003を10で割る ... 商:200, 剰余:3
+         * 200を10で割る ... 商:20, 剰余:0
+         * 20を10で割る ... 商:2, 剰余:0
+         * 2を10で割る ... 商:0, 剰余:2
+         */
+        public String toString(final int intValue) {
+            BigDecimal quotient = BigDecimal.valueOf(intValue);
+            BigDecimal remainder = null;
+            final BigDecimal radix = BigDecimal.valueOf(radix_);
+            final StringBuilder sb = new StringBuilder();
+            while (true) {
+                final BigDecimal[] ret = quotient.divideAndRemainder(radix);
+                quotient = ret[0];
+                remainder = ret[1];
+                sb.append(remainder.toPlainString());
+                if (BigDecimal.ZERO.compareTo(quotient) == 0) {
+                    break;
+                }
+            }
+            sb.reverse();
+            return sb.toString();
         }
     }
 
