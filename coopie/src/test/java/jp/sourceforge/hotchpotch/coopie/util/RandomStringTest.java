@@ -26,6 +26,13 @@ import org.junit.Test;
 
 public class RandomStringTest {
 
+    private final String lowerChars = "abcdefghijklmnopqrstuvwxyz";
+    private final String upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private final String symbol1 = "!\"#$%&'()*+,-./";
+    private final String symbol2 = ":;<=>?@";
+    private final String symbol3 = "[\\]^_`";
+    private final String symbol4 = "{|}~";
+
     @Test
     public void digit1() throws Throwable {
         // ## Arrange ##
@@ -49,7 +56,7 @@ public class RandomStringTest {
         final char[] chars = codes.toCharArray();
 
         // ## Assert ##
-        assertThat(chars, is("abcdefghijklmnopqrstuvwxyz".toCharArray()));
+        assertThat(chars, is(lowerChars.toCharArray()));
     }
 
     @Test
@@ -62,7 +69,7 @@ public class RandomStringTest {
         final char[] chars = codes.toCharArray();
 
         // ## Assert ##
-        assertThat(chars, is("ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()));
+        assertThat(chars, is(upperChars.toCharArray()));
     }
 
     @Test
@@ -75,8 +82,22 @@ public class RandomStringTest {
         final char[] chars = codes.toCharArray();
 
         // ## Assert ##
-        assertThat(chars, is(("!\"#$%&'()*+,-./" + ":;<=>?@" + "[\\]^_`"
-                + "{|}~").toCharArray()));
+        assertThat(chars,
+                is((symbol1 + symbol2 + symbol3 + symbol4).toCharArray()));
+    }
+
+    @Test
+    public void lowerAndUpper() throws Throwable {
+        // ## Arrange ##
+        final AsciiCodeBlock codes = new AsciiCodeBlock();
+
+        // ## Act ##
+        codes.setLowerCaseLetter(true);
+        codes.setUpperCaseLetter(true);
+        final char[] chars = codes.toCharArray();
+
+        // ## Assert ##
+        assertThat(chars, is((upperChars + lowerChars).toCharArray()));
     }
 
     private static class AsciiCodeBlock {
