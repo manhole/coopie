@@ -20,14 +20,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import jp.sourceforge.hotchpotch.coopie.util.RandomString.AsciiCodeBlock;
+import jp.sourceforge.hotchpotch.coopie.util.RandomString.CustomRadixString;
 
 import org.junit.Test;
-import org.t2framework.commons.util.StringUtil;
 
 public class RandomStringTest {
 
@@ -179,148 +175,6 @@ public class RandomStringTest {
         assertThat(s1.length(), is(15));
         assertThat(s2.length(), is(15));
         assertThat(s1, is(not(s2)));
-    }
-
-    private static class AsciiCodeBlock {
-
-        private boolean symbolCharacter_;
-        private boolean upperCaseLetter_;
-        private boolean lowerCaseLetter_;
-        private boolean digit_;
-
-        public boolean isControlCharacter() {
-            return symbolCharacter_;
-        }
-
-        public void setSymbolCharacter(final boolean controlCharacter) {
-            symbolCharacter_ = controlCharacter;
-        }
-
-        public boolean isUpperCaseLetter() {
-            return upperCaseLetter_;
-        }
-
-        public void setUpperCaseLetter(final boolean upperCaseLetter) {
-            upperCaseLetter_ = upperCaseLetter;
-        }
-
-        public boolean isLowerCaseLetter() {
-            return lowerCaseLetter_;
-        }
-
-        public void setLowerCaseLetter(final boolean lowerCaseLetter) {
-            lowerCaseLetter_ = lowerCaseLetter;
-        }
-
-        public boolean isDigit() {
-            return digit_;
-        }
-
-        public void setDigit(final boolean digit) {
-            digit_ = digit;
-        }
-
-        public char[] toCharArray() {
-            final List<Character> list = new ArrayList<Character>();
-            for (int i = 0; i <= 127; i++) {
-                final char c = (char) i;
-                if (Character.isDigit(i)) {
-                    if (digit_) {
-                        list.add(c);
-                    }
-                } else if (Character.isLowerCase(i)) {
-                    if (lowerCaseLetter_) {
-                        list.add(c);
-                    }
-                } else if (Character.isUpperCase(i)) {
-                    if (upperCaseLetter_) {
-                        list.add(c);
-                    }
-                } else if (!Character.isISOControl(i)
-                        && !Character.isSpaceChar(i)) {
-                    if (symbolCharacter_) {
-                        list.add(c);
-                    }
-                }
-            }
-
-            return _toChars(list);
-        }
-
-        private char[] _toChars(final List<Character> list) {
-            final char[] chars = new char[list.size()];
-            int i = 0;
-            for (final Character c : list) {
-                chars[i] = c;
-                i++;
-            }
-            return chars;
-        }
-    }
-
-    private static class CustomRadixString {
-
-        private final String chars_;
-        private final int radix_;
-
-        public CustomRadixString(final String chars) {
-            if (StringUtil.isEmpty(chars)) {
-                throw new IllegalArgumentException(String.valueOf(chars));
-            }
-            chars_ = chars;
-            radix_ = chars.length();
-        }
-
-        public int getRadix() {
-            return radix_;
-        }
-
-        /*
-         * 剰余を連結したものが結果となる。
-         * 例: 2003
-         * 2003を10で割る ... 商:200, 剰余:3
-         * 200を10で割る ... 商:20, 剰余:0
-         * 20を10で割る ... 商:2, 剰余:0
-         * 2を10で割る ... 商:0, 剰余:2
-         */
-        public String toString(final int intValue) {
-            BigDecimal quotient = BigDecimal.valueOf(intValue);
-            BigDecimal remainder = null;
-            final BigDecimal radix = BigDecimal.valueOf(radix_);
-            final StringBuilder sb = new StringBuilder();
-            while (true) {
-                final BigDecimal[] ret = quotient.divideAndRemainder(radix);
-                quotient = ret[0];
-                remainder = ret[1];
-                final int pos = remainder.intValue();
-                sb.append(chars_.charAt(pos));
-                if (BigDecimal.ZERO.compareTo(quotient) == 0) {
-                    break;
-                }
-            }
-            sb.reverse();
-            return sb.toString();
-        }
-    }
-
-    private static class RandomString {
-
-        private final Random random_ = new Random();
-        private final CustomRadixString rs_;
-
-        public RandomString(final String text) {
-            rs_ = new CustomRadixString(text);
-        }
-
-        public String generate(final int length) {
-            final StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < length; i++) {
-                final int pos = random_.nextInt(rs_.getRadix());
-                final String s = rs_.toString(pos);
-                sb.append(s);
-            }
-            return sb.toString();
-        }
     }
 
 }
