@@ -17,12 +17,14 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Test;
 import org.t2framework.commons.util.StringUtil;
@@ -159,6 +161,26 @@ public class RandomStringTest {
         assertThat(r.toString(2003), is("3114"));
     }
 
+    @Test
+    public void random_number() throws Throwable {
+        // ## Arrange ##
+        final AsciiCodeBlock codes = new AsciiCodeBlock();
+        codes.setDigit(true);
+        final RandomString rs = new RandomString(String.valueOf(codes
+                .toCharArray()));
+
+        // ## Act ##
+        // ## Assert ##
+        final String s1 = rs.generate(15);
+        final String s2 = rs.generate(15);
+        //System.out.println(s1);
+        //System.out.println(s2);
+
+        assertThat(s1.length(), is(15));
+        assertThat(s2.length(), is(15));
+        assertThat(s1, is(not(s2)));
+    }
+
     private static class AsciiCodeBlock {
 
         private boolean symbolCharacter_;
@@ -249,6 +271,10 @@ public class RandomStringTest {
             radix_ = chars.length();
         }
 
+        public int getRadix() {
+            return radix_;
+        }
+
         /*
          * 剰余を連結したものが結果となる。
          * 例: 2003
@@ -279,6 +305,22 @@ public class RandomStringTest {
 
     private static class RandomString {
 
+        private final Random random_ = new Random();
+        private final CustomRadixString rs_;
+
+        public RandomString(final String text) {
+            rs_ = new CustomRadixString(text);
+        }
+
+        public String generate(final int length) {
+            final StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < length; i++) {
+                final int pos = random_.nextInt(rs_.getRadix());
+                final String s = rs_.toString(pos);
+                sb.append(s);
+            }
+            return sb.toString();
+        }
     }
 
 }
