@@ -22,9 +22,7 @@ import java.nio.CharBuffer;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
-import org.t2framework.commons.exception.IORuntimeException;
 
 public class LineReader implements LineReadable {
 
@@ -230,56 +228,7 @@ public class LineReader implements LineReadable {
     }
 
     public Iterator<Line> iterator() {
-        return new LineIterator(this);
-    }
-
-    static class LineIterator implements Iterator<Line> {
-
-        private final LineReadable reader_;
-        private Line next;
-
-        LineIterator(final LineReadable reader) {
-            reader_ = reader;
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (next == null) {
-                next = readLine();
-            }
-            if (next != null) {
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public Line next() {
-            if (next != null) {
-                final Line t = next;
-                next = null;
-                return t;
-            }
-            final Line t = readLine();
-            if (t == null) {
-                throw new NoSuchElementException();
-            }
-            return t;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove");
-        }
-
-        private Line readLine() {
-            try {
-                return reader_.readLine();
-            } catch (final IOException e) {
-                throw new IORuntimeException(e);
-            }
-        }
-
+        return new LineReadableIterator(this);
     }
 
 }
