@@ -17,6 +17,7 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 public class FilterLineReader implements LineReadable {
 
@@ -74,6 +75,11 @@ public class FilterLineReader implements LineReadable {
     public void close() throws IOException {
         closed_ = true;
         CloseableUtil.closeNoException(lineReader_);
+    }
+
+    @Override
+    public Iterator<Line> iterator() {
+        return new LineReadableIterator(this);
     }
 
 }

@@ -16,7 +16,10 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 
@@ -70,6 +73,41 @@ public class FilterLineReaderTest {
         assertEquals(6, rr.getLineNumber());
         assertEquals(null, rr.readLine(line));
         rr.close();
+    }
+
+    @Test
+    public void iterate() throws Throwable {
+        // ## Arrange ##
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
+                + "\r\n" + "a3" + "\n" + "\r");
+
+        // ## Act ##
+        final LineFilter filter = new SkipLineFilter();
+        final LineReadable rr = new FilterLineReader(r, filter);
+
+        // ## Assert ##
+        int count = 0;
+        for (final Line line : rr) {
+            switch (count) {
+            case 0:
+                assertThat(line.getBody(), is("a1"));
+                assertThat(line.getNumber(), is(2));
+                break;
+            case 1:
+                assertThat(line.getBody(), is("a2"));
+                assertThat(line.getNumber(), is(3));
+                break;
+            case 2:
+                assertThat(line.getBody(), is("a3"));
+                assertThat(line.getNumber(), is(6));
+                break;
+            default:
+                fail();
+                break;
+            }
+            count++;
+        }
+        assertThat(3, is(count));
     }
 
     private LineReader create(final String in) {
