@@ -53,7 +53,7 @@ public class RandomStringTest {
         final AsciiCodeBlock codes = new AsciiCodeBlock();
 
         // ## Act ##
-        codes.setLowerCaseLetter(true);
+        codes.setLowerCaseAlphabet(true);
         final char[] chars = codes.toCharArray();
 
         // ## Assert ##
@@ -66,7 +66,7 @@ public class RandomStringTest {
         final AsciiCodeBlock codes = new AsciiCodeBlock();
 
         // ## Act ##
-        codes.setUpperCaseLetter(true);
+        codes.setUpperCaseAlphabet(true);
         final char[] chars = codes.toCharArray();
 
         // ## Assert ##
@@ -93,8 +93,8 @@ public class RandomStringTest {
         final AsciiCodeBlock codes = new AsciiCodeBlock();
 
         // ## Act ##
-        codes.setLowerCaseLetter(true);
-        codes.setUpperCaseLetter(true);
+        codes.setLowerCaseAlphabet(true);
+        codes.setUpperCaseAlphabet(true);
         final char[] chars = codes.toCharArray();
 
         // ## Assert ##

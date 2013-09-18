@@ -45,8 +45,8 @@ public class RandomString {
     public static class AsciiCodeBlock {
 
         private boolean symbolCharacter_;
-        private boolean upperCaseLetter_;
-        private boolean lowerCaseLetter_;
+        private boolean upperCaseAlphabet_;
+        private boolean lowerCaseAlphabet_;
         private boolean digit_;
 
         public boolean isControlCharacter() {
@@ -58,19 +58,19 @@ public class RandomString {
         }
 
         public boolean isUpperCaseLetter() {
-            return upperCaseLetter_;
+            return upperCaseAlphabet_;
         }
 
-        public void setUpperCaseLetter(final boolean upperCaseLetter) {
-            upperCaseLetter_ = upperCaseLetter;
+        public void setUpperCaseAlphabet(final boolean upperCaseAlphabet) {
+            upperCaseAlphabet_ = upperCaseAlphabet;
         }
 
         public boolean isLowerCaseLetter() {
-            return lowerCaseLetter_;
+            return lowerCaseAlphabet_;
         }
 
-        public void setLowerCaseLetter(final boolean lowerCaseLetter) {
-            lowerCaseLetter_ = lowerCaseLetter;
+        public void setLowerCaseAlphabet(final boolean lowerCaseAlphabet) {
+            lowerCaseAlphabet_ = lowerCaseAlphabet;
         }
 
         public boolean isDigit() {
@@ -90,11 +90,11 @@ public class RandomString {
                         list.add(c);
                     }
                 } else if (Character.isLowerCase(i)) {
-                    if (lowerCaseLetter_) {
+                    if (lowerCaseAlphabet_) {
                         list.add(c);
                     }
                 } else if (Character.isUpperCase(i)) {
-                    if (upperCaseLetter_) {
+                    if (upperCaseAlphabet_) {
                         list.add(c);
                     }
                 } else if (!Character.isISOControl(i)
