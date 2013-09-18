@@ -16,12 +16,20 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
@@ -386,9 +394,75 @@ public class LineReaderTest {
         r.close();
     }
 
+    @Test
+    public void iterateLine1() throws Throwable {
+        // ## Arrange ##
+        final LineReader r = create(LineSeparator.CR, "a1", "a2", "a3", "a4");
+
+        // ## Act ##
+        final Iterator<Line> it = r.iterator();
+
+        // ## Assert ##
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next().getBody(), is("a1"));
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next().getBody(), is("a2"));
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next().getBody(), is("a3"));
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next().getBody(), is("a4"));
+        assertThat(it.hasNext(), is(false));
+        r.close();
+    }
+
+    @Test
+    public void iterateLine2() throws Throwable {
+        // ## Arrange ##
+        final LineReader r = create(LineSeparator.CRLF, "a1", "a2", "a3");
+
+        // ## Act ##
+        final Iterator<Line> it = r.iterator();
+
+        // ## Assert ##
+        assertThat(it.next().getBody(), is("a1"));
+        assertThat(it.next().getBody(), is("a2"));
+        assertThat(it.next().getBody(), is("a3"));
+        try {
+            it.next();
+            fail();
+        } catch (final NoSuchElementException e) {
+        }
+        r.close();
+    }
+
+    @Test
+    public void foreachLine1() throws Throwable {
+        // ## Arrange ##
+        final LineReader r = create(LineSeparator.CRLF, "a1", "a2", "a3");
+
+        // ## Act ##
+        // ## Assert ##
+        final List<String> strs = new ArrayList<String>();
+        for (final Line line : r) {
+            strs.add(line.getBody());
+        }
+        assertThat(strs, is(Arrays.asList("a1", "a2", "a3")));
+        assertThat(r.isClosed(), is(false));
+        r.close();
+    }
+
     private LineReader create(final String in) {
         final Readable readable = new StringReader(in);
         return new LineReader(readable);
+    }
+
+    private LineReader create(final LineSeparator sep, final String... lines) {
+        final StringBuilder sb = new StringBuilder();
+        for (final String line : lines) {
+            sb.append(line);
+            sb.append(sep.getSeparator());
+        }
+        return create(sb.toString());
     }
 
 }
