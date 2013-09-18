@@ -160,6 +160,20 @@ public class FileOperation {
         }
     }
 
+    public List<String> readLines(final File file) {
+        final BufferedReader reader = openBufferedReader(file);
+        final LineReader lineReader = new LineReader(reader);
+        try {
+            final List<String> list = new ArrayList<String>();
+            for (final Line line : lineReader) {
+                list.add(line.getBody());
+            }
+            return list;
+        } finally {
+            CloseableUtil.closeNoException(lineReader);
+        }
+    }
+
     public byte[] readAsBytes(final File file) {
         final BufferedInputStream is = openBufferedInputStream(file);
         try {

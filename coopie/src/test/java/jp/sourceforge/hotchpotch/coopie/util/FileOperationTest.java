@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -605,6 +606,26 @@ public class FileOperationTest {
             logger.debug(e.getMessage());
         }
         assertEquals(true, from.exists());
+    }
+
+    @Test
+    public void readLines() throws Throwable {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File f = files.createFile(root, "f1.txt");
+
+        final StringBuilder sb = new StringBuilder();
+        sb.append("abcde").append(LineSeparator.CRLF.getSeparator());
+        sb.append("ABC").append(LineSeparator.LF.getSeparator());
+        sb.append("23").append(LineSeparator.CR.getSeparator());
+        sb.append("34567").append(LineSeparator.CRLF.getSeparator());
+        final String text = sb.toString();
+        files.write(f, text);
+
+        // ## Act ##
+        // ## Assert ##
+        final List<String> lines = files.readLines(f);
+        assertThat(lines, is(Arrays.asList("abcde", "ABC", "23", "34567")));
     }
 
     /*
