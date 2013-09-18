@@ -17,6 +17,7 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -145,7 +146,11 @@ public class RandomString {
          * 2を10で割る ... 商:0, 剰余:2
          */
         public String toString(final int intValue) {
-            BigDecimal quotient = BigDecimal.valueOf(intValue);
+            return toString(BigInteger.valueOf(intValue));
+        }
+
+        public String toString(final BigInteger value) {
+            BigDecimal quotient = new BigDecimal(value);
             BigDecimal remainder = null;
             final BigDecimal radix = BigDecimal.valueOf(radix_);
             final StringBuilder sb = new StringBuilder();
@@ -162,6 +167,7 @@ public class RandomString {
             sb.reverse();
             return sb.toString();
         }
+
     }
 
 }

@@ -20,6 +20,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+
+import java.math.BigInteger;
+
 import jp.sourceforge.hotchpotch.coopie.util.RandomString.AsciiCodeBlock;
 import jp.sourceforge.hotchpotch.coopie.util.RandomString.CustomRadixString;
 
@@ -122,6 +125,8 @@ public class RandomStringTest {
         assertThat(r.toString(5), is("5"));
         assertThat(r.toString(10), is("10"));
         assertThat(r.toString(2003), is("2003"));
+        assertThat(r.toString(new BigInteger("9876543210987654321098765")),
+                is("9876543210987654321098765"));
     }
 
     @Test
