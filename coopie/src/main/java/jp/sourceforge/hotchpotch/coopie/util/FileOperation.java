@@ -124,7 +124,11 @@ public class FileOperation {
     }
 
     public void write(final File file, final String text) {
-        final Writer writer = openBufferedWriter(file);
+        write(file, text, charset_);
+    }
+
+    public void write(final File file, final String text, final Charset charset) {
+        final Writer writer = openBufferedWriter(file, charset);
         try {
             writer.write(text);
         } catch (final IOException e) {
@@ -205,7 +209,14 @@ public class FileOperation {
     }
 
     public BufferedWriter openBufferedWriter(final File file) {
-        final OutputStreamWriter osw = openOutputStreamWriter(file);
+        final OutputStreamWriter osw = openOutputStreamWriter(file, charset_);
+        final BufferedWriter writer = new BufferedWriter(osw, bufferSize_);
+        return writer;
+    }
+
+    public BufferedWriter openBufferedWriter(final File file,
+            final Charset charset) {
+        final OutputStreamWriter osw = openOutputStreamWriter(file, charset);
         final BufferedWriter writer = new BufferedWriter(osw, bufferSize_);
         return writer;
     }
@@ -216,9 +227,10 @@ public class FileOperation {
         return reader;
     }
 
-    private OutputStreamWriter openOutputStreamWriter(final File file) {
+    private OutputStreamWriter openOutputStreamWriter(final File file,
+            final Charset charset) {
         final FileOutputStream fos = openOutputStream(file);
-        final OutputStreamWriter osw = new OutputStreamWriter(fos, charset_);
+        final OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
         return osw;
     }
 
