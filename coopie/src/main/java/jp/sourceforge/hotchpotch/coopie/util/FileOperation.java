@@ -51,16 +51,14 @@ public class FileOperation {
     private static final int K = 1024;
     private static final int M = K * 1024;
     private static final int DEFAULT_BUFF_SIZE = K * 8;
-    private static final String UTF8 = "UTF-8";
     // FileOPeration
     private String prefix_ = "fop";
     private String suffix_ = ".tmp";
     private int bufferSize_ = DEFAULT_BUFF_SIZE;
-    private Charset charset_;
+    private Charset charset_ = IOUtil.getUTF8Charset();
     private final BinaryStreamOperation binaryStreams_ = new BinaryStreamOperation();
 
     public FileOperation() {
-        setEncoding(UTF8);
     }
 
     public File createTempFile() {

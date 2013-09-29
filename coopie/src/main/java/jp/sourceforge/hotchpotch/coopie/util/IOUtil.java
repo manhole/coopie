@@ -16,6 +16,8 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import java.nio.charset.Charset;
+
 public class IOUtil {
 
     public static final char CR = '\r';
@@ -23,12 +25,21 @@ public class IOUtil {
     public static final String CR_S = Character.toString(CR);
     public static final String LF_S = Character.toString(LF);
     public static final String CRLF = CR_S + LF_S;
+    private static final String UTF8 = "UTF-8";
+    private static final Charset UTF8CHARSET;
+    private static final String LINE_SEPARATOR;
 
-    private static final String LINE_SEPARATOR = System
-            .getProperty("line.separator");
+    static {
+        LINE_SEPARATOR = System.getProperty("line.separator");
+        UTF8CHARSET = Charset.forName(UTF8);
+    }
 
     public static String getSystemLineSeparator() {
         return LINE_SEPARATOR;
+    }
+
+    public static Charset getUTF8Charset() {
+        return UTF8CHARSET;
     }
 
 }
