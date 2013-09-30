@@ -100,10 +100,9 @@ subprojects { project ->
 					 * 2. optionalを指定できない。
 					 * 3. excludeを指定できない。
 					 */
-					def NodeList children = asNode().children()
-					def Node dependencies = children.find { node ->
-						node.name().localPart == "dependencies"
-					}
+					def Node projectNode = asNode()
+					def NodeList children = projectNode.children()
+					def Node dependencies = projectNode.dependencies[0]
 
 					def projectDependencies = [:]
 					// compileとtestCompileを対象にしているが、maven-publishが作成するpomはcompileだけのようだ。
