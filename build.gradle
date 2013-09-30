@@ -100,9 +100,6 @@ subprojects { project ->
 					 * 2. optionalを指定できない。
 					 * 3. excludeを指定できない。
 					 */
-					def Node projectNode = asNode()
-					def NodeList children = projectNode.children()
-					def Node dependencies = projectNode.dependencies[0]
 
 					def projectDependencies = [:]
 					// compileとtestCompileを対象にしているが、maven-publishが作成するpomはcompileだけのようだ。
@@ -115,6 +112,8 @@ subprojects { project ->
 						}
 					}
 
+					def Node projectNode = asNode()
+					def Node dependencies = projectNode.dependencies[0]
 					dependencies.each { Node dependency ->
 						assert dependency.name().localPart == "dependency"
 						//// NodeListが返るので添字0でNodeを取得する
@@ -152,7 +151,9 @@ subprojects { project ->
 					}
 
 					// http://maven.apache.org/ref/3.0.5/maven-model/maven.html
-					children.last() + {
+					// dependenciesの前(versionの後ろ)へ追加したい
+					def Node versionNode = projectNode.version[0]
+					versionNode + {
 						resolveStrategy = Closure.DELEGATE_FIRST
 
 						packaging "jar"
