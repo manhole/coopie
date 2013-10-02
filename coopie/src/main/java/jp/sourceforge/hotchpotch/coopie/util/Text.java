@@ -109,7 +109,13 @@ public class Text {
     }
 
     public Text convertLineSeparator(final LineSeparator lineSeparator) {
-        final LineReadable reader = new LineReader(new StringReader(rawText_));
+        final String s = convertLineSeparator0(rawText_, lineSeparator);
+        return instantiate(s);
+    }
+
+    private static String convertLineSeparator0(final String s,
+            final LineSeparator lineSeparator) {
+        final LineReadable reader = new LineReader(new StringReader(s));
         final StringBuilder sb = new StringBuilder();
         try {
             for (final Line line : reader) {
@@ -121,7 +127,7 @@ public class Text {
         } finally {
             CloseableUtil.closeNoException(reader);
         }
-        return instantiate(sb.toString());
+        return sb.toString();
     }
 
     public Text trim(final TrimStrategy trimStrategy) {
