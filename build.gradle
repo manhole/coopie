@@ -10,7 +10,7 @@ allprojects { project ->
 
 	repositories {
 		mavenCentral()
-		mavenRepo url: "http://hotchpotch.sourceforge.jp/maven2/release"
+		maven { url "http://hotchpotch.sourceforge.jp/maven2/release" }
 	}
 
 	apply plugin: "eclipse"
