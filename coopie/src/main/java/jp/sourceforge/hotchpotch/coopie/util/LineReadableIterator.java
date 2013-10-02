@@ -25,7 +25,7 @@ import org.t2framework.commons.exception.IORuntimeException;
 class LineReadableIterator implements Iterator<Line> {
 
     private final LineReadable reader_;
-    private Line next;
+    private Line next_;
 
     LineReadableIterator(final LineReadable reader) {
         reader_ = reader;
@@ -33,10 +33,10 @@ class LineReadableIterator implements Iterator<Line> {
 
     @Override
     public boolean hasNext() {
-        if (next == null) {
-            next = readLine();
+        if (next_ == null) {
+            next_ = readLine();
         }
-        if (next != null) {
+        if (next_ != null) {
             return true;
         }
         return false;
@@ -44,9 +44,9 @@ class LineReadableIterator implements Iterator<Line> {
 
     @Override
     public Line next() {
-        if (next != null) {
-            final Line t = next;
-            next = null;
+        if (next_ != null) {
+            final Line t = next_;
+            next_ = null;
             return t;
         }
         final Line t = readLine();
