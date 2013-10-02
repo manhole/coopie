@@ -16,7 +16,10 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -183,6 +186,35 @@ public class TextTest {
             assertEquals("𠮷野", Text.substring(s, 0, 2));
             assertEquals("野家", Text.substring(s, 1, 3));
         }
+    }
+
+    @Test
+    public void convertLineSeparator1() throws Throwable {
+        final String in = "1234\n56\n\n78\n";
+        final String expectedCrlf = "1234\r\n56\r\n\r\n78\r\n";
+        final String expectedCr = "1234\r56\r\r78\r";
+
+        final Text text = new Text(in);
+        final Text converted1 = text.convertLineSeparator(LineSeparator.CRLF);
+        assertThat(converted1.toString(), is(expectedCrlf));
+        assertThat(converted1.toString(), is(not(in)));
+
+        final Text converted2 = text.convertLineSeparator(LineSeparator.CR);
+        assertThat(converted2.toString(), is(expectedCr));
+        assertThat(converted2.toString(), is(not(in)));
+
+        final Text converted3 = converted1
+                .convertLineSeparator(LineSeparator.CR);
+        assertThat(converted3.toString(), is(converted2.toString()));
+    }
+
+    @Test
+    public void convertLineSeparator2() throws Throwable {
+        final String in = "1234";
+
+        final Text text = new Text(in);
+        final Text converted1 = text.convertLineSeparator(LineSeparator.CRLF);
+        assertThat(converted1.toString(), is(in));
     }
 
 }

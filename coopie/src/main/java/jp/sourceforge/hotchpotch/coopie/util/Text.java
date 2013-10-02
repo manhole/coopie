@@ -108,6 +108,22 @@ public class Text {
         return false;
     }
 
+    public Text convertLineSeparator(final LineSeparator lineSeparator) {
+        final LineReadable reader = new LineReader(new StringReader(rawText_));
+        final StringBuilder sb = new StringBuilder();
+        try {
+            for (final Line line : reader) {
+                sb.append(line.getBody());
+                if (line.getSeparator() != LineSeparator.NONE) {
+                    sb.append(lineSeparator.getSeparator());
+                }
+            }
+        } finally {
+            CloseableUtil.closeNoException(reader);
+        }
+        return instantiate(sb.toString());
+    }
+
     public Text trim(final TrimStrategy trimStrategy) {
         final String trim = trim0(rawText_, trimStrategy);
         return instantiate(trim);
