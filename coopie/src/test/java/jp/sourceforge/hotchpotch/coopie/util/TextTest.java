@@ -226,8 +226,26 @@ public class TextTest {
         assertThat(converted1.toString(), is("1234 56 78 "));
     }
 
+    /*
+     * 160(0xA0)はspace
+     * 
+     * ASCII 文字セット (128 ～ 255)
+     * http://msdn.microsoft.com/ja-jp/library/cc392379.aspx
+     * ASCII 文字セット (128 ～ 255) | VBScript関数リファレンス
+     * http://www.kanaya440.com/contents/script/vbs/others/ascii2.html
+     */
     @Test
     public void compactSpace2() throws Throwable {
+        final char c = 160;
+        final String in = "1234\n56\r\n" + c + " \n78\n";
+
+        final Text text = new Text(in);
+        final Text converted1 = text.compactSpace();
+        assertThat(converted1.toString(), is("1234 56 78 "));
+    }
+
+    @Test
+    public void compactSpace3() throws Throwable {
         final String in = "1234";
 
         final Text text = new Text(in);

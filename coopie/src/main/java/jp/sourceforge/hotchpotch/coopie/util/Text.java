@@ -184,7 +184,7 @@ public class Text {
         final StringBuilder sb = new StringBuilder();
         final char[] chars = rawText_.toCharArray();
         for (final char ch : chars) {
-            if (Character.isWhitespace(ch)) {
+            if (Character.isWhitespace(ch) || ch == 0xA0) {
                 if (!occur) {
                     occur = true;
                 }
