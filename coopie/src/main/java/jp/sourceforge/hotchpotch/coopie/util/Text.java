@@ -179,6 +179,31 @@ public class Text {
         return substring;
     }
 
+    public Text compactSpace() {
+        boolean occur = false;
+        final StringBuilder sb = new StringBuilder();
+        final char[] chars = rawText_.toCharArray();
+        for (final char ch : chars) {
+            if (Character.isWhitespace(ch)) {
+                if (!occur) {
+                    occur = true;
+                }
+            } else {
+                if (occur) {
+                    occur = false;
+                    sb.append(' ');
+                }
+                sb.append(ch);
+            }
+        }
+        if (occur) {
+            occur = false;
+            sb.append(' ');
+        }
+        final String s = sb.toString();
+        return instantiate(s);
+    }
+
     @Override
     public String toString() {
         return getRawText();

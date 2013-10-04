@@ -217,4 +217,22 @@ public class TextTest {
         assertThat(converted1.toString(), is(in));
     }
 
+    @Test
+    public void compactSpace1() throws Throwable {
+        final String in = "1234\n56\r\n \n78\n";
+
+        final Text text = new Text(in);
+        final Text converted1 = text.compactSpace();
+        assertThat(converted1.toString(), is("1234 56 78 "));
+    }
+
+    @Test
+    public void compactSpace2() throws Throwable {
+        final String in = "1234";
+
+        final Text text = new Text(in);
+        final Text converted1 = text.compactSpace();
+        assertThat(converted1.toString(), is(in));
+    }
+
 }
