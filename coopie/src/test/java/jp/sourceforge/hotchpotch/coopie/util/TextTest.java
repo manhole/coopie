@@ -27,9 +27,6 @@ public class TextTest {
 
     @Test
     public void trim1() throws Throwable {
-        // ## Arrange ##
-        // ## Act ##
-        // ## Assert ##
         assertEquals("abc", new Text(" abc ").trimWhitespace().toString());
         assertEquals("abc", new Text("abc ").trimWhitespace().toString());
         assertEquals("abc", new Text(" abc").trimWhitespace().toString());
@@ -37,17 +34,21 @@ public class TextTest {
         assertEquals("abc", new Text(" 　abc　　").trimWhitespace().toString());
         assertEquals("abc　 def", new Text(" 　abc　 def　\r\n\t").trimWhitespace()
                 .toString());
+        final char c = 0xA0;
+        assertEquals("abc　 " + c + "def", new Text(" 　abc　 " + c + "def　\r\n"
+                + c + "\t").trimWhitespace().toString());
     }
 
     @Test
     public void trim2() throws Throwable {
-        // ## Arrange ##
-        // ## Act ##
-        // ## Assert ##
-        // String相当
+        // String#trim()相当
         assertEquals("abc　", new Text(" abc　 ").trim(Text.STANDARD).toString());
         // 全角スペースも対象
         assertEquals("abc", new Text(" abc　 ").trim(Text.WHITESPACE).toString());
+        // 160(0xA0)も対象
+        final char c = 0xA0;
+        assertEquals("abc", new Text(" abc　 " + c).trim(Text.WHITESPACE)
+                .toString());
     }
 
     @Test

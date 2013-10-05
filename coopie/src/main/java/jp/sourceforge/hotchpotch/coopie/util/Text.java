@@ -184,7 +184,7 @@ public class Text {
         final StringBuilder sb = new StringBuilder();
         final char[] chars = rawText_.toCharArray();
         for (final char ch : chars) {
-            if (Character.isWhitespace(ch) || ch == 0xA0) {
+            if (WHITESPACE.isTrim(ch)) {
                 if (!occur) {
                     occur = true;
                 }
@@ -268,7 +268,7 @@ public class Text {
     public static TrimStrategy WHITESPACE = new TrimStrategy() {
         @Override
         public boolean isTrim(final char c) {
-            return Character.isWhitespace(c);
+            return Character.isWhitespace(c) || c == 0xA0;
         }
     };
 
