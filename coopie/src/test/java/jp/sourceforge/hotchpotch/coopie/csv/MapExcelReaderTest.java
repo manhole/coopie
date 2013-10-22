@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
 import org.t2framework.commons.util.ResourceUtil;
 
@@ -48,6 +50,22 @@ public class MapExcelReaderTest {
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null
                     && 0 < npe.getMessage().length());
+        }
+    }
+
+    @Test
+    public void read_open_invalidStream() throws Throwable {
+        // ## Arrange ##
+        final MapExcelLayout<String> layout = new MapExcelLayout<String>();
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openReader(new ByteArrayInputStream("invalid_value"
+                    .getBytes()));
+            fail();
+        } catch (final IORuntimeException e) {
+            logger.debug(e.getMessage());
         }
     }
 
