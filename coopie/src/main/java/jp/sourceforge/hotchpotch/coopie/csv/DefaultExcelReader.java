@@ -71,6 +71,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
         public PoiReader(final InputStream is) {
             try {
                 workbook_ = new HSSFWorkbook(is);
+                closed_ = false;
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             } finally {
