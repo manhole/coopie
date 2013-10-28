@@ -20,39 +20,64 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> implements
-        ExcelInOut<Map<String, PROP>> {
+public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
 
-    @Override
+    @Deprecated
     public RecordReader<Map<String, PROP>> openReader(final InputStream is) {
-        if (is == null) {
-            throw new NullPointerException("is");
-        }
-
-        prepareOpen();
-        final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<Map<String, PROP>>(
-                getRecordDesc());
-        r.setWithHeader(isWithHeader());
-        r.setElementReaderHandler(getElementReaderHandler());
-
-        // TODO openで例外時にcloseすること
-        r.open(is);
-        return r;
+        return build().openReader(is);
     }
 
-    @Override
+    @Deprecated
     public RecordWriter<Map<String, PROP>> openWriter(final OutputStream os) {
-        if (os == null) {
-            throw new NullPointerException("os");
-        }
-
-        prepareOpen();
-        final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<Map<String, PROP>>(
-                getRecordDesc());
-        w.setWithHeader(isWithHeader());
-        // TODO openで例外時にcloseすること
-        w.open(os);
-        return w;
+        return build().openWriter(os);
     }
 
+    public ExcelInOut<Map<String, PROP>> build() {
+        prepareOpen();
+
+        final MapExcelInOut<PROP> obj = new MapExcelInOut<PROP>();
+        obj.recordDesc_ = getRecordDesc();
+        obj.withHeader_ = isWithHeader();
+        obj.elementReaderHandler_ = getElementReaderHandler();
+        return obj;
+    }
+
+    public static class MapExcelInOut<PROP> implements
+            ExcelInOut<Map<String, PROP>> {
+
+        private RecordDesc<Map<String, PROP>> recordDesc_;
+        private boolean withHeader_;
+        private ElementReaderHandler elementReaderHandler_;
+
+        @Override
+        public RecordReader<Map<String, PROP>> openReader(final InputStream is) {
+            if (is == null) {
+                throw new NullPointerException("is");
+            }
+
+            final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<Map<String, PROP>>(
+                    recordDesc_);
+            r.setWithHeader(withHeader_);
+            r.setElementReaderHandler(elementReaderHandler_);
+
+            // TODO openで例外時にcloseすること
+            r.open(is);
+            return r;
+        }
+
+        @Override
+        public RecordWriter<Map<String, PROP>> openWriter(final OutputStream os) {
+            if (os == null) {
+                throw new NullPointerException("os");
+            }
+
+            final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<Map<String, PROP>>(
+                    recordDesc_);
+            w.setWithHeader(withHeader_);
+            // TODO openで例外時にcloseすること
+            w.open(os);
+            return w;
+        }
+
+    }
 }
