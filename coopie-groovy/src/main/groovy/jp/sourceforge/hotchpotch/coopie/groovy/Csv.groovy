@@ -58,7 +58,7 @@ class Csv {
 
     void eachRecordAsMap(input, Closure c) {
         def layout = new MapCsvLayout(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator /*, quoteMode: quoteMode*/)
-        def recordReader = layout.openReader(input)
+        def recordReader = layout.build().openReader(input)
         def csvReader = new CsvRecordReader(reader: recordReader)
         csvReader.eachRecord(c)
     }
@@ -70,7 +70,7 @@ class Csv {
         layout.lineSeparator = elementSeparator
         layout.propertyAnnotationReader = new GroovyAnnotationReader()
         //layout.quoteMode = quoteMode;
-        def recordReader = layout.openReader(input)
+        def recordReader = layout.build().openReader(input)
         def csvReader = new CsvRecordReader(reader: recordReader)
         csvReader.eachRecord(c)
     }
