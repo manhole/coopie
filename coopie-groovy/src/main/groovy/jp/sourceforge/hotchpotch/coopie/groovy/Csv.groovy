@@ -30,6 +30,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.QuoteMode
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader
 import jp.sourceforge.hotchpotch.coopie.util.Annotations
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil
+import jp.sourceforge.hotchpotch.coopie.util.LineSeparator
 import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader
 
 class Csv {
@@ -73,6 +74,14 @@ class Csv {
         def recordReader = layout.build().openReader(input)
         def csvReader = new CsvRecordReader(reader: recordReader)
         csvReader.eachRecord(c)
+    }
+
+    void setLineSeparator(sep) {
+        if (sep instanceof LineSeparator) {
+            this.lineSeparator = ((LineSeparator)sep).separator
+        } else {
+            this.lineSeparator = sep
+        }
     }
 
     static class CsvReader {
