@@ -67,12 +67,7 @@ class Csv {
     }
 
     void eachRecordAsBean(input, beanClass, Closure c) {
-        def BeanCsvLayout layout = BeanCsvLayout.getInstance(beanClass)
-        layout.elementSeparator = elementSeparator
-        layout.quoteMark = quoteMark
-        layout.lineSeparator = lineSeparator
-        layout.propertyAnnotationReader = new GroovyAnnotationReader()
-        //layout.quoteMode = quoteMode;
+        BeanCsvLayout layout = createBeanCsvLayout(beanClass)
         def recordReader = layout.build().openReader(input)
         def csvReader = new CsvRecordReader(reader: recordReader)
         csvReader.eachRecord(c)
@@ -91,15 +86,10 @@ class Csv {
     }
 
     void withBeanWriter(output, beanClass, Closure c) {
-        def BeanCsvLayout layout = BeanCsvLayout.getInstance(beanClass)
-        layout.elementSeparator = elementSeparator
-        layout.lineSeparator = lineSeparator
-        layout.quoteMark = quoteMark
-        layout.quoteMode = quoteMode
-        layout.propertyAnnotationReader = new GroovyAnnotationReader()
+        BeanCsvLayout layout = createBeanCsvLayout(beanClass)
         def recordWriter = layout.build().openWriter(output)
         try {
-            def csvWriter = new CsvRecordWriter(writer: recordWriter);
+            def csvWriter = new CsvRecordWriter(writer: recordWriter)
             c(csvWriter)
         } finally {
             CloseableUtil.closeNoException(recordWriter)
@@ -112,6 +102,16 @@ class Csv {
         } else {
             this.lineSeparator = sep
         }
+    }
+
+    BeanCsvLayout createBeanCsvLayout(beanClass) {
+        def BeanCsvLayout layout = BeanCsvLayout.getInstance(beanClass)
+        layout.elementSeparator = elementSeparator
+        layout.lineSeparator = lineSeparator
+        layout.quoteMark = quoteMark
+        layout.quoteMode = quoteMode
+        layout.propertyAnnotationReader = new GroovyAnnotationReader()
+        layout
     }
 
     static class CsvReader {
