@@ -18,15 +18,15 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 
 import static org.junit.Assert.*
 
-import java.lang.annotation.Annotation
+import java.text.SimpleDateFormat
+import java.util.Date
 
+import jp.sourceforge.hotchpotch.coopie.csv.Converter
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumn
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultConverterRepository
 
 import org.junit.Test
-import org.t2framework.commons.meta.BeanDesc
-import org.t2framework.commons.meta.BeanDescFactory
-import org.t2framework.commons.meta.PropertyDesc
 
 class CsvReaderTest {
 
@@ -149,6 +149,28 @@ a2,, c2
         assert 1 == index
     }
 
+    // 
+    @Test
+    public void readAsBean_date() {
+        def input = new StringReader("""
+aa,bb
+a1,20131203T144302
+""".trim())
+
+        def repo = new DefaultConverterRepository()
+        repo.register(new DateConverter())
+        int index = -1
+        new Csv(converterRepository: repo).eachRecordAsBean(input, Bbb) { record ->
+            index++
+            //println record
+            if (index == 0) {
+                assert record.aa == "a1"
+                assert record.bb == new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").parse("2013/12/03 14:43:02.000")
+            }
+        }
+
+        assert 0 == index
+    }
     static class Aaa {
         @CsvColumn(label="AAA")
         String aa
@@ -156,6 +178,29 @@ a2,, c2
         String bb
         @CsvColumn(label="CCC")
         String ccc
+    }
+
+    static class Bbb {
+        @CsvColumn(label="aa")
+        String aa
+        @CsvColumn(label="bb")
+        Date bb
+    }
+
+    static class DateConverter implements Converter<Date, String> {
+        
+        def format = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
+
+        @Override
+        public String convertTo(Date from) {
+            return format.format(from)
+        }
+
+        @Override
+        public Date convertFrom(String from) {
+            return format.parse(from)
+        }
+
     }
 
 }

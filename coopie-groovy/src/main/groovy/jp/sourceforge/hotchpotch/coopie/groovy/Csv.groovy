@@ -19,6 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 import java.lang.annotation.Annotation
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvLayout
+import jp.sourceforge.hotchpotch.coopie.csv.ConverterRepository
 import jp.sourceforge.hotchpotch.coopie.csv.CsvElementInOut
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultCsvSetting
@@ -41,6 +42,8 @@ class Csv {
     char quoteMark = CsvSetting.DOUBLE_QUOTE
     String lineSeparator = CsvSetting.CRLF
     QuoteMode quoteMode = QuoteMode.ALWAYS_EXCEPT_NULL
+    ConverterRepository converterRepository
+
     /*
      * param: String element
      * return: edited element
@@ -110,6 +113,9 @@ class Csv {
         layout.lineSeparator = lineSeparator
         layout.quoteMark = quoteMark
         layout.quoteMode = quoteMode
+        if (converterRepository) {
+            layout.converterRepository = converterRepository
+        }
         layout.propertyAnnotationReader = new GroovyAnnotationReader()
         layout
     }
