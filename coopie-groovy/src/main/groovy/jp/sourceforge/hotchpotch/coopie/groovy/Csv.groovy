@@ -27,6 +27,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter
 import jp.sourceforge.hotchpotch.coopie.csv.MapCsvLayout
 import jp.sourceforge.hotchpotch.coopie.csv.QuoteMode
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader
+import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter
 import jp.sourceforge.hotchpotch.coopie.util.Annotations
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil
 import jp.sourceforge.hotchpotch.coopie.util.LineSeparator
@@ -89,6 +90,22 @@ class Csv {
         }
     }
 
+    void withBeanWriter(output, beanClass, Closure c) {
+        def BeanCsvLayout layout = BeanCsvLayout.getInstance(beanClass)
+        layout.elementSeparator = elementSeparator
+        layout.lineSeparator = lineSeparator
+        layout.quoteMark = quoteMark
+        layout.quoteMode = quoteMode
+        layout.propertyAnnotationReader = new GroovyAnnotationReader()
+        def recordWriter = layout.build().openWriter(output)
+        try {
+            def csvWriter = new CsvRecordWriter(writer: recordWriter);
+            c(csvWriter)
+        } finally {
+            CloseableUtil.closeNoException(recordWriter)
+        }
+    }
+
     void setLineSeparator(sep) {
         if (sep instanceof LineSeparator) {
             this.lineSeparator = ((LineSeparator)sep).separator
@@ -136,6 +153,14 @@ class Csv {
             def arr = new String[line.size()]
             line.toArray(arr)
             writer.writeRecord(arr)
+            this
+        }
+    }
+
+    static class CsvRecordWriter {
+        RecordWriter writer
+        CsvRecordWriter leftShift(record) {
+            writer.write(record)
             this
         }
     }

@@ -19,6 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 import static org.junit.Assert.*
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.QuoteMode
+import jp.sourceforge.hotchpotch.coopie.groovy.CsvReaderTest.Aaa
 import jp.sourceforge.hotchpotch.coopie.groovy.util.TextAssert
 import jp.sourceforge.hotchpotch.coopie.util.LineSeparator
 
@@ -40,6 +41,22 @@ a1,b1,c1
 a2,, c2
 """
 
+        def ta = new TextAssert()
+        ta.assertText(expected, sw.toString())
+    }
+
+    @Test
+    public void writeByBean1() {
+        def sw = new StringWriter()
+        new Csv(elementSeparator: CsvSetting.COMMA, quoteMode: QuoteMode.MINIMUM, lineSeparator: LineSeparator.LF).withBeanWriter(sw, Aaa) { writer ->
+            writer << new Aaa(aa: "a1", bb: "b1", ccc: "c1")
+            writer << new Aaa(aa: "a2", ccc: " c2")
+        }
+
+        def expected = """AAA,BBB,CCC
+a1,b1,c1
+a2,, c2
+"""
         def ta = new TextAssert()
         ta.assertText(expected, sw.toString())
     }
