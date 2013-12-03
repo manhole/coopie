@@ -18,13 +18,12 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 
 import java.lang.annotation.Annotation
 
-import org.t2framework.commons.meta.PropertyDesc
-
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvLayout
 import jp.sourceforge.hotchpotch.coopie.csv.CsvElementInOut
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultCsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader
+import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter
 import jp.sourceforge.hotchpotch.coopie.csv.MapCsvLayout
 import jp.sourceforge.hotchpotch.coopie.csv.QuoteMode
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader
@@ -32,6 +31,8 @@ import jp.sourceforge.hotchpotch.coopie.util.Annotations
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil
 import jp.sourceforge.hotchpotch.coopie.util.LineSeparator
 import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader
+
+import org.t2framework.commons.meta.PropertyDesc
 
 class Csv {
 
@@ -76,6 +77,18 @@ class Csv {
         csvReader.eachRecord(c)
     }
 
+    void withWriter(output, Closure c) {
+        def setting = new DefaultCsvSetting(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator, quoteMode: quoteMode)
+        def io = new CsvElementInOut(setting)
+        def writer = io.openWriter(output)
+        try {
+            def csvWriter = new CsvWriter(writer:writer)
+            c(csvWriter)
+        } finally {
+            CloseableUtil.closeNoException(writer)
+        }
+    }
+
     void setLineSeparator(sep) {
         if (sep instanceof LineSeparator) {
             this.lineSeparator = ((LineSeparator)sep).separator
@@ -113,6 +126,17 @@ class Csv {
             } finally {
                 CloseableUtil.closeNoException(reader)
             }
+        }
+    }
+
+    static class CsvWriter {
+        ElementWriter writer
+
+        CsvWriter leftShift(List line) {
+            def arr = new String[line.size()]
+            line.toArray(arr)
+            writer.writeRecord(arr)
+            this
         }
     }
 
