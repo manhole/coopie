@@ -69,7 +69,7 @@ class Csv {
         def BeanCsvLayout layout = BeanCsvLayout.getInstance(beanClass)
         layout.elementSeparator = elementSeparator
         layout.quoteMark = quoteMark
-        layout.lineSeparator = elementSeparator
+        layout.lineSeparator = lineSeparator
         layout.propertyAnnotationReader = new GroovyAnnotationReader()
         //layout.quoteMode = quoteMode;
         def recordReader = layout.build().openReader(input)
