@@ -180,11 +180,11 @@ public class Rfc4180Reader implements ElementReader {
                         if (c == quoteMark_) {
                             // 閉じ候補クォートの手前位置を記録
                             rc.elemEnd = rc.pos;
-                            rc.state = State.QUOTE;
+                            rc.state = State.QUOTE_IN_QUOTED_ELEMENT;
                         }
                         break;
 
-                    case QUOTE:
+                    case QUOTE_IN_QUOTED_ELEMENT:
                         if (c == quoteMark_ && rc.elemEnd + 1 == rc.pos) {
                             /*
                              * 閉じ候補クォートの直後に再度クォート文字が登場した場合
@@ -284,7 +284,7 @@ public class Rfc4180Reader implements ElementReader {
                 }
 
                 break;
-            case QUOTE:
+            case QUOTE_IN_QUOTED_ELEMENT:
                 if (rb_.isInElement()) {
                     // クォートされていたら最後のspaceは除く
                     String elem = rc.body.substring(rc.fromPos, rc.elemEnd);
@@ -582,7 +582,7 @@ public class Rfc4180Reader implements ElementReader {
         /**
          * クォートされている要素の中でクォート文字が登場した状態
          */
-        QUOTE
+        QUOTE_IN_QUOTED_ELEMENT
 
     }
 
