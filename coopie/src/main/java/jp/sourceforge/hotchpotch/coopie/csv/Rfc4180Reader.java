@@ -276,7 +276,7 @@ public class Rfc4180Reader implements ElementReader {
                     if (rc.savedLines == null) {
                         rc.savedLines = CollectionsUtil.newArrayList();
                     }
-                    rc.savedLines.add(copyLine(rc.line));
+                    rc.savedLines.add(rc.line.createCopy());
                     continue read_loop;
                 }
 
@@ -401,12 +401,6 @@ public class Rfc4180Reader implements ElementReader {
             pushback_ = null;
         }
         return reader_.readLine();
-    }
-
-    private Line copyLine(final Line line) {
-        final Line l = new LineImpl(line.getBody(), line.getNumber(),
-                line.getSeparator());
-        return l;
     }
 
     @Override
