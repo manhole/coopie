@@ -285,16 +285,14 @@ public class Rfc4180Reader implements ElementReader {
 
                 break;
             case QUOTE_IN_QUOTED_ELEMENT:
-                if (rb_.isInElement()) {
-                    // クォートされていたら最後のspaceは除く
-                    String elem = rc.body.substring(rc.fromPos, rc.elemEnd);
-                    if (rc.elemBuff != null) {
-                        rc.elemBuff.append(elem);
-                        elem = rc.elemBuff.toString();
-                        rc.elemBuff = null;
-                    }
-                    rb_.endElement(elem);
+                // クォートされていたら最後のspaceは除く
+                String elem = rc.body.substring(rc.fromPos, rc.elemEnd);
+                if (rc.elemBuff != null) {
+                    rc.elemBuff.append(elem);
+                    elem = rc.elemBuff.toString();
+                    rc.elemBuff = null;
                 }
+                rb_.endElement(elem);
                 rb_.endRecord();
                 break;
             default:
