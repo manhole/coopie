@@ -23,7 +23,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-
 public class LineReader implements LineReadable {
 
     private static final char CR = IOUtil.CR;
@@ -122,29 +121,16 @@ public class LineReader implements LineReadable {
             for (; pos_ < length_;) {
                 final char c = buffer_[pos_];
                 pos_++;
-                if (c == CR) {
-                    if (length_ <= pos_) {
-                        if (0 < bodyLength) {
-                            if (bodyBuff == null) {
-                                bodyBuff = new StringBuilder();
-                            }
-                            bodyBuff.append(buffer_, bodyStartPos, bodyLength);
-                        }
-                        fill();
-                        if (eof_) {
-                            sep = LineSeparator.CR;
-                            break read_loop;
-                        }
-                        bodyStartPos = pos_;
-                        bodyLength = 0;
-                    }
-                    if (buffer_[pos_] == LF) {
+                if (sep == LineSeparator.CR) {
+                    if (c == LF) {
                         sep = LineSeparator.CRLF;
-                        pos_++;
                     } else {
-                        sep = LineSeparator.CR;
+                        pos_--;
                     }
                     break read_loop;
+                }
+                if (c == CR) {
+                    sep = LineSeparator.CR;
                 } else if (c == LF) {
                     sep = LineSeparator.LF;
                     break read_loop;
@@ -227,6 +213,7 @@ public class LineReader implements LineReadable {
         return lineSeparator_;
     }
 
+    @Override
     public Iterator<Line> iterator() {
         return new LineReadableIterator(this);
     }
