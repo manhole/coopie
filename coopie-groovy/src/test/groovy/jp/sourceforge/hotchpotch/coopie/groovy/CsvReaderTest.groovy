@@ -149,7 +149,6 @@ a2,, c2
         assert 1 == index
     }
 
-    // 
     @Test
     public void readAsBean_date() {
         def input = new StringReader("""
@@ -172,23 +171,23 @@ a1,20131203T144302
         assert 0 == index
     }
     static class Aaa {
-        @CsvColumn(label="AAA")
+        @CsvColumn(label="AAA", order=0)
         String aa
-        @CsvColumn(label="BBB")
+        @CsvColumn(label="BBB", order=1)
         String bb
-        @CsvColumn(label="CCC")
+        @CsvColumn(label="CCC", order=2)
         String ccc
     }
 
     static class Bbb {
-        @CsvColumn(label="aa")
+        @CsvColumn(label="aa", order=0)
         String aa
-        @CsvColumn(label="bb")
+        @CsvColumn(label="bb", order=1)
         Date bb
     }
 
     static class DateConverter implements Converter<Date, String> {
-        
+
         def format = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
 
         @Override
