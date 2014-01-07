@@ -246,6 +246,33 @@ public class LineReaderTest {
     }
 
     /*
+     * CRとLFの間でbufferが切り替わる場合
+     */
+    @Test
+    public void readLineBody5() throws Throwable {
+        // ## Arrange ##
+        final Readable readable = new StringReader("012345\r\n6789");
+        final LineReader r = new LineReader(readable, 7);
+
+        // ## Act ##
+        // ## Assert ##
+        {
+            final String line = r.readLineBody();
+            assertEquals("012345", line);
+            assertEquals(1, r.getLineNumber());
+            assertEquals(LineSeparator.CRLF, r.getLineSeparator());
+        }
+        {
+            final String line = r.readLineBody();
+            assertEquals("6789", line);
+            assertEquals(2, r.getLineNumber());
+            assertEquals(LineSeparator.NONE, r.getLineSeparator());
+        }
+
+        r.close();
+    }
+
+    /*
      * 空文字
      * 
      * BufferedReaderの振る舞いに合わせる。
