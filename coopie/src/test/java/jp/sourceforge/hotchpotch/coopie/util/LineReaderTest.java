@@ -247,9 +247,11 @@ public class LineReaderTest {
 
     /*
      * 空文字
+     * 
+     * BufferedReaderの振る舞いに合わせる。
      */
     @Test
-    public void readLineBody5() throws Throwable {
+    public void readLineBody_empty() throws Throwable {
         // ## Arrange ##
         final LineReader r = create("");
         assertEquals(0, r.getLineNumber());
@@ -273,7 +275,7 @@ public class LineReaderTest {
      * スペースのみ
      */
     @Test
-    public void readLineBody6() throws Throwable {
+    public void readLineBody_space() throws Throwable {
         // ## Arrange ##
         final LineReader r = create(" ");
         assertEquals(0, r.getLineNumber());
