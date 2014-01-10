@@ -1,3 +1,26 @@
+0.3.1 2014/XX/XX
+
+- add class: RandomString
+- LineReadableをIterable<Line>にしました。
+- add method: FileOperation#readLines
+- FileOperation: メソッド単位でCharsetを指定してwriteできるようにしました。
+- add method: Text#compactSpace, Text#convertLineSeparator
+- Text#trimWhitespace: 160(0xA0)をtrim対象にしました。
+- BeanCsvLayoutなどがRecordInOutをimplementsするのを廃止ました。
+- add method: Line#createCopy
+
+groovy:
+- Csv: lineSeparatorプロパティをLineSeparator型でも指定できるようにしました。
+- Csv: converterを指定できるようにしました。
+- add method: Csv#withWriter(output)
+- add method: Csv#withBeanWriter
+- Csv#eachRecord: CSV要素をclosure引数に展開して受け取れるようにしました。
+
+misc:
+- ビルドに使用するgradleのバージョンを変更しました: 1.6 -> 1.8
+- gradle 1.7でのmaven-publishエラーに対応ました。
+
+
 0.3.0 2013/07/29
 
 - gradleのmultiproject構成にしました。maven2(maven3)のpom.xmlは廃止しました。
