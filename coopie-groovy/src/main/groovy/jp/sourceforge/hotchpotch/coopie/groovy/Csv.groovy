@@ -126,23 +126,39 @@ class Csv {
 
         void eachRecord(Closure c) {
             int paramCount = c.getMaximumNumberOfParameters()
+            if (paramCount == 1) {
+                _eachRecordWithArray(c)
+            } else {
+                _eachRecordWithList(c, (0..paramCount-1))
+            }
+        }
+
+        private void _eachRecordWithArray(Closure c) {
             try {
                 def String[] record
                 while ((record = reader_.readRecord()) != null) {
                     record = record.collect(elementEditor_)
-                    if (1 < paramCount) {
-                        def args = []
-                        (0..paramCount-1).step(1) { i ->
-                            if (i < record.length) {
-                                args << record[i]
-                            } else {
-                                args << null
-                            }
+                    c.call(record)
+                }
+            } finally {
+                CloseableUtil.closeNoException(reader_)
+            }
+        }
+
+        private void _eachRecordWithList(Closure c, Range range) {
+            try {
+                def String[] record
+                while ((record = reader_.readRecord()) != null) {
+                    record = record.collect(elementEditor_)
+                    def args = []
+                    range.step(1) { i ->
+                        if (i < record.length) {
+                            args << record[i]
+                        } else {
+                            args << null
                         }
-                        c.call(args)
-                    } else {
-                        c.call(record)
                     }
+                    c.call(args)
                 }
             } finally {
                 CloseableUtil.closeNoException(reader_)
