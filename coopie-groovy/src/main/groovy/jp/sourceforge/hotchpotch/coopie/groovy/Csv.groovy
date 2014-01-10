@@ -125,11 +125,24 @@ class Csv {
         private Closure elementEditor_
 
         void eachRecord(Closure c) {
+            int paramCount = c.getMaximumNumberOfParameters()
             try {
                 def String[] record
                 while ((record = reader_.readRecord()) != null) {
                     record = record.collect(elementEditor_)
-                    c(record)
+                    if (1 < paramCount) {
+                        def args = []
+                        (0..paramCount-1).step(1) { i ->
+                            if (i < record.length) {
+                                args << record[i]
+                            } else {
+                                args << null
+                            }
+                        }
+                        c.call(args)
+                    } else {
+                        c.call(record)
+                    }
                 }
             } finally {
                 CloseableUtil.closeNoException(reader_)

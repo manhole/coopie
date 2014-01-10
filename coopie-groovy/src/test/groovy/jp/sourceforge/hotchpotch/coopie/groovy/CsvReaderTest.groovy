@@ -78,6 +78,31 @@ a2,, c2
         assert 2 == index
     }
 
+    /*
+     * CSV要素を展開して受け取れる
+     */
+    @Test
+    public void read_record_expand() {
+        def input = new StringReader("""
+AAA,BBB,CCC
+a1,b1,c1
+a2,, c2
+""".trim())
+        int index = -1
+        new Csv().eachRecord(input) { r1, r2, r3 ->
+            index++
+            if (index == 0) {
+                assert ["AAA", "BBB", "CCC"]== [r1, r2, r3]
+            } else if (index == 1) {
+                assert ["a1", "b1", "c1"]== [r1, r2, r3]
+            } else if (index == 2) {
+                assert ["a2", "", " c2"]== [r1, r2, r3]
+            }
+        }
+
+        assert 2 == index
+    }
+
     // 空白をtrimする
     @Test
     public void readTrim1() {
