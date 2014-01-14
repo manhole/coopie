@@ -82,7 +82,7 @@ a2,, c2
      * CSV要素を展開して受け取れる
      */
     @Test
-    public void read_record_expand() {
+    public void read_record_expand1() {
         def input = new StringReader("""
 AAA,BBB,CCC
 a1,b1,c1
@@ -97,6 +97,31 @@ a2,, c2
                 assert ["a1", "b1", "c1"]== [r1, r2, r3]
             } else if (index == 2) {
                 assert ["a2", "", " c2"]== [r1, r2, r3]
+            }
+        }
+
+        assert 2 == index
+    }
+
+    /*
+     * CSV要素を展開して受け取る引数がCSV項目数より多い場合は、nullが渡される。
+     */
+    @Test
+    public void read_record_expand2() {
+        def input = new StringReader("""
+AAA,BBB,CCC
+a1,b1, 
+a2,, c2
+""".trim())
+        int index = -1
+        new Csv().eachRecord(input) { r1, r2, r3, r4 ->
+            index++
+            if (index == 0) {
+                assert ["AAA", "BBB", "CCC", null]== [r1, r2, r3, r4]
+            } else if (index == 1) {
+                assert ["a1", "b1", " ", null]== [r1, r2, r3, r4]
+            } else if (index == 2) {
+                assert ["a2", "", " c2", null]== [r1, r2, r3, r4]
             }
         }
 
