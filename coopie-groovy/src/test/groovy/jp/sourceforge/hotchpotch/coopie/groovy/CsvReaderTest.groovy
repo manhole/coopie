@@ -128,6 +128,31 @@ a2,, c2
         assert 2 == index
     }
 
+    /*
+     * CSV要素を展開して受け取る引数がCSV項目数より少ない場合は、後ろの項目は渡されない。
+     */
+    @Test
+    public void read_record_expand3() {
+        def input = new StringReader("""
+AAA,BBB,CCC
+a1,b1, 
+a2,, c2
+""".trim())
+        int index = -1
+        new Csv().eachRecord(input) { r1, r2 ->
+            index++
+            if (index == 0) {
+                assert ["AAA", "BBB"]== [r1, r2]
+            } else if (index == 1) {
+                assert ["a1", "b1"]== [r1, r2]
+            } else if (index == 2) {
+                assert ["a2", ""]== [r1, r2]
+            }
+        }
+
+        assert 2 == index
+    }
+
     // 空白をtrimする
     @Test
     public void readTrim1() {
