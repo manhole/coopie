@@ -126,8 +126,13 @@ class Csv {
 
         void eachRecord(Closure c) {
             int paramCount = c.getMaximumNumberOfParameters()
+
             if (paramCount == 1) {
-                _eachRecordWithArray(c)
+                if (CsvRecord.isAssignableFrom(c.parameterTypes[0])) {
+                    _eachRecordWithRecord(c)
+                } else {
+                    _eachRecordWithArray(c)
+                }
             } else {
                 _eachRecordWithList(c, (0..paramCount-1))
             }
@@ -145,6 +150,22 @@ class Csv {
             }
         }
 
+        private void _eachRecordWithRecord(Closure c) {
+            try {
+                def r = new CsvRecord()
+                int index = -1;
+                def String[] record
+                while ((record = reader_.readRecord()) != null) {
+                    index++
+                    record = record.collect(elementEditor_)
+                    r.elements = record
+                    r.index = index
+                    c.call(r)
+                }
+            } finally {
+                CloseableUtil.closeNoException(reader_)
+            }
+        }
         private void _eachRecordWithList(Closure c, Range range) {
             try {
                 def String[] record
@@ -197,6 +218,17 @@ class Csv {
         CsvRecordWriter leftShift(record) {
             writer.write(record)
             this
+        }
+    }
+
+    static class CsvRecord {
+        String[] elements
+        int index
+        String getAt(int index) {
+            return elements[index]
+        }
+        int length() {
+            return elements.length
         }
     }
 

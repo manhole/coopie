@@ -19,12 +19,12 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 import static org.junit.Assert.*
 
 import java.text.SimpleDateFormat
-import java.util.Date
 
 import jp.sourceforge.hotchpotch.coopie.csv.Converter
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumn
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultConverterRepository
+import jp.sourceforge.hotchpotch.coopie.groovy.Csv.CsvRecord
 
 import org.junit.Test
 
@@ -147,6 +147,28 @@ a2,, c2
                 assert ["a1", "b1"]== [r1, r2]
             } else if (index == 2) {
                 assert ["a2", ""]== [r1, r2]
+            }
+        }
+
+        assert 2 == index
+    }
+
+    @Test
+    public void read_record_asRecord() {
+        def input = new StringReader("""
+AAA,BBB,CCC
+a1,b1, 
+a2,, c2
+""".trim())
+        int index = -1
+        new Csv().eachRecord(input) { CsvRecord r ->
+            index++
+            if (r.index == 0) {
+                assert ["AAA", "BBB", "CCC"]== [r[0], r[1], r[2]]
+            } else if (index == 1) {
+                assert ["a1", "b1", " "]== [r[0], r[1], r[2]]
+            } else if (index == 2) {
+                assert ["a2", "", " c2"]== [r[0], r[1], r[2]]
             }
         }
 
