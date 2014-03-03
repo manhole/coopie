@@ -6,8 +6,9 @@
 - FileOperation: メソッド単位でCharsetを指定してwriteできるようにしました。
 - add method: Text#compactSpace, Text#convertLineSeparator
 - Text#trimWhitespace: 160(0xA0)をtrim対象にしました。
-- BeanCsvLayoutなどがRecordInOutをimplementsするのを廃止ました。
+- BeanCsvLayoutなどがRecordInOutをimplementsするのを廃止し、buildメソッドでRecordInOutを返すように変更しました。
 - add method: Line#createCopy
+- ExcelToCsvで、日時型セル値を日時文字列としてcsvへ出力できるようにしました。(今まではシリアル値が出力されていた)
 
 groovy:
 - Csv: lineSeparatorプロパティをLineSeparator型でも指定できるようにしました。
