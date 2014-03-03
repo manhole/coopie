@@ -130,8 +130,8 @@ public class Text {
         return sb.toString();
     }
 
-    public Text trim(final TrimStrategy trimStrategy) {
-        final String trim = trim0(rawText_, trimStrategy);
+    public Text trim(final CharacterGroup chars) {
+        final String trim = trim0(rawText_, chars);
         return instantiate(trim);
     }
 
@@ -140,8 +140,8 @@ public class Text {
         return instantiate(trim);
     }
 
-    public static String trim(final String s, final TrimStrategy trimStrategy) {
-        return trim0(s, trimStrategy);
+    public static String trim(final String s, final CharacterGroup chars) {
+        return trim0(s, chars);
     }
 
     public static String trimWhitespace(final String s) {
@@ -152,13 +152,13 @@ public class Text {
         return trim0(s, WHITESPACE);
     }
 
-    private static String trim0(final String s, final TrimStrategy trimStrategy) {
+    private static String trim0(final String s, final CharacterGroup chars) {
 
         final int len = s.length();
         int begin = 0;
         for (int i = 0; i < len; i++) {
             final char c = s.charAt(i);
-            if (trimStrategy.isTrim(c)) {
+            if (chars.contains(c)) {
                 begin++;
             } else {
                 break;
@@ -168,7 +168,7 @@ public class Text {
         int end = len;
         for (int i = len - 1; begin < i; i--) {
             final char c = s.charAt(i);
-            if (trimStrategy.isTrim(c)) {
+            if (chars.contains(c)) {
                 end--;
             } else {
                 break;
@@ -184,7 +184,7 @@ public class Text {
         final StringBuilder sb = new StringBuilder();
         final char[] chars = rawText_.toCharArray();
         for (final char ch : chars) {
-            if (WHITESPACE.isTrim(ch)) {
+            if (WHITESPACE.contains(ch)) {
                 if (!occur) {
                     occur = true;
                 }
@@ -251,23 +251,23 @@ public class Text {
         return s;
     }
 
-    public interface TrimStrategy {
+    public interface CharacterGroup {
 
-        boolean isTrim(char c);
+        boolean contains(int c);
 
     }
 
-    public static TrimStrategy STANDARD = new TrimStrategy() {
+    public static CharacterGroup STANDARD_TRIM = new CharacterGroup() {
         @Override
-        public boolean isTrim(final char c) {
-            // java.lang.Stringと同じ
+        public boolean contains(final int c) {
+            // java.lang.String#trimと同じ
             return c <= ' ';
         }
     };
 
-    public static TrimStrategy WHITESPACE = new TrimStrategy() {
+    public static CharacterGroup WHITESPACE = new CharacterGroup() {
         @Override
-        public boolean isTrim(final char c) {
+        public boolean contains(final int c) {
             return Character.isWhitespace(c) || c == 0xA0;
         }
     };

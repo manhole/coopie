@@ -42,7 +42,8 @@ public class TextTest {
     @Test
     public void trim2() throws Throwable {
         // String#trim()相当
-        assertEquals("abc　", new Text(" abc　 ").trim(Text.STANDARD).toString());
+        assertEquals("abc　", new Text(" abc　 ").trim(Text.STANDARD_TRIM)
+                .toString());
         // 全角スペースも対象
         assertEquals("abc", new Text(" abc　 ").trim(Text.WHITESPACE).toString());
         // 160(0xA0)も対象
