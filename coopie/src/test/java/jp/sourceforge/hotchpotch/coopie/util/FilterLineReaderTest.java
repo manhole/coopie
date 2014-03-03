@@ -108,6 +108,7 @@ public class FilterLineReaderTest {
             count++;
         }
         assertThat(3, is(count));
+        rr.close();
     }
 
     private LineReader create(final String in) {
