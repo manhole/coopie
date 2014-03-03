@@ -55,8 +55,8 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(
+                FlAaaBean.class);
 
         // ## Act ##
         // ## Assert ##
