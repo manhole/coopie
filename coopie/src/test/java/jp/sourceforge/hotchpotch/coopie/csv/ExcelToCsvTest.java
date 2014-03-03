@@ -143,4 +143,30 @@ public class ExcelToCsvTest {
         csvAssert_.assertCsvEquals(expectedFile3, outFile3);
     }
 
+    @Test
+    public void test_date() throws Exception {
+        // ## Arrange ##
+        final File testFile = ResourceUtil.getResourceAsFile(
+                ExcelToCsvTest.class.getName() + "-date", "xls");
+        final File inFile = new File(rootDir, testFile.getName());
+        files.copy(testFile, inFile);
+
+        final File outFile = new File(inFile.getParentFile(),
+                "ExcelToCsvTest-date.tsv");
+        logger.debug("outFile={}", outFile);
+
+        files.delete(outFile);
+
+        // ## Act ##
+        final ExcelToCsv excelToCsv = new ExcelToCsv();
+        excelToCsv.writeTsv(inFile);
+
+        // ## Assert ##
+        assertEquals(true, outFile.exists());
+
+        final File expectedFile = ResourceUtil.getResourceAsFile(
+                ExcelToCsvTest.class.getName() + "-date-expected", "tsv");
+        csvAssert_.assertCsvEquals(expectedFile, outFile);
+    }
+
 }
