@@ -9,6 +9,7 @@
 - BeanCsvLayoutなどがRecordInOutをimplementsするのを廃止し、buildメソッドでRecordInOutを返すように変更しました。
 - add method: Line#createCopy
 - ExcelToCsvで、日時型セル値を日時文字列としてcsvへ出力できるようにしました。(今まではシリアル値が出力されていた)
+- rename: TrimStrategy -> CharacterGroup
 
 groovy:
 - Csv: lineSeparatorプロパティをLineSeparator型でも指定できるようにしました。
