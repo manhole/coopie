@@ -22,6 +22,8 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementEditor;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.PropertyBindingFactory;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
@@ -36,7 +38,7 @@ import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
 
 public class BeanFixedLengthLayout<BEAN> extends
-        AbstractFixedLengthLayout<BEAN> implements RecordInOut<BEAN> {
+        AbstractFixedLengthLayout<BEAN> {
 
     private final BeanDesc<BEAN> beanDesc_;
     private PropertyAnnotationReader propertyAnnotationReader_ = Annotations
@@ -53,37 +55,27 @@ public class BeanFixedLengthLayout<BEAN> extends
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
 
-    @Override
+    @Deprecated
     public RecordReader<BEAN> openReader(final Readable readable) {
-        if (readable == null) {
-            throw new NullPointerException("readable");
-        }
-
-        prepareOpen();
-        final RecordDesc<BEAN> rd = getRecordDesc();
-        final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(rd);
-        r.setWithHeader(isWithHeader());
-        r.setElementInOut(createElementInOut());
-        r.setElementEditor(getElementEditor());
-        // TODO openで例外時にcloseすること
-        r.open(readable);
-        return r;
+        return build().openReader(readable);
     }
 
-    @Override
+    @Deprecated
     public RecordWriter<BEAN> openWriter(final Appendable appendable) {
-        if (appendable == null) {
-            throw new NullPointerException("appendable");
-        }
+        return build().openWriter(appendable);
+    }
 
+    public RecordInOut<BEAN> build() {
         prepareOpen();
-        final RecordDesc<BEAN> rd = getRecordDesc();
-        final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(rd);
-        w.setWithHeader(isWithHeader());
-        w.setElementInOut(createElementInOut());
-        // TODO openで例外時にcloseすること
-        w.open(appendable);
-        return w;
+
+        final BeanFixedLengthRecordInOut<BEAN> obj = new BeanFixedLengthRecordInOut<BEAN>();
+        obj.recordDesc_ = getRecordDesc();
+        obj.withHeader_ = isWithHeader();
+        obj.elementInOut_ = createElementInOut();
+        // ある方が良いかな?
+        //obj.elementReaderHandler_ = getElementReaderHandler();
+        obj.elementEditor_ = getElementEditor();
+        return obj;
     }
 
     protected void prepareOpen() {
@@ -166,6 +158,46 @@ public class BeanFixedLengthLayout<BEAN> extends
     public void setPropertyAnnotationReader(
             final PropertyAnnotationReader propertyAnnotationReader) {
         propertyAnnotationReader_ = propertyAnnotationReader;
+    }
+
+    protected static class BeanFixedLengthRecordInOut<BEAN> implements
+            RecordInOut<BEAN> {
+
+        private RecordDesc<BEAN> recordDesc_;
+        private boolean withHeader_;
+        private ElementInOut elementInOut_;
+        private ElementEditor elementEditor_;
+
+        @Override
+        public RecordReader<BEAN> openReader(final Readable readable) {
+            if (readable == null) {
+                throw new NullPointerException("readable");
+            }
+
+            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(
+                    recordDesc_);
+            r.setWithHeader(withHeader_);
+            r.setElementInOut(elementInOut_);
+            r.setElementEditor(elementEditor_);
+            // TODO openで例外時にcloseすること
+            r.open(readable);
+            return r;
+        }
+
+        @Override
+        public RecordWriter<BEAN> openWriter(final Appendable appendable) {
+            if (appendable == null) {
+                throw new NullPointerException("appendable");
+            }
+
+            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(
+                    recordDesc_);
+            w.setWithHeader(withHeader_);
+            w.setElementInOut(elementInOut_);
+            // TODO openで例外時にcloseすること
+            w.open(appendable);
+            return w;
+        }
     }
 
 }
