@@ -18,7 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.io.IOException;
 
-public interface LineReadable extends Closable {
+public interface LineReadable extends Closable, Iterable<Line> {
 
     int getLineNumber();
 

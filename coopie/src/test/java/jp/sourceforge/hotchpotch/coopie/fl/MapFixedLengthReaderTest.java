@@ -53,6 +53,12 @@ public class MapFixedLengthReaderTest {
     public void read_open_null() throws Throwable {
         // ## Arrange ##
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
+            @Override
+            public void setup(final FixedLengthColumnSetup setup) {
+                setup.column("aaa", 0, 5);
+            }
+        });
 
         // ## Act ##
         // ## Assert ##

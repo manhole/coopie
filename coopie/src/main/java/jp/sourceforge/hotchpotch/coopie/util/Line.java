@@ -40,4 +40,6 @@ public interface Line {
 
     Line reinit(String body, int number, LineSeparator separator);
 
+    Line createCopy();
+
 }

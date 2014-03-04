@@ -34,6 +34,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.t2framework.commons.exception.IORuntimeException;
 
 public class BeanExcelReaderTest {
 
@@ -53,6 +54,23 @@ public class BeanExcelReaderTest {
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null
                     && 0 < npe.getMessage().length());
+        }
+    }
+
+    @Test
+    public void read_open_invalidStream() throws Throwable {
+        // ## Arrange ##
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
+                AaaBean.class);
+
+        // ## Act ##
+        // ## Assert ##
+        try {
+            layout.openReader(new ByteArrayInputStream("invalid_value"
+                    .getBytes()));
+            fail();
+        } catch (final IORuntimeException e) {
+            logger.debug(e.getMessage());
         }
     }
 

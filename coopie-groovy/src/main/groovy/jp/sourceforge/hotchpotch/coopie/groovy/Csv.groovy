@@ -18,19 +18,23 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 
 import java.lang.annotation.Annotation
 
-import org.t2framework.commons.meta.PropertyDesc
-
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvLayout
+import jp.sourceforge.hotchpotch.coopie.csv.ConverterRepository
 import jp.sourceforge.hotchpotch.coopie.csv.CsvElementInOut
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultCsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader
+import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter
 import jp.sourceforge.hotchpotch.coopie.csv.MapCsvLayout
 import jp.sourceforge.hotchpotch.coopie.csv.QuoteMode
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader
+import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter
 import jp.sourceforge.hotchpotch.coopie.util.Annotations
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil
+import jp.sourceforge.hotchpotch.coopie.util.LineSeparator
 import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader
+
+import org.t2framework.commons.meta.PropertyDesc
 
 class Csv {
 
@@ -38,6 +42,8 @@ class Csv {
     char quoteMark = CsvSetting.DOUBLE_QUOTE
     String lineSeparator = CsvSetting.CRLF
     QuoteMode quoteMode = QuoteMode.ALWAYS_EXCEPT_NULL
+    ConverterRepository converterRepository
+
     /*
      * param: String element
      * return: edited element
@@ -58,21 +64,60 @@ class Csv {
 
     void eachRecordAsMap(input, Closure c) {
         def layout = new MapCsvLayout(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator /*, quoteMode: quoteMode*/)
-        def recordReader = layout.openReader(input)
+        def recordReader = layout.build().openReader(input)
         def csvReader = new CsvRecordReader(reader: recordReader)
         csvReader.eachRecord(c)
     }
 
     void eachRecordAsBean(input, beanClass, Closure c) {
-        def BeanCsvLayout layout = BeanCsvLayout.getInstance(beanClass)
-        layout.elementSeparator = elementSeparator
-        layout.quoteMark = quoteMark
-        layout.lineSeparator = elementSeparator
-        layout.propertyAnnotationReader = new GroovyAnnotationReader()
-        //layout.quoteMode = quoteMode;
-        def recordReader = layout.openReader(input)
+        BeanCsvLayout layout = createBeanCsvLayout(beanClass)
+        def recordReader = layout.build().openReader(input)
         def csvReader = new CsvRecordReader(reader: recordReader)
         csvReader.eachRecord(c)
+    }
+
+    void withWriter(output, Closure c) {
+        def setting = new DefaultCsvSetting(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator, quoteMode: quoteMode)
+        def io = new CsvElementInOut(setting)
+        def writer = io.openWriter(output)
+        try {
+            def csvWriter = new CsvWriter(writer:writer)
+            c(csvWriter)
+        } finally {
+            CloseableUtil.closeNoException(writer)
+        }
+    }
+
+    void withBeanWriter(output, beanClass, Closure c) {
+        BeanCsvLayout layout = createBeanCsvLayout(beanClass)
+        def recordWriter = layout.build().openWriter(output)
+        try {
+            def csvWriter = new CsvRecordWriter(writer: recordWriter)
+            c(csvWriter)
+        } finally {
+            CloseableUtil.closeNoException(recordWriter)
+        }
+    }
+
+    void setLineSeparator(sep) {
+        if (sep instanceof LineSeparator) {
+            this.lineSeparator = ((LineSeparator)sep).separator
+        } else {
+            this.lineSeparator = sep
+        }
+    }
+
+    BeanCsvLayout createBeanCsvLayout(beanClass) {
+        def BeanCsvLayout layout = BeanCsvLayout.getInstance(beanClass)
+        layout.elementSeparator = elementSeparator
+        layout.lineSeparator = lineSeparator
+        layout.quoteMark = quoteMark
+        layout.quoteMode = quoteMode
+        if (converterRepository) {
+            layout.converterRepository = converterRepository
+        }
+        layout.propertyAnnotationReader = new GroovyAnnotationReader()
+        layout
     }
 
     static class CsvReader {
@@ -80,11 +125,61 @@ class Csv {
         private Closure elementEditor_
 
         void eachRecord(Closure c) {
+            int paramCount = c.getMaximumNumberOfParameters()
+
+            if (paramCount == 1) {
+                if (CsvRecord.isAssignableFrom(c.parameterTypes[0])) {
+                    _eachRecordWithRecord(c)
+                } else {
+                    _eachRecordWithArray(c)
+                }
+            } else {
+                _eachRecordWithList(c, (0..paramCount-1))
+            }
+        }
+
+        private void _eachRecordWithArray(Closure c) {
             try {
                 def String[] record
                 while ((record = reader_.readRecord()) != null) {
                     record = record.collect(elementEditor_)
-                    c(record)
+                    c.call(record)
+                }
+            } finally {
+                CloseableUtil.closeNoException(reader_)
+            }
+        }
+
+        private void _eachRecordWithRecord(Closure c) {
+            try {
+                def r = new CsvRecord()
+                int index = -1;
+                def String[] record
+                while ((record = reader_.readRecord()) != null) {
+                    index++
+                    record = record.collect(elementEditor_)
+                    r.elements = record
+                    r.index = index
+                    c.call(r)
+                }
+            } finally {
+                CloseableUtil.closeNoException(reader_)
+            }
+        }
+        private void _eachRecordWithList(Closure c, Range range) {
+            try {
+                def String[] record
+                while ((record = reader_.readRecord()) != null) {
+                    record = record.collect(elementEditor_)
+                    def args = []
+                    range.step(1) { i ->
+                        if (i < record.length) {
+                            args << record[i]
+                        } else {
+                            args << null
+                        }
+                    }
+                    c.call(args)
                 }
             } finally {
                 CloseableUtil.closeNoException(reader_)
@@ -104,6 +199,36 @@ class Csv {
             } finally {
                 CloseableUtil.closeNoException(reader)
             }
+        }
+    }
+
+    static class CsvWriter {
+        ElementWriter writer
+
+        CsvWriter leftShift(List line) {
+            def arr = new String[line.size()]
+            line.toArray(arr)
+            writer.writeRecord(arr)
+            this
+        }
+    }
+
+    static class CsvRecordWriter {
+        RecordWriter writer
+        CsvRecordWriter leftShift(record) {
+            writer.write(record)
+            this
+        }
+    }
+
+    static class CsvRecord {
+        String[] elements
+        int index
+        String getAt(int index) {
+            return elements[index]
+        }
+        int length() {
+            return elements.length
         }
     }
 

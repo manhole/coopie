@@ -18,15 +18,15 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 
 import static org.junit.Assert.*
 
-import java.lang.annotation.Annotation
+import java.text.SimpleDateFormat
 
+import jp.sourceforge.hotchpotch.coopie.csv.Converter
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumn
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultConverterRepository
+import jp.sourceforge.hotchpotch.coopie.groovy.Csv.CsvRecord
 
 import org.junit.Test
-import org.t2framework.commons.meta.BeanDesc
-import org.t2framework.commons.meta.BeanDescFactory
-import org.t2framework.commons.meta.PropertyDesc
 
 class CsvReaderTest {
 
@@ -72,6 +72,103 @@ a2,, c2
                 assert ["a1", "b1", "c1"]== record
             } else if (index == 2) {
                 assert ["a2", "", " c2"]== record
+            }
+        }
+
+        assert 2 == index
+    }
+
+    /*
+     * CSV要素を展開して受け取れる
+     */
+    @Test
+    public void read_record_expand1() {
+        def input = new StringReader("""
+AAA,BBB,CCC
+a1,b1,c1
+a2,, c2
+""".trim())
+        int index = -1
+        new Csv().eachRecord(input) { r1, r2, r3 ->
+            index++
+            if (index == 0) {
+                assert ["AAA", "BBB", "CCC"]== [r1, r2, r3]
+            } else if (index == 1) {
+                assert ["a1", "b1", "c1"]== [r1, r2, r3]
+            } else if (index == 2) {
+                assert ["a2", "", " c2"]== [r1, r2, r3]
+            }
+        }
+
+        assert 2 == index
+    }
+
+    /*
+     * CSV要素を展開して受け取る引数がCSV項目数より多い場合は、nullが渡される。
+     */
+    @Test
+    public void read_record_expand2() {
+        def input = new StringReader("""
+AAA,BBB,CCC
+a1,b1, 
+a2,, c2
+""".trim())
+        int index = -1
+        new Csv().eachRecord(input) { r1, r2, r3, r4 ->
+            index++
+            if (index == 0) {
+                assert ["AAA", "BBB", "CCC", null]== [r1, r2, r3, r4]
+            } else if (index == 1) {
+                assert ["a1", "b1", " ", null]== [r1, r2, r3, r4]
+            } else if (index == 2) {
+                assert ["a2", "", " c2", null]== [r1, r2, r3, r4]
+            }
+        }
+
+        assert 2 == index
+    }
+
+    /*
+     * CSV要素を展開して受け取る引数がCSV項目数より少ない場合は、後ろの項目は渡されない。
+     */
+    @Test
+    public void read_record_expand3() {
+        def input = new StringReader("""
+AAA,BBB,CCC
+a1,b1, 
+a2,, c2
+""".trim())
+        int index = -1
+        new Csv().eachRecord(input) { r1, r2 ->
+            index++
+            if (index == 0) {
+                assert ["AAA", "BBB"]== [r1, r2]
+            } else if (index == 1) {
+                assert ["a1", "b1"]== [r1, r2]
+            } else if (index == 2) {
+                assert ["a2", ""]== [r1, r2]
+            }
+        }
+
+        assert 2 == index
+    }
+
+    @Test
+    public void read_record_asRecord() {
+        def input = new StringReader("""
+AAA,BBB,CCC
+a1,b1, 
+a2,, c2
+""".trim())
+        int index = -1
+        new Csv().eachRecord(input) { CsvRecord r ->
+            index++
+            if (r.index == 0) {
+                assert ["AAA", "BBB", "CCC"]== [r[0], r[1], r[2]]
+            } else if (index == 1) {
+                assert ["a1", "b1", " "]== [r[0], r[1], r[2]]
+            } else if (index == 2) {
+                assert ["a2", "", " c2"]== [r[0], r[1], r[2]]
             }
         }
 
@@ -149,13 +246,57 @@ a2,, c2
         assert 1 == index
     }
 
+    @Test
+    public void readAsBean_date() {
+        def input = new StringReader("""
+aa,bb
+a1,20131203T144302
+""".trim())
+
+        def repo = new DefaultConverterRepository()
+        repo.register(new DateConverter())
+        int index = -1
+        new Csv(converterRepository: repo).eachRecordAsBean(input, Bbb) { record ->
+            index++
+            //println record
+            if (index == 0) {
+                assert record.aa == "a1"
+                assert record.bb == new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").parse("2013/12/03 14:43:02.000")
+            }
+        }
+
+        assert 0 == index
+    }
     static class Aaa {
-        @CsvColumn(label="AAA")
+        @CsvColumn(label="AAA", order=0)
         String aa
-        @CsvColumn(label="BBB")
+        @CsvColumn(label="BBB", order=1)
         String bb
-        @CsvColumn(label="CCC")
+        @CsvColumn(label="CCC", order=2)
         String ccc
+    }
+
+    static class Bbb {
+        @CsvColumn(label="aa", order=0)
+        String aa
+        @CsvColumn(label="bb", order=1)
+        Date bb
+    }
+
+    static class DateConverter implements Converter<Date, String> {
+
+        def format = new SimpleDateFormat("yyyyMMdd'T'HHmmss")
+
+        @Override
+        public String convertTo(Date from) {
+            return format.format(from)
+        }
+
+        @Override
+        public Date convertFrom(String from) {
+            return format.parse(from)
+        }
+
     }
 
 }

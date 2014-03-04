@@ -51,16 +51,14 @@ public class FileOperation {
     private static final int K = 1024;
     private static final int M = K * 1024;
     private static final int DEFAULT_BUFF_SIZE = K * 8;
-    private static final String UTF8 = "UTF-8";
     // FileOPeration
     private String prefix_ = "fop";
     private String suffix_ = ".tmp";
     private int bufferSize_ = DEFAULT_BUFF_SIZE;
-    private Charset charset_;
+    private Charset charset_ = IOUtil.getUTF8Charset();
     private final BinaryStreamOperation binaryStreams_ = new BinaryStreamOperation();
 
     public FileOperation() {
-        setEncoding(UTF8);
     }
 
     public File createTempFile() {
@@ -124,7 +122,11 @@ public class FileOperation {
     }
 
     public void write(final File file, final String text) {
-        final Writer writer = openBufferedWriter(file);
+        write(file, text, charset_);
+    }
+
+    public void write(final File file, final String text, final Charset charset) {
+        final Writer writer = openBufferedWriter(file, charset);
         try {
             writer.write(text);
         } catch (final IOException e) {
@@ -160,6 +162,20 @@ public class FileOperation {
         }
     }
 
+    public List<String> readLines(final File file) {
+        final BufferedReader reader = openBufferedReader(file);
+        final LineReader lineReader = new LineReader(reader);
+        try {
+            final List<String> list = new ArrayList<String>();
+            for (final Line line : lineReader) {
+                list.add(line.getBody());
+            }
+            return list;
+        } finally {
+            CloseableUtil.closeNoException(lineReader);
+        }
+    }
+
     public byte[] readAsBytes(final File file) {
         final BufferedInputStream is = openBufferedInputStream(file);
         try {
@@ -191,7 +207,14 @@ public class FileOperation {
     }
 
     public BufferedWriter openBufferedWriter(final File file) {
-        final OutputStreamWriter osw = openOutputStreamWriter(file);
+        final OutputStreamWriter osw = openOutputStreamWriter(file, charset_);
+        final BufferedWriter writer = new BufferedWriter(osw, bufferSize_);
+        return writer;
+    }
+
+    public BufferedWriter openBufferedWriter(final File file,
+            final Charset charset) {
+        final OutputStreamWriter osw = openOutputStreamWriter(file, charset);
         final BufferedWriter writer = new BufferedWriter(osw, bufferSize_);
         return writer;
     }
@@ -202,9 +225,10 @@ public class FileOperation {
         return reader;
     }
 
-    private OutputStreamWriter openOutputStreamWriter(final File file) {
+    private OutputStreamWriter openOutputStreamWriter(final File file,
+            final Charset charset) {
         final FileOutputStream fos = openOutputStream(file);
-        final OutputStreamWriter osw = new OutputStreamWriter(fos, charset_);
+        final OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
         return osw;
     }
 

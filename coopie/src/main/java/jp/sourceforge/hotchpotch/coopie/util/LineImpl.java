@@ -74,6 +74,12 @@ public class LineImpl implements Line {
     }
 
     @Override
+    public Line createCopy() {
+        final Line copy = new LineImpl(body_, number_, separator_);
+        return copy;
+    }
+
+    @Override
     public String toString() {
         return String.format("[%s]%s%s", number_, body_, separator_);
     }

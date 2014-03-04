@@ -20,6 +20,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class LineReader implements LineReadable {
@@ -41,6 +42,9 @@ public class LineReader implements LineReadable {
     private int pos_;
     private int length_;
     private final CharBuffer charBuffer_;
+    private int bodyStartPos_;
+    private int bodyLength_;
+    private StringBuilder bodyBuffer_;
 
     public LineReader(final Readable readable) {
         this(readable, DEFAULT_BUFFER_SIZE);
@@ -97,93 +101,83 @@ public class LineReader implements LineReadable {
             return;
         }
 
-        StringBuilder bodyBuff = null;
-        int bodyStartPos = pos_;
-        int bodyLength = 0;
+        bodyBuffer_ = null;
+        bodyStartPos_ = pos_;
+        bodyLength_ = 0;
         LineSeparator sep = LineSeparator.NONE;
+
         read_loop: while (true) {
-            if (length_ <= pos_) {
-                if (0 < bodyLength) {
-                    if (bodyBuff == null) {
-                        bodyBuff = new StringBuilder();
-                    }
-                    bodyBuff.append(buffer_, bodyStartPos, bodyLength);
-                }
-                fill();
-                if (eof_) {
-                    break read_loop;
-                }
-                bodyStartPos = pos_;
-                bodyLength = 0;
+            readIfNecessary();
+            if (eof_) {
+                break read_loop;
             }
 
             for (; pos_ < length_;) {
                 final char c = buffer_[pos_];
                 pos_++;
-                if (c == CR) {
-                    if (length_ <= pos_) {
-                        if (0 < bodyLength) {
-                            if (bodyBuff == null) {
-                                bodyBuff = new StringBuilder();
-                            }
-                            bodyBuff.append(buffer_, bodyStartPos, bodyLength);
-                        }
-                        fill();
-                        if (eof_) {
-                            sep = LineSeparator.CR;
-                            break read_loop;
-                        }
-                        bodyStartPos = pos_;
-                        bodyLength = 0;
-                    }
-                    if (buffer_[pos_] == LF) {
+                if (sep == LineSeparator.CR) {
+                    if (c == LF) {
                         sep = LineSeparator.CRLF;
-                        pos_++;
                     } else {
-                        sep = LineSeparator.CR;
+                        pos_--;
                     }
                     break read_loop;
+                }
+                if (c == CR) {
+                    sep = LineSeparator.CR;
                 } else if (c == LF) {
                     sep = LineSeparator.LF;
                     break read_loop;
                 } else {
-                    bodyLength++;
+                    bodyLength_++;
                 }
             }
         }
 
-        if (eof_ && bodyBuff == null && bodyLength == 0) {
+        if (eof_ && bodyBuffer_ == null && bodyLength_ == 0) {
             line_ = null;
             lineSeparator_ = null;
             return;
         }
 
-        if (bodyBuff == null) {
-            line_ = new String(buffer_, bodyStartPos, bodyLength);
+        if (bodyBuffer_ == null) {
+            line_ = new String(buffer_, bodyStartPos_, bodyLength_);
         } else {
             /*
-             * fillする前にbodyBuffへ退避しているので、
-             * fillでEOFだった場合はbodyBuffだけで良い。
+             * fillする前にbodyBufferへ退避しているので、
+             * fillでEOFだった場合はbodyBufferだけで良い。
              */
             if (eof_) {
             } else {
-                bodyBuff.append(buffer_, bodyStartPos, bodyLength);
+                bodyBuffer_.append(buffer_, bodyStartPos_, bodyLength_);
             }
-            line_ = bodyBuff.toString();
+            line_ = bodyBuffer_.toString();
         }
 
         lineNumber_++;
         lineSeparator_ = sep;
     }
 
-    protected void fill() throws IOException {
-        final int len = readable_.read(charBuffer_);
-        if (len == -1) {
-            eof_ = true;
-        } else {
-            charBuffer_.rewind();
-            pos_ = 0;
-            length_ = len;
+    protected void readIfNecessary() throws IOException {
+        if (length_ <= pos_) {
+            if (0 < bodyLength_) {
+                if (bodyBuffer_ == null) {
+                    bodyBuffer_ = new StringBuilder();
+                }
+                bodyBuffer_.append(buffer_, bodyStartPos_, bodyLength_);
+            }
+            final int len = readable_.read(charBuffer_);
+            if (len == -1) {
+                eof_ = true;
+                pos_ = 0;
+                length_ = 0;
+            } else {
+                charBuffer_.rewind();
+                pos_ = 0;
+                length_ = len;
+                bodyStartPos_ = pos_;
+                bodyLength_ = 0;
+            }
         }
     }
 
@@ -223,6 +217,11 @@ public class LineReader implements LineReadable {
 
     public LineSeparator getLineSeparator() {
         return lineSeparator_;
+    }
+
+    @Override
+    public Iterator<Line> iterator() {
+        return new LineReadableIterator(this);
     }
 
 }

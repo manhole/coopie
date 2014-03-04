@@ -18,7 +18,10 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
@@ -26,6 +29,7 @@ import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -71,6 +75,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
         public PoiReader(final InputStream is) {
             try {
                 workbook_ = new HSSFWorkbook(is);
+                closed_ = false;
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             } finally {
@@ -144,11 +149,15 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
 
         private final HSSFWorkbook workbook_;
         private HSSFSheet sheet_;
+
         /*
          * Excelの行番号は0オリジン。(見た目は1からだが)
          */
         private int rowNum_ = 0;
         private final int lastRowNum_;
+
+        private final DateFormat dateFormat_ = new SimpleDateFormat(
+                "yyyyMMdd\'T\'HHmmss");
 
         public PoiSheetReader(final HSSFWorkbook workbook, final HSSFSheet sheet) {
             workbook_ = workbook;
@@ -256,6 +265,10 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             }
             switch (cell.getCellType()) {
             case HSSFCell.CELL_TYPE_NUMERIC:
+                if (HSSFDateUtil.isCellDateFormatted(cell)) {
+                    final Date v = cell.getDateCellValue();
+                    return dateFormat_.format(v);
+                }
                 final double v = cell.getNumericCellValue();
                 if (isInt(v)) {
                     return Integer.toString((int) v);

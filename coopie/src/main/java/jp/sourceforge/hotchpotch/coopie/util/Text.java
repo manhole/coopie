@@ -108,8 +108,30 @@ public class Text {
         return false;
     }
 
-    public Text trim(final TrimStrategy trimStrategy) {
-        final String trim = trim0(rawText_, trimStrategy);
+    public Text convertLineSeparator(final LineSeparator lineSeparator) {
+        final String s = convertLineSeparator0(rawText_, lineSeparator);
+        return instantiate(s);
+    }
+
+    private static String convertLineSeparator0(final String s,
+            final LineSeparator lineSeparator) {
+        final LineReadable reader = new LineReader(new StringReader(s));
+        final StringBuilder sb = new StringBuilder();
+        try {
+            for (final Line line : reader) {
+                sb.append(line.getBody());
+                if (line.getSeparator() != LineSeparator.NONE) {
+                    sb.append(lineSeparator.getSeparator());
+                }
+            }
+        } finally {
+            CloseableUtil.closeNoException(reader);
+        }
+        return sb.toString();
+    }
+
+    public Text trim(final CharacterGroup chars) {
+        final String trim = trim0(rawText_, chars);
         return instantiate(trim);
     }
 
@@ -118,8 +140,8 @@ public class Text {
         return instantiate(trim);
     }
 
-    public static String trim(final String s, final TrimStrategy trimStrategy) {
-        return trim0(s, trimStrategy);
+    public static String trim(final String s, final CharacterGroup chars) {
+        return trim0(s, chars);
     }
 
     public static String trimWhitespace(final String s) {
@@ -130,13 +152,13 @@ public class Text {
         return trim0(s, WHITESPACE);
     }
 
-    private static String trim0(final String s, final TrimStrategy trimStrategy) {
+    private static String trim0(final String s, final CharacterGroup chars) {
 
         final int len = s.length();
         int begin = 0;
         for (int i = 0; i < len; i++) {
             final char c = s.charAt(i);
-            if (trimStrategy.isTrim(c)) {
+            if (chars.contains(c)) {
                 begin++;
             } else {
                 break;
@@ -146,7 +168,7 @@ public class Text {
         int end = len;
         for (int i = len - 1; begin < i; i--) {
             final char c = s.charAt(i);
-            if (trimStrategy.isTrim(c)) {
+            if (chars.contains(c)) {
                 end--;
             } else {
                 break;
@@ -155,6 +177,31 @@ public class Text {
 
         final String substring = s.substring(begin, end);
         return substring;
+    }
+
+    public Text compactSpace() {
+        boolean occur = false;
+        final StringBuilder sb = new StringBuilder();
+        final char[] chars = rawText_.toCharArray();
+        for (final char ch : chars) {
+            if (WHITESPACE.contains(ch)) {
+                if (!occur) {
+                    occur = true;
+                }
+            } else {
+                if (occur) {
+                    occur = false;
+                    sb.append(' ');
+                }
+                sb.append(ch);
+            }
+        }
+        if (occur) {
+            occur = false;
+            sb.append(' ');
+        }
+        final String s = sb.toString();
+        return instantiate(s);
     }
 
     @Override
@@ -204,24 +251,24 @@ public class Text {
         return s;
     }
 
-    public interface TrimStrategy {
+    public interface CharacterGroup {
 
-        boolean isTrim(char c);
+        boolean contains(int c);
 
     }
 
-    public static TrimStrategy STANDARD = new TrimStrategy() {
+    public static CharacterGroup STANDARD_TRIM = new CharacterGroup() {
         @Override
-        public boolean isTrim(final char c) {
-            // java.lang.Stringと同じ
+        public boolean contains(final int c) {
+            // java.lang.String#trimと同じ
             return c <= ' ';
         }
     };
 
-    public static TrimStrategy WHITESPACE = new TrimStrategy() {
+    public static CharacterGroup WHITESPACE = new CharacterGroup() {
         @Override
-        public boolean isTrim(final char c) {
-            return Character.isWhitespace(c);
+        public boolean contains(final int c) {
+            return Character.isWhitespace(c) || c == 0xA0;
         }
     };
 

@@ -6,11 +6,11 @@ buildscript {
 
 allprojects { project ->
 	group = "jp.sourceforge.hotchpotch"
-	version = "0.3.0"
+	version = "0.3.1"
 
 	repositories {
 		mavenCentral()
-		mavenRepo url: "http://hotchpotch.sourceforge.jp/maven2/release"
+		maven { url "http://hotchpotch.sourceforge.jp/maven2/release" }
 	}
 
 	apply plugin: "eclipse"
@@ -47,6 +47,7 @@ subprojects { project ->
 	apply plugin: "maven-publish"
 
 	sourceCompatibility = "1.6"
+	targetCompatibility = sourceCompatibility
 
 	task sourcesJar(type:Jar, dependsOn:classes) {
 		classifier = "sources"
@@ -100,12 +101,60 @@ subprojects { project ->
 					 * 2. optionalを指定できない。
 					 * 3. excludeを指定できない。
 					 */
-					def NodeList children = asNode().children()
-					_findAll(children) { node ->
-						node.name().localPart != "dependencies"
+
+					def projectDependencies = [:]
+					// compileとtestCompileを対象にしているが、maven-publishが作成するpomはcompileだけのようだ。
+					["compile":"compile", "testCompile":"test"].each { configName, scopeValue ->
+						// project.configurations["compile"].dependencies で取得できるクラスは、
+						// org.gradle.api.internal.artifacts.DefaultDependencySet
+						project.configurations[configName].dependencies.each { dep ->
+							def holder = new DependencyHolder(gradleDependency:dep, mavenScope:scopeValue)
+							projectDependencies[holder.key()] = holder
+						}
 					}
+
+					def Node projectNode = asNode()
+					def Node dependencies = projectNode.dependencies[0]
+					dependencies.each { Node dependency ->
+						assert dependency.name().localPart == "dependency"
+						//// NodeListが返るので添字0でNodeを取得する
+						//def groupId = dependency.groupId[0].value()[0]
+						//def artifactId = dependency.artifactId[0].value()[0]
+						//def scope = dependency.scope[0].value()[0]
+						def groupId = dependency.groupId.text()
+						def artifactId = dependency.artifactId.text()
+						def scope = dependency.scope.text()
+						def key = "${groupId}:${artifactId}"
+						def depHolder = projectDependencies[key]
+						logger.info "${key} ... ${scope} -> ${depHolder.mavenScope}"
+						dependency.scope[0].value = depHolder.mavenScope
+						if (depHolder.optional()) {
+							dependency.children().last() + {
+								resolveStrategy = Closure.DELEGATE_FIRST
+								optional true
+							}
+							//new Node(dependency, "optional", [:], "true")
+						}
+						if (depHolder.gradleDependency.excludeRules) {
+							dependency.children().last() + {
+								resolveStrategy = Closure.DELEGATE_FIRST
+								exclusions {
+									resolveStrategy = Closure.DELEGATE_FIRST
+									depHolder.gradleDependency.excludeRules.each { excludeRule ->
+										exclusion {
+											delegate.groupId excludeRule.group
+											delegate.artifactId excludeRule.module
+										}
+									}
+								}
+							}
+						}
+					}
+
 					// http://maven.apache.org/ref/3.0.5/maven-model/maven.html
-					children.last() + {
+					// dependenciesの前(versionの後ろ)へ追加したい
+					def Node versionNode = projectNode.version[0]
+					versionNode + {
 						resolveStrategy = Closure.DELEGATE_FIRST
 
 						packaging "jar"
@@ -131,32 +180,6 @@ subprojects { project ->
 							connection "scm:git:git@github.com:manhole/coopie.git"
 							developerConnection "scm:git:git@github.com:manhole/coopie.git"
 							url "https://github.com/manhole/coopie"
-						}
-						dependencies {
-							["compile":"compile", "testCompile":"test"].each { configName, scopeValue ->
-								project.configurations[configName].dependencies.each { dep ->
-									dependency {
-										groupId dep.group
-										artifactId dep.name
-										// delegateを書かないとsubprojectのversionが対象になってしまう。
-										delegate.version dep.version
-										scope scopeValue
-										if (dep.ext.has("optional") && dep.optional) {
-											optional true
-										}
-										if (dep.excludeRules) {
-											exclusions {
-												dep.excludeRules.each { excludeRule ->
-													exclusion {
-														groupId excludeRule.group
-														artifactId excludeRule.module
-													}
-												}
-											}
-										}
-									}
-								}
-							}
 						}
 					}
 				}
@@ -266,8 +289,17 @@ def _setupEncoding(Project project) {
 	}
 }
 
-def _findAll(Collection items, Closure block) {
-	def founds = items.findAll(block)
-	items.clear()
-	items.addAll(founds)
+def class DependencyHolder {
+	def gradleDependency
+	def mavenScope
+	def key() {
+		// groupId + ":" + artifactId
+		"${gradleDependency.group}:${gradleDependency.name}"
+	}
+	def optional() {
+		if (gradleDependency.ext.has("optional") && gradleDependency.optional) {
+			return true
+		}
+		return false
+	}
 }
