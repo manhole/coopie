@@ -6,7 +6,7 @@ buildscript {
 
 allprojects { project ->
 	group = "jp.sourceforge.hotchpotch"
-	version = "0.3.1-SNAPSHOT"
+	version = "0.3.1"
 
 	repositories {
 		mavenCentral()
