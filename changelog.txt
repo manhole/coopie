@@ -1,3 +1,6 @@
+0.3.2 xxxx/xx/xx
+
+
 0.3.1 2014/03/04
 
 - add class: RandomString
@@ -32,6 +35,7 @@ misc:
 - ByteSizeUnit, ByteSizeUnitsを別ファイルへ分離。
   ByteSizeUnit#multiplyを追加。
 
+
 0.2.2 2013/05/27
 
 - rename: DurationMeasurer -> DurationMeasure
@@ -49,6 +53,7 @@ misc:
 - ライセンスをASL 2.0にしました。
 - groovyから利用するため、@CsvColumnをFIELDにも付けられるようにしました。
 - gradleでjarとpomを作成できるようにしました。
+
 
 0.2.1 2012/02/23
 
@@ -71,6 +76,7 @@ misc:
 - add: BinaryStreamOperation. FileOperationから分離
 - ByteSize: 文字列表現の形式を変更(ex: 530.48 KB -> 530.48 KiB)
 - ByteSize: 単位を1000区切りとするのか1024区切りとするのかを切り換えられるようにしました。
+
 
 0.2.0 2011/12/14
 
@@ -96,6 +102,7 @@ misc:
 - rename: ExcelLayout -> ExcelInOut
 - add: LineReaderHandler, ElementReaderHandler. LineReaderやElementReaderレベルで不要行をfilterできるようにしました。
 
+
 0.1.7 2011/11/15
 
 - システム環境変数"line.separator"をIOUtilから取得できるようにしました。
@@ -106,6 +113,7 @@ misc:
 - CsvElementReader#getRecordNo()の初期値を-1から0に変更しました。
 - add: BeanMap
 - add: Logger interface
+
 
 0.1.6 2011/08/23
 
@@ -123,27 +131,33 @@ misc:
 - rename: AbstractCsvReader.CustomLayout -> AbstractCsvReader.ReadEditor
 - add: CsvElementReader#getRecordNo()
 
+
 0.1.5 2011/08/10
 
 - 複数Excelシートを入出力できるようにしました。
+
 
 0.1.4 2011/08/09
 
 - 固定長ファイルの入出力に対応しました。
 - データ部がcsvファイルの途中に登場するレイアウトでも、読めるようにしました。
 
+
 0.1.3 2011/05/30
 
 - 入力ExcelにHSSFRowがあるにも関わらずHSSFRow#getLastCellNum()が-1を返すことがあるケースに対応しました。
+
 
 0.1.2 2010/12/26
 
 - CSVを読むとき、Layoutへ定義していない列がCSVにある場合は無視するようにしました。
 
+
 0.1.1 2010/12/14
 
 - 複数シートのexcelファイルからTSVファイルを作成できるようにしました。
   その際に、TSVファイル名にはシート名を付加するようにしました。
+
 
 0.1.0 2010/11/09
 
