@@ -31,12 +31,10 @@ public class Annotations {
         return INSTANCE;
     }
 
-    public static class DefaultPropertyAnnotationReader implements
-            PropertyAnnotationReader {
+    public static class DefaultPropertyAnnotationReader implements PropertyAnnotationReader {
 
         @Override
-        public <ANN extends Annotation> ANN getAnnotation(
-                final PropertyDesc<?> propertyDesc,
+        public <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?> propertyDesc,
                 final Class<ANN> annotationClass) {
             if (propertyDesc.isReadable()) {
                 final Method method = propertyDesc.getReadMethod();
@@ -63,23 +61,19 @@ public class Annotations {
      * 
      * groovyのbeanでsetter/getterを生成させる場合にpropertyへアノテーションを付けざるをえないため。
      */
-    public static class FieldPropertyAnnotationReader implements
-            PropertyAnnotationReader {
+    public static class FieldPropertyAnnotationReader implements PropertyAnnotationReader {
 
         @Override
-        public <ANN extends Annotation> ANN getAnnotation(
-                final PropertyDesc<?> propertyDesc,
+        public <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?> propertyDesc,
                 final Class<ANN> annotationClass) {
             if (propertyDesc.isReadable() && propertyDesc.isWritable()) {
                 Class<?> targetClass = propertyDesc.getTargetClass();
                 while (targetClass != Object.class) {
                     final Field[] fields = targetClass.getDeclaredFields();
                     for (final Field field : fields) {
-                        if (field.getName().equals(
-                                propertyDesc.getPropertyName())) {
+                        if (field.getName().equals(propertyDesc.getPropertyName())) {
                             if ((field.getModifiers() & Modifier.PRIVATE) == Modifier.PRIVATE) {
-                                final ANN ann = field
-                                        .getAnnotation(annotationClass);
+                                final ANN ann = field.getAnnotation(annotationClass);
                                 if (ann != null) {
                                     return ann;
                                 }

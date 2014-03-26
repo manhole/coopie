@@ -38,8 +38,7 @@ public class ExcelToCsv {
     public void writeTsv(final File file) throws IOException {
         logger.debug("file={}", file.getAbsolutePath());
         if (!file.exists()) {
-            throw new IllegalArgumentException("not exist:"
-                    + file.getAbsolutePath());
+            throw new IllegalArgumentException("not exist:" + file.getAbsolutePath());
         }
 
         final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(
@@ -74,13 +73,10 @@ public class ExcelToCsv {
             final ElementInOut elementInOut = new CsvElementInOut(csvSetting);
             final FileResource fr = files_.getFileResource(file);
             for (final PoiSheetReader sheetReader : sheets) {
-                final String fileName = tsvNaming.createFileName(sheetReader,
-                        fr.getPrefix(), TSV_EXTENSION);
-                final File tsvFile = files_.createFile(file.getParentFile(),
-                        fileName);
+                final String fileName = tsvNaming.createFileName(sheetReader, fr.getPrefix(), TSV_EXTENSION);
+                final File tsvFile = files_.createFile(file.getParentFile(), fileName);
 
-                final ElementWriter csvWriter = elementInOut.openWriter(files_
-                        .openBufferedWriter(tsvFile));
+                final ElementWriter csvWriter = elementInOut.openWriter(files_.openBufferedWriter(tsvFile));
 
                 while (true) {
                     final String[] line = sheetReader.readRecord();
@@ -105,8 +101,7 @@ public class ExcelToCsv {
 
         private boolean single_ = true;
 
-        public String createFileName(final PoiSheetReader sheetReader,
-                final String prefix, final String suffix) {
+        public String createFileName(final PoiSheetReader sheetReader, final String prefix, final String suffix) {
             if (single_) {
                 return prefix + suffix;
             } else {

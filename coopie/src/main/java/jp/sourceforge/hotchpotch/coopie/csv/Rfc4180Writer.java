@@ -105,8 +105,7 @@ public class Rfc4180Writer implements ElementWriter {
         quoteMode_ = quoteMode;
     }
 
-    private ElementWriteStrategy getElementWriteStrategy(
-            final QuoteMode quoteMode) {
+    private ElementWriteStrategy getElementWriteStrategy(final QuoteMode quoteMode) {
         switch (quoteMode) {
         case ALWAYS:
             return new AlwaysStrategy();

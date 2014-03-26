@@ -29,8 +29,7 @@ public class DefaultRecordWriter<BEAN> extends AbstractRecordWriter<BEAN> {
     }
 
     public void open(final Appendable appendable) {
-        final ElementWriter elementWriter = elementInOut_
-                .openWriter(appendable);
+        final ElementWriter elementWriter = elementInOut_.openWriter(appendable);
         setElementWriter(elementWriter);
         setClosed(false);
     }

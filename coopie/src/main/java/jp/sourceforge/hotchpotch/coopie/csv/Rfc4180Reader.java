@@ -54,8 +54,7 @@ public class Rfc4180Reader implements ElementReader {
 
     private int recordNo_;
     private CharacterReadable reader_;
-    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
-            .getInstance();
+    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler.getInstance();
 
     private char elementSeparator_ = CsvSetting.COMMA;
     private char quoteMark_ = CsvSetting.DOUBLE_QUOTE;
@@ -252,8 +251,7 @@ public class Rfc4180Reader implements ElementReader {
                     // クォート文字しかないrecordの場合
                     if (rb_.isEmpty()) {
                         // クォートの手前にspaceがある場合は、spaceも含める
-                        final String s = rc.body.substring(rc.elementBeginPos,
-                                rc.pos);
+                        final String s = rc.body.substring(rc.elementBeginPos, rc.pos);
                         rb_.endElement(s);
                     }
                     // クォートされた要素の途中でEOFになった場合
@@ -269,8 +267,7 @@ public class Rfc4180Reader implements ElementReader {
                     }
                     rc.elemBuff.append(rc.substringTo(rc.pos));
                     rc.substringFromPos = rc.pos;
-                    final String separator = rc.line.getSeparator()
-                            .getSeparator();
+                    final String separator = rc.line.getSeparator().getSeparator();
                     rc.elemBuff.append(separator);
 
                     if (rc.savedLines == null) {
@@ -599,8 +596,7 @@ public class Rfc4180Reader implements ElementReader {
         private final Line line_ = new LineImpl();
         private final ElementParserContext parserContext_;
 
-        CharacterReadable(final Readable readable,
-                final LineReaderHandler lineReaderHandler,
+        CharacterReadable(final Readable readable, final LineReaderHandler lineReaderHandler,
                 final ElementParserContext parserContext) {
             reader_ = new LineReader(readable);
             lineReaderHandler_ = lineReaderHandler;

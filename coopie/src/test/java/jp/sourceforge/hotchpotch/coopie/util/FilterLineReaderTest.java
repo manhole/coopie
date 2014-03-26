@@ -35,8 +35,7 @@ public class FilterLineReaderTest {
     @Test
     public void filter1() throws Throwable {
         // ## Arrange ##
-        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
-                + "\r\n" + "a3" + "\n" + "\r");
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n" + "\r\n" + "a3" + "\n" + "\r");
 
         // ## Act ##
         final LineFilter filter = new SkipLineFilter();
@@ -56,8 +55,7 @@ public class FilterLineReaderTest {
     @Test
     public void filter2() throws Throwable {
         // ## Arrange ##
-        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
-                + "\r\n" + "a3" + "\n" + "\r");
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n" + "\r\n" + "a3" + "\n" + "\r");
 
         // ## Act ##
         final Line line = new LineImpl();
@@ -78,8 +76,7 @@ public class FilterLineReaderTest {
     @Test
     public void iterate() throws Throwable {
         // ## Arrange ##
-        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
-                + "\r\n" + "a3" + "\n" + "\r");
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n" + "\r\n" + "a3" + "\n" + "\r");
 
         // ## Act ##
         final LineFilter filter = new SkipLineFilter();

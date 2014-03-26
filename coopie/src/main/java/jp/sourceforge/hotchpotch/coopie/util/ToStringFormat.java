@@ -58,8 +58,7 @@ public class ToStringFormat {
         }
     }
 
-    private <T> void append(final Appendable out, final T obj,
-            final Context context) throws IOException {
+    private <T> void append(final Appendable out, final T obj, final Context context) throws IOException {
 
         if (obj == null) {
             out.append(NULL);
@@ -104,8 +103,7 @@ public class ToStringFormat {
                 out.append(s);
                 out.append("]");
             } else if (obj instanceof java.util.Date) {
-                final String s = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS")
-                        .format(obj);
+                final String s = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(obj);
                 out.append(s);
             } else if (clazz.isArray()) {
                 appendObjectArray(out, (Object[]) obj, context);
@@ -117,8 +115,7 @@ public class ToStringFormat {
         }
     }
 
-    private <T> void appendObject(final Appendable out, final T obj,
-            final Context context) throws IOException {
+    private <T> void appendObject(final Appendable out, final T obj, final Context context) throws IOException {
 
         @SuppressWarnings("unchecked")
         final Class<T> clazz = (Class<T>) obj.getClass();
@@ -155,8 +152,8 @@ public class ToStringFormat {
         out.append("]");
     }
 
-    private void appendObjectArray(final Appendable out, final Object[] array,
-            final Context context) throws IOException {
+    private void appendObjectArray(final Appendable out, final Object[] array, final Context context)
+            throws IOException {
         boolean first = true;
         out.append("[");
         for (final Object obj : array) {
@@ -170,8 +167,7 @@ public class ToStringFormat {
         out.append("]");
     }
 
-    private void appendString(final Appendable out, final String str)
-            throws IOException {
+    private void appendString(final Appendable out, final String str) throws IOException {
         final char[] chars = str.toCharArray();
         for (final char c : chars) {
             switch (c) {
@@ -213,8 +209,7 @@ public class ToStringFormat {
         maxDepth_ = depth;
     }
 
-    private static class FieldDescComparator implements
-            Comparator<FieldDesc<?>> {
+    private static class FieldDescComparator implements Comparator<FieldDesc<?>> {
 
         @Override
         public int compare(final FieldDesc<?> o1, final FieldDesc<?> o2) {

@@ -30,14 +30,12 @@ public class DefaultLineReaderHandler implements LineReaderHandler {
     }
 
     @Override
-    public boolean acceptLine(final Line line,
-            final ElementParserContext parserContext) {
+    public boolean acceptLine(final Line line, final ElementParserContext parserContext) {
         return true;
     }
 
     @Override
-    public Line readLine(final LineReadable lineReader, final Line reusableLine)
-            throws IOException {
+    public Line readLine(final LineReadable lineReader, final Line reusableLine) throws IOException {
         final Line line = lineReader.readLine(reusableLine);
         return line;
     }

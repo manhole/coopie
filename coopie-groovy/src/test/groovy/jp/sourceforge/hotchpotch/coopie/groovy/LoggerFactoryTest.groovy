@@ -25,7 +25,7 @@ class LoggerFactoryTest {
 
     private static final Logger logger1 = LoggerFactory.getLogger()
     private static final Logger logger2 = LoggerFactory.getLogger(LoggerFactoryTest)
-    
+
     /*
      * Groovy環境では
      * 

@@ -28,8 +28,7 @@ public class FilterLineReader implements LineReadable {
     private final LineReadable lineReader_;
     private final LineFilter lineFilter_;
 
-    public FilterLineReader(final LineReadable lineReader,
-            final LineFilter lineFilter) {
+    public FilterLineReader(final LineReadable lineReader, final LineFilter lineFilter) {
         lineReader_ = lineReader;
         lineFilter_ = lineFilter;
     }

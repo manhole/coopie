@@ -35,8 +35,7 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
     }
 
     @Deprecated
-    public RecordWriter<Map<String, PROP>> openWriter(
-            final Appendable appendable) {
+    public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
         return build().openWriter(appendable);
     }
 
@@ -75,8 +74,7 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
         return obj;
     }
 
-    protected static class MapCsvRecordInOut<PROP> implements
-            RecordInOut<Map<String, PROP>> {
+    protected static class MapCsvRecordInOut<PROP> implements RecordInOut<Map<String, PROP>> {
 
         private RecordDesc<Map<String, PROP>> recordDesc_;
         private boolean withHeader_;
@@ -85,14 +83,12 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
         private ElementEditor elementEditor_;
 
         @Override
-        public RecordReader<Map<String, PROP>> openReader(
-                final Readable readable) {
+        public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
             if (readable == null) {
                 throw new NullPointerException("readable");
             }
 
-            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
-                    recordDesc_);
+            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             r.setElementReaderHandler(elementReaderHandler_);
@@ -114,14 +110,12 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
         }
 
         @Override
-        public RecordWriter<Map<String, PROP>> openWriter(
-                final Appendable appendable) {
+        public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
             if (appendable == null) {
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(
-                    recordDesc_);
+            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

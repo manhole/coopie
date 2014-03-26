@@ -39,8 +39,7 @@ public class StdOutBlock {
         return a;
     }
 
-    public static <V, E extends Throwable> Text trapOut(final Task<V, E> task)
-            throws E {
+    public static <V, E extends Throwable> Text trapOut(final Task<V, E> task) throws E {
         final Block a = new Block();
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         a.out(baos);
@@ -68,8 +67,7 @@ public class StdOutBlock {
         }
 
         @Override
-        public <V, E extends Throwable> V execute(final Task<V, E> task)
-                throws E {
+        public <V, E extends Throwable> V execute(final Task<V, E> task) throws E {
             final PrintStream pOut = out_;
             final PrintStream pErr = err_;
             try {
@@ -80,8 +78,8 @@ public class StdOutBlock {
             }
         }
 
-        private <V, E extends Throwable> V trap(final Task<V, E> task,
-                final PrintStream pOut, final PrintStream pErr) throws E {
+        private <V, E extends Throwable> V trap(final Task<V, E> task, final PrintStream pOut, final PrintStream pErr)
+                throws E {
             final PrintStream defaultOut = System.out;
             final PrintStream defaultErr = System.err;
             System.setOut(pOut);

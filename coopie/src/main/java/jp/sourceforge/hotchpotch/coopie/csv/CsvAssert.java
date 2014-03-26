@@ -43,8 +43,7 @@ public class CsvAssert {
      * CSVとして等しいかassertします。
      * 区切り文字やクォート有無の違いについては対象外です。
      */
-    public void assertCsvEquals(final Reader expectedReader,
-            final Reader actualReader) {
+    public void assertCsvEquals(final Reader expectedReader, final Reader actualReader) {
         if (nullarg(expectedReader, actualReader)) {
             return;
         }
@@ -64,26 +63,22 @@ public class CsvAssert {
         }
     }
 
-    private RecordReader<Map<String, Object>> openMapReader(
-            final Reader actualReader) {
+    private RecordReader<Map<String, Object>> openMapReader(final Reader actualReader) {
         final MapCsvLayout<Object> layout = new MapCsvLayout<Object>();
         layout.setWithHeader(true);
         layout.setElementSeparator(elementSeparator_);
-        final RecordReader<Map<String, Object>> csvReader = layout
-                .openReader(actualReader);
+        final RecordReader<Map<String, Object>> csvReader = layout.openReader(actualReader);
         return csvReader;
     }
 
-    private void assertCsvEquals(
-            final RecordReader<Map<String, Object>> expectedCsvReader,
+    private void assertCsvEquals(final RecordReader<Map<String, Object>> expectedCsvReader,
             final RecordReader<Map<String, Object>> actualCsvReader) {
 
         while (expectedCsvReader.hasNext() && actualCsvReader.hasNext()) {
             final Map<String, Object> exp = expectedCsvReader.read();
             final Map<String, Object> act = actualCsvReader.read();
             if (!exp.equals(act)) {
-                throw new CsvAssertionError("expected:<" + exp + "> but was:<"
-                        + act + ">");
+                throw new CsvAssertionError("expected:<" + exp + "> but was:<" + act + ">");
             }
         }
         if (expectedCsvReader.hasNext() || actualCsvReader.hasNext()) {
@@ -99,16 +94,13 @@ public class CsvAssert {
             return;
         }
         if (expected.length != actual.length) {
-            throw new CsvAssertionError("size is not equals. expected:<"
-                    + expected.length + "> " + Arrays.toString(expected)
-                    + ", actual:<" + actual.length + "> "
-                    + Arrays.toString(actual));
+            throw new CsvAssertionError("size is not equals. expected:<" + expected.length + "> "
+                    + Arrays.toString(expected) + ", actual:<" + actual.length + "> " + Arrays.toString(actual));
         }
         for (int i = 0; i < expected.length; i++) {
             if (!expected[i].equals(actual[i])) {
-                throw new CsvAssertionError("[" + i
-                        + "] is not equals. expected:<" + expected[i]
-                        + ">, actual:<" + actual[i] + ">");
+                throw new CsvAssertionError("[" + i + "] is not equals. expected:<" + expected[i] + ">, actual:<"
+                        + actual[i] + ">");
             }
         }
     }

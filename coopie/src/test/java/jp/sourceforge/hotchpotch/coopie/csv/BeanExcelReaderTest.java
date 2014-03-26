@@ -43,8 +43,7 @@ public class BeanExcelReaderTest {
     @Test
     public void read_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -52,22 +51,19 @@ public class BeanExcelReaderTest {
             layout.openReader(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
     @Test
     public void read_open_invalidStream() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(new ByteArrayInputStream("invalid_value"
-                    .getBytes()));
+            layout.openReader(new ByteArrayInputStream("invalid_value".getBytes()));
             fail();
         } catch (final IORuntimeException e) {
             logger.debug(e.getMessage());
@@ -82,11 +78,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(is);
@@ -103,11 +97,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -134,11 +126,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read2_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -179,11 +169,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(is);
@@ -199,11 +187,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -234,11 +220,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read_empty_row() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-5",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-5", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(is);
@@ -254,11 +238,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -281,11 +263,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -305,11 +285,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read_customLayout() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-7",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-7", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         final TestReadEditor readEditor = new TestReadEditor();
         layout.setReaderHandler(readEditor);
 
@@ -327,11 +305,9 @@ public class BeanExcelReaderTest {
     @Test
     public void read_afterLast() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1", "xls");
 
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         final RecordReader<AaaBean> csvReader = layout.openReader(is);
@@ -352,16 +328,16 @@ public class BeanExcelReaderTest {
             final HSSFWorkbook workbook = new HSSFWorkbook();
 
             {
-                final DefaultExcelWriter.PoiSheetWriter writer = new DefaultExcelWriter.PoiSheetWriter(
-                        workbook, workbook.createSheet("S1"));
+                final DefaultExcelWriter.PoiSheetWriter writer = new DefaultExcelWriter.PoiSheetWriter(workbook,
+                        workbook.createSheet("S1"));
                 writer.open();
                 writer.writeRecord(a("aaa", "bbb", "ccc"));
                 writer.writeRecord(a("a1", "b1", "c1"));
                 writer.close();
             }
             {
-                final DefaultExcelWriter.PoiSheetWriter writer = new DefaultExcelWriter.PoiSheetWriter(
-                        workbook, workbook.createSheet("S2"));
+                final DefaultExcelWriter.PoiSheetWriter writer = new DefaultExcelWriter.PoiSheetWriter(workbook,
+                        workbook.createSheet("S2"));
                 writer.open();
                 writer.writeRecord(a("aa", "bb"));
                 writer.writeRecord(a("aa1", "bb1"));
@@ -372,20 +348,16 @@ public class BeanExcelReaderTest {
             workbook.write(baos);
         }
 
-        final BeanExcelLayout<AaaBean> layout1 = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
-        final BeanExcelLayout<BbbBean> layout2 = new BeanExcelLayout<BbbBean>(
-                BbbBean.class);
+        final BeanExcelLayout<AaaBean> layout1 = new BeanExcelLayout<AaaBean>(AaaBean.class);
+        final BeanExcelLayout<BbbBean> layout2 = new BeanExcelLayout<BbbBean>(BbbBean.class);
 
-        final HSSFWorkbook workbook = new HSSFWorkbook(
-                new ByteArrayInputStream(baos.toByteArray()));
+        final HSSFWorkbook workbook = new HSSFWorkbook(new ByteArrayInputStream(baos.toByteArray()));
 
         // ## Act ##
         // ## Assert ##
         {
             final HSSFSheet sheet = workbook.getSheet("S1");
-            final RecordReader<AaaBean> csvReader = layout1
-                    .openSheetReader(sheet);
+            final RecordReader<AaaBean> csvReader = layout1.openSheetReader(sheet);
 
             final AaaBean bean = new AaaBean();
             assertEquals(true, csvReader.hasNext());
@@ -400,8 +372,7 @@ public class BeanExcelReaderTest {
         }
         {
             final HSSFSheet sheet = workbook.getSheet("S2");
-            final RecordReader<BbbBean> csvReader = layout2
-                    .openSheetReader(sheet);
+            final RecordReader<BbbBean> csvReader = layout2.openSheetReader(sheet);
 
             final BbbBean bean = new BbbBean();
             assertEquals(true, csvReader.hasNext());
@@ -425,8 +396,7 @@ public class BeanExcelReaderTest {
     @Test
     public void setup_invalid_readeditor() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##

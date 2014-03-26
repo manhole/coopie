@@ -23,8 +23,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
 
     private final CsvSetting csvSetting_;
 
-    public static <BEAN> BeanCsvLayout<BEAN> getInstance(
-            final Class<BEAN> beanClass) {
+    public static <BEAN> BeanCsvLayout<BEAN> getInstance(final Class<BEAN> beanClass) {
         final BeanCsvLayout<BEAN> instance = new BeanCsvLayout<BEAN>(beanClass);
         return instance;
     }
@@ -78,8 +77,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
         return obj;
     }
 
-    protected static class BeanCsvRecordInOut<BEAN> implements
-            RecordInOut<BEAN> {
+    protected static class BeanCsvRecordInOut<BEAN> implements RecordInOut<BEAN> {
 
         private RecordDesc<BEAN> recordDesc_;
         private boolean withHeader_;
@@ -93,8 +91,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
                 throw new NullPointerException("readable");
             }
 
-            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(
-                    recordDesc_);
+            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             r.setElementReaderHandler(elementReaderHandler_);
@@ -122,8 +119,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(
-                    recordDesc_);
+            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

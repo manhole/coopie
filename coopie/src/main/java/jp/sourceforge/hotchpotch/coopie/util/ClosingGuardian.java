@@ -71,8 +71,7 @@ public class ClosingGuardian {
         if (logger.isWarnEnabled()) {
             final StringWriter sw = new StringWriter();
             final PrintWriter pw = new PrintWriter(sw);
-            pw.print("closed at finalize: " + closable_.getClass().getName()
-                    + ", " + closable_);
+            pw.print("closed at finalize: " + closable_.getClass().getName() + ", " + closable_);
             if (createdBy_ != null) {
                 pw.println();
                 pw.print(createdBy_);

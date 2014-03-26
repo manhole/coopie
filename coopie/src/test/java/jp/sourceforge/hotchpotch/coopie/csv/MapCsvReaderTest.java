@@ -51,8 +51,7 @@ public class MapCsvReaderTest {
             layout.openReader(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
@@ -69,17 +68,15 @@ public class MapCsvReaderTest {
         final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertRead1(csvReader, bean);
     }
 
-    public static void assertRead1(
-            final RecordReader<Map<String, String>> csvReader,
-            final Map<String, String> bean) throws IOException {
+    public static void assertRead1(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+            throws IOException {
 
         assertEquals(0, csvReader.getRecordNumber());
         assertEquals(true, csvReader.hasNext());
@@ -131,17 +128,15 @@ public class MapCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertRead2(csvReader, bean);
     }
 
-    public static void assertRead2(
-            final RecordReader<Map<String, String>> csvReader,
-            final Map<String, String> bean) throws IOException {
+    public static void assertRead2(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+            throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
@@ -173,16 +168,15 @@ public class MapCsvReaderTest {
         final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertRead3(csvReader, bean);
     }
 
-    static void assertRead3(final RecordReader<Map<String, String>> csvReader,
-            final Map<String, String> bean) throws IOException {
+    static void assertRead3(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+            throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
@@ -212,15 +206,13 @@ public class MapCsvReaderTest {
         final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         assertRead3_2(csvReader);
     }
 
-    static void assertRead3_2(final RecordReader<Map<String, String>> csvReader)
-            throws IOException {
+    static void assertRead3_2(final RecordReader<Map<String, String>> csvReader) throws IOException {
         {
             assertEquals(true, csvReader.hasNext());
             final Map<String, String> bean = csvReader.read();
@@ -266,16 +258,14 @@ public class MapCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertReadNoheader(csvReader, bean);
     }
 
-    public static void assertReadNoheader(
-            final RecordReader<Map<String, String>> csvReader,
+    public static void assertReadNoheader(final RecordReader<Map<String, String>> csvReader,
             final Map<String, String> bean) throws IOException {
         /*
          * データはread2のテストと同じなので。
@@ -315,8 +305,7 @@ public class MapCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader(""));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(""));
 
         // ## Assert ##
         assertEquals(false, csvReader.hasNext());
@@ -346,8 +335,7 @@ public class MapCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader(""));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(""));
 
         // ## Assert ##
         assertEquals(false, csvReader.hasNext());
@@ -366,8 +354,7 @@ public class MapCsvReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader(""));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(""));
 
         // ## Assert ##
         assertEquals(false, csvReader.hasNext());
@@ -388,16 +375,14 @@ public class MapCsvReaderTest {
         final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertReadEmptyRow(csvReader, bean);
     }
 
-    public static void assertReadEmptyRow(
-            final RecordReader<Map<String, String>> csvReader,
+    public static void assertReadEmptyRow(final RecordReader<Map<String, String>> csvReader,
             final Map<String, String> bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
@@ -440,16 +425,13 @@ public class MapCsvReaderTest {
         final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         assertReadEmptyRow2(csvReader);
     }
 
-    static void assertReadEmptyRow2(
-            final RecordReader<Map<String, String>> csvReader)
-            throws IOException {
+    static void assertReadEmptyRow2(final RecordReader<Map<String, String>> csvReader) throws IOException {
 
         {
             assertEquals(true, csvReader.hasNext());
@@ -501,17 +483,15 @@ public class MapCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertRead4(csvReader, bean);
     }
 
-    public static void assertRead4(
-            final RecordReader<Map<String, String>> csvReader,
-            final Map<String, String> bean) throws IOException {
+    public static void assertRead4(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+            throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
@@ -548,16 +528,15 @@ public class MapCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertRead5(csvReader, bean);
     }
 
-    static void assertRead5(final RecordReader<Map<String, String>> csvReader,
-            final Map<String, String> bean) throws IOException {
+    static void assertRead5(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+            throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         logger.debug(bean.toString());
@@ -585,8 +564,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_smallColumns() throws Throwable {
         // ## Arrange ##
-        final Reader r = BeanCsvReaderTest.getResourceAsReader("-9", "tsv",
-                Charset.forName("UTF-8"));
+        final Reader r = BeanCsvReaderTest.getResourceAsReader("-9", "tsv", Charset.forName("UTF-8"));
 
         final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -599,17 +577,15 @@ public class MapCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertReadSmallColumns(csvReader, bean);
     }
 
-    static void assertReadSmallColumns(
-            final RecordReader<Map<String, String>> csvReader,
-            final Map<String, String> bean) throws IOException {
+    static void assertReadSmallColumns(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+            throws IOException {
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
@@ -651,16 +627,14 @@ public class MapCsvReaderTest {
         layout.setReaderHandler(readEditor);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertReadCustomLayout(csvReader, bean);
     }
 
-    public static void assertReadCustomLayout(
-            final RecordReader<Map<String, String>> csvReader,
+    public static void assertReadCustomLayout(final RecordReader<Map<String, String>> csvReader,
             final Map<String, String> bean) throws IOException {
         // tsvデータ部分は1と同じ
         assertRead1(csvReader, bean);
@@ -677,8 +651,7 @@ public class MapCsvReaderTest {
         final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -688,24 +661,21 @@ public class MapCsvReaderTest {
     @Test
     public void readCsv() throws Throwable {
         // ## Arrange ##
-        final Reader reader = BeanCsvReaderTest.getResourceAsReader("-8",
-                "csv", Charset.forName("UTF-8"));
+        final Reader reader = BeanCsvReaderTest.getResourceAsReader("-8", "csv", Charset.forName("UTF-8"));
 
         final MapCsvLayout<String> layout = new MapCsvLayout<String>();
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(reader);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(reader);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertReadCsv(csvReader, bean);
     }
 
-    static void assertReadCsv(
-            final RecordReader<Map<String, String>> csvReader,
-            final Map<String, String> bean) throws IOException {
+    static void assertReadCsv(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+            throws IOException {
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
@@ -730,9 +700,8 @@ public class MapCsvReaderTest {
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader(
-                        BeanCsvWriterTest.V_WRITE_SEPARATOR_COMMA));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(
+                BeanCsvWriterTest.V_WRITE_SEPARATOR_COMMA));
 
         // ## Assert ##
         _assert(csvReader);
@@ -745,9 +714,8 @@ public class MapCsvReaderTest {
         layout.setElementSeparator(CsvSetting.TAB);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader(
-                        BeanCsvWriterTest.V_WRITE_SEPARATOR_TAB));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(
+                BeanCsvWriterTest.V_WRITE_SEPARATOR_TAB));
 
         // ## Assert ##
         _assert(csvReader);
@@ -761,9 +729,8 @@ public class MapCsvReaderTest {
         layout.setLineSeparator("\n");
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader(
-                        BeanCsvWriterTest.V_WRITE_LINESEPARATOR_LF));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(
+                BeanCsvWriterTest.V_WRITE_LINESEPARATOR_LF));
 
         // ## Assert ##
         _assert(csvReader);
@@ -777,16 +744,14 @@ public class MapCsvReaderTest {
         layout.setQuoteMark('\'');
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader(
-                        BeanCsvWriterTest.V_WRITE_QUOTECHAR_SINGLE));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(
+                BeanCsvWriterTest.V_WRITE_QUOTECHAR_SINGLE));
 
         // ## Assert ##
         _assert(csvReader);
     }
 
-    private void _assert(final RecordReader<Map<String, String>> csvReader)
-            throws IOException {
+    private void _assert(final RecordReader<Map<String, String>> csvReader) throws IOException {
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
@@ -808,8 +773,8 @@ public class MapCsvReaderTest {
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b , \n"));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader("aaa,bbb,ccc\n"
+                + "  , b , \n"));
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -834,8 +799,8 @@ public class MapCsvReaderTest {
         layout.setElementEditor(ElementEditors.trim());
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader("aaa,bbb,ccc\n"
+                + "  , b　  , \n"));
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -860,8 +825,8 @@ public class MapCsvReaderTest {
         layout.setElementEditor(ElementEditors.trimWhitespace());
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader("aaa,bbb,ccc\n"
+                + "  , b　  , \n"));
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -888,8 +853,7 @@ public class MapCsvReaderTest {
         layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -945,8 +909,7 @@ public class MapCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, Object>> csvReader = layout
-                .openReader(getResourceAsReader("-12", "tsv"));
+        final RecordReader<Map<String, Object>> csvReader = layout.openReader(getResourceAsReader("-12", "tsv"));
 
         // ## Assert ##
         final Map<String, Object> bean = CollectionsUtil.newHashMap();
@@ -971,8 +934,7 @@ public class MapCsvReaderTest {
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
-        final Reader reader = BeanCsvReaderTest
-                .getResourceAsReader(suffix, ext);
+        final Reader reader = BeanCsvReaderTest.getResourceAsReader(suffix, ext);
         return reader;
     }
 

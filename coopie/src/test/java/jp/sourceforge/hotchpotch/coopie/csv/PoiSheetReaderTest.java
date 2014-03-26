@@ -24,11 +24,10 @@ public class PoiSheetReaderTest extends ElementReaderTest {
 
     @Override
     protected ElementReader constructTest1Reader() throws Throwable {
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1", "xls");
         final HSSFWorkbook workbook = new HSSFWorkbook(is);
-        final DefaultExcelReader.PoiSheetReader poiReader = new DefaultExcelReader.PoiSheetReader(
-                workbook, workbook.getSheetAt(0));
+        final DefaultExcelReader.PoiSheetReader poiReader = new DefaultExcelReader.PoiSheetReader(workbook,
+                workbook.getSheetAt(0));
         return poiReader;
     }
 

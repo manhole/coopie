@@ -23,8 +23,7 @@ import org.t2framework.commons.meta.ClassDesc;
 import org.t2framework.commons.meta.MethodDesc;
 import org.t2framework.commons.meta.PropertyDesc;
 
-public class BeanPropertyBinding<BEAN, PROP> implements
-        PropertyBinding<BEAN, PROP> {
+public class BeanPropertyBinding<BEAN, PROP> implements PropertyBinding<BEAN, PROP> {
 
     private final MethodDesc writeMethodDesc_;
     private final MethodDesc readMethodDesc_;
@@ -60,19 +59,16 @@ public class BeanPropertyBinding<BEAN, PROP> implements
         }
 
         @Override
-        public <PROP> PropertyBinding<BEAN, PROP> getPropertyBinding(
-                final String name) {
+        public <PROP> PropertyBinding<BEAN, PROP> getPropertyBinding(final String name) {
             if (name == null) {
                 throw new NullPointerException("name");
             }
             final PropertyDesc<BEAN> pd = beanDesc_.getPropertyDesc(name);
             if (pd == null) {
                 final ClassDesc<BEAN> classDesc = beanDesc_.getClassDesc();
-                final Class<? extends BEAN> concreteClass = classDesc
-                        .getConcreteClass();
+                final Class<? extends BEAN> concreteClass = classDesc.getConcreteClass();
                 final String className = concreteClass.getName();
-                throw new PropertyNotFoundException("property not found:<"
-                        + name + "> for class:<" + className + ">");
+                throw new PropertyNotFoundException("property not found:<" + name + "> for class:<" + className + ">");
             }
             return new BeanPropertyBinding<BEAN, PROP>(pd);
         }

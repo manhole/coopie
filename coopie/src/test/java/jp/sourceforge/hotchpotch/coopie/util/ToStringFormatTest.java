@@ -167,9 +167,7 @@ public class ToStringFormatTest {
         final String actual = format.format(Foo.class);
 
         // ## Assert ##
-        assertEquals(
-                "Class[jp.sourceforge.hotchpotch.coopie.util.ToStringFormatTest$Foo]",
-                actual);
+        assertEquals("Class[jp.sourceforge.hotchpotch.coopie.util.ToStringFormatTest$Foo]", actual);
     }
 
     @Test
@@ -276,8 +274,7 @@ public class ToStringFormatTest {
     @Test
     public void formatObjectArray3() throws Throwable {
         // ## Arrange ##
-        final Integer[] o = new Integer[] { new Integer("5"),
-                new Integer("-12") };
+        final Integer[] o = new Integer[] { new Integer("5"), new Integer("-12") };
 
         // ## Act ##
         final ToStringFormat format = new ToStringFormat();
@@ -382,9 +379,7 @@ public class ToStringFormatTest {
         final String actual = format.format(c1);
 
         // ## Assert ##
-        assertEquals(
-                "Composite[composite=Composite[composite=<..>, name=c2], name=c1]",
-                actual);
+        assertEquals("Composite[composite=Composite[composite=<..>, name=c2], name=c1]", actual);
     }
 
     /*

@@ -87,8 +87,7 @@ public class BeanMap extends AbstractMap<String, Object> {
     public Object getValue(final String key) {
         final PropertyDesc<Object> pd = beanDesc_.getPropertyDesc(key);
         if (pd == null) {
-            throw new IllegalArgumentException("key [" + key
-                    + "] does not exist");
+            throw new IllegalArgumentException("key [" + key + "] does not exist");
         }
         final Object v = pd.getValue(object_);
         return v;
@@ -98,8 +97,7 @@ public class BeanMap extends AbstractMap<String, Object> {
     public Object put(final String key, final Object value) {
         final PropertyDesc<Object> pd = beanDesc_.getPropertyDesc(key);
         if (pd == null) {
-            throw new IllegalArgumentException("key [" + key
-                    + "] does not exist");
+            throw new IllegalArgumentException("key [" + key + "] does not exist");
         }
         assertTypeIfNeed(pd, value);
         final Object prev = pd.getValue(object_);
@@ -107,8 +105,7 @@ public class BeanMap extends AbstractMap<String, Object> {
         return prev;
     }
 
-    private void assertTypeIfNeed(final PropertyDesc<Object> pd,
-            final Object value) {
+    private void assertTypeIfNeed(final PropertyDesc<Object> pd, final Object value) {
         if (lenient_) {
             return;
         }
@@ -119,8 +116,7 @@ public class BeanMap extends AbstractMap<String, Object> {
         final Class<?> expectedType = pd.getPropertyType();
         final Class<? extends Object> actualType = value.getClass();
         if (!expectedType.isAssignableFrom(actualType)) {
-            throw new IllegalArgumentException("invalid type. expected:<"
-                    + expectedType.getName() + "> actual:<"
+            throw new IllegalArgumentException("invalid type. expected:<" + expectedType.getName() + "> actual:<"
                     + actualType.getName() + ">");
         }
     }
@@ -171,8 +167,7 @@ public class BeanMap extends AbstractMap<String, Object> {
         return s;
     }
 
-    private static class BeanEntrySet extends
-            AbstractSet<Map.Entry<String, Object>> {
+    private static class BeanEntrySet extends AbstractSet<Map.Entry<String, Object>> {
 
         private final BeanMap map_;
 
@@ -205,8 +200,7 @@ public class BeanMap extends AbstractMap<String, Object> {
             throw new UnsupportedOperationException("remove");
         }
 
-        private static class EntryIterator implements
-                Iterator<Map.Entry<String, Object>> {
+        private static class EntryIterator implements Iterator<Map.Entry<String, Object>> {
 
             private final BeanMap map_;
             private final List<PropertyDesc<Object>> allPropertyDesc_;

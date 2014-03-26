@@ -135,8 +135,7 @@ public class BufferedReadable implements Closable {
         }
 
         final char[] array = charBuffer_.array();
-        final char[] chars = Arrays.copyOfRange(array, charBuffer_.position(),
-                readSize_);
+        final char[] chars = Arrays.copyOfRange(array, charBuffer_.position(), readSize_);
         readSize_ = charBuffer_.position();
         return chars;
     }

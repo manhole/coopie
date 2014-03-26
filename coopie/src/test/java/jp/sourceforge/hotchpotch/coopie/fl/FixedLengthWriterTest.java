@@ -32,8 +32,7 @@ public class FixedLengthWriterTest {
     public void test1() throws Throwable {
         // ## Arrange ##
 
-        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] {
-                col(0, 5), col(5, 12), col(12, 20) };
+        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] { col(0, 5), col(5, 12), col(12, 20) };
 
         final StringWriter sw = new StringWriter();
 
@@ -49,16 +48,13 @@ public class FixedLengthWriterTest {
         // ## Assert ##
         final String actual = sw.toString();
 
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream("-1", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is, "UTF-8"));
         assertEquals(expected, actual);
     }
 
     private FixedLengthElementDesc col(final int begin, final int end) {
-        return new AbstractFixedLengthLayout.SimpleFixedLengthElementDesc(
-                begin, end);
+        return new AbstractFixedLengthLayout.SimpleFixedLengthElementDesc(begin, end);
     }
 
 }

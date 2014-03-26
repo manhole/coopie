@@ -103,8 +103,7 @@ public class ByteSize {
 
     static abstract class AbstractToStringMode implements ToStringMode {
 
-        protected void appendTo(final ByteSizeUnit unit, final long size,
-                final StringBuilder sb) {
+        protected void appendTo(final ByteSizeUnit unit, final long size, final StringBuilder sb) {
             sb.append(unit.format(size));
             if (unit == ByteSizeUnits.B) {
                 return;

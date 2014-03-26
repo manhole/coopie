@@ -26,10 +26,8 @@ import org.t2framework.commons.util.CollectionsUtil;
 class DefaultFixedLengthColumnsDef implements FixedLengthColumnsDef {
 
     private String propertyName_;
-    private Converter<?, ?> converter_ = PassthroughStringConverter
-            .getInstance();
-    private final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil
-            .newArrayList();
+    private Converter<?, ?> converter_ = PassthroughStringConverter.getInstance();
+    private final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
 
     @Override
     public List<FixedLengthColumnDef> getColumnDefs() {

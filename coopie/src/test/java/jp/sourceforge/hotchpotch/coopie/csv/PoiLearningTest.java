@@ -33,8 +33,7 @@ public class PoiLearningTest {
      */
     @Test
     public void range() throws Throwable {
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1", "xls");
         final HSSFWorkbook book = new HSSFWorkbook(is);
         assertEquals("we have 3 sheets", 3, book.getNumberOfSheets());
 

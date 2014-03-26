@@ -27,14 +27,11 @@ import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
 
-public abstract class AbstractBeanCsvLayout<BEAN> extends
-        AbstractCsvLayout<BEAN> {
+public abstract class AbstractBeanCsvLayout<BEAN> extends AbstractCsvLayout<BEAN> {
 
     private final BeanDesc<BEAN> beanDesc_;
-    private CsvRecordDefCustomizer customizer_ = EmptyRecordDefCustomizer
-            .getInstance();
-    private PropertyAnnotationReader propertyAnnotationReader_ = Annotations
-            .getPropertyAnnotationReader();
+    private CsvRecordDefCustomizer customizer_ = EmptyRecordDefCustomizer.getInstance();
+    private PropertyAnnotationReader propertyAnnotationReader_ = Annotations.getPropertyAnnotationReader();
 
     public AbstractBeanCsvLayout(final Class<BEAN> beanClass) {
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
@@ -60,8 +57,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
             if (csvColumnDef.hasConverter()) {
                 continue;
             }
-            final Converter converter = converterRepository
-                    .detect(csvColumnDef);
+            final Converter converter = converterRepository.detect(csvColumnDef);
             if (converter != null) {
                 csvColumnDef.setConverter(converter);
             }
@@ -70,8 +66,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
             if (csvColumnsDef.hasConverter()) {
                 continue;
             }
-            final Converter converter = converterRepository
-                    .detect(csvColumnsDef);
+            final Converter converter = converterRepository.detect(csvColumnsDef);
             if (converter != null) {
                 csvColumnsDef.setConverter(converter);
             }
@@ -117,8 +112,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
         final DefaultCsvRecordDef recordDef = new DefaultCsvRecordDef();
         final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<BEAN> pd : pds) {
-            final CsvColumns columns = getPropertyAnnotationReader()
-                    .getAnnotation(pd, CsvColumns.class);
+            final CsvColumns columns = getPropertyAnnotationReader().getAnnotation(pd, CsvColumns.class);
             if (columns != null) {
                 final DefaultCsvColumnsDef columnsDef = new DefaultCsvColumnsDef();
                 columnsDef.setup(columns, pd);
@@ -127,8 +121,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
             }
             // TODO: CsvColumnとCsvColumnsの両方があったら例外にすること
 
-            final CsvColumn column = getPropertyAnnotationReader()
-                    .getAnnotation(pd, CsvColumn.class);
+            final CsvColumn column = getPropertyAnnotationReader().getAnnotation(pd, CsvColumn.class);
             if (column != null) {
                 final DefaultCsvColumnDef columnDef = new DefaultCsvColumnDef();
                 columnDef.setup(column, pd);
@@ -140,8 +133,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
             return null;
         }
 
-        Collections.sort(recordDef.getColumnDefs(),
-                CsvColumnDefComparator.getInstance());
+        Collections.sort(recordDef.getColumnDefs(), CsvColumnDefComparator.getInstance());
         return recordDef;
     }
 
@@ -165,8 +157,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends
         return propertyAnnotationReader_;
     }
 
-    public void setPropertyAnnotationReader(
-            final PropertyAnnotationReader propertyAnnotationReader) {
+    public void setPropertyAnnotationReader(final PropertyAnnotationReader propertyAnnotationReader) {
         propertyAnnotationReader_ = propertyAnnotationReader;
     }
 

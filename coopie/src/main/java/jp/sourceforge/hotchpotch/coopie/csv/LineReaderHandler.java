@@ -30,8 +30,7 @@ public interface LineReaderHandler {
      */
     // 当メソッドが返却した値が、 {@link #readRecord(ElementReader)} へ流れていきます。
     // (当メソッドにて読み飛ばした行は、{@link #readRecord(ElementReader)} へ流れません。)
-    Line readLine(LineReadable lineReader, Line reusableLine)
-            throws IOException;
+    Line readLine(LineReadable lineReader, Line reusableLine) throws IOException;
 
     /**
      * 1行読むタイミングで呼ばれます。

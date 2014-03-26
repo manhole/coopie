@@ -36,14 +36,11 @@ public class CsvAssertTest extends CsvAssert {
     public void csv() throws Throwable {
         csvAssert_.setElementSeparator(CsvSetting.COMMA);
         csvAssert_.assertCsvEquals((Reader) null, null);
-        csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"),
-                new StringReader("A,B\n" + "a,b"));
-        csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"),
-                new StringReader("B,A\n" + "b,a"));
+        csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"), new StringReader("A,B\n" + "a,b"));
+        csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"), new StringReader("B,A\n" + "b,a"));
 
         try {
-            csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"),
-                    new StringReader("B,A\n" + "b,A"));
+            csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"), new StringReader("B,A\n" + "b,A"));
             fail();
         } catch (final CsvAssertionError e) {
             logger.debug(e.getMessage());
@@ -52,20 +49,17 @@ public class CsvAssertTest extends CsvAssert {
 
     @Test
     public void array() {
-        csvAssert_.assertArrayEquals(new String[] { "a", "b" }, new String[] {
-                "a", "b" });
+        csvAssert_.assertArrayEquals(new String[] { "a", "b" }, new String[] { "a", "b" });
         csvAssert_.assertArrayEquals(null, null);
 
         try {
-            csvAssert_.assertArrayEquals(new String[] { "a", "b" },
-                    new String[] { "a" });
+            csvAssert_.assertArrayEquals(new String[] { "a", "b" }, new String[] { "a" });
             fail();
         } catch (final CsvAssertionError e) {
             logger.debug(e.getMessage());
         }
         try {
-            csvAssert_.assertArrayEquals(new String[] { "a", "b" },
-                    new String[] { "a", "c" });
+            csvAssert_.assertArrayEquals(new String[] { "a", "b" }, new String[] { "a", "c" });
             fail();
         } catch (final CsvAssertionError e) {
             logger.debug(e.getMessage());

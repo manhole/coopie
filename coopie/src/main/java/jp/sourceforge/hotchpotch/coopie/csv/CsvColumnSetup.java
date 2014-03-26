@@ -22,8 +22,7 @@ public interface CsvColumnSetup {
 
     ColumnBuilder column(String name);
 
-    CompositeColumnBuilder columns(
-            final SetupBlock<CsvCompositeColumnSetup> compositeSetup);
+    CompositeColumnBuilder columns(final SetupBlock<CsvCompositeColumnSetup> compositeSetup);
 
     public interface ColumnBuilder {
 

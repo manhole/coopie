@@ -23,11 +23,9 @@ public interface FixedLengthColumnSetup {
 
     CsvColumnSetup.ColumnBuilder column(FixedLengthColumnDef columnDef);
 
-    CsvColumnSetup.ColumnBuilder column(String name, int beginIndex,
-            int endIndex);
+    CsvColumnSetup.ColumnBuilder column(String name, int beginIndex, int endIndex);
 
-    CsvColumnSetup.CompositeColumnBuilder columns(
-            final SetupBlock<FixedLengthCompositeColumnSetup> compositeSetup);
+    CsvColumnSetup.CompositeColumnBuilder columns(final SetupBlock<FixedLengthCompositeColumnSetup> compositeSetup);
 
     // 複数カラムをプロパティと対応づける際に使用する
     FixedLengthColumnDef c(String name, int beginIndex, int endIndex);
@@ -36,8 +34,7 @@ public interface FixedLengthColumnSetup {
 
         CsvColumnSetup.ColumnBuilder column(FixedLengthColumnDef columnDef);
 
-        CsvColumnSetup.ColumnBuilder column(String name, int beginIndex,
-                int endIndex);
+        CsvColumnSetup.ColumnBuilder column(String name, int beginIndex, int endIndex);
 
     }
 

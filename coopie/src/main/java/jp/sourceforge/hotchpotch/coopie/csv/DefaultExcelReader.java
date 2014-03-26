@@ -69,8 +69,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
         @SuppressWarnings("unused")
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-        private final List<PoiSheetReader> sheets_ = CollectionsUtil
-                .newArrayList();
+        private final List<PoiSheetReader> sheets_ = CollectionsUtil.newArrayList();
 
         public PoiReader(final InputStream is) {
             try {
@@ -156,8 +155,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
         private int rowNum_ = 0;
         private final int lastRowNum_;
 
-        private final DateFormat dateFormat_ = new SimpleDateFormat(
-                "yyyyMMdd\'T\'HHmmss");
+        private final DateFormat dateFormat_ = new SimpleDateFormat("yyyyMMdd\'T\'HHmmss");
 
         public PoiSheetReader(final HSSFWorkbook workbook, final HSSFSheet sheet) {
             workbook_ = workbook;
@@ -206,8 +204,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                      * (どうやって作るのかはわからないが)
                      * ここでは空行と同じ扱いにする。
                      */
-                    logger.warn("lastCellNum={}, rowNum={}", lastCellNum,
-                            rowNum_);
+                    logger.warn("lastCellNum={}, rowNum={}", lastCellNum, rowNum_);
                     line = new String[0];
                 } else {
                     //logger.debug("lastCellNum={}", lastCellNum);
@@ -279,8 +276,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                 return Boolean.toString(b);
             case HSSFCell.CELL_TYPE_STRING:
             default:
-                final HSSFRichTextString richStringCellValue = cell
-                        .getRichStringCellValue();
+                final HSSFRichTextString richStringCellValue = cell.getRichStringCellValue();
                 final String value = richStringCellValue.getString();
                 return value;
             }

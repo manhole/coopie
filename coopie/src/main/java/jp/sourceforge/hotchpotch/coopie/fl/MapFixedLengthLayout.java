@@ -30,8 +30,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
-public class MapFixedLengthLayout<PROP> extends
-        AbstractFixedLengthLayout<Map<String, PROP>> {
+public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<String, PROP>> {
 
     @Deprecated
     public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
@@ -39,8 +38,7 @@ public class MapFixedLengthLayout<PROP> extends
     }
 
     @Deprecated
-    public RecordWriter<Map<String, PROP>> openWriter(
-            final Appendable appendable) {
+    public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
         return build().openWriter(appendable);
     }
 
@@ -86,23 +84,20 @@ public class MapFixedLengthLayout<PROP> extends
         return new MapRecordType<PROP>();
     }
 
-    protected static class MapFixedLengthRecordInOut<PROP> implements
-            RecordInOut<Map<String, PROP>> {
+    protected static class MapFixedLengthRecordInOut<PROP> implements RecordInOut<Map<String, PROP>> {
 
         private RecordDesc<Map<String, PROP>> recordDesc_;
         private boolean withHeader_;
         private ElementInOut elementInOut_;
 
         @Override
-        public RecordReader<Map<String, PROP>> openReader(
-                final Readable readable) {
+        public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
             if (readable == null) {
                 throw new NullPointerException("readable");
             }
 
             final RecordDesc<Map<String, PROP>> rd = recordDesc_;
-            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
-                    rd);
+            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(rd);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること
@@ -111,14 +106,12 @@ public class MapFixedLengthLayout<PROP> extends
         }
 
         @Override
-        public RecordWriter<Map<String, PROP>> openWriter(
-                final Appendable appendable) {
+        public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
             if (appendable == null) {
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(
-                    recordDesc_);
+            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

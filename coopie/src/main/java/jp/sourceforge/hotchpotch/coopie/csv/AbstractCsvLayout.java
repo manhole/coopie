@@ -35,14 +35,11 @@ public abstract class AbstractCsvLayout<BEAN> {
     private CsvRecordDef recordDef_;
     private PropertyBindingFactory<BEAN> propertyBindingFactory_;
     private RecordType<BEAN> recordType_;
-    private ConverterRepository converterRepository_ = NullConverterRepository
-            .getInstance();
+    private ConverterRepository converterRepository_ = NullConverterRepository.getInstance();
 
     private boolean withHeader_ = true;
-    private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
-            .getInstance();
-    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
-            .getInstance();
+    private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler.getInstance();
+    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler.getInstance();
     private ElementEditor elementEditor_;
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
@@ -92,8 +89,7 @@ public abstract class AbstractCsvLayout<BEAN> {
         return elementReaderHandler_;
     }
 
-    public void setElementReaderHandler(
-            final ElementReaderHandler elementReaderHandler) {
+    public void setElementReaderHandler(final ElementReaderHandler elementReaderHandler) {
         elementReaderHandler_ = elementReaderHandler;
     }
 
@@ -143,8 +139,7 @@ public abstract class AbstractCsvLayout<BEAN> {
         return converterRepository_;
     }
 
-    public void setConverterRepository(
-            final ConverterRepository converterRepository) {
+    public void setConverterRepository(final ConverterRepository converterRepository) {
         converterRepository_ = converterRepository;
     }
 
@@ -153,13 +148,12 @@ public abstract class AbstractCsvLayout<BEAN> {
         final RecordType<BEAN> recordType = getRecordType();
         final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef, pbf);
         // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
-        final RecordDesc<BEAN> recordDesc = new DefaultRecordDesc<BEAN>(cds,
-                recordDef.getOrderSpecified(), recordType);
+        final RecordDesc<BEAN> recordDesc = new DefaultRecordDesc<BEAN>(cds, recordDef.getOrderSpecified(), recordType);
         return recordDesc;
     }
 
-    private ColumnDesc<BEAN>[] recordDefToColumnDesc(
-            final CsvRecordDef recordDef, final PropertyBindingFactory<BEAN> pbf) {
+    private ColumnDesc<BEAN>[] recordDefToColumnDesc(final CsvRecordDef recordDef,
+            final PropertyBindingFactory<BEAN> pbf) {
 
         final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();
         appendColumnDescFromColumnDef(recordDef, list, pbf);
@@ -169,22 +163,18 @@ public abstract class AbstractCsvLayout<BEAN> {
         return cds;
     }
 
-    private void appendColumnDescFromColumnDef(final CsvRecordDef recordDef,
-            final List<ColumnDesc<BEAN>> list,
+    private void appendColumnDescFromColumnDef(final CsvRecordDef recordDef, final List<ColumnDesc<BEAN>> list,
             final PropertyBindingFactory<BEAN> pbf) {
 
         for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
             final ColumnName columnName = newColumnName(columnDef);
-            final PropertyBinding<BEAN, Object> pb = pbf
-                    .getPropertyBinding(columnDef.getPropertyName());
-            final ColumnDesc<BEAN> cd = DefaultColumnDesc.newColumnDesc(
-                    columnName, pb, columnDef.getConverter());
+            final PropertyBinding<BEAN, Object> pb = pbf.getPropertyBinding(columnDef.getPropertyName());
+            final ColumnDesc<BEAN> cd = DefaultColumnDesc.newColumnDesc(columnName, pb, columnDef.getConverter());
             list.add(cd);
         }
     }
 
-    private void appendColumnDescFromColumnsDef(final CsvRecordDef recordDef,
-            final List<ColumnDesc<BEAN>> list,
+    private void appendColumnDescFromColumnsDef(final CsvRecordDef recordDef, final List<ColumnDesc<BEAN>> list,
             final PropertyBindingFactory<BEAN> pbf) {
 
         for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
@@ -192,22 +182,18 @@ public abstract class AbstractCsvLayout<BEAN> {
             for (final CsvColumnDef columnDef : columnsDef.getColumnDefs()) {
                 columnNames.add(newColumnName(columnDef));
             }
-            final PropertyBinding<BEAN, Object> pb = pbf
-                    .getPropertyBinding(columnsDef.getPropertyName());
+            final PropertyBinding<BEAN, Object> pb = pbf.getPropertyBinding(columnsDef.getPropertyName());
             if (!columnsDef.hasConverter()) {
-                throw new IllegalStateException(
-                        "composite column should have converter");
+                throw new IllegalStateException("composite column should have converter");
             }
-            final ColumnDesc<BEAN>[] cds = CompositeColumnDesc
-                    .newCompositeColumnDesc(columnNames, pb,
-                            columnsDef.getConverter());
+            final ColumnDesc<BEAN>[] cds = CompositeColumnDesc.newCompositeColumnDesc(columnNames, pb,
+                    columnsDef.getConverter());
             Collections.addAll(list, cds);
         }
     }
 
     private ColumnName newColumnName(final CsvColumnDef columnDef) {
-        final SimpleColumnName columnName = new SimpleColumnName(
-                columnDef.getLabel());
+        final SimpleColumnName columnName = new SimpleColumnName(columnDef.getLabel());
         columnName.setColumnNameMatcher(columnDef.getColumnNameMatcher());
         return columnName;
     }
@@ -236,8 +222,7 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     }
 
-    protected static class DefaultCsvRecordDefSetup implements
-            CsvRecordDefSetup {
+    protected static class DefaultCsvRecordDefSetup implements CsvRecordDefSetup {
 
         private final List columnBuilders_ = CollectionsUtil.newArrayList();
 
@@ -265,12 +250,10 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
 
         @Override
-        public CompositeColumnBuilder columns(
-                final SetupBlock<CsvCompositeColumnSetup> compositeSetup) {
+        public CompositeColumnBuilder columns(final SetupBlock<CsvCompositeColumnSetup> compositeSetup) {
 
             final DefaultCsvColumnsDef columnsDef = new DefaultCsvColumnsDef();
-            final CsvCompositeColumnBuilder builder = new CsvCompositeColumnBuilder(
-                    columnsDef);
+            final CsvCompositeColumnBuilder builder = new CsvCompositeColumnBuilder(columnsDef);
             compositeSetup.setup(new CsvCompositeColumnSetup() {
                 @Override
                 public ColumnBuilder column(final String name) {
@@ -303,23 +286,18 @@ public abstract class AbstractCsvLayout<BEAN> {
             final CsvRecordDef recordDef = new DefaultCsvRecordDef();
             for (final Object builder : columnBuilders_) {
                 if (builder instanceof InternalCsvColumnBuilder) {
-                    final CsvColumnDef columnDef = ((InternalCsvColumnBuilder) builder)
-                            .getColumnDef();
+                    final CsvColumnDef columnDef = ((InternalCsvColumnBuilder) builder).getColumnDef();
                     recordDef.addColumnDef(columnDef);
                 } else if (builder instanceof InternalCsvCompositeColumnBuilder) {
                     final CsvColumnsDef columnsDef = ((InternalCsvCompositeColumnBuilder) builder)
                             .getCompositeColumnDef();
                     if (StringUtil.isEmpty(columnsDef.getPropertyName())) {
-                        final List<String> names = CollectionsUtil
-                                .newArrayList();
-                        final List<CsvColumnDef> defs = columnsDef
-                                .getColumnDefs();
+                        final List<String> names = CollectionsUtil.newArrayList();
+                        final List<CsvColumnDef> defs = columnsDef.getColumnDefs();
                         for (final CsvColumnDef def : defs) {
                             names.add(def.getLabel());
                         }
-                        throw new IllegalStateException(
-                                "property is not specified. for column "
-                                        + names);
+                        throw new IllegalStateException("property is not specified. for column " + names);
                     }
                     recordDef.addColumnsDef(columnsDef);
                 } else {
@@ -336,8 +314,7 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     }
 
-    public interface InternalCompositeColumnBuilder extends
-            CompositeColumnBuilder {
+    public interface InternalCompositeColumnBuilder extends CompositeColumnBuilder {
 
     }
 
@@ -347,8 +324,7 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     }
 
-    public interface InternalCsvCompositeColumnBuilder extends
-            InternalCompositeColumnBuilder {
+    public interface InternalCsvCompositeColumnBuilder extends InternalCompositeColumnBuilder {
 
         CsvColumnsDef getCompositeColumnDef();
 
@@ -380,16 +356,14 @@ public abstract class AbstractCsvLayout<BEAN> {
         }
 
         @Override
-        public ColumnBuilder withColumnNameMatcher(
-                final ColumnNameMatcher columnNameMatcher) {
+        public ColumnBuilder withColumnNameMatcher(final ColumnNameMatcher columnNameMatcher) {
             columnDef_.setColumnNameMatcher(columnNameMatcher);
             return this;
         }
 
     }
 
-    static class CsvCompositeColumnBuilder implements
-            InternalCsvCompositeColumnBuilder {
+    static class CsvCompositeColumnBuilder implements InternalCsvCompositeColumnBuilder {
 
         private final CsvColumnsDef columnsDef_;
 

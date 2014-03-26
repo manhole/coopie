@@ -66,8 +66,8 @@ public class DefaultColumnDesc<BEAN> implements ColumnDesc<BEAN> {
         propertyBinding_.setValue(bean, to);
     }
 
-    public static <T> ColumnDesc<T> newColumnDesc(final ColumnName columnName,
-            final PropertyBinding propertyBinding, final Converter converter) {
+    public static <T> ColumnDesc<T> newColumnDesc(final ColumnName columnName, final PropertyBinding propertyBinding,
+            final Converter converter) {
         final DefaultColumnDesc<T> cd = new DefaultColumnDesc<T>();
         cd.setName(columnName);
         cd.setPropertyBinding(propertyBinding);

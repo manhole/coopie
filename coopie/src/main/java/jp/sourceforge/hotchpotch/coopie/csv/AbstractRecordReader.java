@@ -27,8 +27,7 @@ import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractRecordReader<BEAN> implements Closable,
-        RecordReader<BEAN> {
+public abstract class AbstractRecordReader<BEAN> implements Closable, RecordReader<BEAN> {
 
     private static final Logger logger = LoggerFactory.getLogger();
 
@@ -43,8 +42,7 @@ public abstract class AbstractRecordReader<BEAN> implements Closable,
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
     private ElementReader elementReader_;
-    private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler
-            .getInstance();
+    private ElementReaderHandler elementReaderHandler_ = DefaultElementReaderHandler.getInstance();
 
     private boolean withHeader_;
 
@@ -86,8 +84,7 @@ public abstract class AbstractRecordReader<BEAN> implements Closable,
     }
 
     protected String[] readLine() {
-        final String[] elements = elementReaderHandler_
-                .readRecord(elementReader_);
+        final String[] elements = elementReaderHandler_.readRecord(elementReader_);
         if (elements != null && elementEditor_ != null) {
             for (int i = 0; i < elements.length; i++) {
                 final String elem = elements[i];
@@ -175,8 +172,7 @@ public abstract class AbstractRecordReader<BEAN> implements Closable,
         return elementReaderHandler_;
     }
 
-    public void setElementReaderHandler(
-            final ElementReaderHandler elementReaderHandler) {
+    public void setElementReaderHandler(final ElementReaderHandler elementReaderHandler) {
         elementReaderHandler_ = elementReaderHandler;
     }
 

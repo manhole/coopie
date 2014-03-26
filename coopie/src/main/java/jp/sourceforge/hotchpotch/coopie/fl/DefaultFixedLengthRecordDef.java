@@ -22,10 +22,8 @@ import org.t2framework.commons.util.CollectionsUtil;
 
 class DefaultFixedLengthRecordDef implements FixedLengthRecordDef {
 
-    final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil
-            .newArrayList();
-    private final List<FixedLengthColumnsDef> columnsDefs_ = CollectionsUtil
-            .newArrayList();
+    final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
+    private final List<FixedLengthColumnsDef> columnsDefs_ = CollectionsUtil.newArrayList();
 
     public boolean isEmpty() {
         return getColumnDefs().isEmpty();
@@ -57,8 +55,7 @@ class DefaultFixedLengthRecordDef implements FixedLengthRecordDef {
         all.addAll(getColumnDefs());
         final List<? extends FixedLengthColumnsDef> columnsDefs = getColumnsDefs();
         for (final FixedLengthColumnsDef columnsDef : columnsDefs) {
-            final List<FixedLengthColumnDef> columnDefs = columnsDef
-                    .getColumnDefs();
+            final List<FixedLengthColumnDef> columnDefs = columnsDef.getColumnDefs();
             all.addAll(columnDefs);
         }
         return all;

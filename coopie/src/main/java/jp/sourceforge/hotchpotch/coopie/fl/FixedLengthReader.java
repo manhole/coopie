@@ -40,11 +40,9 @@ public class FixedLengthReader implements ElementReader {
     private final FixedLengthElementDesc[] elementDescs_;
     private int lineNo_;
     private final Line line_ = new LineImpl();
-    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
-            .getInstance();
+    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler.getInstance();
 
-    private final ElementParserContext parserContext_ = FixedLengthParserContext
-            .getInstance();
+    private final ElementParserContext parserContext_ = FixedLengthParserContext.getInstance();
 
     public FixedLengthReader(final FixedLengthElementDesc[] columns) {
         elementDescs_ = columns;
@@ -115,8 +113,7 @@ public class FixedLengthReader implements ElementReader {
         lineReaderHandler_ = lineReaderHandler;
     }
 
-    private static class FixedLengthParserContext implements
-            ElementParserContext {
+    private static class FixedLengthParserContext implements ElementParserContext {
 
         private static final ElementParserContext INSTANCE = new FixedLengthParserContext();
 

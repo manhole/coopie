@@ -22,7 +22,6 @@ import org.t2framework.commons.meta.PropertyDesc;
 
 public interface PropertyAnnotationReader {
 
-    <ANN extends Annotation> ANN getAnnotation(
-            final PropertyDesc<?> propertyDesc, final Class<ANN> annotationClass);
+    <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?> propertyDesc, final Class<ANN> annotationClass);
 
 }

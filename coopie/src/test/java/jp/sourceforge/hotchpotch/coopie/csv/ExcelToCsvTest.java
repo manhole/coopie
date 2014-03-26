@@ -49,13 +49,11 @@ public class ExcelToCsvTest {
     @Test
     public void test1() throws Exception {
         // ## Arrange ##
-        final File testFile = ResourceUtil.getResourceAsFile(
-                ExcelToCsvTest.class.getName() + "-1", "xls");
+        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-1", "xls");
         final File inFile = new File(rootDir, testFile.getName());
         files.copy(testFile, inFile);
 
-        final File outFile = new File(inFile.getParentFile(),
-                "ExcelToCsvTest-1.tsv");
+        final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-1.tsv");
         logger.debug("outFile={}", outFile);
 
         files.delete(outFile);
@@ -67,8 +65,7 @@ public class ExcelToCsvTest {
         // ## Assert ##
         assertEquals(true, outFile.exists());
 
-        final File expectedFile = ResourceUtil.getResourceAsFile(
-                ExcelToCsvTest.class.getName() + "-1-expected", "tsv");
+        final File expectedFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-1-expected", "tsv");
         csvAssert_.assertCsvEquals(expectedFile, outFile);
     }
 
@@ -78,13 +75,11 @@ public class ExcelToCsvTest {
     @Test
     public void test2() throws Exception {
         // ## Arrange ##
-        final File testFile = ResourceUtil.getResourceAsFile(
-                ExcelToCsvTest.class.getName() + "-2", "xls");
+        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-2", "xls");
         final File inFile = new File(rootDir, testFile.getName());
         files.copy(testFile, inFile);
 
-        final File outFile = new File(inFile.getParentFile(),
-                "ExcelToCsvTest-2.tsv");
+        final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-2.tsv");
         logger.debug("outFile={}", outFile);
 
         files.delete(outFile);
@@ -96,8 +91,7 @@ public class ExcelToCsvTest {
         // ## Assert ##
         assertEquals(true, outFile.exists());
 
-        final File expectedFile = ResourceUtil.getResourceAsFile(
-                ExcelToCsvTest.class.getName() + "-2-expected", "tsv");
+        final File expectedFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-2-expected", "tsv");
 
         csvAssert_.assertCsvEquals(expectedFile, outFile);
     }
@@ -108,8 +102,7 @@ public class ExcelToCsvTest {
     @Test
     public void test3() throws Exception {
         // ## Arrange ##
-        final File testFile = ResourceUtil.getResourceAsFile(
-                ExcelToCsvTest.class.getName() + "-3", "xls");
+        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-3", "xls");
 
         final File inFile = new File(rootDir, testFile.getName());
         files.copy(testFile, inFile);
@@ -130,14 +123,12 @@ public class ExcelToCsvTest {
         assertEquals(true, outFile3.exists());
         assertEquals(3, rootDir.list().length);
 
-        final File expectedFile1 = ResourceUtil
-                .getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
-                        .replace('.', '/')
-                        + "/" + "ExcelToCsvTest-3-expected1.tsv");
-        final File expectedFile3 = ResourceUtil
-                .getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
-                        .replace('.', '/')
-                        + "/" + "ExcelToCsvTest-3-expected3.tsv");
+        final File expectedFile1 = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
+                .replace('.', '/')
+                + "/" + "ExcelToCsvTest-3-expected1.tsv");
+        final File expectedFile3 = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
+                .replace('.', '/')
+                + "/" + "ExcelToCsvTest-3-expected3.tsv");
 
         csvAssert_.assertCsvEquals(expectedFile1, outFile1);
         csvAssert_.assertCsvEquals(expectedFile3, outFile3);
@@ -146,13 +137,11 @@ public class ExcelToCsvTest {
     @Test
     public void test_date() throws Exception {
         // ## Arrange ##
-        final File testFile = ResourceUtil.getResourceAsFile(
-                ExcelToCsvTest.class.getName() + "-date", "xls");
+        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-date", "xls");
         final File inFile = new File(rootDir, testFile.getName());
         files.copy(testFile, inFile);
 
-        final File outFile = new File(inFile.getParentFile(),
-                "ExcelToCsvTest-date.tsv");
+        final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-date.tsv");
         logger.debug("outFile={}", outFile);
 
         files.delete(outFile);
@@ -164,8 +153,8 @@ public class ExcelToCsvTest {
         // ## Assert ##
         assertEquals(true, outFile.exists());
 
-        final File expectedFile = ResourceUtil.getResourceAsFile(
-                ExcelToCsvTest.class.getName() + "-date-expected", "tsv");
+        final File expectedFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-date-expected",
+                "tsv");
         csvAssert_.assertCsvEquals(expectedFile, outFile);
     }
 

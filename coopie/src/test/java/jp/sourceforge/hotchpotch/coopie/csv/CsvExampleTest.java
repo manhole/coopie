@@ -35,38 +35,32 @@ public class CsvExampleTest {
         final StringWriter dest = new StringWriter();
 
         // ## Act ##
-        final RecordWriter<SomeBean> writer = SomeCsvIO.openWriter(
-                SomeBean.class, dest);
+        final RecordWriter<SomeBean> writer = SomeCsvIO.openWriter(SomeBean.class, dest);
         writer.write(new SomeBean("a1", "b1", "c1"));
         writer.write(new SomeBean("a2", "b2", "c2"));
         writer.close();
 
         // ## Assert ##
         final String actual = dest.toString();
-        assertEquals("aaa,bbb,ccc\r\n" + "a1,b1,c1\r\n" + "a2,b2,c2\r\n",
-                actual);
+        assertEquals("aaa,bbb,ccc\r\n" + "a1,b1,c1\r\n" + "a2,b2,c2\r\n", actual);
     }
 
     @Test
     public void readCsv1() throws Throwable {
         // ## Arrange ##
-        final StringReader source = new StringReader("aaa,bbb,ccc\r\n"
-                + "a1,b1,c1\r\n" + "a2,b2,c2\r\n");
+        final StringReader source = new StringReader("aaa,bbb,ccc\r\n" + "a1,b1,c1\r\n" + "a2,b2,c2\r\n");
 
         // ## Act ##
-        final RecordReader<SomeBean> reader = SomeCsvIO.openReader(
-                SomeBean.class, source);
+        final RecordReader<SomeBean> reader = SomeCsvIO.openReader(SomeBean.class, source);
 
         // ## Assert ##
         final SomeBean record = new SomeBean();
         assertEquals(true, reader.hasNext());
         reader.read(record);
-        assertArrayEquals(a("a1", "b1", "c1"),
-                a(record.getAaa(), record.getBbb(), record.getCcc()));
+        assertArrayEquals(a("a1", "b1", "c1"), a(record.getAaa(), record.getBbb(), record.getCcc()));
         assertEquals(true, reader.hasNext());
         reader.read(record);
-        assertArrayEquals(a("a2", "b2", "c2"),
-                a(record.getAaa(), record.getBbb(), record.getCcc()));
+        assertArrayEquals(a("a2", "b2", "c2"), a(record.getAaa(), record.getBbb(), record.getCcc()));
         assertEquals(false, reader.hasNext());
         reader.close();
     }
@@ -77,22 +71,19 @@ public class CsvExampleTest {
      */
     static class SomeCsvIO {
 
-        static <BEAN> RecordWriter<BEAN> openWriter(final Class<BEAN> clazz,
-                final Appendable appendable) {
+        static <BEAN> RecordWriter<BEAN> openWriter(final Class<BEAN> clazz, final Appendable appendable) {
             final BeanCsvLayout<BEAN> layout = createLayout(clazz);
             final RecordWriter<BEAN> writer = layout.openWriter(appendable);
             return writer;
         }
 
-        static <BEAN> RecordReader<BEAN> openReader(final Class<BEAN> clazz,
-                final Readable readable) {
+        static <BEAN> RecordReader<BEAN> openReader(final Class<BEAN> clazz, final Readable readable) {
             final BeanCsvLayout<BEAN> layout = createLayout(clazz);
             final RecordReader<BEAN> reader = layout.openReader(readable);
             return reader;
         }
 
-        private static <BEAN> BeanCsvLayout<BEAN> createLayout(
-                final Class<BEAN> clazz) {
+        private static <BEAN> BeanCsvLayout<BEAN> createLayout(final Class<BEAN> clazz) {
             final BeanCsvLayout<BEAN> layout = BeanCsvLayout.getInstance(clazz);
             // 要素区切り文字をカンマ","にする
             layout.setElementSeparator(CsvSetting.COMMA);

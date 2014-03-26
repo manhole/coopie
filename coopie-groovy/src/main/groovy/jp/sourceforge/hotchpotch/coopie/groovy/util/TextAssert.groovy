@@ -1,6 +1,6 @@
 package jp.sourceforge.hotchpotch.coopie.groovy.util
 
-import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
+import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil
 import jp.sourceforge.hotchpotch.coopie.util.LineReader
 
 class TextAssert {

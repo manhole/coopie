@@ -26,10 +26,8 @@ class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
     private Class<?> propertyType_;
 
     private int order_;
-    private Converter<?, ?> converter_ = PassthroughStringConverter
-            .getInstance();
-    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher
-            .getInstance();
+    private Converter<?, ?> converter_ = PassthroughStringConverter.getInstance();
+    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher.getInstance();
 
     public void setup(final CsvColumn column, final PropertyDesc pd) {
         if (StringUtil.isBlank(column.label())) {

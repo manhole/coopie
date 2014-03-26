@@ -25,8 +25,7 @@ public class SimpleColumnName implements ColumnName {
      */
     private String label_;
 
-    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher
-            .getInstance();
+    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher.getInstance();
 
     public SimpleColumnName() {
     }

@@ -20,13 +20,11 @@ import org.junit.internal.matchers.SubstringMatcher;
 
 public class CoopieMatchers {
 
-    public static org.hamcrest.Matcher<java.lang.String> startsWithString(
-            final String substring) {
+    public static org.hamcrest.Matcher<java.lang.String> startsWithString(final String substring) {
         return new StringStartsWith(substring);
     }
 
-    public static org.hamcrest.Matcher<java.lang.String> endsWithString(
-            final String substring) {
+    public static org.hamcrest.Matcher<java.lang.String> endsWithString(final String substring) {
         return new StringEndsWith(substring);
     }
 

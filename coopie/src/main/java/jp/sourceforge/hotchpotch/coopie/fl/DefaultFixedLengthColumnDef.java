@@ -26,10 +26,8 @@ class DefaultFixedLengthColumnDef implements FixedLengthColumnDef {
     private String propertyName_;
     private int beginIndex_;
     private int endIndex_;
-    private Converter<?, ?> converter_ = PassthroughStringConverter
-            .getInstance();
-    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher
-            .getInstance();
+    private Converter<?, ?> converter_ = PassthroughStringConverter.getInstance();
+    private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher.getInstance();
 
     @Override
     public String getPropertyName() {

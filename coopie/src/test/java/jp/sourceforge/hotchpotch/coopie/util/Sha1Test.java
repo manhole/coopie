@@ -28,8 +28,7 @@ public class Sha1Test {
     @Test
     public void test1() throws Throwable {
         // ## Arrange ##
-        final File file = ResourceUtil.getResourceAsFile(Sha1Test.class
-                .getPackage().getName().replace('.', '/')
+        final File file = ResourceUtil.getResourceAsFile(Sha1Test.class.getPackage().getName().replace('.', '/')
                 + "/coopie-0.1.0-20100708.043157-1.pom");
 
         // ## Act ##

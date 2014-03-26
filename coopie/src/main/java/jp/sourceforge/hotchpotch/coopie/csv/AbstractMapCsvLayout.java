@@ -24,8 +24,7 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractMapCsvLayout<PROP> extends
-        AbstractCsvLayout<Map<String, PROP>> {
+public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<String, PROP>> {
 
     protected void prepareOpen() {
         if (getRecordDesc() == null) {
@@ -59,8 +58,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         return new MapRecordType<PROP>();
     }
 
-    static class LazyMapRecordDesc<PROP> implements
-            RecordDesc<Map<String, PROP>> {
+    static class LazyMapRecordDesc<PROP> implements RecordDesc<Map<String, PROP>> {
 
         private static final Logger logger = LoggerFactory.getLogger();
         private final AbstractMapCsvLayout<PROP> layout_;
@@ -112,8 +110,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
          * (列名が設定されている場合は、そもそもこのクラスが使われない)
          */
         @Override
-        public RecordDesc<Map<String, PROP>> setupByBean(
-                final Map<String, PROP> bean) {
+        public RecordDesc<Map<String, PROP>> setupByBean(final Map<String, PROP> bean) {
             /*
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
@@ -155,8 +152,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         }
 
         @Override
-        public void setValues(final Map<String, PROP> bean,
-                final String[] values) {
+        public void setValues(final Map<String, PROP> bean, final String[] values) {
             throw new AssertionError();
         }
 

@@ -106,8 +106,7 @@ public class Rfc4180WriterTest {
 
         // ## Assert ##
         final String text = stringWriter_.toString();
-        assertEquals("aaa,\"b" + CRLF + "bb\",ccc" + CRLF + "123,yyy,xxx"
-                + CRLF, text);
+        assertEquals("aaa,\"b" + CRLF + "bb\",ccc" + CRLF + "123,yyy,xxx" + CRLF, text);
     }
 
     /*
@@ -129,8 +128,7 @@ public class Rfc4180WriterTest {
 
         // ## Assert ##
         final String text = stringWriter_.toString();
-        assertEquals("\"aa,a\",\"b" + CRLF + "bb\",ccc" + CRLF + "123,yyy,xxx"
-                + CRLF, text);
+        assertEquals("\"aa,a\",\"b" + CRLF + "bb\",ccc" + CRLF + "123,yyy,xxx" + CRLF, text);
     }
 
     /*
@@ -404,8 +402,7 @@ public class Rfc4180WriterTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(
-                Rfc4180WriterTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResourceAsStream(Rfc4180WriterTest.class.getName() + suffix, ext);
     }
 
     protected Rfc4180Writer open() {

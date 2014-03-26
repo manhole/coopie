@@ -97,14 +97,12 @@ public class LoggerWrapper implements Logger {
     }
 
     @Override
-    public void trace(final Marker marker, final String format,
-            final Object arg1, final Object arg2) {
+    public void trace(final Marker marker, final String format, final Object arg1, final Object arg2) {
         logger_.trace(marker, format, arg1, arg2);
     }
 
     @Override
-    public void trace(final Marker marker, final String format,
-            final Object[] argArray) {
+    public void trace(final Marker marker, final String format, final Object[] argArray) {
         logger_.trace(marker, format, argArray);
     }
 
@@ -159,14 +157,12 @@ public class LoggerWrapper implements Logger {
     }
 
     @Override
-    public void debug(final Marker marker, final String format,
-            final Object arg1, final Object arg2) {
+    public void debug(final Marker marker, final String format, final Object arg1, final Object arg2) {
         logger_.debug(marker, format, arg1, arg2);
     }
 
     @Override
-    public void debug(final Marker marker, final String format,
-            final Object[] argArray) {
+    public void debug(final Marker marker, final String format, final Object[] argArray) {
         logger_.debug(marker, format, argArray);
     }
 
@@ -221,14 +217,12 @@ public class LoggerWrapper implements Logger {
     }
 
     @Override
-    public void info(final Marker marker, final String format,
-            final Object arg1, final Object arg2) {
+    public void info(final Marker marker, final String format, final Object arg1, final Object arg2) {
         logger_.info(marker, format, arg1, arg2);
     }
 
     @Override
-    public void info(final Marker marker, final String format,
-            final Object[] argArray) {
+    public void info(final Marker marker, final String format, final Object[] argArray) {
         logger_.info(marker, format, argArray);
     }
 
@@ -283,14 +277,12 @@ public class LoggerWrapper implements Logger {
     }
 
     @Override
-    public void warn(final Marker marker, final String format,
-            final Object arg1, final Object arg2) {
+    public void warn(final Marker marker, final String format, final Object arg1, final Object arg2) {
         logger_.warn(marker, format, arg1, arg2);
     }
 
     @Override
-    public void warn(final Marker marker, final String format,
-            final Object[] argArray) {
+    public void warn(final Marker marker, final String format, final Object[] argArray) {
         logger_.warn(marker, format, argArray);
     }
 
@@ -345,14 +337,12 @@ public class LoggerWrapper implements Logger {
     }
 
     @Override
-    public void error(final Marker marker, final String format,
-            final Object arg1, final Object arg2) {
+    public void error(final Marker marker, final String format, final Object arg1, final Object arg2) {
         logger_.error(marker, format, arg1, arg2);
     }
 
     @Override
-    public void error(final Marker marker, final String format,
-            final Object[] argArray) {
+    public void error(final Marker marker, final String format, final Object[] argArray) {
         logger_.error(marker, format, argArray);
     }
 

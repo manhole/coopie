@@ -23,8 +23,7 @@ public class Rfc4180ElementReaderTest extends ElementReaderTest {
 
     @Override
     protected ElementReader constructTest1Reader() {
-        final InputStreamReader reader = new InputStreamReader(
-                BeanCsvReaderTest.getResourceAsStream("-1", "tsv"),
+        final InputStreamReader reader = new InputStreamReader(BeanCsvReaderTest.getResourceAsStream("-1", "tsv"),
                 Charset.forName("UTF-8"));
         final Rfc4180Reader csvReader = new Rfc4180Reader();
         csvReader.setElementSeparator(CsvSetting.TAB);

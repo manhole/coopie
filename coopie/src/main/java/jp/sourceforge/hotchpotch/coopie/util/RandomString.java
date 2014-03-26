@@ -98,8 +98,7 @@ public class RandomString {
                     if (upperCaseAlphabet_) {
                         list.add(c);
                     }
-                } else if (!Character.isISOControl(i)
-                        && !Character.isSpaceChar(i)) {
+                } else if (!Character.isISOControl(i) && !Character.isSpaceChar(i)) {
                     if (symbolCharacter_) {
                         list.add(c);
                     }

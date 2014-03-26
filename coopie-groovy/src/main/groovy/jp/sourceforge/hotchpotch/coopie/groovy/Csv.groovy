@@ -153,7 +153,7 @@ class Csv {
         private void _eachRecordWithRecord(Closure c) {
             try {
                 def r = new CsvRecord()
-                int index = -1;
+                int index = -1
                 def String[] record
                 while ((record = reader_.readRecord()) != null) {
                     index++

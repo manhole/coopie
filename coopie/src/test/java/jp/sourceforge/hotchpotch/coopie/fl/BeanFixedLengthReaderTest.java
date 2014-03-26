@@ -55,8 +55,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(
-                FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(FlAaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -64,8 +63,7 @@ public class BeanFixedLengthReaderTest {
             layout.openReader(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
@@ -77,8 +75,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -104,8 +101,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -135,8 +131,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -165,8 +160,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-3", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -195,8 +189,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-4", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -215,8 +208,7 @@ public class BeanFixedLengthReaderTest {
         assertRead3(csvReader, bean);
     }
 
-    private static void assertRead3(final RecordReader<AaaBean> csvReader,
-            final AaaBean bean) throws IOException {
+    private static void assertRead3(final RecordReader<AaaBean> csvReader, final AaaBean bean) throws IOException {
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
@@ -243,8 +235,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_empty() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -257,8 +248,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new StringReader(""));
+        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader(""));
 
         // ## Assert ##
         assertEquals(false, csvReader.hasNext());
@@ -277,8 +267,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -305,8 +294,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -332,8 +320,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -360,8 +347,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -372,8 +358,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new StringReader("111222333\n44455\n666777888\n"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("111222333\n44455\n666777888\n"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -409,12 +394,10 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_annotation_1() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout
-                .getInstance(FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout.getInstance(FlAaaBean.class);
 
         // ## Act ##
-        final RecordReader<FlAaaBean> csvReader = layout
-                .openReader(new StringReader("0123456789\n1234567890\n23\n"));
+        final RecordReader<FlAaaBean> csvReader = layout.openReader(new StringReader("0123456789\n1234567890\n23\n"));
 
         // ## Assert ##
         final FlAaaBean bean = new FlAaaBean();
@@ -450,12 +433,10 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_annotation_2() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout
-                .getInstance(FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout.getInstance(FlAaaBean.class);
 
         // ## Act ##
-        final RecordReader<FlAaaBean> csvReader = layout
-                .openReader(new StringReader("𠮷野家すき家"));
+        final RecordReader<FlAaaBean> csvReader = layout.openReader(new StringReader("𠮷野家すき家"));
 
         // ## Assert ##
         final FlAaaBean bean = new FlAaaBean();
@@ -479,8 +460,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_trim_off() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -491,8 +471,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new StringReader("　a bb ccc"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("　a bb ccc"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -515,8 +494,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_trim_all() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -528,8 +506,7 @@ public class BeanFixedLengthReaderTest {
         layout.setElementEditor(ElementEditors.trim());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new StringReader("　a bb ccc"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("　a bb ccc"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -549,8 +526,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_trim_all_whitespace() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -562,8 +538,7 @@ public class BeanFixedLengthReaderTest {
         layout.setElementEditor(ElementEditors.trimWhitespace());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout
-                .openReader(new StringReader("　a bb ccc"));
+        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("　a bb ccc"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -586,8 +561,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -629,8 +603,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void setup_invalid_readeditor() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -653,8 +626,7 @@ public class BeanFixedLengthReaderTest {
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 10).withConverter(
-                        new BigDecimalConverter());
+                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
                 setup.column("bbb", 10, 20);
             }
         });
@@ -671,8 +643,7 @@ public class BeanFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<BigDecimalBean> csvReader = layout
-                .openReader(new StringReader(text));
+        final RecordReader<BigDecimalBean> csvReader = layout.openReader(new StringReader(text));
 
         // ## Assert ##
         final BigDecimalBean bean = new BigDecimalBean();
@@ -703,24 +674,20 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_calendar1() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(
-                CalendarBean.class);
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("aaa", 0, 5);
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(
-                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
-                            @Override
-                            public void setup(
-                                    final FixedLengthCompositeColumnSetup compositeSetup) {
-                                compositeSetup.column("ymd", 5, 20);
-                                compositeSetup.column("hms", 20, 35);
-                            }
-                        }).toProperty("bbb")
-                        .withConverter(new CalendarConverter());
+                setup.columns(new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                    @Override
+                    public void setup(final FixedLengthCompositeColumnSetup compositeSetup) {
+                        compositeSetup.column("ymd", 5, 20);
+                        compositeSetup.column("hms", 20, 35);
+                    }
+                }).toProperty("bbb").withConverter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);
@@ -735,8 +702,7 @@ public class BeanFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<CalendarBean> csvReader = layout
-                .openReader(new StringReader(text));
+        final RecordReader<CalendarBean> csvReader = layout.openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -745,14 +711,12 @@ public class BeanFixedLengthReaderTest {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         assertEquals("a", bean.getAaa());
-        assertEquals("2011/09/13 17:54:01",
-                format.format(bean.getBbb().getTime()));
+        assertEquals("2011/09/13 17:54:01", format.format(bean.getBbb().getTime()));
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         assertEquals("b", bean.getAaa());
-        assertEquals("2011/01/01 00:00:59",
-                format.format(bean.getBbb().getTime()));
+        assertEquals("2011/01/01 00:00:59", format.format(bean.getBbb().getTime()));
 
         assertEquals(false, csvReader.hasNext());
         csvReader.close();
@@ -764,24 +728,20 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_calendar2() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(
-                CalendarBean.class);
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("aaa", 0, 5);
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(
-                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
-                            @Override
-                            public void setup(
-                                    final FixedLengthCompositeColumnSetup compositeSetup) {
-                                compositeSetup.column("ymd", 5, 20);
-                                compositeSetup.column("hms", 20, 35);
-                            }
-                        }).toProperty("bbb")
-                        .withConverter(new CalendarConverter());
+                setup.columns(new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                    @Override
+                    public void setup(final FixedLengthCompositeColumnSetup compositeSetup) {
+                        compositeSetup.column("ymd", 5, 20);
+                        compositeSetup.column("hms", 20, 35);
+                    }
+                }).toProperty("bbb").withConverter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);
@@ -797,8 +757,7 @@ public class BeanFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<CalendarBean> csvReader = layout
-                .openReader(new StringReader(text));
+        final RecordReader<CalendarBean> csvReader = layout.openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -807,8 +766,7 @@ public class BeanFixedLengthReaderTest {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
         assertEquals("a", bean.getAaa());
-        assertEquals("2011/08/13 11:22:33",
-                format.format(bean.getBbb().getTime()));
+        assertEquals("2011/08/13 11:22:33", format.format(bean.getBbb().getTime()));
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
@@ -831,8 +789,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void invalid_columns_setup_property() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(
-                CalendarBean.class);
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(CalendarBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -842,15 +799,13 @@ public class BeanFixedLengthReaderTest {
                 public void setup(final FixedLengthColumnSetup setup) {
                     setup.column("aaa", 0, 5);
                     // property設定し忘れ
-                    setup.columns(
-                            new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
-                                @Override
-                                public void setup(
-                                        final FixedLengthCompositeColumnSetup compositeSetup) {
-                                    compositeSetup.column("ymd", 5, 20);
-                                    compositeSetup.column("hms", 20, 35);
-                                }
-                            }).withConverter(new CalendarConverter());
+                    setup.columns(new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                        @Override
+                        public void setup(final FixedLengthCompositeColumnSetup compositeSetup) {
+                            compositeSetup.column("ymd", 5, 20);
+                            compositeSetup.column("hms", 20, 35);
+                        }
+                    }).withConverter(new CalendarConverter());
                 }
             });
             fail();
@@ -865,16 +820,14 @@ public class BeanFixedLengthReaderTest {
         return reader;
     }
 
-    static Reader getResourceAsReader(final String suffix, final String ext,
-            final Charset charset) {
+    static Reader getResourceAsReader(final String suffix, final String ext, final Charset charset) {
         final InputStream is = getResourceAsStream(suffix, ext);
         final InputStreamReader reader = new InputStreamReader(is, charset);
         return reader;
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(
-                BeanFixedLengthReaderTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResourceAsStream(BeanFixedLengthReaderTest.class.getName() + suffix, ext);
     }
 
     public static class FlAaaBean {

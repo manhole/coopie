@@ -24,10 +24,8 @@ import org.t2framework.commons.util.CollectionsUtil;
 
 class DefaultCsvRecordDef implements CsvRecordDef {
 
-    private final List<CsvColumnDef> columnDefs_ = CollectionsUtil
-            .newArrayList();
-    private final List<CsvColumnsDef> columnsDefs_ = CollectionsUtil
-            .newArrayList();
+    private final List<CsvColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
+    private final List<CsvColumnsDef> columnsDefs_ = CollectionsUtil.newArrayList();
     private OrderSpecified orderSpecified_ = OrderSpecified.NO;
 
     public boolean isEmpty() {

@@ -48,8 +48,7 @@ public class MapExcelReaderTest {
             layout.openReader(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
@@ -61,8 +60,7 @@ public class MapExcelReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(new ByteArrayInputStream("invalid_value"
-                    .getBytes()));
+            layout.openReader(new ByteArrayInputStream("invalid_value".getBytes()));
             fail();
         } catch (final IORuntimeException e) {
             logger.debug(e.getMessage());
@@ -77,14 +75,12 @@ public class MapExcelReaderTest {
     @Test
     public void read1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -97,8 +93,7 @@ public class MapExcelReaderTest {
     @Test
     public void read2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -111,8 +106,7 @@ public class MapExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -127,14 +121,12 @@ public class MapExcelReaderTest {
     @Test
     public void read3() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -147,14 +139,12 @@ public class MapExcelReaderTest {
     @Test
     public void read3_2() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-4", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         MapCsvReaderTest.assertRead3_2(csvReader);
@@ -166,8 +156,7 @@ public class MapExcelReaderTest {
     @Test
     public void read_noheader() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -185,8 +174,7 @@ public class MapExcelReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -196,8 +184,7 @@ public class MapExcelReaderTest {
     @Test
     public void read4() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -209,8 +196,7 @@ public class MapExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -220,8 +206,7 @@ public class MapExcelReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
@@ -233,8 +218,7 @@ public class MapExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -244,8 +228,7 @@ public class MapExcelReaderTest {
     @Test
     public void read_customLayout() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-7",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-7", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
 
@@ -253,8 +236,7 @@ public class MapExcelReaderTest {
         layout.setReaderHandler(readEditor);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -267,14 +249,12 @@ public class MapExcelReaderTest {
     @Test
     public void read_afterLast() throws Throwable {
         // ## Arrange ##
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -287,15 +267,13 @@ public class MapExcelReaderTest {
     @Test
     public void read_strange1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanCsvReaderTest.class.getPackage().getName()
-                        + "/strange-excel-1", "xls");
+        final InputStream is = ResourceUtil.getResourceAsStream(BeanCsvReaderTest.class.getPackage().getName()
+                + "/strange-excel-1", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout
-                .openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();

@@ -48,8 +48,7 @@ public class BeanExcelWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -57,8 +56,7 @@ public class BeanExcelWriterTest {
             layout.openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
@@ -68,8 +66,7 @@ public class BeanExcelWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -106,15 +103,12 @@ public class BeanExcelWriterTest {
         assertWrite2(baos);
     }
 
-    public static void assertWrite2(final ByteArrayOutputStream baos)
-            throws IOException {
+    public static void assertWrite2(final ByteArrayOutputStream baos) throws IOException {
 
-        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
-                baos.toByteArray()));
+        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(baos.toByteArray()));
         assertEquals(1, book.getNumberOfSheets());
 
-        final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(
-                book, book.getSheetAt(0));
+        final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(book, book.getSheetAt(0));
         assertArrayEquals(a("aaa", "ccc", "bbb"), reader.readRecord());
         assertArrayEquals(a("あ1", "う1", "い1"), reader.readRecord());
         assertArrayEquals(a("あ2", "う2", "い2"), reader.readRecord());
@@ -129,8 +123,7 @@ public class BeanExcelWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -166,15 +159,12 @@ public class BeanExcelWriterTest {
         assertWriteNoheader(baos);
     }
 
-    public static void assertWriteNoheader(final ByteArrayOutputStream baos)
-            throws IOException {
+    public static void assertWriteNoheader(final ByteArrayOutputStream baos) throws IOException {
 
-        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
-                baos.toByteArray()));
+        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(baos.toByteArray()));
         assertEquals(1, book.getNumberOfSheets());
 
-        final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(
-                book, book.getSheetAt(0));
+        final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(book, book.getSheetAt(0));
         assertArrayEquals(a("う1", "あ1", "い1"), reader.readRecord());
         assertArrayEquals(a("う2", "あ2", "い2"), reader.readRecord());
         assertNull(reader.readRecord());
@@ -187,8 +177,7 @@ public class BeanExcelWriterTest {
     @Test
     public void writeTwoSheets() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout1 = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout1 = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout1.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -198,8 +187,7 @@ public class BeanExcelWriterTest {
             }
         });
 
-        final BeanExcelLayout<BbbBean> layout2 = new BeanExcelLayout<BbbBean>(
-                BbbBean.class);
+        final BeanExcelLayout<BbbBean> layout2 = new BeanExcelLayout<BbbBean>(BbbBean.class);
         layout2.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -214,8 +202,7 @@ public class BeanExcelWriterTest {
         // ## Act ##
         {
             final HSSFSheet sheet = workbook.createSheet("sheet-a");
-            final RecordWriter<AaaBean> csvWriter = layout1.openSheetWriter(
-                    workbook, sheet);
+            final RecordWriter<AaaBean> csvWriter = layout1.openSheetWriter(workbook, sheet);
 
             final AaaBean bean = new AaaBean();
             bean.setAaa("あ1");
@@ -232,8 +219,7 @@ public class BeanExcelWriterTest {
         }
         {
             final HSSFSheet sheet = workbook.createSheet("sheet-b");
-            final RecordWriter<BbbBean> csvWriter = layout2.openSheetWriter(
-                    workbook, sheet);
+            final RecordWriter<BbbBean> csvWriter = layout2.openSheetWriter(workbook, sheet);
 
             final BbbBean bean = new BbbBean();
             bean.setAa("a1");
@@ -247,13 +233,12 @@ public class BeanExcelWriterTest {
         baos.close();
 
         // ## Assert ##
-        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
-                baos.toByteArray()));
+        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(baos.toByteArray()));
         assertEquals(2, book.getNumberOfSheets());
 
         {
-            final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(
-                    book, book.getSheet("sheet-a"));
+            final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(book,
+                    book.getSheet("sheet-a"));
             assertArrayEquals(a("aaa", "ccc", "bbb"), reader.readRecord());
             assertArrayEquals(a("あ1", "う1", "い1"), reader.readRecord());
             assertArrayEquals(a("あ2", "う2", "い2"), reader.readRecord());
@@ -261,8 +246,8 @@ public class BeanExcelWriterTest {
             reader.close();
         }
         {
-            final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(
-                    book, book.getSheet("sheet-b"));
+            final DefaultExcelReader.PoiSheetReader reader = new DefaultExcelReader.PoiSheetReader(book,
+                    book.getSheet("sheet-b"));
             assertArrayEquals(a("aa", "bb"), reader.readRecord());
             assertArrayEquals(a("a1", "b1"), reader.readRecord());
             assertNull(reader.readRecord());
@@ -276,8 +261,7 @@ public class BeanExcelWriterTest {
     @Test
     public void write_customStyle() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(
-                AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -309,11 +293,9 @@ public class BeanExcelWriterTest {
         // ## Assert ##
         // ヘッダ行の色が変わっていること
         // nullカラムの色が変わっていること
-        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(
-                baos.toByteArray()));
+        final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(baos.toByteArray()));
         final File dir = ResourceUtil.getBuildDir(getClass());
-        final BufferedOutputStream os = new FileOperation()
-                .openBufferedOutputStream(new File(dir, "test.xls"));
+        final BufferedOutputStream os = new FileOperation().openBufferedOutputStream(new File(dir, "test.xls"));
         book.write(os);
         os.close();
         assertEquals(1, book.getNumberOfSheets());
@@ -332,8 +314,7 @@ public class BeanExcelWriterTest {
 
     private void _assertStyle(final HSSFCell cell) {
         final HSSFCellStyle style = cell.getCellStyle();
-        assertEquals(new HSSFColor.LIGHT_GREEN().getIndex(),
-                style.getFillForegroundColor());
+        assertEquals(new HSSFColor.LIGHT_GREEN().getIndex(), style.getFillForegroundColor());
         assertEquals(HSSFCellStyle.SOLID_FOREGROUND, style.getFillPattern());
     }
 
@@ -346,8 +327,7 @@ public class BeanExcelWriterTest {
         public void begin(final HSSFWorkbook workbook, final HSSFSheet sheet) {
             super.begin(workbook, sheet);
             headerStyle = workbook.createCellStyle();
-            headerStyle.setFillForegroundColor(new HSSFColor.LIGHT_GREEN()
-                    .getIndex());
+            headerStyle.setFillForegroundColor(new HSSFColor.LIGHT_GREEN().getIndex());
             headerStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
             errorStyle = workbook.createCellStyle();

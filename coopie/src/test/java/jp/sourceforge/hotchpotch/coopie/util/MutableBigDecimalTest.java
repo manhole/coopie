@@ -40,13 +40,11 @@ public class MutableBigDecimalTest {
     @Test
     public void valueOfOrZero_string() {
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero((String) null);
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero((String) null);
             assertEquals(_bd("0"), v.getValue());
         }
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero("123.4");
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero("123.4");
             assertEquals(_bd("123.4"), v.getValue());
         }
     }
@@ -54,8 +52,7 @@ public class MutableBigDecimalTest {
     @Test
     public void valueOfOrZero_integer() {
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero((Integer) null);
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero((Integer) null);
             assertEquals(_bd("0"), v.getValue());
         }
         {
@@ -67,8 +64,7 @@ public class MutableBigDecimalTest {
     @Test
     public void valueOfOrZero_long() {
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero((Long) null);
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero((Long) null);
             assertEquals(_bd("0"), v.getValue());
         }
         {
@@ -80,13 +76,11 @@ public class MutableBigDecimalTest {
     @Test
     public void valueOfOrZero_double() {
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero((Double) null);
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero((Double) null);
             assertEquals(_bd("0"), v.getValue());
         }
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero(12345.6);
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero(12345.6);
             assertEquals(_bd("12345.6"), v.getValue());
         }
     }
@@ -94,13 +88,11 @@ public class MutableBigDecimalTest {
     @Test
     public void valueOfOrZero_bigDecimal() {
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero((BigDecimal) null);
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero((BigDecimal) null);
             assertEquals(_bd("0"), v.getValue());
         }
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero(_bd("12345.6"));
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero(_bd("12345.6"));
             assertEquals(_bd("12345.6"), v.getValue());
         }
     }
@@ -188,24 +180,21 @@ public class MutableBigDecimalTest {
             assertEquals(_bd("0"), v.getValue());
         }
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero(12345678901L);
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero(12345678901L);
             v.multiply(10L);
             assertEquals(_bd("123456789010"), v.getValue());
             v.multiply((Integer) null);
             assertEquals(_bd("0"), v.getValue());
         }
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero(12345678901.12);
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero(12345678901.12);
             v.multiply(10.0);
             assertEquals(_bd("123456789011.200"), v.getValue());
             v.multiply((Integer) null);
             assertEquals(_bd("0.000"), v.getValue());
         }
         {
-            final MutableBigDecimal v = MutableBigDecimal
-                    .valueOfOrZero(_bd("1122"));
+            final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero(_bd("1122"));
             v.multiply(_bd("10.0"));
             assertEquals(_bd("11220.0"), v.getValue());
             v.multiply((BigDecimal) null);
@@ -218,8 +207,7 @@ public class MutableBigDecimalTest {
      */
     @Test
     public void test_toString() throws Throwable {
-        final BigDecimal value = new BigDecimal("1234.55").setScale(-2,
-                BigDecimal.ROUND_HALF_UP);
+        final BigDecimal value = new BigDecimal("1234.55").setScale(-2, BigDecimal.ROUND_HALF_UP);
 
         final MutableBigDecimal v = MutableBigDecimal.valueOfOrZero(value);
         assertEquals("1.2E+3", v.getValue().toString());

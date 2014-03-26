@@ -47,8 +47,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void rfc1() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CRLF + "zzz,yyy,xxx"
-                + CRLF);
+        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CRLF + "zzz,yyy,xxx" + CRLF);
 
         // ## Act ##
         // ## Assert ##
@@ -165,8 +164,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void rfc4_quote() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"aaa\",\"bbb\",\"ccc\"" + CRLF
-                + "123,yyy,xxx");
+        final Rfc4180Reader reader = open("\"aaa\",\"bbb\",\"ccc\"" + CRLF + "123,yyy,xxx");
 
         // ## Act ##
         // ## Assert ##
@@ -188,8 +186,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void rfc5_crlf() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"aaa\",\"b" + CRLF + "bb\",\"ccc\""
-                + CRLF + "123,yyy,xxx");
+        final Rfc4180Reader reader = open("\"aaa\",\"b" + CRLF + "bb\",\"ccc\"" + CRLF + "123,yyy,xxx");
 
         // ## Act ##
         // ## Assert ##
@@ -220,8 +217,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void rfc6_comma() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"aa,a\",\"b" + CRLF
-                + "bb\",\"ccc\"" + CRLF + "123,yyy,xxx");
+        final Rfc4180Reader reader = open("\"aa,a\",\"b" + CRLF + "bb\",\"ccc\"" + CRLF + "123,yyy,xxx");
 
         // ## Act ##
         // ## Assert ##
@@ -259,8 +255,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void test_LF() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa,bbb,ccc" + LF + "zzz,yyy,xxx"
-                + LF);
+        final Rfc4180Reader reader = open("aaa,bbb,ccc" + LF + "zzz,yyy,xxx" + LF);
 
         // ## Act ##
         // ## Assert ##
@@ -278,8 +273,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void test_CR() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CR + "zzz,yyy,xxx"
-                + CR);
+        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CR + "zzz,yyy,xxx" + CR);
 
         // ## Act ##
         // ## Assert ##
@@ -300,8 +294,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void tab1() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa\tbbb\tccc" + CRLF
-                + "zzz\tyyy\txxx" + CRLF, CsvSetting.TAB);
+        final Rfc4180Reader reader = open("aaa\tbbb\tccc" + CRLF + "zzz\tyyy\txxx" + CRLF, CsvSetting.TAB);
 
         // ## Act ##
         // ## Assert ##
@@ -322,8 +315,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void tab2() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa\tbb,b\tccc" + CRLF,
-                CsvSetting.TAB);
+        final Rfc4180Reader reader = open("aaa\tbb,b\tccc" + CRLF, CsvSetting.TAB);
 
         // ## Act ##
         // ## Assert ##
@@ -344,8 +336,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void tab3() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa\t\"bb\tb\"\tccc" + CRLF,
-                CsvSetting.TAB);
+        final Rfc4180Reader reader = open("aaa\t\"bb\tb\"\tccc" + CRLF, CsvSetting.TAB);
 
         // ## Act ##
         // ## Assert ##
@@ -369,8 +360,7 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertArrayEquals(a("aaa ", "bbb", " ccc ", " ", ""),
-                reader.readRecord());
+        assertArrayEquals(a("aaa ", "bbb", " ccc ", " ", ""), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
@@ -392,8 +382,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void space3() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"a\" \r" + " \"b\" \n"
-                + " \"c\" \r\n" + " \"d\" ");
+        final Rfc4180Reader reader = open("\"a\" \r" + " \"b\" \n" + " \"c\" \r\n" + " \"d\" ");
 
         // ## Act ##
         // ## Assert ##
@@ -458,8 +447,7 @@ public class Rfc4180ReaderTest {
         // ## Act ##
         // ## Assert ##
         assertEquals(0, reader.getRecordNumber());
-        assertArrayEquals(a("", "aa", "", " ", "   ", "bbb", ""),
-                reader.readRecord());
+        assertArrayEquals(a("", "aa", "", " ", "   ", "bbb", ""), reader.readRecord());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -502,8 +490,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void empty_line1() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n"
-                + "\"b\r\n\r\n2\"");
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n" + "\"b\r\n\r\n2\"");
 
         // ## Act ##
         // ## Assert ##
@@ -520,8 +507,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void empty_line2() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\r\n" + "\"a1\"\r\n"
-                + "\"b\r\n\r\n2\"");
+        final Rfc4180Reader reader = open("\r\n" + "\"a1\"\r\n" + "\"b\r\n\r\n2\"");
 
         // ## Act ##
         // ## Assert ##
@@ -539,8 +525,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void empty_line3() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\"b\r\n\r\n2\""
-                + "\r\n" + "\r\n");
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\"b\r\n\r\n2\"" + "\r\n" + "\r\n");
 
         // ## Act ##
         // ## Assert ##
@@ -639,14 +624,12 @@ public class Rfc4180ReaderTest {
         final LineReaderHandler lineReaderHandler = new LineReaderHandler() {
 
             @Override
-            public Line readLine(final LineReadable lineReader, final Line line)
-                    throws IOException {
+            public Line readLine(final LineReadable lineReader, final Line line) throws IOException {
                 return lineReader.readLine(line);
             }
 
             @Override
-            public boolean acceptLine(final Line line,
-                    final ElementParserContext parserContext) {
+            public boolean acceptLine(final Line line, final ElementParserContext parserContext) {
                 if (parserContext.isInElement()) {
                     return true;
                 }
@@ -657,8 +640,7 @@ public class Rfc4180ReaderTest {
             }
 
         };
-        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n"
-                + "\"b\r\n\r\n2\"", lineReaderHandler);
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n" + "\"b\r\n\r\n2\"", lineReaderHandler);
 
         // ## Act ##
         // ## Assert ##
@@ -737,8 +719,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void invalid_quote2() throws Throwable {
         // ## Arrange ##
-        final String in = "a,\"b\"\",c" + "\r\n" + "A,\"B\",C" + "\r\n"
-                + "D,E,F";
+        final String in = "a,\"b\"\",c" + "\r\n" + "A,\"B\",C" + "\r\n" + "D,E,F";
         final Rfc4180Reader reader = open(in);
 
         // ## Act ##
@@ -837,18 +818,15 @@ public class Rfc4180ReaderTest {
         return open(text, (Character) null, (LineReaderHandler) null);
     }
 
-    protected Rfc4180Reader open(final String text,
-            final LineReaderHandler lineReaderHandler) {
+    protected Rfc4180Reader open(final String text, final LineReaderHandler lineReaderHandler) {
         return open(text, (Character) null, lineReaderHandler);
     }
 
-    protected Rfc4180Reader open(final String text,
-            final Character elementSeparator) {
+    protected Rfc4180Reader open(final String text, final Character elementSeparator) {
         return open(text, elementSeparator, (LineReaderHandler) null);
     }
 
-    protected Rfc4180Reader open(final String text,
-            final Character elementSeparator,
+    protected Rfc4180Reader open(final String text, final Character elementSeparator,
             final LineReaderHandler lineReaderHandler) {
         final StringReader reader = new StringReader(text);
         final Rfc4180Reader csvReader = new Rfc4180Reader();
@@ -862,8 +840,7 @@ public class Rfc4180ReaderTest {
         return csvReader;
     }
 
-    private void assertArrayEquals(final String[] expected,
-            final String[] actual) {
+    private void assertArrayEquals(final String[] expected, final String[] actual) {
         csvAssert_.assertArrayEquals(expected, actual);
     }
 

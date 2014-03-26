@@ -25,8 +25,7 @@ public class LineImpl implements Line {
     public LineImpl() {
     }
 
-    public LineImpl(final String body, final int number,
-            final LineSeparator separator) {
+    public LineImpl(final String body, final int number, final LineSeparator separator) {
         body_ = body;
         number_ = number;
         separator_ = separator;
@@ -65,8 +64,7 @@ public class LineImpl implements Line {
     }
 
     @Override
-    public Line reinit(final String body, final int number,
-            final LineSeparator separator) {
+    public Line reinit(final String body, final int number, final LineSeparator separator) {
         setBody(body);
         setNumber(number);
         setSeparator(separator);

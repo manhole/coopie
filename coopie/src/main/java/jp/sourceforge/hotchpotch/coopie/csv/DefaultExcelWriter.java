@@ -44,8 +44,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
         setClosed(false);
     }
 
-    public void openSheetWriter(final HSSFWorkbook workbook,
-            final HSSFSheet sheet) {
+    public void openSheetWriter(final HSSFWorkbook workbook, final HSSFSheet sheet) {
         final PoiSheetWriter w = new PoiSheetWriter(workbook, sheet);
         w.setWriteEditor(writeEditor_);
         w.open();

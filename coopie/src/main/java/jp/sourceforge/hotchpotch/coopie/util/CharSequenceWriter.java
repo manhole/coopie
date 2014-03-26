@@ -36,8 +36,7 @@ public class CharSequenceWriter extends Writer {
 
     @Override
     public void write(final char cbuf[], final int off, final int len) {
-        if (off < 0 || off > cbuf.length || len < 0 || off + len > cbuf.length
-                || off + len < 0) {
+        if (off < 0 || off > cbuf.length || len < 0 || off + len > cbuf.length || off + len < 0) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return;
@@ -66,8 +65,7 @@ public class CharSequenceWriter extends Writer {
     }
 
     @Override
-    public CharSequenceWriter append(final CharSequence csq, final int start,
-            final int end) {
+    public CharSequenceWriter append(final CharSequence csq, final int start, final int end) {
         final CharSequence cs = csq == null ? "null" : csq;
         write(cs.subSequence(start, end).toString());
         return this;

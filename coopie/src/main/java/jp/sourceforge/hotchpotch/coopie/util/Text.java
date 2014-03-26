@@ -113,8 +113,7 @@ public class Text {
         return instantiate(s);
     }
 
-    private static String convertLineSeparator0(final String s,
-            final LineSeparator lineSeparator) {
+    private static String convertLineSeparator0(final String s, final LineSeparator lineSeparator) {
         final LineReadable reader = new LineReader(new StringReader(s));
         final StringBuilder sb = new StringBuilder();
         try {
@@ -243,8 +242,7 @@ public class Text {
         return count;
     }
 
-    public static String substring(final String str, final int beginIndex,
-            final int endIndex) {
+    public static String substring(final String str, final int beginIndex, final int endIndex) {
         final int actualBegin = str.offsetByCodePoints(0, beginIndex);
         final int actualEnd = str.offsetByCodePoints(0, endIndex);
         final String s = str.substring(actualBegin, actualEnd);

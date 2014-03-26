@@ -46,8 +46,7 @@ public class LoggerFactory {
      */
     static String getCallerClassName() {
         final Thread currentThread = Thread.currentThread();
-        final StackTraceElement[] stackTraceElements = currentThread
-                .getStackTrace();
+        final StackTraceElement[] stackTraceElements = currentThread.getStackTrace();
         boolean inMyClass = false;
         for (final StackTraceElement element : stackTraceElements) {
             final String className = element.getClassName();

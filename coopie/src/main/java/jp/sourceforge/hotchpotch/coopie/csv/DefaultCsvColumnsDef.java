@@ -26,10 +26,8 @@ class DefaultCsvColumnsDef implements CsvColumnsDef {
 
     private String propertyName_;
     private Class<?> propertyType_;
-    private Converter<?, ?> converter_ = PassthroughStringConverter
-            .getInstance();
-    private final List<CsvColumnDef> columnDefs_ = CollectionsUtil
-            .newArrayList();
+    private Converter<?, ?> converter_ = PassthroughStringConverter.getInstance();
+    private final List<CsvColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
 
     public void setup(final CsvColumns columns, final PropertyDesc pd) {
         for (final CsvColumn column : columns.value()) {

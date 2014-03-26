@@ -55,8 +55,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(
-                FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(FlAaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -64,8 +63,7 @@ public class BeanFixedLengthWriterTest {
             layout.openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
@@ -75,8 +73,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_nosetup() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -99,8 +96,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -132,8 +128,7 @@ public class BeanFixedLengthWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = getResourceAsStream("-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final String expected = ReaderUtil.readText(new InputStreamReader(is, "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -143,8 +138,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -180,8 +174,7 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-1",
-                "tsv"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-1", "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -194,8 +187,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -226,8 +218,7 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-4-2",
-                "tsv"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-4-2", "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -239,8 +230,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(
-                AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -270,8 +260,7 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-3",
-                "tsv"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-3", "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -285,8 +274,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_annotation_1() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout
-                .getInstance(FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout.getInstance(FlAaaBean.class);
 
         final StringWriter writer = new StringWriter();
 
@@ -312,8 +300,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_annotation_2() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout
-                .getInstance(FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout.getInstance(FlAaaBean.class);
 
         final StringWriter writer = new StringWriter();
 
@@ -344,8 +331,7 @@ public class BeanFixedLengthWriterTest {
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 10).withConverter(
-                        new BigDecimalConverter());
+                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
                 setup.column("bbb", 10, 20);
             }
         });
@@ -353,8 +339,7 @@ public class BeanFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<BigDecimalBean> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<BigDecimalBean> csvWriter = layout.openWriter(writer);
 
         final BigDecimalBean bean = new BigDecimalBean();
         bean.setAaa(new BigDecimal("11.1"));
@@ -392,24 +377,20 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_calendar() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(
-                CalendarBean.class);
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("aaa", 0, 5);
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(
-                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
-                            @Override
-                            public void setup(
-                                    final FixedLengthCompositeColumnSetup compositeSetup) {
-                                compositeSetup.column("ymd", 5, 20);
-                                compositeSetup.column("hms", 20, 35);
-                            }
-                        }).toProperty("bbb")
-                        .withConverter(new CalendarConverter());
+                setup.columns(new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                    @Override
+                    public void setup(final FixedLengthCompositeColumnSetup compositeSetup) {
+                        compositeSetup.column("ymd", 5, 20);
+                        compositeSetup.column("hms", 20, 35);
+                    }
+                }).toProperty("bbb").withConverter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);
@@ -446,14 +427,10 @@ public class BeanFixedLengthWriterTest {
         final String lines = writer.toString();
 
         final LineReader reader = new LineReader(new StringReader(lines));
-        assertEquals("  aaa            ymd            hms",
-                reader.readLineBody());
-        assertEquals("    a     2011-09-13       17:54:01",
-                reader.readLineBody());
-        assertEquals("    b     2011-01-01       00:00:59",
-                reader.readLineBody());
-        assertEquals("    c                              ",
-                reader.readLineBody());
+        assertEquals("  aaa            ymd            hms", reader.readLineBody());
+        assertEquals("    a     2011-09-13       17:54:01", reader.readLineBody());
+        assertEquals("    b     2011-01-01       00:00:59", reader.readLineBody());
+        assertEquals("    c                              ", reader.readLineBody());
         assertNull(reader.readLineBody());
         reader.close();
     }
@@ -463,8 +440,7 @@ public class BeanFixedLengthWriterTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(
-                BeanFixedLengthWriterTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResourceAsStream(BeanFixedLengthWriterTest.class.getName() + suffix, ext);
     }
 
 }

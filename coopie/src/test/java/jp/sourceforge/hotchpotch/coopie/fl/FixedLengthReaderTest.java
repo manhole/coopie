@@ -28,10 +28,8 @@ public class FixedLengthReaderTest extends ElementReaderTest {
     @Override
     protected ElementReader constructTest1Reader() {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-1", "tsv");
-        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] {
-                col(0, 5), col(5, 12), col(12, 20) };
+        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream("-1", "tsv");
+        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] { col(0, 5), col(5, 12), col(12, 20) };
 
         // ## Act ##
         final FixedLengthReader reader = new FixedLengthReader(descs);
@@ -40,8 +38,7 @@ public class FixedLengthReaderTest extends ElementReaderTest {
     }
 
     private FixedLengthElementDesc col(final int begin, final int end) {
-        return new AbstractFixedLengthLayout.SimpleFixedLengthElementDesc(
-                begin, end);
+        return new AbstractFixedLengthLayout.SimpleFixedLengthElementDesc(begin, end);
     }
 
 }

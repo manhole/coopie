@@ -36,8 +36,7 @@ public class CompositeColumnDesc<BEAN> {
     private Map<ColumnName, String> setValues_;
 
     public ColumnDesc<BEAN>[] getColumnDescs() {
-        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(columnNames_
-                .size());
+        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(columnNames_.size());
         int i = 0;
         for (final ColumnName columnName : columnNames_) {
             cds[i] = new Adapter(columnName);
@@ -87,8 +86,7 @@ public class CompositeColumnDesc<BEAN> {
         return v;
     }
 
-    private void setValue(final ColumnName columnName, final BEAN bean,
-            final String value) {
+    private void setValue(final ColumnName columnName, final BEAN bean, final String value) {
         if (setValues_ == null || setValues_.containsKey(columnName)) {
             setValues_ = CollectionsUtil.newHashMap();
         }
@@ -98,14 +96,12 @@ public class CompositeColumnDesc<BEAN> {
             // TODO 引数が配列ではない場合
             Class<?> componentType;
             {
-                final MethodDesc methodDesc = BeanDescFactory.getBeanDesc(
-                        converter_.getClass()).getMethodDesc("convertFrom");
-                final Class<?>[] parameterTypes = methodDesc
-                        .getParameterTypes();
+                final MethodDesc methodDesc = BeanDescFactory.getBeanDesc(converter_.getClass()).getMethodDesc(
+                        "convertFrom");
+                final Class<?>[] parameterTypes = methodDesc.getParameterTypes();
                 componentType = parameterTypes[0].getComponentType();
             }
-            final Object[] from = (Object[]) Array.newInstance(componentType,
-                    columnNames_.size());
+            final Object[] from = (Object[]) Array.newInstance(componentType, columnNames_.size());
             {
                 int i = 0;
                 for (final ColumnName name : columnNames_) {
@@ -121,10 +117,8 @@ public class CompositeColumnDesc<BEAN> {
         }
     }
 
-    public static <BEAN> ColumnDesc<BEAN>[] newCompositeColumnDesc(
-            final List<ColumnName> names,
-            final PropertyBinding<BEAN, Object> propertyBinding,
-            final Converter converter) {
+    public static <BEAN> ColumnDesc<BEAN>[] newCompositeColumnDesc(final List<ColumnName> names,
+            final PropertyBinding<BEAN, Object> propertyBinding, final Converter converter) {
 
         final CompositeColumnDesc ccd = new CompositeColumnDesc();
         ccd.setPropertyBinding(propertyBinding);
@@ -148,8 +142,7 @@ public class CompositeColumnDesc<BEAN> {
 
         @Override
         public String getValue(final BEAN bean) {
-            final String v = CompositeColumnDesc.this.getValue(columnName_,
-                    bean);
+            final String v = CompositeColumnDesc.this.getValue(columnName_, bean);
             return v;
         }
 

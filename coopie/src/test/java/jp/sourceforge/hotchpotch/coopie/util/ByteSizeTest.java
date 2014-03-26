@@ -218,18 +218,15 @@ public class ByteSizeTest {
     @Test
     public void fromInputStream() {
         {
-            final ByteSize size = ByteSize.create(new ByteArrayInputStream(
-                    new byte[10559]));
+            final ByteSize size = ByteSize.create(new ByteArrayInputStream(new byte[10559]));
             assertThat(size.getSize(), is(10559L));
         }
         {
-            final ByteSize size = ByteSize.create(new ByteArrayInputStream(
-                    new byte[0]));
+            final ByteSize size = ByteSize.create(new ByteArrayInputStream(new byte[0]));
             assertThat(size.getSize(), is(0L));
         }
         {
-            final ByteSize size = ByteSize.create(new ByteArrayInputStream(
-                    new byte[1]));
+            final ByteSize size = ByteSize.create(new ByteArrayInputStream(new byte[1]));
             assertThat(size.getSize(), is(1L));
         }
     }
