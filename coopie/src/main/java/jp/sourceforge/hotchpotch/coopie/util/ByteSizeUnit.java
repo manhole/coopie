@@ -24,6 +24,9 @@ public interface ByteSizeUnit {
 
     long getCoefficient();
 
+    /*
+     * for Groovy
+     */
     ByteSize multiply(int size);
 
 }
