@@ -16,9 +16,13 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import java.text.NumberFormat;
+
 public interface ByteSizeUnit {
 
     String format(long value);
+
+    String format(long value, NumberFormat numberFormat);
 
     String getUnitLabel();
 

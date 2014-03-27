@@ -22,7 +22,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 
+import jp.sourceforge.hotchpotch.coopie.util.ByteSize.ToStringMode;
 import jp.sourceforge.hotchpotch.coopie.util.ByteSizeUnits.BaseType;
 
 import org.junit.Test;
@@ -213,6 +216,42 @@ public class ByteSizeTest {
 
         byteSize.setToStringMode(ByteSize.DETAIL);
         assertThat(byteSize.toString(), is("73.00 MiB (76,543,211)"));
+    }
+
+    /*
+     * 少数部が不要なケース
+     */
+    @Test
+    public void customFormat1() throws Throwable {
+        // ## Arrange ##
+        final ByteSize byteSize = ByteSize.create(76543211L);
+
+        // ## Act ##
+        class CustomByteSizeFormatter1 implements ToStringMode {
+            private final NumberFormat format_ = NumberFormat.getNumberInstance();
+
+            public CustomByteSizeFormatter1() {
+                format_.setRoundingMode(RoundingMode.HALF_UP);
+                format_.setMinimumFractionDigits(0);
+                format_.setMaximumFractionDigits(0);
+            }
+
+            @Override
+            public String toString(final ByteSize byteSize) {
+                final long size = byteSize.getSize();
+                final ByteSizeUnit unit = ByteSizeUnits.detectUnit(byteSize);
+                final StringBuilder sb = new StringBuilder();
+                sb.append(unit.format(size, format_));
+                sb.append(unit.getUnitLabel());
+                return sb.toString();
+            }
+        }
+
+        byteSize.setToStringMode(new CustomByteSizeFormatter1());
+
+        // ## Assert ##
+        assertThat(byteSize.toHumanReadableString(), is("73.00 MiB"));
+        assertThat(byteSize.toString(), is("73MiB"));
     }
 
     @Test

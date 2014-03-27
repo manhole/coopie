@@ -279,8 +279,14 @@ public class ByteSizeUnits {
         @Override
         public String format(final long value) {
             final NumberFormat format = getNumberFormat();
+            final String s = format(value, format);
+            return s;
+        }
+
+        @Override
+        public String format(final long value, final NumberFormat numberFormat) {
             final double converted = convert(value);
-            final String s = format.format(converted);
+            final String s = numberFormat.format(converted);
             return s;
         }
 
