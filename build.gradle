@@ -52,7 +52,7 @@ subprojects { project ->
 	apply plugin: "java"
 	apply plugin: "maven-publish"
 
-	sourceCompatibility = "1.6"
+	sourceCompatibility = "1.7"
 	targetCompatibility = sourceCompatibility
 
 	task sourcesJar(type:Jar, dependsOn:classes) {
