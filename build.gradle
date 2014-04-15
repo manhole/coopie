@@ -231,7 +231,7 @@ subprojects { project ->
 	}
 }
 
-def versions = [slf4j: "1.6.4", logback: "1.0.0"]
+def versions = [slf4j: "1.7.7", logback: "1.1.2"]
 
 project(":coopie") {
 	description = "Read/Write library for two-dimensional arrays of data."
