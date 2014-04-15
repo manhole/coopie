@@ -73,13 +73,13 @@ public class CsvExampleTest {
 
         static <BEAN> RecordWriter<BEAN> openWriter(final Class<BEAN> clazz, final Appendable appendable) {
             final BeanCsvLayout<BEAN> layout = createLayout(clazz);
-            final RecordWriter<BEAN> writer = layout.openWriter(appendable);
+            final RecordWriter<BEAN> writer = layout.build().openWriter(appendable);
             return writer;
         }
 
         static <BEAN> RecordReader<BEAN> openReader(final Class<BEAN> clazz, final Readable readable) {
             final BeanCsvLayout<BEAN> layout = createLayout(clazz);
-            final RecordReader<BEAN> reader = layout.openReader(readable);
+            final RecordReader<BEAN> reader = layout.build().openReader(readable);
             return reader;
         }
 

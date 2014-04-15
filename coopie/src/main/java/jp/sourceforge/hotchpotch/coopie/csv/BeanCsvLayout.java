@@ -33,16 +33,6 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
         csvSetting_ = new DefaultCsvSetting();
     }
 
-    @Deprecated
-    public RecordReader<BEAN> openReader(final Readable readable) {
-        return build().openReader(readable);
-    }
-
-    @Deprecated
-    public RecordWriter<BEAN> openWriter(final Appendable appendable) {
-        return build().openWriter(appendable);
-    }
-
     public void setElementSeparator(final char elementSeparator) {
         csvSetting_.setElementSeparator(elementSeparator);
     }

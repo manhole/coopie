@@ -58,7 +58,7 @@ public class BeanCsvWriterTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -72,7 +72,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -115,7 +115,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -164,7 +164,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -199,7 +199,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -246,7 +246,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -285,7 +285,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -338,7 +338,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -366,7 +366,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -395,7 +395,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -424,7 +424,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -453,7 +453,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c\"1");
@@ -489,7 +489,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<CccBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<CccBean> csvWriter = layout.build().openWriter(writer);
 
         final CccBean bean = new CccBean();
         bean.setAaa("あ1");
@@ -520,7 +520,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<EeeBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<EeeBean> csvWriter = layout.build().openWriter(writer);
 
         final EeeBean bean = new EeeBean();
         bean.setAaa("あ1");
@@ -554,7 +554,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<DddBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<DddBean> csvWriter = layout.build().openWriter(writer);
 
         final DddBean bean = new DddBean();
         bean.setAaa("あ1");
@@ -595,7 +595,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<BigDecimalBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<BigDecimalBean> csvWriter = layout.build().openWriter(writer);
 
         final BigDecimalBean bean = new BigDecimalBean();
         bean.setAaa(new BigDecimal("11.1"));
@@ -652,7 +652,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<CalendarBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<CalendarBean> csvWriter = layout.build().openWriter(writer);
 
         final CalendarBean bean = new CalendarBean();
         bean.setAaa("a");

@@ -79,7 +79,7 @@ public class BeanCsvReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(null);
+            layout.build().openReader(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -99,7 +99,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -159,7 +159,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -188,7 +188,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -231,7 +231,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -271,7 +271,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -309,7 +309,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         {
@@ -357,7 +357,7 @@ public class BeanCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -385,7 +385,7 @@ public class BeanCsvReaderTest {
 
         // ## Act ##
         try {
-            layout.openReader(r);
+            layout.build().openReader(r);
             fail();
         } catch (final IllegalStateException e) {
             logger.debug(e.getMessage());
@@ -403,7 +403,7 @@ public class BeanCsvReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader(""));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(new StringReader(""));
 
         // ## Assert ##
         assertEquals(false, csvReader.hasNext());
@@ -424,7 +424,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -473,7 +473,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         assertReadEmptyRow2(csvReader);
@@ -530,7 +530,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -575,7 +575,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -646,7 +646,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -695,7 +695,7 @@ public class BeanCsvReaderTest {
         layout.setReaderHandler(readEditor);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -787,11 +787,11 @@ public class BeanCsvReaderTest {
         final AaaBean bean = new AaaBean();
 
         final String ext = "tsv";
-        assertRead9_1(layout.openReader(getResourceAsReader("-10-1", ext)), bean);
-        assertRead9_2(layout.openReader(getResourceAsReader("-10-2", ext)), bean);
-        assertRead9_1(layout.openReader(getResourceAsReader("-10-3", ext)), bean);
-        assertRead9_1(layout.openReader(getResourceAsReader("-10-1", ext)), bean);
-        assertRead9_2(layout.openReader(getResourceAsReader("-10-2", ext)), bean);
+        assertRead9_1(layout.build().openReader(getResourceAsReader("-10-1", ext)), bean);
+        assertRead9_2(layout.build().openReader(getResourceAsReader("-10-2", ext)), bean);
+        assertRead9_1(layout.build().openReader(getResourceAsReader("-10-3", ext)), bean);
+        assertRead9_1(layout.build().openReader(getResourceAsReader("-10-1", ext)), bean);
+        assertRead9_2(layout.build().openReader(getResourceAsReader("-10-2", ext)), bean);
     }
 
     private void assertRead9_1(final RecordReader<AaaBean> csvReader, final AaaBean bean) throws IOException {
@@ -847,7 +847,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new InputStreamReader(is1, "UTF-8"));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(new InputStreamReader(is1, "UTF-8"));
         //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
 
         final AaaBean bean = new AaaBean();
@@ -885,7 +885,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -914,7 +914,7 @@ public class BeanCsvReaderTest {
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(reader);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(reader);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -950,8 +950,8 @@ public class BeanCsvReaderTest {
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader(
-                BeanCsvWriterTest.V_WRITE_SEPARATOR_COMMA));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(
+                new StringReader(BeanCsvWriterTest.V_WRITE_SEPARATOR_COMMA));
 
         // ## Assert ##
         _assert(csvReader);
@@ -965,8 +965,8 @@ public class BeanCsvReaderTest {
         layout.setElementSeparator(CsvSetting.TAB);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader(
-                BeanCsvWriterTest.V_WRITE_SEPARATOR_TAB));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(
+                new StringReader(BeanCsvWriterTest.V_WRITE_SEPARATOR_TAB));
 
         // ## Assert ##
         _assert(csvReader);
@@ -981,8 +981,8 @@ public class BeanCsvReaderTest {
         layout.setLineSeparator("\n");
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader(
-                BeanCsvWriterTest.V_WRITE_LINESEPARATOR_LF));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(
+                new StringReader(BeanCsvWriterTest.V_WRITE_LINESEPARATOR_LF));
 
         // ## Assert ##
         _assert(csvReader);
@@ -997,8 +997,8 @@ public class BeanCsvReaderTest {
         layout.setQuoteMark('\'');
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader(
-                BeanCsvWriterTest.V_WRITE_QUOTECHAR_SINGLE));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(
+                new StringReader(BeanCsvWriterTest.V_WRITE_QUOTECHAR_SINGLE));
 
         // ## Assert ##
         _assert(csvReader);
@@ -1026,7 +1026,8 @@ public class BeanCsvReaderTest {
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("aaa,bbb,ccc\n" + "  , b , \n"));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(
+                new StringReader("aaa,bbb,ccc\n" + "  , b , \n"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -1051,7 +1052,8 @@ public class BeanCsvReaderTest {
         layout.setElementEditor(ElementEditors.trim());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(
+                new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -1076,7 +1078,8 @@ public class BeanCsvReaderTest {
         layout.setElementEditor(ElementEditors.trimWhitespace());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(
+                new StringReader("aaa,bbb,ccc\n" + "  , b　  , \n"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -1102,7 +1105,7 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<CccBean> layout = BeanCsvLayout.getInstance(CccBean.class);
 
         // ## Act ##
-        final RecordReader<CccBean> csvReader = layout.openReader(r);
+        final RecordReader<CccBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final CccBean bean = new CccBean();
@@ -1137,7 +1140,7 @@ public class BeanCsvReaderTest {
         layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -1207,7 +1210,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<BigDecimalBean> csvReader = layout.openReader(getResourceAsReader("-12", "tsv"));
+        final RecordReader<BigDecimalBean> csvReader = layout.build().openReader(getResourceAsReader("-12", "tsv"));
 
         // ## Assert ##
         final BigDecimalBean bean = new BigDecimalBean();
@@ -1259,7 +1262,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<BigDecimalBean> csvReader = layout.openReader(getResourceAsReader("-12", "tsv"));
+        final RecordReader<BigDecimalBean> csvReader = layout.build().openReader(getResourceAsReader("-12", "tsv"));
 
         // ## Assert ##
         final BigDecimalBean bean = new BigDecimalBean();
@@ -1290,7 +1293,7 @@ public class BeanCsvReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<BigDecimal2Bean> csvReader = layout.openReader(getResourceAsReader("-12", "tsv"));
+        final RecordReader<BigDecimal2Bean> csvReader = layout.build().openReader(getResourceAsReader("-12", "tsv"));
 
         // ## Assert ##
         final BigDecimal2Bean bean = new BigDecimal2Bean();
@@ -1310,7 +1313,7 @@ public class BeanCsvReaderTest {
         layout.setConverterRepository(converterRepository);
 
         // ## Act ##
-        final RecordReader<BigDecimal2Bean> csvReader = layout.openReader(getResourceAsReader("-12", "tsv"));
+        final RecordReader<BigDecimal2Bean> csvReader = layout.build().openReader(getResourceAsReader("-12", "tsv"));
 
         // ## Assert ##
         final BigDecimal2Bean bean = new BigDecimal2Bean();
@@ -1344,7 +1347,7 @@ public class BeanCsvReaderTest {
         final String text = _calendar1_text();
 
         // ## Act ##
-        final RecordReader<CalendarBean> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<CalendarBean> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -1401,7 +1404,7 @@ public class BeanCsvReaderTest {
         final String text = _calendar2_text();
 
         // ## Act ##
-        final RecordReader<CalendarBean> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<CalendarBean> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -1467,7 +1470,7 @@ public class BeanCsvReaderTest {
         final String text = _calendar2_text();
 
         // ## Act ##
-        final RecordReader<AnnotatedCalendarBean> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<AnnotatedCalendarBean> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         assertEquals(true, called.get());
@@ -1508,7 +1511,7 @@ public class BeanCsvReaderTest {
         final String text = _calendar1_text();
 
         // ## Act ##
-        final RecordReader<AnnotatedCalendarBean> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<AnnotatedCalendarBean> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
