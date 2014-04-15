@@ -148,7 +148,7 @@ public abstract class AbstractCsvLayout<BEAN> {
         final RecordType<BEAN> recordType = getRecordType();
         final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef, pbf);
         // TODO アノテーションのorderが全て指定されていた場合はSPECIFIEDにするべきでは?
-        final RecordDesc<BEAN> recordDesc = new DefaultRecordDesc<BEAN>(cds, recordDef.getOrderSpecified(), recordType);
+        final RecordDesc<BEAN> recordDesc = new DefaultRecordDesc<>(cds, recordDef.getOrderSpecified(), recordType);
         return recordDesc;
     }
 

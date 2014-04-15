@@ -83,7 +83,7 @@ public class RandomString {
         }
 
         public char[] toCharArray() {
-            final List<Character> list = new ArrayList<Character>();
+            final List<Character> list = new ArrayList<>();
             for (int i = 0; i <= 127; i++) {
                 final char c = (char) i;
                 if (Character.isDigit(i)) {

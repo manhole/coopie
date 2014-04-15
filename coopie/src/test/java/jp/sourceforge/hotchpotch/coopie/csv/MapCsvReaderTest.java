@@ -43,7 +43,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_open_null() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         // ## Assert ##
@@ -65,7 +65,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
@@ -117,7 +117,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -165,7 +165,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-4", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
@@ -203,7 +203,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-4", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
@@ -242,7 +242,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-3", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -282,7 +282,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-3", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setWithHeader(false);
 
         // ## Act ##
@@ -301,7 +301,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_empty() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setWithHeader(false);
 
         // ## Act ##
@@ -320,7 +320,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_empty2() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -350,7 +350,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_empty3() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setWithHeader(true);
 
         // ## Act ##
@@ -372,7 +372,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
@@ -422,7 +422,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
@@ -473,7 +473,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -518,7 +518,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-6", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -566,7 +566,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = BeanCsvReaderTest.getResourceAsReader("-9", "tsv", Charset.forName("UTF-8"));
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -622,7 +622,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-7", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         final TestReadEditor readEditor = new TestReadEditor();
         layout.setReaderHandler(readEditor);
 
@@ -648,7 +648,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
@@ -663,7 +663,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader reader = BeanCsvReaderTest.getResourceAsReader("-8", "csv", Charset.forName("UTF-8"));
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
@@ -696,7 +696,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_separator_comma() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
@@ -710,7 +710,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_separator_tab() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setElementSeparator(CsvSetting.TAB);
 
         // ## Act ##
@@ -724,7 +724,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_lineseparator_LF() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setLineSeparator("\n");
 
@@ -739,7 +739,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_quotechar_single() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setQuoteMark('\'');
 
@@ -769,7 +769,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_trim_off() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
@@ -794,7 +794,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_trim_all() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setElementEditor(ElementEditors.trim());
 
@@ -820,7 +820,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_trim_all_whitespace() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setElementEditor(ElementEditors.trimWhitespace());
 
@@ -849,7 +849,7 @@ public class MapCsvReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-11", "tsv");
 
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
@@ -881,7 +881,7 @@ public class MapCsvReaderTest {
     @Test
     public void setup_invalid_readeditor() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         // ## Assert ##
@@ -899,7 +899,7 @@ public class MapCsvReaderTest {
     @Test
     public void read_bigDecimal() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<Object> layout = new MapCsvLayout<Object>();
+        final MapCsvLayout<Object> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {

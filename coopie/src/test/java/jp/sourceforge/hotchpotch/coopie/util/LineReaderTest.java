@@ -471,7 +471,7 @@ public class LineReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        final List<String> strs = new ArrayList<String>();
+        final List<String> strs = new ArrayList<>();
         for (final Line line : r) {
             strs.add(line.getBody());
         }
