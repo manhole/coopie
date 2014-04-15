@@ -42,6 +42,12 @@ allprojects { project ->
 	}
 }
 
+configure(rootProject) {
+	task wrapper(type: Wrapper) {
+		gradleVersion = 1.11
+	}
+}
+
 subprojects { project ->
 	apply plugin: "java"
 	apply plugin: "maven-publish"
