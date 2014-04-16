@@ -43,7 +43,7 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
     }
 
     public BeanExcelInOut<BEAN> build() {
-        prepareOpen();
+        prepareBuild();
 
         final BeanExcelInOut<BEAN> obj = new BeanExcelInOut<>();
         obj.recordDesc_ = getRecordDesc();

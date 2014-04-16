@@ -56,7 +56,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
     }
 
     public RecordInOut<BEAN> build() {
-        prepareOpen();
+        prepareBuild();
 
         final BeanCsvRecordInOut<BEAN> obj = new BeanCsvRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();

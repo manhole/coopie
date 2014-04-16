@@ -52,7 +52,7 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
     }
 
     public RecordInOut<Map<String, PROP>> build() {
-        prepareOpen();
+        prepareBuild();
 
         final MapCsvRecordInOut<PROP> obj = new MapCsvRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();

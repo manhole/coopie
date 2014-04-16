@@ -33,7 +33,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<String, PROP>> {
 
     public RecordInOut<Map<String, PROP>> build() {
-        prepareOpen();
+        prepareBuild();
 
         final MapFixedLengthRecordInOut<PROP> obj = new MapFixedLengthRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();
@@ -45,7 +45,7 @@ public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<St
         return obj;
     }
 
-    protected void prepareOpen() {
+    protected void prepareBuild() {
         if (getRecordDesc() == null) {
             final FixedLengthRecordDef recordDef = getRecordDef();
             if (recordDef != null) {

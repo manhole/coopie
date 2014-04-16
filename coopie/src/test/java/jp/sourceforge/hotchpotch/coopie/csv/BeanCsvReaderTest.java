@@ -619,7 +619,7 @@ public class BeanCsvReaderTest {
             }
         });
         try {
-            layout.prepareOpen();
+            layout.prepareBuild();
             fail();
         } catch (final PropertyNotFoundException e) {
             logger.debug(e.getMessage());

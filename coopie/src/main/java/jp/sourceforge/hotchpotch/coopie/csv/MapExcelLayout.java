@@ -23,7 +23,7 @@ import java.util.Map;
 public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
 
     public ExcelInOut<Map<String, PROP>> build() {
-        prepareOpen();
+        prepareBuild();
 
         final MapExcelInOut<PROP> obj = new MapExcelInOut<>();
         obj.recordDesc_ = getRecordDesc();

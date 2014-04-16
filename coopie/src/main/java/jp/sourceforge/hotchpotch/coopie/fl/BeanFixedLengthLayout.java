@@ -52,7 +52,7 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
     }
 
     public RecordInOut<BEAN> build() {
-        prepareOpen();
+        prepareBuild();
 
         final BeanFixedLengthRecordInOut<BEAN> obj = new BeanFixedLengthRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();
@@ -64,7 +64,7 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
         return obj;
     }
 
-    protected void prepareOpen() {
+    protected void prepareBuild() {
         if (getRecordDesc() == null) {
             /*
              * アノテーションが付いている場合は、アノテーションから構築する

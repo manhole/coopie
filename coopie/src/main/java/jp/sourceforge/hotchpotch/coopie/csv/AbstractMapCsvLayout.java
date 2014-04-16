@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 
 public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<String, PROP>> {
 
-    protected void prepareOpen() {
+    protected void prepareBuild() {
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = getRecordDef();
             if (recordDef != null) {
@@ -91,7 +91,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<S
             });
 
             // TODO 素直にRecordDescを取得したい
-            layout_.prepareOpen();
+            layout_.prepareBuild();
 
             final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
@@ -126,7 +126,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<S
             });
 
             // TODO 素直にRecordDescを取得したい
-            layout_.prepareOpen();
+            layout_.prepareBuild();
 
             final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {

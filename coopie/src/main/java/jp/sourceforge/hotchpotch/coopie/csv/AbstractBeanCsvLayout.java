@@ -37,7 +37,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends AbstractCsvLayout<BEAN
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
 
-    protected void prepareOpen() {
+    protected void prepareBuild() {
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = recordDef();
             registerConverter(recordDef);
