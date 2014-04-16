@@ -61,13 +61,15 @@ subprojects { project ->
 	}
 
 	task buildNumberTask << {
-		def p = "git rev-parse --verify --short=8 HEAD".execute()
+        def gitCommand = "git rev-parse --verify --short=8 HEAD"
+		def p = gitCommand.execute(null, project.getRootDir())
 		def w = new java.io.StringWriter()
 		p.waitForProcessOutput(w, System.err)
 		if (p.exitValue() != 0) {
-			throw new Exception()
+			throw new Exception("execution failed: <${gitCommand}>")
 		}
 		def buildNumber = w.toString().trim()
+        assert buildNumber
 		w.close()
 
 		def timestamp = new Date()
