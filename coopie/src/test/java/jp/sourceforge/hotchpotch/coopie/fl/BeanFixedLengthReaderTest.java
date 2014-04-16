@@ -60,7 +60,7 @@ public class BeanFixedLengthReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(null);
+            layout.build().openReader(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -81,7 +81,7 @@ public class BeanFixedLengthReaderTest {
         // ## Assert ##
         boolean success = false;
         try {
-            layout.openReader(r);
+            layout.build().openReader(r);
             success = true;
         } catch (final AssertionError e) {
             logger.debug(e.getMessage());
@@ -113,7 +113,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -143,7 +143,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -171,7 +171,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -201,7 +201,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -248,7 +248,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader(""));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(new StringReader(""));
 
         // ## Assert ##
         assertEquals(false, csvReader.hasNext());
@@ -279,7 +279,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -305,7 +305,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -332,7 +332,7 @@ public class BeanFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -358,7 +358,8 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("111222333\n44455\n666777888\n"));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(
+                new StringReader("111222333\n44455\n666777888\n"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -397,7 +398,8 @@ public class BeanFixedLengthReaderTest {
         final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout.getInstance(FlAaaBean.class);
 
         // ## Act ##
-        final RecordReader<FlAaaBean> csvReader = layout.openReader(new StringReader("0123456789\n1234567890\n23\n"));
+        final RecordReader<FlAaaBean> csvReader = layout.build().openReader(
+                new StringReader("0123456789\n1234567890\n23\n"));
 
         // ## Assert ##
         final FlAaaBean bean = new FlAaaBean();
@@ -436,7 +438,7 @@ public class BeanFixedLengthReaderTest {
         final BeanFixedLengthLayout<FlAaaBean> layout = BeanFixedLengthLayout.getInstance(FlAaaBean.class);
 
         // ## Act ##
-        final RecordReader<FlAaaBean> csvReader = layout.openReader(new StringReader("𠮷野家すき家"));
+        final RecordReader<FlAaaBean> csvReader = layout.build().openReader(new StringReader("𠮷野家すき家"));
 
         // ## Assert ##
         final FlAaaBean bean = new FlAaaBean();
@@ -471,7 +473,7 @@ public class BeanFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("　a bb ccc"));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(new StringReader("　a bb ccc"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -506,7 +508,7 @@ public class BeanFixedLengthReaderTest {
         layout.setElementEditor(ElementEditors.trim());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("　a bb ccc"));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(new StringReader("　a bb ccc"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -538,7 +540,7 @@ public class BeanFixedLengthReaderTest {
         layout.setElementEditor(ElementEditors.trimWhitespace());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(new StringReader("　a bb ccc"));
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(new StringReader("　a bb ccc"));
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -575,7 +577,7 @@ public class BeanFixedLengthReaderTest {
         layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(r);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -642,7 +644,7 @@ public class BeanFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<BigDecimalBean> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<BigDecimalBean> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final BigDecimalBean bean = new BigDecimalBean();
@@ -701,7 +703,7 @@ public class BeanFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<CalendarBean> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<CalendarBean> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -756,7 +758,7 @@ public class BeanFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<CalendarBean> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<CalendarBean> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

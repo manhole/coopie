@@ -51,16 +51,6 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
 
-    @Deprecated
-    public RecordReader<BEAN> openReader(final Readable readable) {
-        return build().openReader(readable);
-    }
-
-    @Deprecated
-    public RecordWriter<BEAN> openWriter(final Appendable appendable) {
-        return build().openWriter(appendable);
-    }
-
     public RecordInOut<BEAN> build() {
         prepareOpen();
 
