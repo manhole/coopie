@@ -158,8 +158,7 @@ public abstract class AbstractCsvLayout<BEAN> {
         final List<ColumnDesc<BEAN>> list = CollectionsUtil.newArrayList();
         appendColumnDescFromColumnDef(recordDef, list, pbf);
         appendColumnDescFromColumnsDef(recordDef, list, pbf);
-        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(list.size());
-        list.toArray(cds);
+        final ColumnDesc<BEAN>[] cds = ColumnDescs.toArray(list);
         return cds;
     }
 
