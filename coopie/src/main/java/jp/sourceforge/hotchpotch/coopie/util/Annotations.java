@@ -25,13 +25,16 @@ import org.t2framework.commons.meta.PropertyDesc;
 
 public class Annotations {
 
-    private static PropertyAnnotationReader INSTANCE = new DefaultPropertyAnnotationReader();
+    private static PropertyAnnotationReader INSTANCE = new AccessorPropertyAnnotationReader();
 
     public static PropertyAnnotationReader getPropertyAnnotationReader() {
         return INSTANCE;
     }
 
-    public static class DefaultPropertyAnnotationReader implements PropertyAnnotationReader {
+    /*
+     * getter/setterからアノテーションを取得する。
+     */
+    public static class AccessorPropertyAnnotationReader implements PropertyAnnotationReader {
 
         @Override
         public <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?> propertyDesc,
