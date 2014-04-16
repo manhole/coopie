@@ -22,16 +22,6 @@ import java.util.Map;
 
 public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
 
-    @Deprecated
-    public RecordReader<Map<String, PROP>> openReader(final InputStream is) {
-        return build().openReader(is);
-    }
-
-    @Deprecated
-    public RecordWriter<Map<String, PROP>> openWriter(final OutputStream os) {
-        return build().openWriter(os);
-    }
-
     public ExcelInOut<Map<String, PROP>> build() {
         prepareOpen();
 

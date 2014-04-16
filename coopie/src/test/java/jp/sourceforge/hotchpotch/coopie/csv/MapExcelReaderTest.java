@@ -45,7 +45,7 @@ public class MapExcelReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(null);
+            layout.build().openReader(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -60,7 +60,7 @@ public class MapExcelReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(new ByteArrayInputStream("invalid_value".getBytes()));
+            layout.build().openReader(new ByteArrayInputStream("invalid_value".getBytes()));
             fail();
         } catch (final IORuntimeException e) {
             logger.debug(e.getMessage());
@@ -80,7 +80,7 @@ public class MapExcelReaderTest {
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -106,7 +106,7 @@ public class MapExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -126,7 +126,7 @@ public class MapExcelReaderTest {
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -144,7 +144,7 @@ public class MapExcelReaderTest {
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         MapCsvReaderTest.assertRead3_2(csvReader);
@@ -174,7 +174,7 @@ public class MapExcelReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -196,7 +196,7 @@ public class MapExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -218,7 +218,7 @@ public class MapExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -236,7 +236,7 @@ public class MapExcelReaderTest {
         layout.setReaderHandler(readEditor);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -254,7 +254,7 @@ public class MapExcelReaderTest {
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -273,7 +273,7 @@ public class MapExcelReaderTest {
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(is);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();

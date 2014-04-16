@@ -35,7 +35,7 @@ public class MapExcelWriterTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -61,7 +61,7 @@ public class MapExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(baos);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(baos);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -108,7 +108,7 @@ public class MapExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(baos);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(baos);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
