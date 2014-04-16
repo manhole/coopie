@@ -32,16 +32,6 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
 public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<String, PROP>> {
 
-    @Deprecated
-    public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
-        return build().openReader(readable);
-    }
-
-    @Deprecated
-    public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
-        return build().openWriter(appendable);
-    }
-
     public RecordInOut<Map<String, PROP>> build() {
         prepareOpen();
 

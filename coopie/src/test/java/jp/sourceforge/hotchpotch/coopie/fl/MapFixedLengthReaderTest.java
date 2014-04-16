@@ -63,7 +63,7 @@ public class MapFixedLengthReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(null);
+            layout.build().openReader(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -84,7 +84,7 @@ public class MapFixedLengthReaderTest {
         // ## Assert ##
         boolean success = false;
         try {
-            layout.openReader(r);
+            layout.build().openReader(r);
             success = true;
         } catch (final AssertionError e) {
             logger.debug(e.getMessage());
@@ -116,7 +116,7 @@ public class MapFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -146,7 +146,7 @@ public class MapFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -174,7 +174,7 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -204,7 +204,7 @@ public class MapFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -251,7 +251,7 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(""));
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(new StringReader(""));
 
         // ## Assert ##
         assertEquals(false, csvReader.hasNext());
@@ -281,7 +281,7 @@ public class MapFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -307,7 +307,7 @@ public class MapFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -334,7 +334,7 @@ public class MapFixedLengthReaderTest {
         layout.setWithHeader(true);
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -360,8 +360,8 @@ public class MapFixedLengthReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(new StringReader(
-                "111222333\n44455\n666777888\n"));
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(
+                new StringReader("111222333\n44455\n666777888\n"));
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -414,7 +414,7 @@ public class MapFixedLengthReaderTest {
         layout.setLineReaderHandler(new SkipEmptyLineReadEditor());
 
         // ## Act ##
-        final RecordReader<Map<String, String>> csvReader = layout.openReader(r);
+        final RecordReader<Map<String, String>> csvReader = layout.build().openReader(r);
 
         // ## Assert ##
         final Map<String, String> bean = CollectionsUtil.newHashMap();
@@ -481,7 +481,7 @@ public class MapFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<Map<String, Object>> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<Map<String, Object>> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final Map<String, Object> bean = CollectionsUtil.newHashMap();
@@ -541,7 +541,7 @@ public class MapFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<Map<String, Object>> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<Map<String, Object>> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -598,7 +598,7 @@ public class MapFixedLengthReaderTest {
         }
 
         // ## Act ##
-        final RecordReader<Map<String, Object>> csvReader = layout.openReader(new StringReader(text));
+        final RecordReader<Map<String, Object>> csvReader = layout.build().openReader(new StringReader(text));
 
         // ## Assert ##
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

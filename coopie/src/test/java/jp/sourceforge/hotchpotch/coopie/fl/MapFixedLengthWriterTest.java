@@ -65,7 +65,7 @@ public class MapFixedLengthWriterTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -84,7 +84,7 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         boolean success = false;
         try {
-            layout.openWriter(new StringWriter());
+            layout.build().openWriter(new StringWriter());
             success = true;
         } catch (final AssertionError e) {
             logger.debug(e.getMessage());
@@ -114,7 +114,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -157,7 +157,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -206,7 +206,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -248,7 +248,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -292,7 +292,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, Object>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, Object>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, Object> bean = new TreeMap<>();
         bean.put("aaa", new BigDecimal("11.1"));
@@ -352,7 +352,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, Object>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, Object>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, Object> bean = new TreeMap<>();
         bean.put("aaa", "a");
