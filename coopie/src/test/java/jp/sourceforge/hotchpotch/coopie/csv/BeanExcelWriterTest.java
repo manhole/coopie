@@ -53,7 +53,7 @@ public class BeanExcelWriterTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -79,7 +79,7 @@ public class BeanExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(baos);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(baos);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -140,7 +140,7 @@ public class BeanExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(baos);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(baos);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -275,7 +275,7 @@ public class BeanExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(baos);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(baos);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");

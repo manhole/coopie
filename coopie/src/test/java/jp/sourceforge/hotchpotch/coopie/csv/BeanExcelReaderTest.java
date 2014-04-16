@@ -48,7 +48,7 @@ public class BeanExcelReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(null);
+            layout.build().openReader(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -63,7 +63,7 @@ public class BeanExcelReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openReader(new ByteArrayInputStream("invalid_value".getBytes()));
+            layout.build().openReader(new ByteArrayInputStream("invalid_value".getBytes()));
             fail();
         } catch (final IORuntimeException e) {
             logger.debug(e.getMessage());
@@ -83,7 +83,7 @@ public class BeanExcelReaderTest {
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -110,7 +110,7 @@ public class BeanExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -154,7 +154,7 @@ public class BeanExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -174,7 +174,7 @@ public class BeanExcelReaderTest {
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -205,7 +205,7 @@ public class BeanExcelReaderTest {
         layout.setWithHeader(false);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -225,7 +225,7 @@ public class BeanExcelReaderTest {
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -250,7 +250,7 @@ public class BeanExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -275,7 +275,7 @@ public class BeanExcelReaderTest {
         });
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -292,7 +292,7 @@ public class BeanExcelReaderTest {
         layout.setReaderHandler(readEditor);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();
@@ -310,7 +310,7 @@ public class BeanExcelReaderTest {
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.openReader(is);
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(is);
 
         // ## Assert ##
         final AaaBean bean = new AaaBean();

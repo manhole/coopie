@@ -30,16 +30,6 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
         super(beanClass);
     }
 
-    @Deprecated
-    public RecordReader<BEAN> openReader(final InputStream is) {
-        return build().openReader(is);
-    }
-
-    @Deprecated
-    public RecordWriter<BEAN> openWriter(final OutputStream os) {
-        return build().openWriter(os);
-    }
-
     public RecordReader<BEAN> openSheetReader(final HSSFSheet sheet) {
         return build().openSheetReader(sheet);
     }
