@@ -67,7 +67,7 @@ public class CsvAssert {
         final MapCsvLayout<Object> layout = new MapCsvLayout<>();
         layout.setWithHeader(true);
         layout.setElementSeparator(elementSeparator_);
-        final RecordReader<Map<String, Object>> csvReader = layout.openReader(actualReader);
+        final RecordReader<Map<String, Object>> csvReader = layout.build().openReader(actualReader);
         return csvReader;
     }
 

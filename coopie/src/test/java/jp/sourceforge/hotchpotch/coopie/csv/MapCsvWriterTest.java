@@ -49,7 +49,7 @@ public class MapCsvWriterTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
             assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
@@ -63,7 +63,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         bean.put("aaa", "あ1");
@@ -104,7 +104,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -153,7 +153,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -188,7 +188,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         bean.put("aaa", "あ1");
@@ -233,7 +233,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         bean.put("aaa", "あ1");
@@ -272,7 +272,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
@@ -296,7 +296,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
@@ -318,7 +318,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
@@ -341,7 +341,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
@@ -364,7 +364,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
@@ -387,7 +387,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c\"1");
@@ -423,7 +423,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, Object>> csvWriter = layout.openWriter(writer);
+        final RecordWriter<Map<String, Object>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, Object> bean = new TreeMap<>();
         bean.put("aaa", new BigDecimal("11.1"));

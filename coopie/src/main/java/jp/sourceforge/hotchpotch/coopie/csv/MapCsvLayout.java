@@ -29,16 +29,6 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
         csvSetting_ = new DefaultCsvSetting();
     }
 
-    @Deprecated
-    public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
-        return build().openReader(readable);
-    }
-
-    @Deprecated
-    public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
-        return build().openWriter(appendable);
-    }
-
     public void setElementSeparator(final char elementSeparator) {
         csvSetting_.setElementSeparator(elementSeparator);
     }
