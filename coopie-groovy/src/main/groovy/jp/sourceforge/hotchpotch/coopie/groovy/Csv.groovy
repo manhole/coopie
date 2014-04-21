@@ -81,7 +81,7 @@ class Csv {
         def io = new CsvElementInOut(setting)
         def writer = io.openWriter(output)
         try {
-            def csvWriter = new CsvWriter(writer:writer)
+            def csvWriter = new CsvWriter(writer: writer)
             c(csvWriter)
         } finally {
             CloseableUtil.closeNoException(writer)
@@ -101,7 +101,7 @@ class Csv {
 
     void setLineSeparator(sep) {
         if (sep instanceof LineSeparator) {
-            this.lineSeparator = ((LineSeparator)sep).separator
+            this.lineSeparator = ((LineSeparator) sep).separator
         } else {
             this.lineSeparator = sep
         }
@@ -134,7 +134,7 @@ class Csv {
                     _eachRecordWithArray(c)
                 }
             } else {
-                _eachRecordWithList(c, (0..paramCount-1))
+                _eachRecordWithList(c, (0..paramCount - 1))
             }
         }
 
@@ -166,6 +166,7 @@ class Csv {
                 CloseableUtil.closeNoException(reader_)
             }
         }
+
         private void _eachRecordWithList(Closure c, Range range) {
             try {
                 def String[] record
@@ -215,6 +216,7 @@ class Csv {
 
     static class CsvRecordWriter {
         RecordWriter writer
+
         CsvRecordWriter leftShift(record) {
             writer.write(record)
             this
@@ -224,9 +226,11 @@ class Csv {
     static class CsvRecord {
         String[] elements
         int index
+
         String getAt(int index) {
             return elements[index]
         }
+
         int length() {
             return elements.length
         }
