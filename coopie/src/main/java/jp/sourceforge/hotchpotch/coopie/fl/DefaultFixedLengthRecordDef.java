@@ -22,7 +22,7 @@ import org.t2framework.commons.util.CollectionsUtil;
 
 class DefaultFixedLengthRecordDef implements FixedLengthRecordDef {
 
-    final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
+    private final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
     private final List<FixedLengthColumnsDef> columnsDefs_ = CollectionsUtil.newArrayList();
 
     public boolean isEmpty() {
