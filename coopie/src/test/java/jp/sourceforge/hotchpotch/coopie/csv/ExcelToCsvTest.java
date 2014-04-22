@@ -47,9 +47,18 @@ public class ExcelToCsvTest {
     }
 
     @Test
-    public void test1() throws Exception {
+    public void test1_xls() throws Exception {
+        _test1("xls");
+    }
+
+    @Test
+    public void test1_xlsx() throws Exception {
+        _test1("xlsx");
+    }
+
+    private void _test1(final String ext) throws Exception {
         // ## Arrange ##
-        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-1", "xls");
+        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-1", ext);
         final File inFile = new File(rootDir, testFile.getName());
         files.copy(testFile, inFile);
 
@@ -73,9 +82,18 @@ public class ExcelToCsvTest {
      * 空行を含む場合
      */
     @Test
-    public void test2() throws Exception {
+    public void test2_xls() throws Exception {
+        _test2("xls");
+    }
+
+    @Test
+    public void test2_xlsx() throws Exception {
+        _test2("xlsx");
+    }
+
+    private void _test2(final String ext) throws Exception {
         // ## Arrange ##
-        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-2", "xls");
+        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-2", ext);
         final File inFile = new File(rootDir, testFile.getName());
         files.copy(testFile, inFile);
 
@@ -100,9 +118,18 @@ public class ExcelToCsvTest {
      * 複数シートを持つ場合
      */
     @Test
-    public void test3() throws Exception {
+    public void test3_xls() throws Exception {
+        _test3("xls");
+    }
+
+    @Test
+    public void test3_xlsx() throws Exception {
+        _test3("xlsx");
+    }
+
+    private void _test3(final String ext) throws Exception {
         // ## Arrange ##
-        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-3", "xls");
+        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-3", ext);
 
         final File inFile = new File(rootDir, testFile.getName());
         files.copy(testFile, inFile);
@@ -133,9 +160,18 @@ public class ExcelToCsvTest {
     }
 
     @Test
-    public void test_date() throws Exception {
+    public void test_date_xls() throws Exception {
+        _test_date("xls");
+    }
+
+    @Test
+    public void test_date_xlsx() throws Exception {
+        _test_date("xlsx");
+    }
+
+    private void _test_date(final String ext) throws Exception {
         // ## Arrange ##
-        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-date", "xls");
+        final File testFile = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-date", ext);
         final File inFile = new File(rootDir, testFile.getName());
         files.copy(testFile, inFile);
 
