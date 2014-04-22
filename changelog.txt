@@ -1,4 +1,4 @@
-0.3.2 xxxx/xx/xx
+0.4.0 xxxx/xx/xx
 
 - ビルドに使用するgradleのバージョンを1.11にし、gradle wrapperを使うようにしました。
 - change java version: 1.6 -> 1.7
