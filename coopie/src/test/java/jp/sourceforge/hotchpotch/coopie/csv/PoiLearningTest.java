@@ -72,7 +72,11 @@ public class PoiLearningTest {
         try {
             book.getSheetAt(3);
             fail("無いシートを取得すると例外になる");
-        } catch (final IndexOutOfBoundsException e) {
+        } catch (final IllegalArgumentException e) {
+            /*
+             * poi 3.1ではIndexOutOfBoundsExceptionだったが、
+             * poi 3.9ではIllegalArgumentExceptionが投げられるようになった。
+             */
         }
     }
 
