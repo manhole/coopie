@@ -34,7 +34,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.exception.IORuntimeException;
 
 public class BeanExcelReaderTest {
 
@@ -65,7 +64,7 @@ public class BeanExcelReaderTest {
         try {
             layout.build().openReader(new ByteArrayInputStream("invalid_value".getBytes()));
             fail();
-        } catch (final IORuntimeException e) {
+        } catch (final IllegalArgumentException e) {
             logger.debug(e.getMessage());
         }
     }
