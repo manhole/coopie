@@ -28,12 +28,14 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
@@ -53,7 +55,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
         setupByHeader();
     }
 
-    public void openSheetReader(final HSSFSheet sheet) {
+    public void openSheetReader(final Sheet sheet) {
         final PoiSheetReader poiReader = new PoiSheetReader(null, sheet);
         setElementReader(poiReader);
         setClosed(false);
@@ -63,7 +65,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
 
     static class PoiReader implements ElementReader {
 
-        private HSSFWorkbook workbook_;
+        private Workbook workbook_;
         private PoiSheetReader sheetReader_;
         private boolean closed_ = true;
         @SuppressWarnings("unused")
@@ -73,9 +75,11 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
 
         public PoiReader(final InputStream is) {
             try {
-                workbook_ = new HSSFWorkbook(is);
+                workbook_ = WorkbookFactory.create(is);
                 closed_ = false;
             } catch (final IOException e) {
+                throw new IORuntimeException(e);
+            } catch (final InvalidFormatException e) {
                 throw new IORuntimeException(e);
             } finally {
                 CloseableUtil.closeNoException(is);
@@ -130,7 +134,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                 }
             }
 
-            final HSSFSheet sheet = workbook_.getSheetAt(sheetNo);
+            final Sheet sheet = workbook_.getSheetAt(sheetNo);
             final PoiSheetReader reader = new PoiSheetReader(workbook_, sheet);
             sheets_.set(sheetNo, reader);
 
@@ -146,8 +150,8 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
         @SuppressWarnings("unused")
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-        private final HSSFWorkbook workbook_;
-        private HSSFSheet sheet_;
+        private final Workbook workbook_;
+        private Sheet sheet_;
 
         /*
          * Excelの行番号は0オリジン。(見た目は1からだが)
@@ -157,7 +161,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
 
         private final DateFormat dateFormat_ = new SimpleDateFormat("yyyyMMdd\'T\'HHmmss");
 
-        public PoiSheetReader(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+        public PoiSheetReader(final Workbook workbook, final Sheet sheet) {
             workbook_ = workbook;
             sheet_ = sheet;
             /*
@@ -190,7 +194,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             if (lastRowNum_ < rowNum_) {
                 return null;
             }
-            final HSSFRow row = sheet_.getRow(rowNum_);
+            final Row row = sheet_.getRow(rowNum_);
             final String[] line;
             if (row != null) {
                 /*
@@ -210,7 +214,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                     //logger.debug("lastCellNum={}", lastCellNum);
                     line = new String[lastCellNum];
                     for (short colNo = 0; colNo < lastCellNum; colNo++) {
-                        final HSSFCell cell = row.getCell(colNo);
+                        final Cell cell = row.getCell(colNo);
                         final String v = getValueAsString(cell);
                         line[colNo] = v;
                     }
@@ -248,7 +252,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             }
 
             // シートが空の場合はrowがnull
-            final HSSFRow row = sheet_.getRow(0);
+            final Row row = sheet_.getRow(0);
             if (row != null) {
                 return false;
             }
@@ -256,13 +260,13 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             return true;
         }
 
-        private String getValueAsString(final HSSFCell cell) {
+        private String getValueAsString(final Cell cell) {
             if (cell == null) {
                 return null;
             }
             switch (cell.getCellType()) {
-            case HSSFCell.CELL_TYPE_NUMERIC:
-                if (HSSFDateUtil.isCellDateFormatted(cell)) {
+            case Cell.CELL_TYPE_NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
                     final Date v = cell.getDateCellValue();
                     return dateFormat_.format(v);
                 }
@@ -271,12 +275,12 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                     return Integer.toString((int) v);
                 }
                 return Double.toString(v);
-            case HSSFCell.CELL_TYPE_BOOLEAN:
+            case Cell.CELL_TYPE_BOOLEAN:
                 final boolean b = cell.getBooleanCellValue();
                 return Boolean.toString(b);
-            case HSSFCell.CELL_TYPE_STRING:
+            case Cell.CELL_TYPE_STRING:
             default:
-                final HSSFRichTextString richStringCellValue = cell.getRichStringCellValue();
+                final RichTextString richStringCellValue = cell.getRichStringCellValue();
                 final String value = richStringCellValue.getString();
                 return value;
             }
