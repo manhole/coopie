@@ -43,6 +43,7 @@ class DefaultFixedLengthColumnsDef implements FixedLengthColumnsDef {
         return propertyName_;
     }
 
+    @Override
     public void setPropertyName(final String propertyName) {
         propertyName_ = propertyName;
     }
