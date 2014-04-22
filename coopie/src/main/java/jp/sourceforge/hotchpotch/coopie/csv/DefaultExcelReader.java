@@ -77,9 +77,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             try {
                 workbook_ = WorkbookFactory.create(is);
                 closed_ = false;
-            } catch (final IOException e) {
-                throw new IORuntimeException(e);
-            } catch (final InvalidFormatException e) {
+            } catch (final IOException | InvalidFormatException e) {
                 throw new IORuntimeException(e);
             } finally {
                 CloseableUtil.closeNoException(is);
