@@ -84,6 +84,11 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             }
         }
 
+        public PoiReader(final Workbook workbook) {
+            workbook_ = workbook;
+            closed_ = false;
+        }
+
         @Override
         public int getRecordNumber() {
             return sheetReader_.getRecordNumber();
