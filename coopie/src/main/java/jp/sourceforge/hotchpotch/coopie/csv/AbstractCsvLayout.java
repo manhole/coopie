@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -103,11 +103,11 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     /**
      * カスタマイズ用hander実装をまとめて登録する、コンビニエンスメソッドです。
-     * 
+     *
      * @param handler {@link LineReaderHandler} {@link ElementReaderHandler}
      *  {@link ElementEditor} の1つ以上をimplementsしたインスタンス
      * @exception IllegalArgumentException 上記インタフェースを1つもimplementsしていない場合
-     * 
+     *
      * @see #setLineReaderHandler(LineReaderHandler)
      * @see #setElementReaderHandler(ElementReaderHandler)
      * @see #setElementEditor(ElementEditor)

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -36,10 +36,10 @@ import org.t2framework.commons.util.CollectionsUtil;
 
 /**
  * CSV Reader
- * 
+ *
  * http://www.rfc-editor.org/rfc/rfc4180.txt
  * http://www.kasai.fm/wiki/rfc4180jp (日本語訳)
- * 
+ *
  * @author manhole
  */
 public class Rfc4180Reader implements ElementReader {
@@ -201,7 +201,7 @@ public class Rfc4180Reader implements ElementReader {
                         } else if (c == elementSeparator_) {
                             /*
                              * 閉じクォートの後(直後 or spaceを間に含んでいる)に、要素区切り文字が登場。
-                             * 
+                             *
                              * 閉じクォートの手前位置までをデータとして取得。
                              */
                             String elem = rc.substringTo(rc.contentEndPos);
@@ -340,14 +340,14 @@ public class Rfc4180Reader implements ElementReader {
         /*
          * 先頭のスペースを除いた、クォートされた要素の場合は、
          * クォートされない要素として読み直す。
-         * 
+         *
          * 先頭ではなく末尾にスペースを持つ要素の場合は、INVALIDにはしない。
          * (グレーだけれど)
          */
         /*
          * と上のコメントに書いてあるが、
          * 先頭のスペースを捨てていた場合はINVALIDにしない、という動きをするように見える。
-         * 
+         *
          * クォート関係が不正でも、要素がspace始まりだった場合は、
          * spaceを要素に含みクォートを単なる文字として扱う。
          */
@@ -449,7 +449,7 @@ public class Rfc4180Reader implements ElementReader {
         /*
          * substring用
          * ほぼcontentBeginPosと同じ値
-         * 
+         *
          * クォート文字をデータに含む場合に、エスケープクォート途中までを前の行までをいったんバッファへ入れ、
          * 後続の位置を記録するのに使う。
          */

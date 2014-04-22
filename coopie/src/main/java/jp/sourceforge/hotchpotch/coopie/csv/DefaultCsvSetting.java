@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -35,10 +35,10 @@ public class DefaultCsvSetting implements CsvSetting {
     /**
      * 改行文字。
      * 未指定の場合はCRLFです。
-     * 
+     *
      * CsvWriterを使う場合は、何らかの値が設定されている必要があります。
      * (CRLFのままでもOKです)
-     * 
+     *
      * CsvReaderを使う場合は、未設定のままで構いません。
      */
     private String lineSeparator_ = CRLF;

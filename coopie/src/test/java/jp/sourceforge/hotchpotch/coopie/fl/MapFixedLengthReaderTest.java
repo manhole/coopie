@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -96,7 +96,7 @@ public class MapFixedLengthReaderTest {
 
     /**
      * ファイルヘッダがBeanのプロパティ名と同じ場合。
-     * 
+     *
      * ※固定長ファイルでは、ヘッダがあっても大事に扱わない。
      */
     @Test
@@ -155,7 +155,7 @@ public class MapFixedLengthReaderTest {
 
     /**
      * ファイルヘッダが無い場合。
-     * 
+     *
      * ※これが通常の固定長ファイル
      */
     @Test
@@ -183,7 +183,7 @@ public class MapFixedLengthReaderTest {
 
     /**
      * 空白項目がある場合。
-     * 
+     *
      * CSVでは""はnullとして扱い、" "は" "として扱うが、
      * 固定長では""も" "もnullとする。
      */
@@ -261,7 +261,7 @@ public class MapFixedLengthReaderTest {
 
     /**
      * 空行がある場合。
-     * 
+     *
      * 各要素を"" (null)として扱う。
      */
     @Test
@@ -393,7 +393,7 @@ public class MapFixedLengthReaderTest {
 
     /**
      * 空行をskipして読めること。
-     * 
+     *
      */
     @Test
     public void read_skip_emptyline() throws Throwable {

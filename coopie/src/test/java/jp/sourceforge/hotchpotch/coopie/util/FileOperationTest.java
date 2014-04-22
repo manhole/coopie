@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -298,7 +298,7 @@ public class FileOperationTest {
 
     /**
      * ファイルの拡張子を返します。
-     * 
+     *
      * "foo.txt" → "txt"
      * "foo.bar.txt" → "txt"
      */
@@ -437,48 +437,48 @@ public class FileOperationTest {
 
     /*
      * ＜copyFileの挙動について＞
-     * 
+     *
      * ファイルをコピーする。
-     * 
+     *
      * copy先がディレクトリの場合(同名のディレクトリがある場合)はエラーになる。
      * (そのディレクトリ内へcopyはしない。)
      * ディレクトリ内へcopyしたかったら、copy先として"toDir/toFilename"を指定すべき。
-     * 
+     *
      * ディレクトリのコピーではない。
      * fromにディレクトリが指定された場合はエラーになる。
-     * 
-     * 
+     *
+     *
      * ＜moveFileの挙動について＞
-     * 
+     *
      * 基本的にcopyFileと同じで、違う点はfrom側が消えること。
-     * 
+     *
      * move先がディレクトリの場合はエラーになる。
      * (そのディレクトリ内へmoveはしない。)
      * ディレクトリ内へmoveしたかったら、move先として"toDir/toFilename"を指定すべき。
-     * 
+     *
      * TODO ディレクトリのcopyでは無い、とするか?
      */
     /*
      * ＜copyの挙動について＞
-     * 
+     *
      * 基本的にcopyDirectoryのこと。
-     * 
+     *
      * toがあろうと無かろうと同じ挙動をする。
-     * 
+     *
      * "from"→"to"へcopyするとき、
      * "from/foo"は"to/foo"へcopyされる。
-     * 
+     *
      * "from"をディレクトリとしてcopy先へ作りたいなら、
      * "to/from"をcopy先として指定すべき。
-     * 
+     *
      * copy先に既に同名のディレクトリが存在する場合は、エラーとする。
      */
     /*
      * ＜moveの挙動について＞
-     * 
+     *
      * 基本的にcopyと同じで、違う点はfrom側が消えること。
      * toがあろうと無かろうと同じ挙動をする。
-     * 
+     *
      * renameToと同じ挙動を目指す。
      */
 
@@ -649,7 +649,7 @@ public class FileOperationTest {
 
     /*
      * "to"だけがある場合
-     * 
+     *
      * "to"側に"from"という名前のディレクトリは作られない。
      * "from"の中身が"to"の中にできる。
      */
@@ -683,7 +683,7 @@ public class FileOperationTest {
 
     /*
      * "to"だけがある場合
-     * 
+     *
      * "to"側に"from"という名前のディレクトリは作られない。
      * "from"の中身が"to"の中にできる。
      */

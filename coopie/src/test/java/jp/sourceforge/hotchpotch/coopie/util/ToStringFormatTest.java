@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -204,7 +204,7 @@ public class ToStringFormatTest {
     /*
      * クラスのアクセス修飾子が狭い(private static class)ために
      * アクセスできないgetterは、強引に実行する。
-     * 
+     *
      * メソッドのアクセス修飾子がpublicでない場合は、対象外とする。
      */
     @Test
@@ -385,7 +385,7 @@ public class ToStringFormatTest {
     /*
      * getterで新たなinstanceを返し続けるオブジェクトへは相性が悪い。
      * StackOverflowErrorになってしまう。
-     * 
+     *
      * そのため、
      * 今まではgetterでpropertyを取得していたが、直接fieldを見に行くようにする。
      */

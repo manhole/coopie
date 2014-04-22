@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -49,7 +49,7 @@ public class Rfc4180WriterTest {
 
     /*
      * 各レコードは、改行(CRLF)を区切りとする、分割された行に配置される
-     * 
+     *
      * aaa,bbb,ccc CRLF
      * zzz,yyy,xxx CRLF
      */
@@ -70,7 +70,7 @@ public class Rfc4180WriterTest {
 
     /*
      * スペースはデータの一部。無視してはいけない。
-     * 
+     *
      * aaa,bbb , ccc
      */
     @Test
@@ -89,7 +89,7 @@ public class Rfc4180WriterTest {
 
     /*
      * 改行(CRLF)、ダブルクォーテーション、カンマを含むフィールドは、ダブルクォーテーションで囲むべき
-     * 
+     *
      * aaa,"b CRLF
      * bb",ccc CRLF
      * 123,yyy,xxx
@@ -111,7 +111,7 @@ public class Rfc4180WriterTest {
 
     /*
      * 改行(CRLF)、ダブルクォーテーション、カンマを含むフィールドは、ダブルクォーテーションで囲むべき
-     * 
+     *
      * "aa,a","b CRLF
      * bb",ccc CRLF
      * 123,yyy,xxx
@@ -134,7 +134,7 @@ public class Rfc4180WriterTest {
     /*
      * フィールドがダブルクォーテーションで囲まれている場合、フィールドの値に含まれるダブルクォーテーションは、
      * その直前にひとつダブルクォーテーションを付加して、エスケープしなければならない
-     * 
+     *
      * aaa,"b""bb",ccc
      */
     @Test
@@ -153,7 +153,7 @@ public class Rfc4180WriterTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 改行文字を、CRLFではなくLFで出力できるようにする。
      */
     @Test
@@ -175,7 +175,7 @@ public class Rfc4180WriterTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 改行文字を、CRLFではなくCRで出力できるようにする。
      */
     @Test
@@ -197,9 +197,9 @@ public class Rfc4180WriterTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 要素の区切り文字を、カンマではなくTABにも指定できる。
-     * 
+     *
      * aaa TAB bbb TAB ccc CRLF
      * zzz TAB yyy TAB xxx CRLF
      */
@@ -222,9 +222,9 @@ public class Rfc4180WriterTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 要素の区切り文字をTABに指定した場合は、要素のデータにカンマを使用できる。
-     * 
+     *
      * aaa TAB bb,b TAB ccc
      */
     @Test
@@ -245,10 +245,10 @@ public class Rfc4180WriterTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 要素の区切り文字をTABに指定した場合に、要素のデータにTABを使用するには、
      * 要素をクォートする。
-     * 
+     *
      * aaa TAB "bbTABb" TAB ccc
      */
     @Test
@@ -269,9 +269,9 @@ public class Rfc4180WriterTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 要素を常にクォートできるようにする。
-     * 
+     *
      */
     @Test
     public void always_separator() throws Throwable {
@@ -308,7 +308,7 @@ public class Rfc4180WriterTest {
 
     /*
      * データ中の空要素は""にすること。
-     * 
+     *
      * クォートがMINIMUMの場合
      */
     @Test
@@ -327,7 +327,7 @@ public class Rfc4180WriterTest {
 
     /*
      * データ中のnull要素は""にすること。
-     * 
+     *
      * クォートがALWAYSの場合
      */
     @Test
@@ -348,7 +348,7 @@ public class Rfc4180WriterTest {
 
     /*
      * データ中のnull要素は""にすること。
-     * 
+     *
      * クォートがALWAYS_EXCEPT_NULLの場合
      */
     @Test
