@@ -123,12 +123,10 @@ public class ExcelToCsvTest {
         assertEquals(true, outFile3.exists());
         assertEquals(3, rootDir.list().length);
 
-        final File expectedFile1 = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
-                .replace('.', '/')
-                + "/" + "ExcelToCsvTest-3-expected1.tsv");
-        final File expectedFile3 = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getPackage().getName()
-                .replace('.', '/')
-                + "/" + "ExcelToCsvTest-3-expected3.tsv");
+        final File expectedFile1 = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-3-expected1",
+                "tsv");
+        final File expectedFile3 = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + "-3-expected3",
+                "tsv");
 
         csvAssert_.assertCsvEquals(expectedFile1, outFile1);
         csvAssert_.assertCsvEquals(expectedFile3, outFile3);
