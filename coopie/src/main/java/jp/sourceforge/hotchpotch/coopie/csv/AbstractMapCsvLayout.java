@@ -77,11 +77,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<S
             /*
              * ヘッダをMapのキーとして扱う。
              */
-            /*
-             * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
-             * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
-             */
-            layout_.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            final CsvRecordDef recordDef = layout_.setupCsvRecordDef(new SetupBlock<CsvColumnSetup>() {
                 @Override
                 public void setup(final CsvColumnSetup setup) {
                     for (final String headerElem : header) {
@@ -90,10 +86,8 @@ public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<S
                 }
             });
 
-            // TODO 素直にRecordDescを取得したい
-            layout_.prepareBuild();
+            final RecordDesc<Map<String, PROP>> built = layout_.createRecordDesc(recordDef);
 
-            final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();

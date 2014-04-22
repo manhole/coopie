@@ -641,6 +641,59 @@ public class MapCsvReaderTest {
     }
 
     /**
+     * 1つのRecordInOutインスタンスから複数のCsvReaderをopenしたとき、
+     * それぞれのReaderでの処理が影響しないこと。
+     */
+    @Test
+    public void openMultiReader() throws Throwable {
+        // ## Arrange ##
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
+
+        // ## Act ##
+        final RecordReader<Map<String, String>> csvReader1 = layout.build()
+                .openReader(getResourceAsReader("-6", "tsv"));
+
+        final Map<String, String> bean1 = CollectionsUtil.newHashMap();
+        final Map<String, String> bean2 = CollectionsUtil.newHashMap();
+
+        // ## Assert ##
+        csvReader1.read(bean1);
+        logger.debug(bean1.toString());
+        assertEquals(4, bean1.size());
+        assertEquals("あ1", bean1.get("aaa"));
+        assertEquals("い1", bean1.get("bbb"));
+        assertEquals("う1", bean1.get("ccc"));
+        assertEquals("え1", bean1.get("ddd"));
+
+        final RecordReader<Map<String, String>> csvReader2 = layout.build()
+                .openReader(getResourceAsReader("-4", "tsv"));
+        csvReader2.read(bean2);
+        assertEquals(3, bean2.size());
+        logger.debug(bean2.toString());
+        assertEquals("あ1", bean2.get("aaa"));
+        assertEquals("い1", bean2.get("bbb"));
+        assertEquals(" ", bean2.get("ccc"));
+
+        csvReader1.read(bean1);
+        logger.debug(bean1.toString());
+        assertEquals(4, bean1.size());
+        assertEquals("あ2", bean1.get("aaa"));
+        assertEquals("い2", bean1.get("bbb"));
+        assertEquals("う2", bean1.get("ccc"));
+        assertEquals("え2", bean1.get("ddd"));
+
+        csvReader2.read(bean2);
+        logger.debug(bean2.toString());
+        assertEquals(3, bean2.size());
+        assertEquals(null, bean2.get("aaa"));
+        assertEquals("い2", bean2.get("bbb"));
+        assertEquals(null, bean2.get("ccc"));
+
+        csvReader1.close();
+        csvReader2.close();
+    }
+
+    /**
      * 末端まで達した後のreadでは、例外が発生すること。
      */
     @Test

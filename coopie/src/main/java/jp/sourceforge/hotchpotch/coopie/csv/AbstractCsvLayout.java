@@ -44,9 +44,13 @@ public abstract class AbstractCsvLayout<BEAN> {
 
     public void setupColumns(final SetupBlock<CsvColumnSetup> block) {
         recordDesc_ = null;
+        recordDef_ = setupCsvRecordDef(block);
+    }
+
+    protected CsvRecordDef setupCsvRecordDef(final SetupBlock<CsvColumnSetup> block) {
         final CsvRecordDefSetup setup = getRecordDefSetup();
         block.setup(setup);
-        recordDef_ = setup.getRecordDef();
+        return setup.getRecordDef();
     }
 
     protected CsvRecordDefSetup getRecordDefSetup() {
