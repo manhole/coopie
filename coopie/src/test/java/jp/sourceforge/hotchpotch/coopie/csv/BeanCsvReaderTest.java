@@ -835,43 +835,53 @@ public class BeanCsvReaderTest {
     }
 
     /**
-     * 1つのLayoutインスタンスから複数のCsvReaderをopenしたとき、
+     * 1つのRecordInOutインスタンスから複数のCsvReaderをopenしたとき、
      * それぞれのReaderでの処理が影響しないこと。
      */
     @Test
-    @Ignore
-    // FIXME 実装中
     public void openMultiReader() throws Throwable {
         // ## Arrange ##
-        final InputStream is1 = getResourceAsStream("-1", "tsv");
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
+        final BeanCsvLayout<Aaa2Bean> layout = BeanCsvLayout.getInstance(Aaa2Bean.class);
 
         // ## Act ##
-        final RecordReader<AaaBean> csvReader = layout.build().openReader(new InputStreamReader(is1, "UTF-8"));
+        final RecordReader<Aaa2Bean> csvReader1 = layout.build().openReader(getResourceAsReader("-6", "tsv"));
+        final RecordReader<Aaa2Bean> csvReader2 = layout.build().openReader(getResourceAsReader("-4", "tsv"));
         //logger.debug(ReaderUtil.readText(new InputStreamReader(is, "UTF-8")));
 
-        final AaaBean bean = new AaaBean();
-        csvReader.read(bean);
+        final Aaa2Bean bean1 = new Aaa2Bean();
+        final Aaa2Bean bean2 = new Aaa2Bean();
+        csvReader1.read(bean1);
 
         // ## Assert ##
-        logger.debug(bean.toString());
-        assertEquals("あ1", bean.getAaa());
-        assertEquals("い1", bean.getBbb());
-        assertEquals("う1", bean.getCcc());
+        logger.debug(bean1.toString());
+        assertEquals("あ1", bean1.getAaa());
+        assertEquals("い1", bean1.getBbb());
+        assertEquals("う1", bean1.getCcc());
+        assertEquals("え1", bean1.getDdd());
 
-        csvReader.read(bean);
-        logger.debug(bean.toString());
-        assertEquals("あ2", bean.getAaa());
-        assertEquals("い2", bean.getBbb());
-        assertEquals("う2", bean.getCcc());
+        csvReader2.read(bean2);
+        logger.debug(bean2.toString());
+        assertEquals("あ1", bean2.getAaa());
+        assertEquals("い1", bean2.getBbb());
+        assertEquals(" ", bean2.getCcc());
+        assertEquals(null, bean2.getDdd());
 
-        csvReader.read(bean);
-        logger.debug(bean.toString());
-        assertEquals("あ3", bean.getAaa());
-        assertEquals("い3", bean.getBbb());
-        assertEquals("う3", bean.getCcc());
+        csvReader1.read(bean1);
+        logger.debug(bean1.toString());
+        assertEquals("あ2", bean1.getAaa());
+        assertEquals("い2", bean1.getBbb());
+        assertEquals("う2", bean1.getCcc());
+        assertEquals("え2", bean1.getDdd());
 
-        csvReader.close();
+        csvReader2.read(bean2);
+        logger.debug(bean2.toString());
+        assertEquals(null, bean2.getAaa());
+        assertEquals("い2", bean2.getBbb());
+        assertEquals(null, bean2.getCcc());
+        assertEquals(null, bean2.getDdd());
+
+        csvReader1.close();
+        csvReader2.close();
     }
 
     /**
@@ -1671,6 +1681,20 @@ public class BeanCsvReaderTest {
         @Override
         public String toString() {
             return toStringFormat.format(this);
+        }
+
+    }
+
+    public static class Aaa2Bean extends AaaBean {
+
+        private String ddd;
+
+        public String getDdd() {
+            return ddd;
+        }
+
+        public void setDdd(final String ddd) {
+            this.ddd = ddd;
         }
 
     }
