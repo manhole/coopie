@@ -76,15 +76,20 @@ class Csv {
         csvReader.eachRecord(c)
     }
 
-    void withWriter(output, Closure c) {
+    CsvWriter openWriter(output) {
         def setting = new DefaultCsvSetting(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator, quoteMode: quoteMode)
         def io = new CsvElementInOut(setting)
         def writer = io.openWriter(output)
+        def csvWriter = new CsvWriter(writer: writer)
+        return csvWriter;
+    }
+
+    void withWriter(output, Closure c) {
+        def csvWriter = openWriter(output)
         try {
-            def csvWriter = new CsvWriter(writer: writer)
             c(csvWriter)
         } finally {
-            CloseableUtil.closeNoException(writer)
+            CloseableUtil.closeNoException(csvWriter.writer)
         }
     }
 
