@@ -194,7 +194,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
         @Override
         public Cell createCell(final Row row, final short colNum) {
-            return row.createCell(colNum);
+            return row.createCell((int) colNum);
         }
 
         @Override
