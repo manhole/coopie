@@ -166,7 +166,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
         void setCellValue(Cell cell, String value);
 
-        Cell createCell(Row row, short i);
+        Cell createCell(Row row, int colNum);
 
     }
 
@@ -193,8 +193,8 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
         }
 
         @Override
-        public Cell createCell(final Row row, final short colNum) {
-            return row.createCell((int) colNum);
+        public Cell createCell(final Row row, final int colNum) {
+            return row.createCell(colNum);
         }
 
         @Override

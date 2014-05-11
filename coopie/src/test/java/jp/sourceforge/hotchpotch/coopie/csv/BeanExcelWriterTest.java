@@ -350,7 +350,7 @@ public class BeanExcelWriterTest {
         }
 
         @Override
-        public Cell createCell(final Row row, final short colNum) {
+        public Cell createCell(final Row row, final int colNum) {
             final Cell cell = super.createCell(row, colNum);
             if (row.getRowNum() == 0) {
                 // ヘッダ行にスタイルを適用する
