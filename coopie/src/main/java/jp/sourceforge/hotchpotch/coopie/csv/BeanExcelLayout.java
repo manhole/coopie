@@ -19,8 +19,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
 
@@ -30,11 +30,11 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
         super(beanClass);
     }
 
-    public RecordReader<BEAN> openSheetReader(final HSSFSheet sheet) {
+    public RecordReader<BEAN> openSheetReader(final Sheet sheet) {
         return build().openSheetReader(sheet);
     }
 
-    public RecordWriter<BEAN> openSheetWriter(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+    public RecordWriter<BEAN> openSheetWriter(final Workbook workbook, final Sheet sheet) {
         return build().openSheetWriter(workbook, sheet);
     }
 
@@ -91,7 +91,7 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
             return w;
         }
 
-        public RecordReader<BEAN> openSheetReader(final HSSFSheet sheet) {
+        public RecordReader<BEAN> openSheetReader(final Sheet sheet) {
             final DefaultExcelReader<BEAN> r = new DefaultExcelReader<>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementReaderHandler(elementReaderHandler_);
@@ -101,7 +101,7 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
             return r;
         }
 
-        public RecordWriter<BEAN> openSheetWriter(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+        public RecordWriter<BEAN> openSheetWriter(final Workbook workbook, final Sheet sheet) {
             final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             // TODO openで例外時にcloseすること
