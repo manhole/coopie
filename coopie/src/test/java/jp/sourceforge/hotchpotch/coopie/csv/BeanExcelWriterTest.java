@@ -40,6 +40,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 import org.t2framework.commons.util.ResourceUtil;
 
@@ -315,28 +320,28 @@ public class BeanExcelWriterTest {
     private void _assertStyle(final HSSFCell cell) {
         final HSSFCellStyle style = cell.getCellStyle();
         assertEquals(new HSSFColor.LIGHT_GREEN().getIndex(), style.getFillForegroundColor());
-        assertEquals(HSSFCellStyle.SOLID_FOREGROUND, style.getFillPattern());
+        assertEquals(CellStyle.SOLID_FOREGROUND, style.getFillPattern());
     }
 
     private static class TestWriteEditor extends DefaultWriteEditor {
 
-        private HSSFCellStyle headerStyle;
-        private HSSFCellStyle errorStyle;
+        private CellStyle headerStyle;
+        private CellStyle errorStyle;
 
         @Override
-        public void begin(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+        public void begin(final Workbook workbook, final Sheet sheet) {
             super.begin(workbook, sheet);
             headerStyle = workbook.createCellStyle();
             headerStyle.setFillForegroundColor(new HSSFColor.LIGHT_GREEN().getIndex());
-            headerStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+            headerStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 
             errorStyle = workbook.createCellStyle();
             errorStyle.setFillForegroundColor(new HSSFColor.RED().getIndex());
-            errorStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+            errorStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
         }
 
         @Override
-        public void setCellValue(final HSSFCell cell, final String value) {
+        public void setCellValue(final Cell cell, final String value) {
             super.setCellValue(cell, value);
             if (null == value) {
                 // validate目的
@@ -345,8 +350,8 @@ public class BeanExcelWriterTest {
         }
 
         @Override
-        public HSSFCell createCell(final HSSFRow row, final short colNum) {
-            final HSSFCell cell = super.createCell(row, colNum);
+        public Cell createCell(final Row row, final int colNum) {
+            final Cell cell = super.createCell(row, colNum);
             if (row.getRowNum() == 0) {
                 // ヘッダ行にスタイルを適用する
                 cell.setCellStyle(headerStyle);

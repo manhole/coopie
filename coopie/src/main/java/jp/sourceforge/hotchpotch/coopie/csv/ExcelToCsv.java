@@ -26,6 +26,9 @@ import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.util.FileResource;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 
@@ -41,8 +44,8 @@ public class ExcelToCsv {
             throw new IllegalArgumentException("not exist:" + file.getAbsolutePath());
         }
 
-        final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(
-                files_.openBufferedInputStream(file));
+        final Workbook workbook = openWorkbook(file);
+        final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(workbook);
 
         final List<PoiSheetReader> sheets = CollectionsUtil.newArrayList();
         try {
@@ -95,6 +98,14 @@ public class ExcelToCsv {
         }
 
         poiReader.close();
+    }
+
+    private Workbook openWorkbook(final File file) throws IOException {
+        try {
+            return WorkbookFactory.create(file);
+        } catch (final InvalidFormatException e) {
+            throw new IOException(e);
+        }
     }
 
     private static class TsvNaming {

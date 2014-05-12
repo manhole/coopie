@@ -29,7 +29,6 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.exception.IORuntimeException;
 import org.t2framework.commons.util.CollectionsUtil;
 import org.t2framework.commons.util.ResourceUtil;
 
@@ -62,7 +61,7 @@ public class MapExcelReaderTest {
         try {
             layout.build().openReader(new ByteArrayInputStream("invalid_value".getBytes()));
             fail();
-        } catch (final IORuntimeException e) {
+        } catch (final IllegalArgumentException e) {
             logger.debug(e.getMessage());
         }
     }

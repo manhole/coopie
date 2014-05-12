@@ -22,11 +22,11 @@ import java.io.OutputStream;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
@@ -44,7 +44,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
         setClosed(false);
     }
 
-    public void openSheetWriter(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+    public void openSheetWriter(final Workbook workbook, final Sheet sheet) {
         final PoiSheetWriter w = new PoiSheetWriter(workbook, sheet);
         w.setWriteEditor(writeEditor_);
         w.open();
@@ -63,7 +63,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
         @SuppressWarnings("unused")
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-        private HSSFWorkbook workbook_;
+        private Workbook workbook_;
         private PoiSheetWriter sheetWriter_;
         private WriteEditor writeEditor_ = DefaultWriteEditor.getInstance();
 
@@ -72,8 +72,9 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
         }
 
         public void open() {
+            // TODO とりあえずxls固定のまま
             workbook_ = new HSSFWorkbook();
-            final HSSFSheet sheet = workbook_.createSheet();
+            final Sheet sheet = workbook_.createSheet();
             sheetWriter_ = new PoiSheetWriter(workbook_, sheet);
             sheetWriter_.setWriteEditor(writeEditor_);
             sheetWriter_.open();
@@ -113,12 +114,12 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
         @SuppressWarnings("unused")
         private final Object finalizerGuardian_ = new ClosingGuardian(this);
 
-        private final HSSFWorkbook workbook_;
-        private HSSFSheet sheet_;
+        private final Workbook workbook_;
+        private Sheet sheet_;
         private int rowNum_;
         private WriteEditor writeEditor_ = DefaultWriteEditor.getInstance();
 
-        public PoiSheetWriter(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+        public PoiSheetWriter(final Workbook workbook, final Sheet sheet) {
             workbook_ = workbook;
             sheet_ = sheet;
         }
@@ -130,12 +131,12 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
         @Override
         public void writeRecord(final String[] line) {
-            final HSSFRow row = writeEditor_.createRow(rowNum_);
+            final Row row = writeEditor_.createRow(rowNum_);
             rowNum_++;
 
             for (int i = 0; i < line.length; i++) {
                 final String s = line[i];
-                final HSSFCell cell = writeEditor_.createCell(row, (short) i);
+                final Cell cell = writeEditor_.createCell(row, (short) i);
                 writeEditor_.setCellValue(cell, s);
             }
         }
@@ -159,13 +160,13 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
     public interface WriteEditor {
 
-        HSSFRow createRow(int rowNum);
+        Row createRow(int rowNum);
 
-        void begin(HSSFWorkbook workbook, HSSFSheet sheet);
+        void begin(Workbook workbook, Sheet sheet);
 
-        void setCellValue(HSSFCell cell, String value);
+        void setCellValue(Cell cell, String value);
 
-        HSSFCell createCell(HSSFRow row, short i);
+        Cell createCell(Row row, int colNum);
 
     }
 
@@ -173,39 +174,39 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
         private static final WriteEditor INSTANCE = new DefaultWriteEditor();
 
-        private HSSFWorkbook workbook_;
-        private HSSFSheet sheet_;
+        private Workbook workbook_;
+        private Sheet sheet_;
 
         static WriteEditor getInstance() {
             return INSTANCE;
         }
 
         @Override
-        public void begin(final HSSFWorkbook workbook, final HSSFSheet sheet) {
+        public void begin(final Workbook workbook, final Sheet sheet) {
             workbook_ = workbook;
             sheet_ = sheet;
         }
 
         @Override
-        public HSSFRow createRow(final int rowNum) {
+        public Row createRow(final int rowNum) {
             return sheet_.createRow(rowNum);
         }
 
         @Override
-        public HSSFCell createCell(final HSSFRow row, final short colNum) {
+        public Cell createCell(final Row row, final int colNum) {
             return row.createCell(colNum);
         }
 
         @Override
-        public void setCellValue(final HSSFCell cell, final String value) {
-            cell.setCellValue(new HSSFRichTextString(value));
+        public void setCellValue(final Cell cell, final String value) {
+            cell.setCellValue(value);
         }
 
-        protected HSSFWorkbook getWorkbook() {
+        protected Workbook getWorkbook() {
             return workbook_;
         }
 
-        protected HSSFSheet getSheet() {
+        protected Sheet getSheet() {
             return sheet_;
         }
 

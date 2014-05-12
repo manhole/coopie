@@ -245,9 +245,7 @@ project(":coopie") {
         compile("org.slf4j:slf4j-api:${versions.slf4j}")
         compile("ch.qos.logback:logback-core:${versions.logback}")
         compile("ch.qos.logback:logback-classic:${versions.logback}")
-        compile("org.apache.poi:poi:3.1-FINAL") {
-            exclude group: "avalon-framework", module: "avalon-framework"
-            exclude group: "log4j", module: "log4j"
+        compile("org.apache.poi:poi-ooxml:3.9") {
             ext.optional = true
         }
         testCompile("junit:junit-dep:4.10")
