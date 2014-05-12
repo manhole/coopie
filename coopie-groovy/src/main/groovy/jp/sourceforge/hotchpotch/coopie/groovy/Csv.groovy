@@ -189,7 +189,7 @@ class Csv {
 
     }
 
-    static class CsvRecordReader {
+    private static class CsvRecordReader {
         RecordReader reader
 
         void eachRecord(Closure c) {
@@ -220,7 +220,7 @@ class Csv {
 
     }
 
-    static class CsvRecordWriter {
+    private static class CsvRecordWriter {
         RecordWriter writer
 
         CsvRecordWriter leftShift(record) {
