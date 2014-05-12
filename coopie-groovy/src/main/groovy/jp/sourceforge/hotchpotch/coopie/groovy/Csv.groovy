@@ -89,7 +89,7 @@ class Csv {
         try {
             c(csvWriter)
         } finally {
-            CloseableUtil.closeNoException(csvWriter.writer)
+            CloseableUtil.closeNoException(csvWriter)
         }
     }
 
@@ -204,7 +204,7 @@ class Csv {
         }
     }
 
-    static class CsvWriter {
+    static class CsvWriter implements Closeable {
         ElementWriter writer
 
         CsvWriter leftShift(List line) {
@@ -213,6 +213,11 @@ class Csv {
             writer.writeRecord(arr)
             this
         }
+
+        void close() {
+            CloseableUtil.closeNoException(writer)
+        }
+
     }
 
     static class CsvRecordWriter {
