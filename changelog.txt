@@ -7,6 +7,8 @@
 - change logback version: 1.0.0 -> 1.1.2
 - change poi version: 3.1 -> 3.9
 - add: poi-ooxml 3.9
+  xlsx形式のExcelファイルに対応しました。
+  org.apache.poi.hssf.usermodelから﻿org.apache.poi.ss.usermodelのインタフェースを使うように変更しました。
 
 
 0.3.1 2014/03/04
