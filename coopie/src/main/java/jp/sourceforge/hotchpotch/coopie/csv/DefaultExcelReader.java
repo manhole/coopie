@@ -59,7 +59,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
     }
 
     public void openSheetReader(final Sheet sheet) {
-        final PoiSheetReader poiReader = new PoiSheetReader(null, sheet);
+        final PoiSheetReader poiReader = new PoiSheetReader(sheet.getWorkbook(), sheet);
         setElementReader(poiReader);
         setClosed(false);
 
