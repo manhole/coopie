@@ -216,7 +216,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                 } else {
                     //logger.debug("lastCellNum={}", lastCellNum);
                     line = new String[lastCellNum];
-                    for (short colNo = 0; colNo < lastCellNum; colNo++) {
+                    for (int colNo = 0; colNo < lastCellNum; colNo++) {
                         final Cell cell = row.getCell(colNo);
                         final String v = getValueAsString(cell);
                         line[colNo] = v;
