@@ -1,6 +1,5 @@
 0.4.0 xxxx/xx/xx
 
-- ビルドに使用するgradleのバージョンを1.11にし、gradle wrapperを使うようにしました。
 - DeprecatedにしていたopenReader,openWriterメソッドを削除しました。
 - change java version: 1.6 -> 1.7
 - change slf4j version: 1.6.4 -> 1.7.7
@@ -8,7 +7,11 @@
 - change poi version: 3.1 -> 3.9
 - add: poi-ooxml 3.9
   xlsx形式のExcelファイルに対応しました。
-  org.apache.poi.hssf.usermodelから﻿org.apache.poi.ss.usermodelのインタフェースを使うように変更しました。
+  org.apache.poi.hssf.usermodelからorg.apache.poi.ss.usermodelのインタフェースを使うように変更しました。
+- Excelで式が入力されているセルから、式を評価した値を取得できるようにしました。
+
+misc:
+- ビルドに使用するgradleのバージョンを1.11にし、gradle wrapperを使うようにしました。
 
 
 0.3.1 2014/03/04
