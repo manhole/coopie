@@ -30,7 +30,10 @@ import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -56,7 +59,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
     }
 
     public void openSheetReader(final Sheet sheet) {
-        final PoiSheetReader poiReader = new PoiSheetReader(null, sheet);
+        final PoiSheetReader poiReader = new PoiSheetReader(sheet.getWorkbook(), sheet);
         setElementReader(poiReader);
         setClosed(false);
 
@@ -163,6 +166,8 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
         private final int lastRowNum_;
 
         private final DateFormat dateFormat_ = new SimpleDateFormat("yyyyMMdd\'T\'HHmmss");
+        private final CreationHelper creationHelper_;
+        private final FormulaEvaluator formulaEvaluator_;
 
         public PoiSheetReader(final Workbook workbook, final Sheet sheet) {
             workbook_ = workbook;
@@ -175,6 +180,9 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             lastRowNum_ = sheet.getLastRowNum();
             logger.debug("lastRowNum={}", lastRowNum_);
             closed_ = false;
+
+            creationHelper_ = workbook.getCreationHelper();
+            formulaEvaluator_ = creationHelper_.createFormulaEvaluator();
         }
 
         public String getSheetName() {
@@ -216,10 +224,14 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                 } else {
                     //logger.debug("lastCellNum={}", lastCellNum);
                     line = new String[lastCellNum];
-                    for (short colNo = 0; colNo < lastCellNum; colNo++) {
+                    for (int colNo = 0; colNo < lastCellNum; colNo++) {
                         final Cell cell = row.getCell(colNo);
                         final String v = getValueAsString(cell);
-                        line[colNo] = v;
+                        if (v != null) {
+                            line[colNo] = v;
+                        } else {
+                            line[colNo] = "";
+                        }
                     }
                 }
             } else {
@@ -281,12 +293,32 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             case Cell.CELL_TYPE_BOOLEAN:
                 final boolean b = cell.getBooleanCellValue();
                 return Boolean.toString(b);
+            case Cell.CELL_TYPE_FORMULA:
+                final CellValue cellValue = formulaEvaluator_.evaluate(cell);
+                return getValueAsString(cellValue);
             case Cell.CELL_TYPE_STRING:
             default:
                 final RichTextString richStringCellValue = cell.getRichStringCellValue();
                 final String value = richStringCellValue.getString();
                 return value;
             }
+        }
+
+        private String getValueAsString(final CellValue cell) {
+            switch (cell.getCellType()) {
+            case Cell.CELL_TYPE_NUMERIC:
+                final double v = cell.getNumberValue();
+                if (isInt(v)) {
+                    return Integer.toString((int) v);
+                }
+                return Double.toString(v);
+            case Cell.CELL_TYPE_BOOLEAN:
+                final boolean b = cell.getBooleanValue();
+                return Boolean.toString(b);
+            case Cell.CELL_TYPE_STRING:
+                return cell.getStringValue();
+            }
+            return null;
         }
 
         private boolean isInt(final double numericValue) {
