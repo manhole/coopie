@@ -227,7 +227,11 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                     for (int colNo = 0; colNo < lastCellNum; colNo++) {
                         final Cell cell = row.getCell(colNo);
                         final String v = getValueAsString(cell);
-                        line[colNo] = v;
+                        if (v != null) {
+                            line[colNo] = v;
+                        } else {
+                            line[colNo] = "";
+                        }
                     }
                 }
             } else {
