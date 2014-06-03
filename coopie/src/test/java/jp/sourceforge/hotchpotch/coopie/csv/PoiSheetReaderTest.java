@@ -16,9 +16,15 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.InputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.junit.Test;
+import org.t2framework.commons.util.ResourceUtil;
 
 public class PoiSheetReaderTest extends ElementReaderTest {
 
@@ -29,6 +35,26 @@ public class PoiSheetReaderTest extends ElementReaderTest {
         final DefaultExcelReader.PoiSheetReader poiReader = new DefaultExcelReader.PoiSheetReader(workbook,
                 workbook.getSheetAt(0));
         return poiReader;
+    }
+
+    @Test
+    public void rfc1() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = getResourceAsStream("-formula", "xlsx");
+        final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(is);
+        poiReader.focusSheet(0);
+
+        // ## Act ##
+        // ## Assert ##
+        assertThat(poiReader.readRecord(), is(a("1", "ABC", "cde", "ABCcde")));
+        assertThat(poiReader.readRecord(), is(a("2", "12", "34", "1234")));
+        assertThat(poiReader.readRecord(), is(a("3", "12", "34", "46")));
+
+        poiReader.close();
+    }
+
+    static InputStream getResourceAsStream(final String suffix, final String ext) {
+        return ResourceUtil.getResourceAsStream(PoiSheetReaderTest.class.getName() + suffix, ext);
     }
 
 }
