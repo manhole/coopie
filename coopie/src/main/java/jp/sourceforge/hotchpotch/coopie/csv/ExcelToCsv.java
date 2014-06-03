@@ -17,6 +17,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class ExcelToCsv {
     public void writeTsv(final File file) throws IOException {
         logger.debug("file={}", file.getAbsolutePath());
         if (!file.exists()) {
-            throw new IllegalArgumentException("not exist:" + file.getAbsolutePath());
+            throw new FileNotFoundException("not exist:" + file.getAbsolutePath());
         }
 
         final Workbook workbook = openWorkbook(file);
