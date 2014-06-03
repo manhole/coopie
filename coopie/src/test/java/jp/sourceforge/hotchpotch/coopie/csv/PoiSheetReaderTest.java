@@ -50,6 +50,7 @@ public class PoiSheetReaderTest extends ElementReaderTest {
         assertThat(poiReader.readRecord(), is(a("2", "12", "34", "1234")));
         assertThat(poiReader.readRecord(), is(a("3", "12", "34", "46")));
         assertThat(poiReader.readRecord(), is(a("4", "true", "false", "true")));
+        assertThat(poiReader.readRecord(), is(a("5", "12.3", "34", "46.3")));
 
         poiReader.close();
     }

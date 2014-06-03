@@ -307,7 +307,7 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
                 if (isInt(v)) {
                     return Integer.toString((int) v);
                 }
-                break;
+                return Double.toString(v);
             case Cell.CELL_TYPE_BOOLEAN:
                 final boolean b = cell.getBooleanValue();
                 return Boolean.toString(b);
