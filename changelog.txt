@@ -1,4 +1,4 @@
-0.4.0 xxxx/xx/xx
+0.4.0 2014/06/04
 
 - DeprecatedにしていたopenReader,openWriterメソッドを削除しました。
 - change java version: 1.6 -> 1.7
