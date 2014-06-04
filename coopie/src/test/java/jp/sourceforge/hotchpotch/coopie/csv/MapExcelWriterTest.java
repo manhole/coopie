@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -30,16 +30,15 @@ public class MapExcelWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final MapExcelLayout<String> layout = new MapExcelLayout<String>();
+        final MapExcelLayout<String> layout = new MapExcelLayout<>();
 
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
@@ -49,7 +48,7 @@ public class MapExcelWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapExcelLayout<String> layout = new MapExcelLayout<String>();
+        final MapExcelLayout<String> layout = new MapExcelLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -62,8 +61,7 @@ public class MapExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(baos);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(baos);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -93,7 +91,7 @@ public class MapExcelWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final MapExcelLayout<String> layout = new MapExcelLayout<String>();
+        final MapExcelLayout<String> layout = new MapExcelLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -110,8 +108,7 @@ public class MapExcelWriterTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(baos);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(baos);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -39,8 +39,7 @@ public class StdOutBlock {
         return a;
     }
 
-    public static <V, E extends Throwable> Text trapOut(final Task<V, E> task)
-            throws E {
+    public static <V, E extends Throwable> Text trapOut(final Task<V, E> task) throws E {
         final Block a = new Block();
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         a.out(baos);
@@ -68,8 +67,7 @@ public class StdOutBlock {
         }
 
         @Override
-        public <V, E extends Throwable> V execute(final Task<V, E> task)
-                throws E {
+        public <V, E extends Throwable> V execute(final Task<V, E> task) throws E {
             final PrintStream pOut = out_;
             final PrintStream pErr = err_;
             try {
@@ -80,8 +78,8 @@ public class StdOutBlock {
             }
         }
 
-        private <V, E extends Throwable> V trap(final Task<V, E> task,
-                final PrintStream pOut, final PrintStream pErr) throws E {
+        private <V, E extends Throwable> V trap(final Task<V, E> task, final PrintStream pOut, final PrintStream pErr)
+                throws E {
             final PrintStream defaultOut = System.out;
             final PrintStream defaultErr = System.err;
             System.setOut(pOut);

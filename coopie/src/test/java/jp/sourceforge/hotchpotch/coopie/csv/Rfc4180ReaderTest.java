@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -38,17 +38,16 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC＞
-     * 
+     *
      * 各レコードは、改行(CRLF)を区切りとする、分割された行に配置される
-     * 
+     *
      * aaa,bbb,ccc CRLF
      * zzz,yyy,xxx CRLF
      */
     @Test
     public void rfc1() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CRLF + "zzz,yyy,xxx"
-                + CRLF);
+        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CRLF + "zzz,yyy,xxx" + CRLF);
 
         // ## Act ##
         // ## Assert ##
@@ -75,9 +74,9 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC＞
-     * 
+     *
      * 末端のCRLFはあってもなくても良い
-     * 
+     *
      * aaa,bbb,ccc CRLF
      * zzz,yyy,xxx
      */
@@ -101,9 +100,9 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC＞
-     * 
+     *
      * スペースはデータの一部。無視してはいけない。
-     * 
+     *
      * aaa,bbb , ccc
      */
     @Test
@@ -156,17 +155,16 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC＞
-     * 
+     *
      * 各フィールドは、それぞれダブルクォーテーションで囲んでも囲わなくてもよい
-     * 
+     *
      * "aaa","bbb","ccc" CRLF
      * 123,yyy,xxx
      */
     @Test
     public void rfc4_quote() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"aaa\",\"bbb\",\"ccc\"" + CRLF
-                + "123,yyy,xxx");
+        final Rfc4180Reader reader = open("\"aaa\",\"bbb\",\"ccc\"" + CRLF + "123,yyy,xxx");
 
         // ## Act ##
         // ## Assert ##
@@ -178,9 +176,9 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC＞
-     * 
+     *
      * 改行(CRLF)、ダブルクォーテーション、カンマを含むフィールドは、ダブルクォーテーションで囲むべき
-     * 
+     *
      * "aaa","b CRLF
      * bb","ccc" CRLF
      * 123,yyy,xxx
@@ -188,8 +186,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void rfc5_crlf() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"aaa\",\"b" + CRLF + "bb\",\"ccc\""
-                + CRLF + "123,yyy,xxx");
+        final Rfc4180Reader reader = open("\"aaa\",\"b" + CRLF + "bb\",\"ccc\"" + CRLF + "123,yyy,xxx");
 
         // ## Act ##
         // ## Assert ##
@@ -210,9 +207,9 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC＞
-     * 
+     *
      * 改行(CRLF)、ダブルクォーテーション、カンマを含むフィールドは、ダブルクォーテーションで囲むべき
-     * 
+     *
      * "aa,a","b CRLF
      * bb","ccc" CRLF
      * 123,yyy,xxx
@@ -220,8 +217,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void rfc6_comma() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"aa,a\",\"b" + CRLF
-                + "bb\",\"ccc\"" + CRLF + "123,yyy,xxx");
+        final Rfc4180Reader reader = open("\"aa,a\",\"b" + CRLF + "bb\",\"ccc\"" + CRLF + "123,yyy,xxx");
 
         // ## Act ##
         // ## Assert ##
@@ -233,10 +229,10 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC＞
-     * 
+     *
      * フィールドがダブルクォーテーションで囲まれている場合、フィールドの値に含まれるダブルクォーテーションは、
      * その直前にひとつダブルクォーテーションを付加して、エスケープしなければならない
-     * 
+     *
      * "aaa","b""bb","ccc"
      */
     @Test
@@ -253,14 +249,13 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 改行文字がCRLFではなくLFでも、同じように読めるようにする。
      */
     @Test
     public void test_LF() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa,bbb,ccc" + LF + "zzz,yyy,xxx"
-                + LF);
+        final Rfc4180Reader reader = open("aaa,bbb,ccc" + LF + "zzz,yyy,xxx" + LF);
 
         // ## Act ##
         // ## Assert ##
@@ -272,14 +267,13 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 改行文字がCRLFではなくCRでも、同じように読めるようにする。
      */
     @Test
     public void test_CR() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CR + "zzz,yyy,xxx"
-                + CR);
+        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CR + "zzz,yyy,xxx" + CR);
 
         // ## Act ##
         // ## Assert ##
@@ -291,17 +285,16 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 要素の区切り文字に、カンマではなくTABを使用できる。
-     * 
+     *
      * aaa TAB bbb TAB ccc CRLF
      * zzz TAB yyy TAB xxx CRLF
      */
     @Test
     public void tab1() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa\tbbb\tccc" + CRLF
-                + "zzz\tyyy\txxx" + CRLF, CsvSetting.TAB);
+        final Rfc4180Reader reader = open("aaa\tbbb\tccc" + CRLF + "zzz\tyyy\txxx" + CRLF, CsvSetting.TAB);
 
         // ## Act ##
         // ## Assert ##
@@ -314,16 +307,15 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 要素の区切り文字をTABに指定した場合は、要素のデータにカンマを使用できる。
-     * 
+     *
      * aaa TAB bb,b TAB ccc
      */
     @Test
     public void tab2() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa\tbb,b\tccc" + CRLF,
-                CsvSetting.TAB);
+        final Rfc4180Reader reader = open("aaa\tbb,b\tccc" + CRLF, CsvSetting.TAB);
 
         // ## Act ##
         // ## Assert ##
@@ -335,17 +327,16 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 要素の区切り文字をTABに指定した場合に、要素のデータにTABを使用するには、
      * 要素をクォートする。
-     * 
+     *
      * aaa TAB "bbTABb" TAB ccc
      */
     @Test
     public void tab3() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("aaa\t\"bb\tb\"\tccc" + CRLF,
-                CsvSetting.TAB);
+        final Rfc4180Reader reader = open("aaa\t\"bb\tb\"\tccc" + CRLF, CsvSetting.TAB);
 
         // ## Act ##
         // ## Assert ##
@@ -357,9 +348,9 @@ public class Rfc4180ReaderTest {
 
     /*
      * ＜RFC拡張＞
-     * 
+     *
      * 要素がクォートされている場合、区切り文字と要素との間にあるスペースは無視する。
-     * 
+     *
      * aaa, "bbb" ,ccc
      */
     @Test
@@ -369,8 +360,7 @@ public class Rfc4180ReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        assertArrayEquals(a("aaa ", "bbb", " ccc ", " ", ""),
-                reader.readRecord());
+        assertArrayEquals(a("aaa ", "bbb", " ccc ", " ", ""), reader.readRecord());
         assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
         assertNull(reader.readRecord());
         reader.close();
@@ -392,8 +382,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void space3() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"a\" \r" + " \"b\" \n"
-                + " \"c\" \r\n" + " \"d\" ");
+        final Rfc4180Reader reader = open("\"a\" \r" + " \"b\" \n" + " \"c\" \r\n" + " \"d\" ");
 
         // ## Act ##
         // ## Assert ##
@@ -411,9 +400,9 @@ public class Rfc4180ReaderTest {
 
     /*
      * クォートされた要素と見せかけて実は前後にスペースを持つ通常の要素である場合、をフォローする。
-     * 
+     *
      * これはフォーマットエラーとはみなさない。
-     * 
+     *
      * [a, "b"bb" ,c]
      * 2つ目の要素のクォートを、クォートとして特別扱いせず、データとして扱う
      */
@@ -458,8 +447,7 @@ public class Rfc4180ReaderTest {
         // ## Act ##
         // ## Assert ##
         assertEquals(0, reader.getRecordNumber());
-        assertArrayEquals(a("", "aa", "", " ", "   ", "bbb", ""),
-                reader.readRecord());
+        assertArrayEquals(a("", "aa", "", " ", "   ", "bbb", ""), reader.readRecord());
         assertNull(reader.readRecord());
         reader.close();
     }
@@ -502,8 +490,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void empty_line1() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n"
-                + "\"b\r\n\r\n2\"");
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n" + "\"b\r\n\r\n2\"");
 
         // ## Act ##
         // ## Assert ##
@@ -520,8 +507,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void empty_line2() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\r\n" + "\"a1\"\r\n"
-                + "\"b\r\n\r\n2\"");
+        final Rfc4180Reader reader = open("\r\n" + "\"a1\"\r\n" + "\"b\r\n\r\n2\"");
 
         // ## Act ##
         // ## Assert ##
@@ -539,8 +525,7 @@ public class Rfc4180ReaderTest {
     @Test
     public void empty_line3() throws Throwable {
         // ## Arrange ##
-        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\"b\r\n\r\n2\""
-                + "\r\n" + "\r\n");
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\"b\r\n\r\n2\"" + "\r\n" + "\r\n");
 
         // ## Act ##
         // ## Assert ##
@@ -565,11 +550,11 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * クォートされた要素が、閉じるクォートが無いまま終了してしまったケース
-     * 
+     *
      * a,"b,c
-     * 
+     *
      */
     @Test
     public void not_closed_quote1() throws Throwable {
@@ -586,11 +571,11 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * クォートされた要素が、閉じるクォートが無いまま終了してしまったケース
-     * 
+     *
      * a,"b,c CRLF
-     * 
+     *
      */
     @Test
     public void not_closed_quote2() throws Throwable {
@@ -607,12 +592,12 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * クォートされた要素が、閉じるクォートが無いまま終了してしまったケース
-     * 
+     *
      * a,"b,c CRLF
      * A,B,C
-     * 
+     *
      */
     @Test
     public void not_closed_quote3() throws Throwable {
@@ -639,14 +624,12 @@ public class Rfc4180ReaderTest {
         final LineReaderHandler lineReaderHandler = new LineReaderHandler() {
 
             @Override
-            public Line readLine(final LineReadable lineReader, final Line line)
-                    throws IOException {
+            public Line readLine(final LineReadable lineReader, final Line line) throws IOException {
                 return lineReader.readLine(line);
             }
 
             @Override
-            public boolean acceptLine(final Line line,
-                    final ElementParserContext parserContext) {
+            public boolean acceptLine(final Line line, final ElementParserContext parserContext) {
                 if (parserContext.isInElement()) {
                     return true;
                 }
@@ -657,8 +640,7 @@ public class Rfc4180ReaderTest {
             }
 
         };
-        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n"
-                + "\"b\r\n\r\n2\"", lineReaderHandler);
+        final Rfc4180Reader reader = open("\"a1\"\r\n" + "\r\n" + "\"b\r\n\r\n2\"", lineReaderHandler);
 
         // ## Act ##
         // ## Assert ##
@@ -670,11 +652,11 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * クォートされた要素内で、EOFになった場合
-     * 
+     *
      * "aaa","bbb","cc
-     * 
+     *
      * 途切れた要素は、INVALID状態として、先頭のクォートを要素の文字として扱う。
      */
     @Test
@@ -693,13 +675,13 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * 余分なクォートがある場合に、どう振る舞うのが良いか。。
      * → "b""部分をそのままの要素とする
-     * 
+     *
      * a,"b"","c" CRLF
      * A,"B",C
-     * 
+     *
      * 1行目が不正
      */
     @Test
@@ -723,29 +705,28 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * 余分なクォートがある場合に、どう振る舞うのが良いか。。
      * → "b""部分をそのままの要素とする
-     * 
+     *
      * a,"b"",c CRLF
      * A,"B",C CRLF
      * D, E, F
-     * 
+     *
      * 1行目だけが不正。
      * 2行目が巻き込まれてしまうが、リカバリする。
      */
     @Test
     public void invalid_quote2() throws Throwable {
         // ## Arrange ##
-        final String in = "a,\"b\"\",c" + "\r\n" + "A,\"B\",C" + "\r\n"
-                + "D,E,F";
+        final String in = "a,\"b\"\",c" + "\r\n" + "A,\"B\",C" + "\r\n" + "D,E,F";
         final Rfc4180Reader reader = open(in);
 
         // ## Act ##
         // ## Assert ##
         /*
          * ここでは、クォートが再度登場するまで食べに行く実装にした。
-         * 
+         *
          * クォートが正しく登場すれば「何かおかしい」ことに気づける。
          * クォートが登場しない場合は、最後まで食べに行ってしまう。
          * 「前行に比べてデータ量がやけに多い」という判別くらいしかできなそう。。
@@ -762,13 +743,13 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * 余分なクォートがある場合に、どう振る舞うのが良いか。。
      * → "B" ""部分をそのままの要素とする
-     * 
+     *
      * a,"b""",c CRLF
      * A,"B" "",C
-     * 
+     *
      * 2行目が不正
      */
     @Test
@@ -789,13 +770,13 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * 余分なクォートがある場合に、どう振る舞うのが良いか。。
      * → "b" ""部分をそのままの要素とする
-     * 
+     *
      * a,"b" "" CRLF
      * A,B,C
-     * 
+     *
      * 1行目が不正
      */
     @Test
@@ -816,7 +797,7 @@ public class Rfc4180ReaderTest {
 
     /*
      * 不正データ
-     * 
+     *
      * 先頭に不正データが登場するパターン
      */
     @Test
@@ -837,18 +818,15 @@ public class Rfc4180ReaderTest {
         return open(text, (Character) null, (LineReaderHandler) null);
     }
 
-    protected Rfc4180Reader open(final String text,
-            final LineReaderHandler lineReaderHandler) {
+    protected Rfc4180Reader open(final String text, final LineReaderHandler lineReaderHandler) {
         return open(text, (Character) null, lineReaderHandler);
     }
 
-    protected Rfc4180Reader open(final String text,
-            final Character elementSeparator) {
+    protected Rfc4180Reader open(final String text, final Character elementSeparator) {
         return open(text, elementSeparator, (LineReaderHandler) null);
     }
 
-    protected Rfc4180Reader open(final String text,
-            final Character elementSeparator,
+    protected Rfc4180Reader open(final String text, final Character elementSeparator,
             final LineReaderHandler lineReaderHandler) {
         final StringReader reader = new StringReader(text);
         final Rfc4180Reader csvReader = new Rfc4180Reader();
@@ -862,8 +840,7 @@ public class Rfc4180ReaderTest {
         return csvReader;
     }
 
-    private void assertArrayEquals(final String[] expected,
-            final String[] actual) {
+    private void assertArrayEquals(final String[] expected, final String[] actual) {
         csvAssert_.assertArrayEquals(expected, actual);
     }
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -17,6 +17,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,6 +27,9 @@ import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.util.FileResource;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.t2framework.commons.util.CollectionsUtil;
 
@@ -38,12 +42,11 @@ public class ExcelToCsv {
     public void writeTsv(final File file) throws IOException {
         logger.debug("file={}", file.getAbsolutePath());
         if (!file.exists()) {
-            throw new IllegalArgumentException("not exist:"
-                    + file.getAbsolutePath());
+            throw new FileNotFoundException("not exist:" + file.getAbsolutePath());
         }
 
-        final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(
-                files_.openBufferedInputStream(file));
+        final Workbook workbook = openWorkbook(file);
+        final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(workbook);
 
         final List<PoiSheetReader> sheets = CollectionsUtil.newArrayList();
         try {
@@ -74,13 +77,10 @@ public class ExcelToCsv {
             final ElementInOut elementInOut = new CsvElementInOut(csvSetting);
             final FileResource fr = files_.getFileResource(file);
             for (final PoiSheetReader sheetReader : sheets) {
-                final String fileName = tsvNaming.createFileName(sheetReader,
-                        fr.getPrefix(), TSV_EXTENSION);
-                final File tsvFile = files_.createFile(file.getParentFile(),
-                        fileName);
+                final String fileName = tsvNaming.createFileName(sheetReader, fr.getPrefix(), TSV_EXTENSION);
+                final File tsvFile = files_.createFile(file.getParentFile(), fileName);
 
-                final ElementWriter csvWriter = elementInOut.openWriter(files_
-                        .openBufferedWriter(tsvFile));
+                final ElementWriter csvWriter = elementInOut.openWriter(files_.openBufferedWriter(tsvFile));
 
                 while (true) {
                     final String[] line = sheetReader.readRecord();
@@ -101,12 +101,19 @@ public class ExcelToCsv {
         poiReader.close();
     }
 
+    private Workbook openWorkbook(final File file) throws IOException {
+        try {
+            return WorkbookFactory.create(file);
+        } catch (final InvalidFormatException e) {
+            throw new IOException(e);
+        }
+    }
+
     private static class TsvNaming {
 
         private boolean single_ = true;
 
-        public String createFileName(final PoiSheetReader sheetReader,
-                final String prefix, final String suffix) {
+        public String createFileName(final PoiSheetReader sheetReader, final String prefix, final String suffix) {
             if (single_) {
                 return prefix + suffix;
             } else {

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -22,7 +22,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 
+import jp.sourceforge.hotchpotch.coopie.util.ByteSize.ToStringMode;
 import jp.sourceforge.hotchpotch.coopie.util.ByteSizeUnits.BaseType;
 
 import org.junit.Test;
@@ -215,21 +218,54 @@ public class ByteSizeTest {
         assertThat(byteSize.toString(), is("73.00 MiB (76,543,211)"));
     }
 
+    /*
+     * 少数部が不要なケース
+     */
+    @Test
+    public void customFormat1() throws Throwable {
+        // ## Arrange ##
+        final ByteSize byteSize = ByteSize.create(76543211L);
+
+        // ## Act ##
+        class CustomByteSizeFormatter1 implements ToStringMode {
+            private final NumberFormat format_ = NumberFormat.getNumberInstance();
+
+            public CustomByteSizeFormatter1() {
+                format_.setRoundingMode(RoundingMode.HALF_UP);
+                format_.setMinimumFractionDigits(0);
+                format_.setMaximumFractionDigits(0);
+            }
+
+            @Override
+            public String toString(final ByteSize byteSize) {
+                final long size = byteSize.getSize();
+                final ByteSizeUnit unit = ByteSizeUnits.detectUnit(byteSize);
+                final StringBuilder sb = new StringBuilder();
+                sb.append(unit.format(size, format_));
+                sb.append(unit.getUnitLabel());
+                return sb.toString();
+            }
+        }
+
+        byteSize.setToStringMode(new CustomByteSizeFormatter1());
+
+        // ## Assert ##
+        assertThat(byteSize.toHumanReadableString(), is("73.00 MiB"));
+        assertThat(byteSize.toString(), is("73MiB"));
+    }
+
     @Test
     public void fromInputStream() {
         {
-            final ByteSize size = ByteSize.create(new ByteArrayInputStream(
-                    new byte[10559]));
+            final ByteSize size = ByteSize.create(new ByteArrayInputStream(new byte[10559]));
             assertThat(size.getSize(), is(10559L));
         }
         {
-            final ByteSize size = ByteSize.create(new ByteArrayInputStream(
-                    new byte[0]));
+            final ByteSize size = ByteSize.create(new ByteArrayInputStream(new byte[0]));
             assertThat(size.getSize(), is(0L));
         }
         {
-            final ByteSize size = ByteSize.create(new ByteArrayInputStream(
-                    new byte[1]));
+            final ByteSize size = ByteSize.create(new ByteArrayInputStream(new byte[1]));
             assertThat(size.getSize(), is(1L));
         }
     }

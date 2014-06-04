@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -29,26 +29,26 @@ public class IdentityHashSetTest {
 
     @Test
     public void add() throws Throwable {
-        spec.testAdd(new HashSet<Object>());
-        spec.testAdd(new IdentityHashSet<Object>());
+        spec.testAdd(new HashSet<>());
+        spec.testAdd(new IdentityHashSet<>());
     }
 
     @Test
     public void isEmpty() throws Throwable {
-        spec.testIsEmpty(new HashSet<Object>());
-        spec.testIsEmpty(new IdentityHashSet<Object>());
+        spec.testIsEmpty(new HashSet<>());
+        spec.testIsEmpty(new IdentityHashSet<>());
     }
 
     @Test
     public void remove() throws Throwable {
-        spec.testRemove(new HashSet<Object>());
-        spec.testRemove(new IdentityHashSet<Object>());
+        spec.testRemove(new HashSet<>());
+        spec.testRemove(new IdentityHashSet<>());
     }
 
     @Test
     public void clear() throws Throwable {
-        spec.testClear(new HashSet<Object>());
-        spec.testClear(new IdentityHashSet<Object>());
+        spec.testClear(new HashSet<>());
+        spec.testClear(new IdentityHashSet<>());
     }
 
     @SuppressWarnings("unchecked")

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -16,11 +16,19 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.List;
+
 public class ColumnDescs {
 
     @SuppressWarnings("unchecked")
     public static <BEAN> ColumnDesc<BEAN>[] newColumnDescs(final int length) {
         return new ColumnDesc[length];
+    }
+
+    public static <BEAN> ColumnDesc<BEAN>[] toArray(final List<ColumnDesc<BEAN>> list) {
+        final ColumnDesc<BEAN>[] cds = newColumnDescs(list.size());
+        list.toArray(cds);
+        return cds;
     }
 
 }

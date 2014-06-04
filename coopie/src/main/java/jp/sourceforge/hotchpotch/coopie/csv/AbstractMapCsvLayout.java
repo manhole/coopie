@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -24,10 +24,9 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
 
-public abstract class AbstractMapCsvLayout<PROP> extends
-        AbstractCsvLayout<Map<String, PROP>> {
+public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<String, PROP>> {
 
-    protected void prepareOpen() {
+    protected void prepareBuild() {
         if (getRecordDesc() == null) {
             final CsvRecordDef recordDef = getRecordDef();
             if (recordDef != null) {
@@ -40,7 +39,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
                  * Writeの場合は1件目から、
                  * カラム名を構築する。
                  */
-                setRecordDesc(new LazyMapRecordDesc<PROP>(this));
+                setRecordDesc(new LazyMapRecordDesc<>(this));
             }
         }
 
@@ -56,11 +55,10 @@ public abstract class AbstractMapCsvLayout<PROP> extends
 
     @Override
     protected RecordType<Map<String, PROP>> createRecordType() {
-        return new MapRecordType<PROP>();
+        return new MapRecordType<>();
     }
 
-    static class LazyMapRecordDesc<PROP> implements
-            RecordDesc<Map<String, PROP>> {
+    static class LazyMapRecordDesc<PROP> implements RecordDesc<Map<String, PROP>> {
 
         private static final Logger logger = LoggerFactory.getLogger();
         private final AbstractMapCsvLayout<PROP> layout_;
@@ -79,11 +77,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
             /*
              * ヘッダをMapのキーとして扱う。
              */
-            /*
-             * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
-             * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
-             */
-            layout_.setupColumns(new SetupBlock<CsvColumnSetup>() {
+            final CsvRecordDef recordDef = layout_.setupCsvRecordDef(new SetupBlock<CsvColumnSetup>() {
                 @Override
                 public void setup(final CsvColumnSetup setup) {
                     for (final String headerElem : header) {
@@ -92,10 +86,8 @@ public abstract class AbstractMapCsvLayout<PROP> extends
                 }
             });
 
-            // TODO 素直にRecordDescを取得したい
-            layout_.prepareOpen();
+            final RecordDesc<Map<String, PROP>> built = layout_.createRecordDesc(recordDef);
 
-            final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
                 // 意図しない無限ループを防ぐ
                 throw new AssertionError();
@@ -112,8 +104,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
          * (列名が設定されている場合は、そもそもこのクラスが使われない)
          */
         @Override
-        public RecordDesc<Map<String, PROP>> setupByBean(
-                final Map<String, PROP> bean) {
+        public RecordDesc<Map<String, PROP>> setupByBean(final Map<String, PROP> bean) {
             /*
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
@@ -129,7 +120,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
             });
 
             // TODO 素直にRecordDescを取得したい
-            layout_.prepareOpen();
+            layout_.prepareBuild();
 
             final RecordDesc<Map<String, PROP>> built = layout_.getRecordDesc();
             if (built instanceof LazyMapRecordDesc) {
@@ -155,8 +146,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends
         }
 
         @Override
-        public void setValues(final Map<String, PROP> bean,
-                final String[] values) {
+        public void setValues(final Map<String, PROP> bean, final String[] values) {
             throw new AssertionError();
         }
 

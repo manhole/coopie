@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -27,8 +27,7 @@ public class BinaryStreamOperation {
 
     private int bufferSize_ = DEFAULT_BUFF_SIZE;
 
-    public void pipe(final InputStream is, final OutputStream os)
-            throws IOException {
+    public void pipe(final InputStream is, final OutputStream os) throws IOException {
         final byte[] buf = new byte[bufferSize_];
         for (int len = 0; (len = is.read(buf, 0, buf.length)) != -1;) {
             os.write(buf, 0, len);

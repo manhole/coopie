@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -22,28 +22,17 @@ import java.util.Map;
 
 public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
 
-    @Deprecated
-    public RecordReader<Map<String, PROP>> openReader(final InputStream is) {
-        return build().openReader(is);
-    }
-
-    @Deprecated
-    public RecordWriter<Map<String, PROP>> openWriter(final OutputStream os) {
-        return build().openWriter(os);
-    }
-
     public ExcelInOut<Map<String, PROP>> build() {
-        prepareOpen();
+        prepareBuild();
 
-        final MapExcelInOut<PROP> obj = new MapExcelInOut<PROP>();
+        final MapExcelInOut<PROP> obj = new MapExcelInOut<>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementReaderHandler_ = getElementReaderHandler();
         return obj;
     }
 
-    public static class MapExcelInOut<PROP> implements
-            ExcelInOut<Map<String, PROP>> {
+    public static class MapExcelInOut<PROP> implements ExcelInOut<Map<String, PROP>> {
 
         private RecordDesc<Map<String, PROP>> recordDesc_;
         private boolean withHeader_;
@@ -55,8 +44,7 @@ public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
                 throw new NullPointerException("is");
             }
 
-            final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<Map<String, PROP>>(
-                    recordDesc_);
+            final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementReaderHandler(elementReaderHandler_);
 
@@ -71,8 +59,7 @@ public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
                 throw new NullPointerException("os");
             }
 
-            final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<Map<String, PROP>>(
-                    recordDesc_);
+            final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             // TODO openで例外時にcloseすること
             w.open(os);

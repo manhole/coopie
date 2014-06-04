@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -30,24 +30,12 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
-public class MapFixedLengthLayout<PROP> extends
-        AbstractFixedLengthLayout<Map<String, PROP>> {
-
-    @Deprecated
-    public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
-        return build().openReader(readable);
-    }
-
-    @Deprecated
-    public RecordWriter<Map<String, PROP>> openWriter(
-            final Appendable appendable) {
-        return build().openWriter(appendable);
-    }
+public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<String, PROP>> {
 
     public RecordInOut<Map<String, PROP>> build() {
-        prepareOpen();
+        prepareBuild();
 
-        final MapFixedLengthRecordInOut<PROP> obj = new MapFixedLengthRecordInOut<PROP>();
+        final MapFixedLengthRecordInOut<PROP> obj = new MapFixedLengthRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementInOut_ = createElementInOut();
@@ -57,7 +45,7 @@ public class MapFixedLengthLayout<PROP> extends
         return obj;
     }
 
-    protected void prepareOpen() {
+    protected void prepareBuild() {
         if (getRecordDesc() == null) {
             final FixedLengthRecordDef recordDef = getRecordDef();
             if (recordDef != null) {
@@ -83,26 +71,23 @@ public class MapFixedLengthLayout<PROP> extends
 
     @Override
     protected RecordType<Map<String, PROP>> createRecordType() {
-        return new MapRecordType<PROP>();
+        return new MapRecordType<>();
     }
 
-    protected static class MapFixedLengthRecordInOut<PROP> implements
-            RecordInOut<Map<String, PROP>> {
+    protected static class MapFixedLengthRecordInOut<PROP> implements RecordInOut<Map<String, PROP>> {
 
         private RecordDesc<Map<String, PROP>> recordDesc_;
         private boolean withHeader_;
         private ElementInOut elementInOut_;
 
         @Override
-        public RecordReader<Map<String, PROP>> openReader(
-                final Readable readable) {
+        public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
             if (readable == null) {
                 throw new NullPointerException("readable");
             }
 
             final RecordDesc<Map<String, PROP>> rd = recordDesc_;
-            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
-                    rd);
+            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<>(rd);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること
@@ -111,14 +96,12 @@ public class MapFixedLengthLayout<PROP> extends
         }
 
         @Override
-        public RecordWriter<Map<String, PROP>> openWriter(
-                final Appendable appendable) {
+        public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
             if (appendable == null) {
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(
-                    recordDesc_);
+            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

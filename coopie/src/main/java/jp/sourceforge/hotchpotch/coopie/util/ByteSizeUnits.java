@@ -21,8 +21,7 @@ import java.text.NumberFormat;
 
 public class ByteSizeUnits {
 
-    public static final ByteSizeUnit B = new SimpleByteSizeUnit("B", 0,
-            BaseType.DECIMAL) {
+    public static final ByteSizeUnit B = new SimpleByteSizeUnit("B", 0, BaseType.DECIMAL) {
 
         @Override
         protected double convert(final long value) {
@@ -87,15 +86,13 @@ public class ByteSizeUnits {
         return detectUnit(size, baseType);
     }
 
-    private static ByteSizeUnit detectUnit(final long size,
-            final BaseType baseType) {
+    private static ByteSizeUnit detectUnit(final long size, final BaseType baseType) {
         final UnitsTable unitsTable = _unitsTable(baseType);
         final ByteSizeUnit unit = unitsTable.detectUnit(size);
         return unit;
     }
 
-    private static UnitsTable _unitsTable(final BaseType baseType)
-            throws AssertionError {
+    private static UnitsTable _unitsTable(final BaseType baseType) throws AssertionError {
         final UnitsTable unitsTable;
         switch (baseType) {
         case BINARY:
@@ -193,8 +190,7 @@ public class ByteSizeUnits {
         }
 
         private ByteSizeUnit _createUnit(final String label, final int exponent) {
-            return new SimpleByteSizeUnit(label, baseType_.power(exponent),
-                    baseType_);
+            return new SimpleByteSizeUnit(label, baseType_.power(exponent), baseType_);
         }
 
     }
@@ -240,8 +236,7 @@ public class ByteSizeUnits {
         }
 
         private ByteSizeUnit _createUnit(final String label, final int exponent) {
-            return new SimpleByteSizeUnit(label, baseType_.power(exponent),
-                    baseType_);
+            return new SimpleByteSizeUnit(label, baseType_.power(exponent), baseType_);
         }
 
     }
@@ -253,8 +248,7 @@ public class ByteSizeUnits {
         private final NumberFormat format_;
         private final BaseType baseType_;
 
-        SimpleByteSizeUnit(final String label, final long coefficient,
-                final BaseType baseType) {
+        SimpleByteSizeUnit(final String label, final long coefficient, final BaseType baseType) {
             label_ = label;
             coefficient_ = coefficient;
             baseType_ = baseType;
@@ -285,8 +279,14 @@ public class ByteSizeUnits {
         @Override
         public String format(final long value) {
             final NumberFormat format = getNumberFormat();
+            final String s = format(value, format);
+            return s;
+        }
+
+        @Override
+        public String format(final long value, final NumberFormat numberFormat) {
             final double converted = convert(value);
-            final String s = format.format(converted);
+            final String s = numberFormat.format(converted);
             return s;
         }
 

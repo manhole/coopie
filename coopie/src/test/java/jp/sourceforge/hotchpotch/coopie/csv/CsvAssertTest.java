@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -36,14 +36,11 @@ public class CsvAssertTest extends CsvAssert {
     public void csv() throws Throwable {
         csvAssert_.setElementSeparator(CsvSetting.COMMA);
         csvAssert_.assertCsvEquals((Reader) null, null);
-        csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"),
-                new StringReader("A,B\n" + "a,b"));
-        csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"),
-                new StringReader("B,A\n" + "b,a"));
+        csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"), new StringReader("A,B\n" + "a,b"));
+        csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"), new StringReader("B,A\n" + "b,a"));
 
         try {
-            csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"),
-                    new StringReader("B,A\n" + "b,A"));
+            csvAssert_.assertCsvEquals(new StringReader("A,B\n" + "a,b"), new StringReader("B,A\n" + "b,A"));
             fail();
         } catch (final CsvAssertionError e) {
             logger.debug(e.getMessage());
@@ -52,20 +49,17 @@ public class CsvAssertTest extends CsvAssert {
 
     @Test
     public void array() {
-        csvAssert_.assertArrayEquals(new String[] { "a", "b" }, new String[] {
-                "a", "b" });
+        csvAssert_.assertArrayEquals(new String[] { "a", "b" }, new String[] { "a", "b" });
         csvAssert_.assertArrayEquals(null, null);
 
         try {
-            csvAssert_.assertArrayEquals(new String[] { "a", "b" },
-                    new String[] { "a" });
+            csvAssert_.assertArrayEquals(new String[] { "a", "b" }, new String[] { "a" });
             fail();
         } catch (final CsvAssertionError e) {
             logger.debug(e.getMessage());
         }
         try {
-            csvAssert_.assertArrayEquals(new String[] { "a", "b" },
-                    new String[] { "a", "c" });
+            csvAssert_.assertArrayEquals(new String[] { "a", "b" }, new String[] { "a", "c" });
             fail();
         } catch (final CsvAssertionError e) {
             logger.debug(e.getMessage());

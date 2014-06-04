@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -18,8 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Map;
 
-public class MapPropertyBinding<PROP> implements
-        PropertyBinding<Map<String, PROP>, PROP> {
+public class MapPropertyBinding<PROP> implements PropertyBinding<Map<String, PROP>, PROP> {
 
     private final String name_;
 
@@ -38,8 +37,7 @@ public class MapPropertyBinding<PROP> implements
         return v;
     }
 
-    public static class Factory<PROP> implements
-            PropertyBindingFactory<Map<String, PROP>> {
+    public static class Factory<PROP> implements PropertyBindingFactory<Map<String, PROP>> {
 
         private static Factory INSTANCE = new Factory();
 
@@ -48,10 +46,8 @@ public class MapPropertyBinding<PROP> implements
         }
 
         @Override
-        public PropertyBinding<Map<String, PROP>, PROP> getPropertyBinding(
-                final String name) {
-            final MapPropertyBinding<PROP> pb = new MapPropertyBinding<PROP>(
-                    name);
+        public PropertyBinding<Map<String, PROP>, PROP> getPropertyBinding(final String name) {
+            final MapPropertyBinding<PROP> pb = new MapPropertyBinding<>(name);
             return pb;
         }
 

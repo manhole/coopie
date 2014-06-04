@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -37,17 +37,13 @@ import org.t2framework.commons.meta.BeanDesc;
 import org.t2framework.commons.meta.BeanDescFactory;
 import org.t2framework.commons.meta.PropertyDesc;
 
-public class BeanFixedLengthLayout<BEAN> extends
-        AbstractFixedLengthLayout<BEAN> {
+public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN> {
 
     private final BeanDesc<BEAN> beanDesc_;
-    private PropertyAnnotationReader propertyAnnotationReader_ = Annotations
-            .getPropertyAnnotationReader();
+    private PropertyAnnotationReader propertyAnnotationReader_ = Annotations.getPropertyAnnotationReader();
 
-    public static <BEAN> BeanFixedLengthLayout<BEAN> getInstance(
-            final Class<BEAN> beanClass) {
-        final BeanFixedLengthLayout<BEAN> instance = new BeanFixedLengthLayout<BEAN>(
-                beanClass);
+    public static <BEAN> BeanFixedLengthLayout<BEAN> getInstance(final Class<BEAN> beanClass) {
+        final BeanFixedLengthLayout<BEAN> instance = new BeanFixedLengthLayout<>(beanClass);
         return instance;
     }
 
@@ -55,20 +51,10 @@ public class BeanFixedLengthLayout<BEAN> extends
         beanDesc_ = BeanDescFactory.getBeanDesc(beanClass);
     }
 
-    @Deprecated
-    public RecordReader<BEAN> openReader(final Readable readable) {
-        return build().openReader(readable);
-    }
-
-    @Deprecated
-    public RecordWriter<BEAN> openWriter(final Appendable appendable) {
-        return build().openWriter(appendable);
-    }
-
     public RecordInOut<BEAN> build() {
-        prepareOpen();
+        prepareBuild();
 
-        final BeanFixedLengthRecordInOut<BEAN> obj = new BeanFixedLengthRecordInOut<BEAN>();
+        final BeanFixedLengthRecordInOut<BEAN> obj = new BeanFixedLengthRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementInOut_ = createElementInOut();
@@ -78,7 +64,7 @@ public class BeanFixedLengthLayout<BEAN> extends
         return obj;
     }
 
-    protected void prepareOpen() {
+    protected void prepareBuild() {
         if (getRecordDesc() == null) {
             /*
              * アノテーションが付いている場合は、アノテーションから構築する
@@ -102,12 +88,12 @@ public class BeanFixedLengthLayout<BEAN> extends
 
     @Override
     protected PropertyBindingFactory<BEAN> createPropertyBindingFactory() {
-        return new BeanPropertyBinding.Factory<BEAN>(beanDesc_);
+        return new BeanPropertyBinding.Factory<>(beanDesc_);
     }
 
     @Override
     protected RecordType<BEAN> createRecordType() {
-        return new BeanRecordType<BEAN>(beanDesc_);
+        return new BeanRecordType<>(beanDesc_);
     }
 
     private FixedLengthRecordDef recordDef() {
@@ -133,8 +119,7 @@ public class BeanFixedLengthLayout<BEAN> extends
         final DefaultFixedLengthRecordDef recordDef = new DefaultFixedLengthRecordDef();
         final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
         for (final PropertyDesc<BEAN> pd : pds) {
-            final FixedLengthColumn column = getPropertyAnnotationReader()
-                    .getAnnotation(pd, FixedLengthColumn.class);
+            final FixedLengthColumn column = getPropertyAnnotationReader().getAnnotation(pd, FixedLengthColumn.class);
             if (column == null) {
                 continue;
             }
@@ -155,13 +140,11 @@ public class BeanFixedLengthLayout<BEAN> extends
         return propertyAnnotationReader_;
     }
 
-    public void setPropertyAnnotationReader(
-            final PropertyAnnotationReader propertyAnnotationReader) {
+    public void setPropertyAnnotationReader(final PropertyAnnotationReader propertyAnnotationReader) {
         propertyAnnotationReader_ = propertyAnnotationReader;
     }
 
-    protected static class BeanFixedLengthRecordInOut<BEAN> implements
-            RecordInOut<BEAN> {
+    protected static class BeanFixedLengthRecordInOut<BEAN> implements RecordInOut<BEAN> {
 
         private RecordDesc<BEAN> recordDesc_;
         private boolean withHeader_;
@@ -174,8 +157,7 @@ public class BeanFixedLengthLayout<BEAN> extends
                 throw new NullPointerException("readable");
             }
 
-            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(
-                    recordDesc_);
+            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             r.setElementEditor(elementEditor_);
@@ -190,8 +172,7 @@ public class BeanFixedLengthLayout<BEAN> extends
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(
-                    recordDesc_);
+            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

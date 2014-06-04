@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -23,25 +23,14 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
 
     private final CsvSetting csvSetting_;
 
-    public static <BEAN> BeanCsvLayout<BEAN> getInstance(
-            final Class<BEAN> beanClass) {
-        final BeanCsvLayout<BEAN> instance = new BeanCsvLayout<BEAN>(beanClass);
+    public static <BEAN> BeanCsvLayout<BEAN> getInstance(final Class<BEAN> beanClass) {
+        final BeanCsvLayout<BEAN> instance = new BeanCsvLayout<>(beanClass);
         return instance;
     }
 
     public BeanCsvLayout(final Class<BEAN> beanClass) {
         super(beanClass);
         csvSetting_ = new DefaultCsvSetting();
-    }
-
-    @Deprecated
-    public RecordReader<BEAN> openReader(final Readable readable) {
-        return build().openReader(readable);
-    }
-
-    @Deprecated
-    public RecordWriter<BEAN> openWriter(final Appendable appendable) {
-        return build().openWriter(appendable);
     }
 
     public void setElementSeparator(final char elementSeparator) {
@@ -67,9 +56,9 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
     }
 
     public RecordInOut<BEAN> build() {
-        prepareOpen();
+        prepareBuild();
 
-        final BeanCsvRecordInOut<BEAN> obj = new BeanCsvRecordInOut<BEAN>();
+        final BeanCsvRecordInOut<BEAN> obj = new BeanCsvRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementInOut_ = createElementInOut();
@@ -78,8 +67,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
         return obj;
     }
 
-    protected static class BeanCsvRecordInOut<BEAN> implements
-            RecordInOut<BEAN> {
+    protected static class BeanCsvRecordInOut<BEAN> implements RecordInOut<BEAN> {
 
         private RecordDesc<BEAN> recordDesc_;
         private boolean withHeader_;
@@ -93,8 +81,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
                 throw new NullPointerException("readable");
             }
 
-            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(
-                    recordDesc_);
+            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             r.setElementReaderHandler(elementReaderHandler_);
@@ -122,8 +109,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(
-                    recordDesc_);
+            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

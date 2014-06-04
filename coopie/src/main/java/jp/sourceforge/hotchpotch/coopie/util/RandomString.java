@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -83,7 +83,7 @@ public class RandomString {
         }
 
         public char[] toCharArray() {
-            final List<Character> list = new ArrayList<Character>();
+            final List<Character> list = new ArrayList<>();
             for (int i = 0; i <= 127; i++) {
                 final char c = (char) i;
                 if (Character.isDigit(i)) {
@@ -98,8 +98,7 @@ public class RandomString {
                     if (upperCaseAlphabet_) {
                         list.add(c);
                     }
-                } else if (!Character.isISOControl(i)
-                        && !Character.isSpaceChar(i)) {
+                } else if (!Character.isISOControl(i) && !Character.isSpaceChar(i)) {
                     if (symbolCharacter_) {
                         list.add(c);
                     }

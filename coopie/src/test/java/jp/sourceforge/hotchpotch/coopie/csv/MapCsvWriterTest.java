@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -44,30 +44,28 @@ public class MapCsvWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         bean.put("aaa", "あ1");
         bean.put("bbb", "い1");
         bean.put("ccc", "う1");
@@ -83,10 +81,8 @@ public class MapCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = BeanCsvWriterTest.getResourceAsStream("-1",
-                "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final InputStream is = BeanCsvWriterTest.getResourceAsStream("-1", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is, "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -96,7 +92,7 @@ public class MapCsvWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -108,8 +104,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -143,7 +138,7 @@ public class MapCsvWriterTest {
     @Test
     public void write3() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -158,8 +153,7 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -184,20 +178,19 @@ public class MapCsvWriterTest {
 
     /**
      * 空白項目がある場合。
-     * 
+     *
      * ""はnullとして扱い、" "は" "として扱う。
      */
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         bean.put("aaa", "あ1");
         bean.put("bbb", "い1");
         bean.put("ccc", " ");
@@ -224,7 +217,7 @@ public class MapCsvWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -240,10 +233,9 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         bean.put("aaa", "あ1");
         bean.put("bbb", "い1");
         bean.put("ccc", "う1");
@@ -267,7 +259,7 @@ public class MapCsvWriterTest {
     @Test
     public void writeCsv() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -280,10 +272,9 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
         csvWriter.write(bean);
         setTo(bean, "a2", "b2", "c2");
@@ -299,16 +290,15 @@ public class MapCsvWriterTest {
     @Test
     public void write_separator_comma() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
         csvWriter.write(bean);
 
@@ -322,16 +312,15 @@ public class MapCsvWriterTest {
     @Test
     public void write_separator_tab() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.TAB);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
         csvWriter.write(bean);
 
@@ -345,17 +334,16 @@ public class MapCsvWriterTest {
     @Test
     public void write_lineseparator_LF() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setLineSeparator("\n");
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
         csvWriter.write(bean);
 
@@ -369,17 +357,16 @@ public class MapCsvWriterTest {
     @Test
     public void write_quotechar_single() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setQuoteMark('\'');
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c1");
         csvWriter.write(bean);
 
@@ -393,17 +380,16 @@ public class MapCsvWriterTest {
     @Test
     public void write_quotemode_minimum() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<>();
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setQuoteMode(QuoteMode.MINIMUM);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, String> bean = new TreeMap<String, String>();
+        final Map<String, String> bean = new TreeMap<>();
         setTo(bean, "a1", "b1", "c\"1");
         csvWriter.write(bean);
 
@@ -414,8 +400,7 @@ public class MapCsvWriterTest {
         BeanCsvWriterTest.assert_write_quotemode_minimum(lines);
     }
 
-    private void setTo(final Map<String, String> bean, final String a,
-            final String b, final String c) {
+    private void setTo(final Map<String, String> bean, final String a, final String b, final String c) {
         bean.put("aaa", a);
         bean.put("bbb", b);
         bean.put("ccc", c);
@@ -427,7 +412,7 @@ public class MapCsvWriterTest {
     @Test
     public void write_bigDecimal() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<Object> layout = new MapCsvLayout<Object>();
+        final MapCsvLayout<Object> layout = new MapCsvLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -438,10 +423,9 @@ public class MapCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, Object>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, Object>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, Object> bean = new TreeMap<String, Object>();
+        final Map<String, Object> bean = new TreeMap<>();
         bean.put("aaa", new BigDecimal("11.1"));
         bean.put("bbb", "21.02");
         csvWriter.write(bean);
@@ -459,8 +443,7 @@ public class MapCsvWriterTest {
         final String lines = writer.toString();
 
         {
-            final ElementReader reader = new CsvElementInOut(
-                    new DefaultCsvSetting())
+            final ElementReader reader = new CsvElementInOut(new DefaultCsvSetting())
                     .openReader(new StringReader(lines));
             assertArrayEquals(a("aaa", "bbb"), reader.readRecord());
             assertArrayEquals(a("11.10", "21.02"), reader.readRecord());
@@ -472,8 +455,7 @@ public class MapCsvWriterTest {
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
-        final Reader reader = BeanCsvReaderTest
-                .getResourceAsReader(suffix, ext);
+        final Reader reader = BeanCsvReaderTest.getResourceAsReader(suffix, ext);
         return reader;
     }
 

@@ -1,305 +1,312 @@
 buildscript {
-	repositories { mavenCentral() }
+    repositories { mavenCentral() }
 
-	dependencies { classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' }
+    dependencies { classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' }
 }
 
 allprojects { project ->
-	group = "jp.sourceforge.hotchpotch"
-	version = "0.3.1"
+    group = "jp.sourceforge.hotchpotch"
+    version = "0.4.0"
 
-	repositories {
-		mavenCentral()
-		maven { url "http://hotchpotch.sourceforge.jp/maven2/release" }
-	}
+    repositories {
+        mavenCentral()
+        maven { url "http://hotchpotch.sourceforge.jp/maven2/release" }
+    }
 
-	apply plugin: "eclipse"
-	/*
-	 * tasks.eclipse {...} ではダメ
-	 * このとき、ブロックに渡されるのはtaskインスタンス。
-	 * task ":eclipse"
-	 * class org.gradle.api.DefaultTask_Decorated
-	 * tasks.eclipse.configure {...}も同様にtaskインスタンス
-	 * 
-	 * eclipse {...} ではmodelというものがブロックに渡される。
-	 * org.gradle.plugins.ide.eclipse.model.EclipseModel_Decorated@18247418
-	 */
-	eclipse {
-		// .classpathを共有するための設定。ユーザホームへのフルパスが書かれないようにする。
-		// EclipseのJava > Build Path > Classpath VariablesにGRADLE_USER_HOMEを ~/.gradle(展開したフルパス) に設定しておくこと。
-		pathVariables "GRADLE_USER_HOME": gradle.gradleUserHomeDir
-	}
+    apply plugin: "eclipse"
+    /*
+     * tasks.eclipse {...} ではダメ
+     * このとき、ブロックに渡されるのはtaskインスタンス。
+     * task ":eclipse"
+     * class org.gradle.api.DefaultTask_Decorated
+     * tasks.eclipse.configure {...}も同様にtaskインスタンス
+     *
+     * eclipse {...} ではmodelというものがブロックに渡される。
+     * org.gradle.plugins.ide.eclipse.model.EclipseModel_Decorated@18247418
+     */
+    eclipse {
+        // .classpathを共有するための設定。ユーザホームへのフルパスが書かれないようにする。
+        // EclipseのJava > Build Path > Classpath VariablesにGRADLE_USER_HOMEを ~/.gradle(展開したフルパス) に設定しておくこと。
+        pathVariables "GRADLE_USER_HOME": gradle.gradleUserHomeDir
+    }
 
-	apply plugin: "license"
-	license {
-		header rootProject.file("HEADER.txt")
-		strictCheck true
-		useDefaultMappings false
-		mapping {
-			java= "SLASHSTAR_STYLE"
-			groovy= "SLASHSTAR_STYLE"
-		}
-	}
+    apply plugin: "license"
+    license {
+        header rootProject.file("HEADER.txt")
+        strictCheck true
+        useDefaultMappings false
+        mapping {
+            java = "SLASHSTAR_STYLE"
+            groovy = "SLASHSTAR_STYLE"
+        }
+    }
+}
+
+configure(rootProject) {
+    task wrapper(type: Wrapper) {
+        gradleVersion = 1.11
+    }
 }
 
 subprojects { project ->
-	apply plugin: "java"
-	apply plugin: "maven-publish"
+    apply plugin: "java"
+    apply plugin: "maven-publish"
 
-	sourceCompatibility = "1.6"
-	targetCompatibility = sourceCompatibility
+    sourceCompatibility = "1.7"
+    targetCompatibility = sourceCompatibility
 
-	task sourcesJar(type:Jar, dependsOn:classes) {
-		classifier = "sources"
-		from sourceSets.main.allSource
-	}
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = "sources"
+        from sourceSets.main.allSource
+    }
 
-	task buildNumberTask << {
-		def p = "git rev-parse --verify --short=8 HEAD".execute()
-		def w = new java.io.StringWriter()
-		p.waitForProcessOutput(w, System.err)
-		if (p.exitValue() != 0) {
-			throw new Exception()
-		}
-		def buildNumber = w.toString().trim()
-		w.close()
+    task buildNumberTask << {
+        def gitCommand = "git rev-parse --verify --short=8 HEAD"
+        def p = gitCommand.execute(null, project.getRootDir())
+        def w = new StringBuilder()
+        p.waitForProcessOutput(w, System.err)
+        if (p.exitValue() != 0) {
+            throw new Exception("execution failed: <${gitCommand}>")
+        }
+        def buildNumber = w.toString().trim()
+        assert buildNumber
 
-		def timestamp = new Date()
+        def timestamp = new Date()
 
-		project.tasks.withType(Jar).each { t ->
-			t.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
-			t.manifest.attributes["Created-By"] = "Gradle"
-			t.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
-			t.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
-			t.manifest.attributes["Implementation-Title"] = project.name
-			t.manifest.attributes["Implementation-Version"] = project.version
-			t.manifest.attributes["Implementation-Vendor-Id"] = project.group
-			t.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(timestamp)
-			t.manifest.attributes["SCM-Revision"] = buildNumber
-		}
-	}
-	/*
-	 * jarを作る前にbuildNumberを実行したい。
-	 * jarタスクのdoLastのタイミングでは遅い。(既にjarが作られた後。)
-	 * doFirstでも、先にjarを作る処理が動いてしまっている。
-	 * 
-	 * jar, sourcesJarを対象。
-	 */
-	tasks.withType(Jar).each { it.dependsOn buildNumberTask }
+        project.tasks.withType(Jar).each { t ->
+            t.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
+            t.manifest.attributes["Created-By"] = "Gradle"
+            t.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
+            t.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
+            t.manifest.attributes["Implementation-Title"] = project.name
+            t.manifest.attributes["Implementation-Version"] = project.version
+            t.manifest.attributes["Implementation-Vendor-Id"] = project.group
+            t.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(timestamp)
+            t.manifest.attributes["SCM-Revision"] = buildNumber
+        }
+    }
+    /*
+     * jarを作る前にbuildNumberを実行したい。
+     * jarタスクのdoLastのタイミングでは遅い。(既にjarが作られた後。)
+     * doFirstでも、先にjarを作る処理が動いてしまっている。
+     *
+     * jar, sourcesJarを対象。
+     */
+    tasks.withType(Jar).each { it.dependsOn buildNumberTask }
 
-	artifacts { archives sourcesJar }
+    artifacts { archives sourcesJar }
 
-	publishing {
-		publications {
-			maven(MavenPublication) {
-				from components.java
-				artifact sourcesJar
-				pom.withXml {
-					/*
-					 * "maven-publish"が用意する<dependencies>を破棄して、作り変える。
-					 * 1. compile scopeがruntimeになってしまう。
-					 * 2. optionalを指定できない。
-					 * 3. excludeを指定できない。
-					 */
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+                pom.withXml {
+                    /*
+                     * "maven-publish"が用意する<dependencies>を破棄して、作り変える。
+                     * 1. compile scopeがruntimeになってしまう。
+                     * 2. optionalを指定できない。
+                     * 3. excludeを指定できない。
+                     */
 
-					def projectDependencies = [:]
-					// compileとtestCompileを対象にしているが、maven-publishが作成するpomはcompileだけのようだ。
-					["compile":"compile", "testCompile":"test"].each { configName, scopeValue ->
-						// project.configurations["compile"].dependencies で取得できるクラスは、
-						// org.gradle.api.internal.artifacts.DefaultDependencySet
-						project.configurations[configName].dependencies.each { dep ->
-							def holder = new DependencyHolder(gradleDependency:dep, mavenScope:scopeValue)
-							projectDependencies[holder.key()] = holder
-						}
-					}
+                    def projectDependencies = [:]
+                    // compileとtestCompileを対象にしているが、maven-publishが作成するpomはcompileだけのようだ。
+                    ["compile": "compile", "testCompile": "test"].each { configName, scopeValue ->
+                        // project.configurations["compile"].dependencies で取得できるクラスは、
+                        // org.gradle.api.internal.artifacts.DefaultDependencySet
+                        project.configurations[configName].dependencies.each { dep ->
+                            def holder = new DependencyHolder(gradleDependency: dep, mavenScope: scopeValue)
+                            projectDependencies[holder.key()] = holder
+                        }
+                    }
 
-					def Node projectNode = asNode()
-					def Node dependencies = projectNode.dependencies[0]
-					dependencies.each { Node dependency ->
-						assert dependency.name().localPart == "dependency"
-						//// NodeListが返るので添字0でNodeを取得する
-						//def groupId = dependency.groupId[0].value()[0]
-						//def artifactId = dependency.artifactId[0].value()[0]
-						//def scope = dependency.scope[0].value()[0]
-						def groupId = dependency.groupId.text()
-						def artifactId = dependency.artifactId.text()
-						def scope = dependency.scope.text()
-						def key = "${groupId}:${artifactId}"
-						def depHolder = projectDependencies[key]
-						logger.info "${key} ... ${scope} -> ${depHolder.mavenScope}"
-						dependency.scope[0].value = depHolder.mavenScope
-						if (depHolder.optional()) {
-							dependency.children().last() + {
-								resolveStrategy = Closure.DELEGATE_FIRST
-								optional true
-							}
-							//new Node(dependency, "optional", [:], "true")
-						}
-						if (depHolder.gradleDependency.excludeRules) {
-							dependency.children().last() + {
-								resolveStrategy = Closure.DELEGATE_FIRST
-								exclusions {
-									resolveStrategy = Closure.DELEGATE_FIRST
-									depHolder.gradleDependency.excludeRules.each { excludeRule ->
-										exclusion {
-											delegate.groupId excludeRule.group
-											delegate.artifactId excludeRule.module
-										}
-									}
-								}
-							}
-						}
-					}
+                    def Node projectNode = asNode()
+                    def Node dependencies = projectNode.dependencies[0]
+                    dependencies.each { Node dependency ->
+                        assert dependency.name().localPart == "dependency"
+                        //// NodeListが返るので添字0でNodeを取得する
+                        //def groupId = dependency.groupId[0].value()[0]
+                        //def artifactId = dependency.artifactId[0].value()[0]
+                        //def scope = dependency.scope[0].value()[0]
+                        def groupId = dependency.groupId.text()
+                        def artifactId = dependency.artifactId.text()
+                        def scope = dependency.scope.text()
+                        def key = "${groupId}:${artifactId}"
+                        def depHolder = projectDependencies[key]
+                        logger.info "${key} ... ${scope} -> ${depHolder.mavenScope}"
+                        dependency.scope[0].value = depHolder.mavenScope
+                        if (depHolder.optional()) {
+                            dependency.children().last() + {
+                                resolveStrategy = Closure.DELEGATE_FIRST
+                                optional true
+                            }
+                            //new Node(dependency, "optional", [:], "true")
+                        }
+                        if (depHolder.gradleDependency.excludeRules) {
+                            dependency.children().last() + {
+                                resolveStrategy = Closure.DELEGATE_FIRST
+                                exclusions {
+                                    resolveStrategy = Closure.DELEGATE_FIRST
+                                    depHolder.gradleDependency.excludeRules.each { excludeRule ->
+                                        exclusion {
+                                            delegate.groupId excludeRule.group
+                                            delegate.artifactId excludeRule.module
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-					// http://maven.apache.org/ref/3.0.5/maven-model/maven.html
-					// dependenciesの前(versionの後ろ)へ追加したい
-					def Node versionNode = projectNode.version[0]
-					versionNode + {
-						resolveStrategy = Closure.DELEGATE_FIRST
+                    // http://maven.apache.org/ref/3.0.5/maven-model/maven.html
+                    // dependenciesの前(versionの後ろ)へ追加したい
+                    def Node versionNode = projectNode.version[0]
+                    versionNode + {
+                        resolveStrategy = Closure.DELEGATE_FIRST
 
-						packaging "jar"
-						name project.name
-						description project.description
-						url "https://github.com/manhole/coopie"
-						inceptionYear 2010
-						licenses {
-							license {
-								name "The Apache Software License, Version 2.0"
-								url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-								distribution "repo"
-							}
-						}
-						developers {
-							developer {
-								id "manhole"
-								name "HONMA Hirotaka"
-								email "manholex@gmail.com"
-							}
-						}
-						scm {
-							connection "scm:git:git@github.com:manhole/coopie.git"
-							developerConnection "scm:git:git@github.com:manhole/coopie.git"
-							url "https://github.com/manhole/coopie"
-						}
-					}
-				}
-			}
-		}
-		repositories {
-			if (!project.version.endsWith("-SNAPSHOT")) {
-				maven {
-					name "coopieLocal"
-					url "file:${rootDir}/../site/maven2/release"
-				}
-			}
-		}
-	}
+                        packaging "jar"
+                        name project.name
+                        description project.description
+                        url "https://github.com/manhole/coopie"
+                        inceptionYear 2010
+                        licenses {
+                            license {
+                                name "The Apache Software License, Version 2.0"
+                                url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                                distribution "repo"
+                            }
+                        }
+                        developers {
+                            developer {
+                                id "manhole"
+                                name "HONMA Hirotaka"
+                                email "manholex@gmail.com"
+                            }
+                        }
+                        scm {
+                            connection "scm:git:git@github.com:manhole/coopie.git"
+                            developerConnection "scm:git:git@github.com:manhole/coopie.git"
+                            url "https://github.com/manhole/coopie"
+                        }
+                    }
+                }
+            }
+        }
+        repositories {
+            if (!project.version.endsWith("-SNAPSHOT")) {
+                maven {
+                    name "coopieLocal"
+                    url "file:${rootDir}/../site/maven2/release"
+                }
+            }
+        }
+    }
 
-	/*
-	 * Eclipseは"org.eclipse.jdt.core.prefs"ファイルをソートして出力するが、gradleプラグインは
-	 * (java.util.Propertiesを使っているため)ソートしてくれない。
-	 * そのため内容が変わっていなくてもgit変更対象に上がってしまう。
-	 * ここではgradle側の出力をソートして、Eclipseに合わせる。
-	 * 
-	 * eclipse.jdt.file.whenMergedで取得できるorg.gradle.plugins.ide.eclipse.model.Jdtや、
-	 * eclipse.jdt.file.withPropertiesで取得できるjava.util.Propertiesからは
-	 * ソートできないため。
-	 */
-	tasks.eclipseJdt {
-		assert "org.eclipse.jdt.core.prefs" == outputFile.name
-		ext.originalOutputFile = outputFile
-		outputFile = (outputFile.absolutePath + ".tmp") as File
-	}
-	tasks.eclipseJdt << {
-		assert "org.eclipse.jdt.core.prefs.tmp" == outputFile.name
-		assert "org.eclipse.jdt.core.prefs" == ext.originalOutputFile.name
-		List lines = outputFile.readLines("UTF-8")
-		Collections.sort(lines)
-		ext.originalOutputFile.withWriter("UTF-8") { writer ->
-			lines.each { line ->
-				writer << line
-				writer << "\r\n"
-			}
-		}
-		assert outputFile.delete()
-	}
+    /*
+     * Eclipseは"org.eclipse.jdt.core.prefs"ファイルをソートして出力するが、gradleプラグインは
+     * (java.util.Propertiesを使っているため)ソートしてくれない。
+     * そのため内容が変わっていなくてもgit変更対象に上がってしまう。
+     * ここではgradle側の出力をソートして、Eclipseに合わせる。
+     *
+     * eclipse.jdt.file.whenMergedで取得できるorg.gradle.plugins.ide.eclipse.model.Jdtや、
+     * eclipse.jdt.file.withPropertiesで取得できるjava.util.Propertiesからは
+     * ソートできないため。
+     */
+    tasks.eclipseJdt {
+        assert "org.eclipse.jdt.core.prefs" == outputFile.name
+        ext.originalOutputFile = outputFile
+        outputFile = (outputFile.absolutePath + ".tmp") as File
+    }
+    tasks.eclipseJdt << {
+        assert "org.eclipse.jdt.core.prefs.tmp" == outputFile.name
+        assert "org.eclipse.jdt.core.prefs" == ext.originalOutputFile.name
+        List lines = outputFile.readLines("UTF-8")
+        Collections.sort(lines)
+        ext.originalOutputFile.withWriter("UTF-8") { writer ->
+            lines.each { line ->
+                writer << line
+                writer << "\r\n"
+            }
+        }
+        assert outputFile.delete()
+    }
 }
 
-def versions = [slf4j: "1.6.4", logback: "1.0.0"]
+def versions = [slf4j: "1.7.7", logback: "1.1.2"]
 
 project(":coopie") {
-	description = "Read/Write library for two-dimensional arrays of data."
-	_setupEncoding(project)
-	dependencies {
-		compile ("org.t2framework.commons:commons:0.6.7-ga") {
-			exclude group: "ch.qos.logback", module: "logback-core"
-			exclude group: "org.slf4j", module: "slf4j-api"
-		}
-		compile ("org.slf4j:slf4j-api:${versions.slf4j}")
-		compile ("ch.qos.logback:logback-core:${versions.logback}")
-		compile ("ch.qos.logback:logback-classic:${versions.logback}")
-		compile ("org.apache.poi:poi:3.1-FINAL") {
-			exclude group: "avalon-framework", module: "avalon-framework"
-			exclude group: "log4j", module: "log4j"
-			ext.optional = true
-		}
-		testCompile ("junit:junit-dep:4.10")
-		testCompile ("org.hamcrest:hamcrest-core:1.2.1")
-		testCompile ("org.hamcrest:hamcrest-library:1.2.1")
-		testCompile ("junit-addons:junit-addons:1.4") {
-			exclude group: "xerces", module: "xercesImpl"
-			exclude group: "xerces", module: "xmlParserAPIs"
-		}
-	}
+    description = "Read/Write library for two-dimensional arrays of data."
+    _setupEncoding(project)
+    dependencies {
+        compile("org.t2framework.commons:commons:0.6.7-ga") {
+            exclude group: "ch.qos.logback", module: "logback-core"
+            exclude group: "org.slf4j", module: "slf4j-api"
+        }
+        compile("org.slf4j:slf4j-api:${versions.slf4j}")
+        compile("ch.qos.logback:logback-core:${versions.logback}")
+        compile("ch.qos.logback:logback-classic:${versions.logback}")
+        compile("org.apache.poi:poi-ooxml:3.9") {
+            ext.optional = true
+        }
+        testCompile("junit:junit-dep:4.10")
+        testCompile("org.hamcrest:hamcrest-core:1.2.1")
+        testCompile("org.hamcrest:hamcrest-library:1.2.1")
+        testCompile("junit-addons:junit-addons:1.4") {
+            exclude group: "xerces", module: "xercesImpl"
+            exclude group: "xerces", module: "xmlParserAPIs"
+        }
+    }
 }
 
-project (":coopie-groovy") {
-	description = "easy to use coopie from Groovy"
-	apply plugin: "groovy"
+project(":coopie-groovy") {
+    description = "easy to use coopie from Groovy"
+    apply plugin: "groovy"
 
-	_setupEncoding(project)
-	dependencies {
-		compile ("org.codehaus.groovy:groovy-all:2.1.3")
-		compile (project(":coopie"))
-		testCompile ("ch.qos.logback:logback-core:${versions.logback}")
-		testCompile ("ch.qos.logback:logback-classic:${versions.logback}")
-		testCompile ("junit:junit-dep:4.10")
-		testCompile ("org.hamcrest:hamcrest-core:1.2.1")
-		testCompile ("org.hamcrest:hamcrest-library:1.2.1")
-	}
+    _setupEncoding(project)
+    dependencies {
+        compile("org.codehaus.groovy:groovy-all:2.1.3")
+        compile(project(":coopie"))
+        testCompile("ch.qos.logback:logback-core:${versions.logback}")
+        testCompile("ch.qos.logback:logback-classic:${versions.logback}")
+        testCompile("junit:junit-dep:4.10")
+        testCompile("org.hamcrest:hamcrest-core:1.2.1")
+        testCompile("org.hamcrest:hamcrest-library:1.2.1")
+    }
 }
 
 def _setupEncoding(Project project) {
-	assert project
-	def sourceEncoding = "UTF-8"
-	project.tasks.withType(SourceTask).each {
-		// ":compileGroovy", ":compileJava", "compileTestGroovy", ":compileTestJava", ":groovydoc", ":javadoc"
-		def p1 = 'options'
-		def p2 = 'encoding'
-		if (it.hasProperty(p1)) {
-			if (it[p1].hasProperty(p2)) {
-				logger.info "${it} has options.encoding property"
-				it[p1][p2] = sourceEncoding
-			} else {
-				logger.info "${it} has no ${p2} property"
-			}
-		} else {
-			logger.info "${it} has no ${p1} property"
-		}
-	}
+    assert project
+    def sourceEncoding = "UTF-8"
+    project.tasks.withType(SourceTask).each {
+        // ":compileGroovy", ":compileJava", "compileTestGroovy", ":compileTestJava", ":groovydoc", ":javadoc"
+        def p1 = 'options'
+        def p2 = 'encoding'
+        if (it.hasProperty(p1)) {
+            if (it[p1].hasProperty(p2)) {
+                logger.info "${it} has options.encoding property"
+                it[p1][p2] = sourceEncoding
+            } else {
+                logger.info "${it} has no ${p2} property"
+            }
+        } else {
+            logger.info "${it} has no ${p1} property"
+        }
+    }
 }
 
 def class DependencyHolder {
-	def gradleDependency
-	def mavenScope
-	def key() {
-		// groupId + ":" + artifactId
-		"${gradleDependency.group}:${gradleDependency.name}"
-	}
-	def optional() {
-		if (gradleDependency.ext.has("optional") && gradleDependency.optional) {
-			return true
-		}
-		return false
-	}
+    def gradleDependency
+    def mavenScope
+
+    def key() {
+        // groupId + ":" + artifactId
+        "${gradleDependency.group}:${gradleDependency.name}"
+    }
+
+    def optional() {
+        if (gradleDependency.ext.has("optional") && gradleDependency.optional) {
+            return true
+        }
+        return false
+    }
 }

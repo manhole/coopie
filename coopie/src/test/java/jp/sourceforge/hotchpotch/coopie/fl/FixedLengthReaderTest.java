@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -28,10 +28,8 @@ public class FixedLengthReaderTest extends ElementReaderTest {
     @Override
     protected ElementReader constructTest1Reader() {
         // ## Arrange ##
-        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream(
-                "-1", "tsv");
-        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] {
-                col(0, 5), col(5, 12), col(12, 20) };
+        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream("-1", "tsv");
+        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] { col(0, 5), col(5, 12), col(12, 20) };
 
         // ## Act ##
         final FixedLengthReader reader = new FixedLengthReader(descs);
@@ -40,8 +38,7 @@ public class FixedLengthReaderTest extends ElementReaderTest {
     }
 
     private FixedLengthElementDesc col(final int begin, final int end) {
-        return new AbstractFixedLengthLayout.SimpleFixedLengthElementDesc(
-                begin, end);
+        return new AbstractFixedLengthLayout.SimpleFixedLengthElementDesc(begin, end);
     }
 
 }

@@ -41,11 +41,11 @@ a2,, c2
         new Csv(elementSeparator: CsvSetting.COMMA).openReader(input).eachRecord { record ->
             index++
             if (index == 0) {
-                assert ["AAA", "BBB", "CCC"]== record
+                assert ["AAA", "BBB", "CCC"] == record
             } else if (index == 1) {
-                assert ["a1", "b1", "c1"]== record
+                assert ["a1", "b1", "c1"] == record
             } else if (index == 2) {
-                assert ["a2", "", " c2"]== record
+                assert ["a2", "", " c2"] == record
             }
         }
 
@@ -67,11 +67,11 @@ a2,, c2
         new Csv(elementSeparator: CsvSetting.COMMA).eachRecord(input) { record ->
             index++
             if (index == 0) {
-                assert ["AAA", "BBB", "CCC"]== record
+                assert ["AAA", "BBB", "CCC"] == record
             } else if (index == 1) {
-                assert ["a1", "b1", "c1"]== record
+                assert ["a1", "b1", "c1"] == record
             } else if (index == 2) {
-                assert ["a2", "", " c2"]== record
+                assert ["a2", "", " c2"] == record
             }
         }
 
@@ -92,11 +92,11 @@ a2,, c2
         new Csv().eachRecord(input) { r1, r2, r3 ->
             index++
             if (index == 0) {
-                assert ["AAA", "BBB", "CCC"]== [r1, r2, r3]
+                assert ["AAA", "BBB", "CCC"] == [r1, r2, r3]
             } else if (index == 1) {
-                assert ["a1", "b1", "c1"]== [r1, r2, r3]
+                assert ["a1", "b1", "c1"] == [r1, r2, r3]
             } else if (index == 2) {
-                assert ["a2", "", " c2"]== [r1, r2, r3]
+                assert ["a2", "", " c2"] == [r1, r2, r3]
             }
         }
 
@@ -117,11 +117,11 @@ a2,, c2
         new Csv().eachRecord(input) { r1, r2, r3, r4 ->
             index++
             if (index == 0) {
-                assert ["AAA", "BBB", "CCC", null]== [r1, r2, r3, r4]
+                assert ["AAA", "BBB", "CCC", null] == [r1, r2, r3, r4]
             } else if (index == 1) {
-                assert ["a1", "b1", " ", null]== [r1, r2, r3, r4]
+                assert ["a1", "b1", " ", null] == [r1, r2, r3, r4]
             } else if (index == 2) {
-                assert ["a2", "", " c2", null]== [r1, r2, r3, r4]
+                assert ["a2", "", " c2", null] == [r1, r2, r3, r4]
             }
         }
 
@@ -142,11 +142,11 @@ a2,, c2
         new Csv().eachRecord(input) { r1, r2 ->
             index++
             if (index == 0) {
-                assert ["AAA", "BBB"]== [r1, r2]
+                assert ["AAA", "BBB"] == [r1, r2]
             } else if (index == 1) {
-                assert ["a1", "b1"]== [r1, r2]
+                assert ["a1", "b1"] == [r1, r2]
             } else if (index == 2) {
-                assert ["a2", ""]== [r1, r2]
+                assert ["a2", ""] == [r1, r2]
             }
         }
 
@@ -164,11 +164,11 @@ a2,, c2
         new Csv().eachRecord(input) { CsvRecord r ->
             index++
             if (r.index == 0) {
-                assert ["AAA", "BBB", "CCC"]== [r[0], r[1], r[2]]
+                assert ["AAA", "BBB", "CCC"] == [r[0], r[1], r[2]]
             } else if (index == 1) {
-                assert ["a1", "b1", " "]== [r[0], r[1], r[2]]
+                assert ["a1", "b1", " "] == [r[0], r[1], r[2]]
             } else if (index == 2) {
-                assert ["a2", "", " c2"]== [r[0], r[1], r[2]]
+                assert ["a2", "", " c2"] == [r[0], r[1], r[2]]
             }
         }
 
@@ -187,11 +187,11 @@ a2, , c2
         new Csv(elementSeparator: CsvSetting.COMMA, elementEditor: { it.trim() }).eachRecord(input) { record ->
             index++
             if (index == 0) {
-                assert ["AAA", "BBB", "CCC"]== record
+                assert ["AAA", "BBB", "CCC"] == record
             } else if (index == 1) {
-                assert ["a1", "b1", "c1"]== record
+                assert ["a1", "b1", "c1"] == record
             } else if (index == 2) {
-                assert ["a2", "", "c2"]== record
+                assert ["a2", "", "c2"] == record
             }
         }
 
@@ -200,6 +200,7 @@ a2, , c2
 
     /*
      */
+
     @Test
     public void readAsMap1() {
         def input = new StringReader("""
@@ -212,9 +213,9 @@ a2,, c2
             index++
             //println record
             if (index == 0) {
-                assert ["AAA":"a1","BBB":"b1","CCC":"c1"] == record
+                assert ["AAA": "a1", "BBB": "b1", "CCC": "c1"] == record
             } else if (index == 1) {
-                assert ["AAA":"a2","BBB":null,"CCC":" c2"] == record
+                assert ["AAA": "a2", "BBB": null, "CCC": " c2"] == record
             }
         }
 
@@ -267,19 +268,20 @@ a1,20131203T144302
 
         assert 0 == index
     }
+
     static class Aaa {
-        @CsvColumn(label="AAA", order=0)
+        @CsvColumn(label = "AAA", order = 0)
         String aa
-        @CsvColumn(label="BBB", order=1)
+        @CsvColumn(label = "BBB", order = 1)
         String bb
-        @CsvColumn(label="CCC", order=2)
+        @CsvColumn(label = "CCC", order = 2)
         String ccc
     }
 
     static class Bbb {
-        @CsvColumn(label="aa", order=0)
+        @CsvColumn(label = "aa", order = 0)
         String aa
-        @CsvColumn(label="bb", order=1)
+        @CsvColumn(label = "bb", order = 1)
         Date bb
     }
 

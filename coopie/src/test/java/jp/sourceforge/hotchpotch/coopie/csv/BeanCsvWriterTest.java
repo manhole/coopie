@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -53,29 +53,26 @@ public class BeanCsvWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -106,8 +103,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -119,7 +115,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -153,8 +149,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write3() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -169,7 +164,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -194,18 +189,17 @@ public class BeanCsvWriterTest {
 
     /**
      * 空白項目がある場合。
-     * 
+     *
      * ""はnullとして扱い、" "は" "として扱う。
      */
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -236,8 +230,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -253,7 +246,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         bean.setAaa("あ1");
@@ -279,8 +272,7 @@ public class BeanCsvWriterTest {
     @Test
     public void writeCsv() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -293,7 +285,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -340,14 +332,13 @@ public class BeanCsvWriterTest {
     @Test
     public void write_separator_comma() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -360,8 +351,7 @@ public class BeanCsvWriterTest {
         assert_write_separator_comma(lines);
     }
 
-    static final String V_WRITE_SEPARATOR_COMMA = "\"a\",\"b\",\"c\"" + CRLF
-            + "\"a1\",\"b1\",\"c1\"" + CRLF;
+    static final String V_WRITE_SEPARATOR_COMMA = "\"a\",\"b\",\"c\"" + CRLF + "\"a1\",\"b1\",\"c1\"" + CRLF;
 
     static void assert_write_separator_comma(final String lines) {
         assertEquals(V_WRITE_SEPARATOR_COMMA, lines);
@@ -370,14 +360,13 @@ public class BeanCsvWriterTest {
     @Test
     public void write_separator_tab() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.TAB);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -390,8 +379,7 @@ public class BeanCsvWriterTest {
         assert_write_separator_tab(lines);
     }
 
-    static final String V_WRITE_SEPARATOR_TAB = "\"a\"\t\"b\"\t\"c\"" + CRLF
-            + "\"a1\"\t\"b1\"\t\"c1\"" + CRLF;
+    static final String V_WRITE_SEPARATOR_TAB = "\"a\"\t\"b\"\t\"c\"" + CRLF + "\"a1\"\t\"b1\"\t\"c1\"" + CRLF;
 
     static void assert_write_separator_tab(final String lines) {
         assertEquals(V_WRITE_SEPARATOR_TAB, lines);
@@ -400,15 +388,14 @@ public class BeanCsvWriterTest {
     @Test
     public void write_lineseparator_LF() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setLineSeparator("\n");
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -421,8 +408,7 @@ public class BeanCsvWriterTest {
         assert_write_lineseparator_LF(lines);
     }
 
-    static final String V_WRITE_LINESEPARATOR_LF = "\"a\",\"b\",\"c\"" + LF
-            + "\"a1\",\"b1\",\"c1\"" + LF;
+    static final String V_WRITE_LINESEPARATOR_LF = "\"a\",\"b\",\"c\"" + LF + "\"a1\",\"b1\",\"c1\"" + LF;
 
     static void assert_write_lineseparator_LF(final String lines) {
         assertEquals(V_WRITE_LINESEPARATOR_LF, lines);
@@ -431,15 +417,14 @@ public class BeanCsvWriterTest {
     @Test
     public void write_quotechar_single() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setQuoteMark('\'');
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c1");
@@ -452,8 +437,7 @@ public class BeanCsvWriterTest {
         assert_write_quotechar_single(lines);
     }
 
-    static final String V_WRITE_QUOTECHAR_SINGLE = "'a','b','c'" + CRLF
-            + "'a1','b1','c1'" + CRLF;
+    static final String V_WRITE_QUOTECHAR_SINGLE = "'a','b','c'" + CRLF + "'a1','b1','c1'" + CRLF;
 
     static void assert_write_quotechar_single(final String lines) {
         assertEquals(V_WRITE_QUOTECHAR_SINGLE, lines);
@@ -462,15 +446,14 @@ public class BeanCsvWriterTest {
     @Test
     public void write_quotemode_minimum() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout
-                .getInstance(AaaBean.class);
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
         layout.setupColumns(new AaaBeanBasicSetup());
         layout.setElementSeparator(CsvSetting.COMMA);
         layout.setQuoteMode(QuoteMode.MINIMUM);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<AaaBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<AaaBean> csvWriter = layout.build().openWriter(writer);
 
         final AaaBean bean = new AaaBean();
         setTo(bean, "a1", "b1", "c\"1");
@@ -483,15 +466,13 @@ public class BeanCsvWriterTest {
         assert_write_quotemode_minimum(lines);
     }
 
-    static final String V_WRITE_QUOTEMODE_MINIMUM = "a,b,c" + CRLF
-            + "a1,b1,\"c\"\"1\"" + CRLF;
+    static final String V_WRITE_QUOTEMODE_MINIMUM = "a,b,c" + CRLF + "a1,b1,\"c\"\"1\"" + CRLF;
 
     static void assert_write_quotemode_minimum(final String lines) {
         assertEquals(V_WRITE_QUOTEMODE_MINIMUM, lines);
     }
 
-    private void setTo(final AaaBean bean, final String a, final String b,
-            final String c) {
+    private void setTo(final AaaBean bean, final String a, final String b, final String c) {
         bean.setAaa(a);
         bean.setBbb(b);
         bean.setCcc(c);
@@ -504,12 +485,11 @@ public class BeanCsvWriterTest {
     @Test
     public void write_annotation_1() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<CccBean> layout = BeanCsvLayout
-                .getInstance(CccBean.class);
+        final BeanCsvLayout<CccBean> layout = BeanCsvLayout.getInstance(CccBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<CccBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<CccBean> csvWriter = layout.build().openWriter(writer);
 
         final CccBean bean = new CccBean();
         bean.setAaa("あ1");
@@ -527,8 +507,7 @@ public class BeanCsvWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        new CsvAssert().assertCsvEquals(getResourceAsReader("-2", "tsv"),
-                new StringReader(actual));
+        new CsvAssert().assertCsvEquals(getResourceAsReader("-2", "tsv"), new StringReader(actual));
     }
 
     /**
@@ -537,12 +516,11 @@ public class BeanCsvWriterTest {
     @Test
     public void write_annotation_2() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<EeeBean> layout = BeanCsvLayout
-                .getInstance(EeeBean.class);
+        final BeanCsvLayout<EeeBean> layout = BeanCsvLayout.getInstance(EeeBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<EeeBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<EeeBean> csvWriter = layout.build().openWriter(writer);
 
         final EeeBean bean = new EeeBean();
         bean.setAaa("あ1");
@@ -572,12 +550,11 @@ public class BeanCsvWriterTest {
     @Test
     public void write_annotation_3() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<DddBean> layout = BeanCsvLayout
-                .getInstance(DddBean.class);
+        final BeanCsvLayout<DddBean> layout = BeanCsvLayout.getInstance(DddBean.class);
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<DddBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<DddBean> csvWriter = layout.build().openWriter(writer);
 
         final DddBean bean = new DddBean();
         bean.setAaa("あ1");
@@ -607,8 +584,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write_bigDecimal() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<BigDecimalBean>(
-                BigDecimalBean.class);
+        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<>(BigDecimalBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -619,8 +595,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<BigDecimalBean> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<BigDecimalBean> csvWriter = layout.build().openWriter(writer);
 
         final BigDecimalBean bean = new BigDecimalBean();
         bean.setAaa(new BigDecimal("11.1"));
@@ -641,8 +616,7 @@ public class BeanCsvWriterTest {
         final String lines = writer.toString();
 
         {
-            final ElementReader reader = new CsvElementInOut(
-                    new DefaultCsvSetting())
+            final ElementReader reader = new CsvElementInOut(new DefaultCsvSetting())
                     .openReader(new StringReader(lines));
             assertArrayEquals(a("aaa", "bbb"), reader.readRecord());
             assertArrayEquals(a("11.10", "21.02"), reader.readRecord());
@@ -660,16 +634,14 @@ public class BeanCsvWriterTest {
     @Test
     public void write_calendar() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(
-                CalendarBean.class);
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
                 setup.column("aaa");
                 setup.columns(new SetupBlock<CsvCompositeColumnSetup>() {
                     @Override
-                    public void setup(
-                            final CsvCompositeColumnSetup compositeSetup) {
+                    public void setup(final CsvCompositeColumnSetup compositeSetup) {
                         compositeSetup.column("ymd");
                         compositeSetup.column("hms");
                     }
@@ -680,7 +652,7 @@ public class BeanCsvWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<CalendarBean> csvWriter = layout.openWriter(writer);
+        final RecordWriter<CalendarBean> csvWriter = layout.build().openWriter(writer);
 
         final CalendarBean bean = new CalendarBean();
         bean.setAaa("a");
@@ -708,14 +680,11 @@ public class BeanCsvWriterTest {
         final String lines = writer.toString();
 
         {
-            final ElementReader reader = new CsvElementInOut(
-                    new DefaultCsvSetting())
+            final ElementReader reader = new CsvElementInOut(new DefaultCsvSetting())
                     .openReader(new StringReader(lines));
             assertArrayEquals(a("aaa", "ymd", "hms"), reader.readRecord());
-            assertArrayEquals(a("a", "2011-09-13", "17:54:01"),
-                    reader.readRecord());
-            assertArrayEquals(a("b", "2011-01-01", "00:00:59"),
-                    reader.readRecord());
+            assertArrayEquals(a("a", "2011-09-13", "17:54:01"), reader.readRecord());
+            assertArrayEquals(a("b", "2011-01-01", "00:00:59"), reader.readRecord());
             assertArrayEquals(a("c", "", ""), reader.readRecord());
             assertNull(reader.readRecord());
             reader.close();
@@ -724,13 +693,11 @@ public class BeanCsvWriterTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(
-                BeanCsvWriterTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResourceAsStream(BeanCsvWriterTest.class.getName() + suffix, ext);
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {
-        final Reader reader = BeanCsvReaderTest
-                .getResourceAsReader(suffix, ext);
+        final Reader reader = BeanCsvReaderTest.getResourceAsReader(suffix, ext);
         return reader;
     }
 

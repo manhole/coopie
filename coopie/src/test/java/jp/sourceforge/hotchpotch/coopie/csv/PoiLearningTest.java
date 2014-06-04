@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -33,8 +33,7 @@ public class PoiLearningTest {
      */
     @Test
     public void range() throws Throwable {
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1",
-                "xls");
+        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1", "xls");
         final HSSFWorkbook book = new HSSFWorkbook(is);
         assertEquals("we have 3 sheets", 3, book.getNumberOfSheets());
 
@@ -73,7 +72,11 @@ public class PoiLearningTest {
         try {
             book.getSheetAt(3);
             fail("無いシートを取得すると例外になる");
-        } catch (final IndexOutOfBoundsException e) {
+        } catch (final IllegalArgumentException e) {
+            /*
+             * poi 3.1ではIndexOutOfBoundsExceptionだったが、
+             * poi 3.9ではIllegalArgumentExceptionが投げられるようになった。
+             */
         }
     }
 

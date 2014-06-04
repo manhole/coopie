@@ -20,7 +20,7 @@ import static org.junit.Assert.*
 
 import java.text.SimpleDateFormat
 
-import jp.sourceforge.hotchpotch.coopie.csv.ConverterRepository;
+import jp.sourceforge.hotchpotch.coopie.csv.ConverterRepository
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultConverterRepository
 import jp.sourceforge.hotchpotch.coopie.csv.QuoteMode

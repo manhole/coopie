@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -86,8 +86,7 @@ public class RandomStringTest {
         final char[] chars = codes.toCharArray();
 
         // ## Assert ##
-        assertThat(chars,
-                is((symbol1 + symbol2 + symbol3 + symbol4).toCharArray()));
+        assertThat(chars, is((symbol1 + symbol2 + symbol3 + symbol4).toCharArray()));
     }
 
     @Test
@@ -125,8 +124,7 @@ public class RandomStringTest {
         assertThat(r.toString(5), is("5"));
         assertThat(r.toString(10), is("10"));
         assertThat(r.toString(2003), is("2003"));
-        assertThat(r.toString(new BigInteger("9876543210987654321098765")),
-                is("9876543210987654321098765"));
+        assertThat(r.toString(new BigInteger("9876543210987654321098765")), is("9876543210987654321098765"));
     }
 
     @Test
@@ -167,8 +165,7 @@ public class RandomStringTest {
         // ## Arrange ##
         final AsciiCodeBlock codes = new AsciiCodeBlock();
         codes.setDigit(true);
-        final RandomString rs = new RandomString(String.valueOf(codes
-                .toCharArray()));
+        final RandomString rs = new RandomString(String.valueOf(codes.toCharArray()));
 
         // ## Act ##
         // ## Assert ##

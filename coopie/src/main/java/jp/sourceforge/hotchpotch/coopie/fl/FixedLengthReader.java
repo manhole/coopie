@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -40,11 +40,9 @@ public class FixedLengthReader implements ElementReader {
     private final FixedLengthElementDesc[] elementDescs_;
     private int lineNo_;
     private final Line line_ = new LineImpl();
-    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler
-            .getInstance();
+    private LineReaderHandler lineReaderHandler_ = DefaultLineReaderHandler.getInstance();
 
-    private final ElementParserContext parserContext_ = FixedLengthParserContext
-            .getInstance();
+    private final ElementParserContext parserContext_ = FixedLengthParserContext.getInstance();
 
     public FixedLengthReader(final FixedLengthElementDesc[] columns) {
         elementDescs_ = columns;
@@ -115,8 +113,7 @@ public class FixedLengthReader implements ElementReader {
         lineReaderHandler_ = lineReaderHandler;
     }
 
-    private static class FixedLengthParserContext implements
-            ElementParserContext {
+    private static class FixedLengthParserContext implements ElementParserContext {
 
         private static final ElementParserContext INSTANCE = new FixedLengthParserContext();
 

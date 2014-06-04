@@ -76,15 +76,20 @@ class Csv {
         csvReader.eachRecord(c)
     }
 
-    void withWriter(output, Closure c) {
+    CsvWriter openWriter(output) {
         def setting = new DefaultCsvSetting(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator, quoteMode: quoteMode)
         def io = new CsvElementInOut(setting)
         def writer = io.openWriter(output)
+        def csvWriter = new CsvWriter(writer: writer)
+        return csvWriter;
+    }
+
+    void withWriter(output, Closure c) {
+        def csvWriter = openWriter(output)
         try {
-            def csvWriter = new CsvWriter(writer:writer)
             c(csvWriter)
         } finally {
-            CloseableUtil.closeNoException(writer)
+            CloseableUtil.closeNoException(csvWriter)
         }
     }
 
@@ -101,7 +106,7 @@ class Csv {
 
     void setLineSeparator(sep) {
         if (sep instanceof LineSeparator) {
-            this.lineSeparator = ((LineSeparator)sep).separator
+            this.lineSeparator = ((LineSeparator) sep).separator
         } else {
             this.lineSeparator = sep
         }
@@ -125,69 +130,66 @@ class Csv {
         private Closure elementEditor_
 
         void eachRecord(Closure c) {
-            int paramCount = c.getMaximumNumberOfParameters()
-
-            if (paramCount == 1) {
-                if (CsvRecord.isAssignableFrom(c.parameterTypes[0])) {
-                    _eachRecordWithRecord(c)
+            try {
+                int paramCount = c.getMaximumNumberOfParameters()
+                if (paramCount == 1) {
+                    if (CsvRecord.isAssignableFrom(c.parameterTypes[0])) {
+                        _eachRecordWithRecord(c)
+                    } else {
+                        _eachRecordWithArray(c)
+                    }
                 } else {
-                    _eachRecordWithArray(c)
+                    _eachRecordWithList(c, (0..paramCount - 1))
                 }
-            } else {
-                _eachRecordWithList(c, (0..paramCount-1))
+            } finally {
+                close()
             }
         }
 
         private void _eachRecordWithArray(Closure c) {
-            try {
-                def String[] record
-                while ((record = reader_.readRecord()) != null) {
-                    record = record.collect(elementEditor_)
-                    c.call(record)
-                }
-            } finally {
-                CloseableUtil.closeNoException(reader_)
+            def String[] record
+            while ((record = reader_.readRecord()) != null) {
+                record = record.collect(elementEditor_)
+                c.call(record)
             }
         }
 
         private void _eachRecordWithRecord(Closure c) {
-            try {
-                def r = new CsvRecord()
-                int index = -1;
-                def String[] record
-                while ((record = reader_.readRecord()) != null) {
-                    index++
-                    record = record.collect(elementEditor_)
-                    r.elements = record
-                    r.index = index
-                    c.call(r)
-                }
-            } finally {
-                CloseableUtil.closeNoException(reader_)
+            def r = new CsvRecord()
+            int index = -1
+            def String[] record
+            while ((record = reader_.readRecord()) != null) {
+                index++
+                record = record.collect(elementEditor_)
+                r.elements = record
+                r.index = index
+                c.call(r)
             }
         }
+
         private void _eachRecordWithList(Closure c, Range range) {
-            try {
-                def String[] record
-                while ((record = reader_.readRecord()) != null) {
-                    record = record.collect(elementEditor_)
-                    def args = []
-                    range.step(1) { i ->
-                        if (i < record.length) {
-                            args << record[i]
-                        } else {
-                            args << null
-                        }
+            def String[] record
+            while ((record = reader_.readRecord()) != null) {
+                record = record.collect(elementEditor_)
+                def args = []
+                range.step(1) { i ->
+                    if (i < record.length) {
+                        args << record[i]
+                    } else {
+                        args << null
                     }
-                    c.call(args)
                 }
-            } finally {
-                CloseableUtil.closeNoException(reader_)
+                c.call(args)
             }
         }
+
+        void close() {
+            CloseableUtil.closeNoException(reader_)
+        }
+
     }
 
-    static class CsvRecordReader {
+    private static class CsvRecordReader {
         RecordReader reader
 
         void eachRecord(Closure c) {
@@ -202,7 +204,7 @@ class Csv {
         }
     }
 
-    static class CsvWriter {
+    static class CsvWriter implements Closeable {
         ElementWriter writer
 
         CsvWriter leftShift(List line) {
@@ -211,10 +213,16 @@ class Csv {
             writer.writeRecord(arr)
             this
         }
+
+        void close() {
+            CloseableUtil.closeNoException(writer)
+        }
+
     }
 
-    static class CsvRecordWriter {
+    private static class CsvRecordWriter {
         RecordWriter writer
+
         CsvRecordWriter leftShift(record) {
             writer.write(record)
             this
@@ -224,9 +232,11 @@ class Csv {
     static class CsvRecord {
         String[] elements
         int index
+
         String getAt(int index) {
             return elements[index]
         }
+
         int length() {
             return elements.length
         }
@@ -247,4 +257,5 @@ class Csv {
             return prop_.getAnnotation(propertyDesc, annotationClass)
         }
     }
+
 }

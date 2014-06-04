@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -19,8 +19,8 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
 
@@ -30,22 +30,11 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
         super(beanClass);
     }
 
-    @Deprecated
-    public RecordReader<BEAN> openReader(final InputStream is) {
-        return build().openReader(is);
-    }
-
-    @Deprecated
-    public RecordWriter<BEAN> openWriter(final OutputStream os) {
-        return build().openWriter(os);
-    }
-
-    public RecordReader<BEAN> openSheetReader(final HSSFSheet sheet) {
+    public RecordReader<BEAN> openSheetReader(final Sheet sheet) {
         return build().openSheetReader(sheet);
     }
 
-    public RecordWriter<BEAN> openSheetWriter(final HSSFWorkbook workbook,
-            final HSSFSheet sheet) {
+    public RecordWriter<BEAN> openSheetWriter(final Workbook workbook, final Sheet sheet) {
         return build().openSheetWriter(workbook, sheet);
     }
 
@@ -54,9 +43,9 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
     }
 
     public BeanExcelInOut<BEAN> build() {
-        prepareOpen();
+        prepareBuild();
 
-        final BeanExcelInOut<BEAN> obj = new BeanExcelInOut<BEAN>();
+        final BeanExcelInOut<BEAN> obj = new BeanExcelInOut<>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementReaderHandler_ = getElementReaderHandler();
@@ -77,8 +66,7 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
                 throw new NullPointerException("is");
             }
 
-            final DefaultExcelReader<BEAN> r = new DefaultExcelReader<BEAN>(
-                    recordDesc_);
+            final DefaultExcelReader<BEAN> r = new DefaultExcelReader<>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementReaderHandler(elementReaderHandler_);
 
@@ -93,8 +81,7 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
                 throw new NullPointerException("os");
             }
 
-            final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<BEAN>(
-                    recordDesc_);
+            final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             if (writeEditor_ != null) {
                 w.setWriteEditor(writeEditor_);
@@ -104,9 +91,8 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
             return w;
         }
 
-        public RecordReader<BEAN> openSheetReader(final HSSFSheet sheet) {
-            final DefaultExcelReader<BEAN> r = new DefaultExcelReader<BEAN>(
-                    recordDesc_);
+        public RecordReader<BEAN> openSheetReader(final Sheet sheet) {
+            final DefaultExcelReader<BEAN> r = new DefaultExcelReader<>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementReaderHandler(elementReaderHandler_);
 
@@ -115,10 +101,8 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
             return r;
         }
 
-        public RecordWriter<BEAN> openSheetWriter(final HSSFWorkbook workbook,
-                final HSSFSheet sheet) {
-            final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<BEAN>(
-                    recordDesc_);
+        public RecordWriter<BEAN> openSheetWriter(final Workbook workbook, final Sheet sheet) {
+            final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             // TODO openで例外時にcloseすること
             w.openSheetWriter(workbook, sheet);

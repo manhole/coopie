@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -32,31 +32,26 @@ public class TextTest {
         assertEquals("abc", new Text(" abc").trimWhitespace().toString());
         assertEquals("abc", new Text("abc").trimWhitespace().toString());
         assertEquals("abc", new Text(" 　abc　　").trimWhitespace().toString());
-        assertEquals("abc　 def", new Text(" 　abc　 def　\r\n\t").trimWhitespace()
-                .toString());
+        assertEquals("abc　 def", new Text(" 　abc　 def　\r\n\t").trimWhitespace().toString());
         final char c = 0xA0;
-        assertEquals("abc　 " + c + "def", new Text(" 　abc　 " + c + "def　\r\n"
-                + c + "\t").trimWhitespace().toString());
+        assertEquals("abc　 " + c + "def", new Text(" 　abc　 " + c + "def　\r\n" + c + "\t").trimWhitespace().toString());
     }
 
     @Test
     public void trim2() throws Throwable {
         // String#trim()相当
-        assertEquals("abc　", new Text(" abc　 ").trim(Text.STANDARD_TRIM)
-                .toString());
+        assertEquals("abc　", new Text(" abc　 ").trim(Text.STANDARD_TRIM).toString());
         // 全角スペースも対象
         assertEquals("abc", new Text(" abc　 ").trim(Text.WHITESPACE).toString());
         // 160(0xA0)も対象
         final char c = 0xA0;
-        assertEquals("abc", new Text(" abc　 " + c).trim(Text.WHITESPACE)
-                .toString());
+        assertEquals("abc", new Text(" abc　 " + c).trim(Text.WHITESPACE).toString());
     }
 
     @Test
     public void containsIgnoreLine() throws Throwable {
         // ## Arrange ##
-        final Text text = new Text("　いつも格別のお引き立てを" + "\r\n" + "賜り誠にありがとう"
-                + "\r\n" + "ございます。");
+        final Text text = new Text("　いつも格別のお引き立てを" + "\r\n" + "賜り誠にありがとう" + "\r\n" + "ございます。");
 
         // ## Act ##
         // ## Assert ##
@@ -70,8 +65,7 @@ public class TextTest {
     @Test
     public void containsLine() throws Throwable {
         // ## Arrange ##
-        final Text text = new Text("　いつも格別のお引き立てを" + "\r\n" + "賜り誠にありがとう"
-                + "\r\n" + "ございます。");
+        final Text text = new Text("　いつも格別のお引き立てを" + "\r\n" + "賜り誠にありがとう" + "\r\n" + "ございます。");
 
         // ## Act ##
         // ## Assert ##
@@ -85,8 +79,7 @@ public class TextTest {
 
     @Test
     public void toStringReturnsRawString() throws Throwable {
-        final Text text = new Text("　カレーなどの料理に" + "\r\n" + "広く使うスパイスの" + "\r\n"
-                + "対日価格が高騰している。");
+        final Text text = new Text("　カレーなどの料理に" + "\r\n" + "広く使うスパイスの" + "\r\n" + "対日価格が高騰している。");
         assertEquals("　カレーなどの料理に\r\n広く使うスパイスの\r\n対日価格が高騰している。", text.toString());
     }
 
@@ -205,8 +198,7 @@ public class TextTest {
         assertThat(converted2.toString(), is(expectedCr));
         assertThat(converted2.toString(), is(not(in)));
 
-        final Text converted3 = converted1
-                .convertLineSeparator(LineSeparator.CR);
+        final Text converted3 = converted1.convertLineSeparator(LineSeparator.CR);
         assertThat(converted3.toString(), is(converted2.toString()));
     }
 
@@ -230,7 +222,7 @@ public class TextTest {
 
     /*
      * 160(0xA0)はspace
-     * 
+     *
      * ASCII 文字セット (128 ～ 255)
      * http://msdn.microsoft.com/ja-jp/library/cc392379.aspx
      * ASCII 文字セット (128 ～ 255) | VBScript関数リファレンス

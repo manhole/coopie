@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -166,7 +166,7 @@ public class FileOperation {
         final BufferedReader reader = openBufferedReader(file);
         final LineReader lineReader = new LineReader(reader);
         try {
-            final List<String> list = new ArrayList<String>();
+            final List<String> list = new ArrayList<>();
             for (final Line line : lineReader) {
                 list.add(line.getBody());
             }
@@ -194,8 +194,7 @@ public class FileOperation {
         return bytes;
     }
 
-    private void pipe(final InputStream is, final OutputStream os)
-            throws IOException {
+    private void pipe(final InputStream is, final OutputStream os) throws IOException {
         binaryStreams_.pipe(is, os);
     }
 
@@ -212,8 +211,7 @@ public class FileOperation {
         return writer;
     }
 
-    public BufferedWriter openBufferedWriter(final File file,
-            final Charset charset) {
+    public BufferedWriter openBufferedWriter(final File file, final Charset charset) {
         final OutputStreamWriter osw = openOutputStreamWriter(file, charset);
         final BufferedWriter writer = new BufferedWriter(osw, bufferSize_);
         return writer;
@@ -225,8 +223,7 @@ public class FileOperation {
         return reader;
     }
 
-    private OutputStreamWriter openOutputStreamWriter(final File file,
-            final Charset charset) {
+    private OutputStreamWriter openOutputStreamWriter(final File file, final Charset charset) {
         final FileOutputStream fos = openOutputStream(file);
         final OutputStreamWriter osw = new OutputStreamWriter(fos, charset);
         return osw;
@@ -240,15 +237,13 @@ public class FileOperation {
 
     public BufferedOutputStream openBufferedOutputStream(final File file) {
         final FileOutputStream fos = openOutputStream(file);
-        final BufferedOutputStream bos = new BufferedOutputStream(fos,
-                bufferSize_);
+        final BufferedOutputStream bos = new BufferedOutputStream(fos, bufferSize_);
         return bos;
     }
 
     public BufferedInputStream openBufferedInputStream(final File file) {
         final FileInputStream fis = openInputStream(file);
-        final BufferedInputStream bis = new BufferedInputStream(fis,
-                bufferSize_);
+        final BufferedInputStream bis = new BufferedInputStream(fis, bufferSize_);
         return bis;
     }
 
@@ -393,7 +388,7 @@ public class FileOperation {
                 return;
             }
 
-            final List<File> files = new ArrayList<File>();
+            final List<File> files = new ArrayList<>();
             for (final File child : children) {
                 if (child.isDirectory()) {
                     walkDirectory(child, walker);
@@ -469,8 +464,7 @@ public class FileOperation {
         return true;
     }
 
-    protected boolean binaryEquals(final InputStream is1, final InputStream is2)
-            throws IOException {
+    protected boolean binaryEquals(final InputStream is1, final InputStream is2) throws IOException {
         final byte[] bytes1 = new byte[bufferSize_];
         final byte[] bytes2 = new byte[bufferSize_];
         for (;;) {
@@ -597,8 +591,7 @@ public class FileOperation {
             this(files, new DefaultDeleteResult());
         }
 
-        public DeleteWalker(final FileOperation files,
-                final DeleteResultCollector collector) {
+        public DeleteWalker(final FileOperation files, final DeleteResultCollector collector) {
             files_ = files;
             collector_ = collector;
         }
@@ -639,8 +632,7 @@ public class FileOperation {
             return collector_.getResult();
         }
 
-        public static class DefaultDeleteResult implements DeleteResult,
-                DeleteResultCollector {
+        public static class DefaultDeleteResult implements DeleteResult, DeleteResultCollector {
 
             private static final Logger logger = LoggerFactory.getLogger();
 
@@ -688,9 +680,8 @@ public class FileOperation {
 
             @Override
             public void logResult() {
-                logger.debug("DeleteResult: files={}, dirs={}, size={}",
-                        new Object[] { fileCount_, dirCount_,
-                                getDeletedTotalSize() });
+                logger.debug("DeleteResult: files={}, dirs={}, size={}", new Object[] { fileCount_, dirCount_,
+                        getDeletedTotalSize() });
             }
 
             @Override
@@ -771,9 +762,8 @@ public class FileOperation {
         }
 
         public void logResult() {
-            logger.debug("CopyResult: files={}, dirs={}, bytes={}",
-                    new Object[] { copiedFileCount_, createdDirCount_,
-                            copiedTotalBytes_ });
+            logger.debug("CopyResult: files={}, dirs={}, bytes={}", new Object[] { copiedFileCount_, createdDirCount_,
+                    copiedTotalBytes_ });
         }
 
     }

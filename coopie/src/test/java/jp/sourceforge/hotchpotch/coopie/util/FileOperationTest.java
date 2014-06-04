@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -250,7 +250,7 @@ public class FileOperationTest {
 
     private static class MockFileWalker implements FileWalker {
 
-        final List<MethodCallEvent> events = new ArrayList<MethodCallEvent>();
+        final List<MethodCallEvent> events = new ArrayList<>();
 
         public List<MethodCallEvent> getEvents() {
             return events;
@@ -298,7 +298,7 @@ public class FileOperationTest {
 
     /**
      * ファイルの拡張子を返します。
-     * 
+     *
      * "foo.txt" → "txt"
      * "foo.bar.txt" → "txt"
      */
@@ -437,48 +437,48 @@ public class FileOperationTest {
 
     /*
      * ＜copyFileの挙動について＞
-     * 
+     *
      * ファイルをコピーする。
-     * 
+     *
      * copy先がディレクトリの場合(同名のディレクトリがある場合)はエラーになる。
      * (そのディレクトリ内へcopyはしない。)
      * ディレクトリ内へcopyしたかったら、copy先として"toDir/toFilename"を指定すべき。
-     * 
+     *
      * ディレクトリのコピーではない。
      * fromにディレクトリが指定された場合はエラーになる。
-     * 
-     * 
+     *
+     *
      * ＜moveFileの挙動について＞
-     * 
+     *
      * 基本的にcopyFileと同じで、違う点はfrom側が消えること。
-     * 
+     *
      * move先がディレクトリの場合はエラーになる。
      * (そのディレクトリ内へmoveはしない。)
      * ディレクトリ内へmoveしたかったら、move先として"toDir/toFilename"を指定すべき。
-     * 
+     *
      * TODO ディレクトリのcopyでは無い、とするか?
      */
     /*
      * ＜copyの挙動について＞
-     * 
+     *
      * 基本的にcopyDirectoryのこと。
-     * 
+     *
      * toがあろうと無かろうと同じ挙動をする。
-     * 
+     *
      * "from"→"to"へcopyするとき、
      * "from/foo"は"to/foo"へcopyされる。
-     * 
+     *
      * "from"をディレクトリとしてcopy先へ作りたいなら、
      * "to/from"をcopy先として指定すべき。
-     * 
+     *
      * copy先に既に同名のディレクトリが存在する場合は、エラーとする。
      */
     /*
      * ＜moveの挙動について＞
-     * 
+     *
      * 基本的にcopyと同じで、違う点はfrom側が消えること。
      * toがあろうと無かろうと同じ挙動をする。
-     * 
+     *
      * renameToと同じ挙動を目指す。
      */
 
@@ -649,7 +649,7 @@ public class FileOperationTest {
 
     /*
      * "to"だけがある場合
-     * 
+     *
      * "to"側に"from"という名前のディレクトリは作られない。
      * "from"の中身が"to"の中にできる。
      */
@@ -683,7 +683,7 @@ public class FileOperationTest {
 
     /*
      * "to"だけがある場合
-     * 
+     *
      * "to"側に"from"という名前のディレクトリは作られない。
      * "from"の中身が"to"の中にできる。
      */
@@ -893,16 +893,11 @@ public class FileOperationTest {
 
         // ## Act ##
         // ## Assert ##
-        assertEquals(true,
-                files.binaryEquals("12345".getBytes(), "12345".getBytes()));
-        assertEquals(false,
-                files.binaryEquals("12345".getBytes(), "123456".getBytes()));
-        assertEquals(false,
-                files.binaryEquals("1234".getBytes(), "1235".getBytes()));
-        assertEquals(false,
-                files.binaryEquals("1234".getBytes(), "123 ".getBytes()));
-        assertEquals(false,
-                files.binaryEquals("1234".getBytes(), "123".getBytes()));
+        assertEquals(true, files.binaryEquals("12345".getBytes(), "12345".getBytes()));
+        assertEquals(false, files.binaryEquals("12345".getBytes(), "123456".getBytes()));
+        assertEquals(false, files.binaryEquals("1234".getBytes(), "1235".getBytes()));
+        assertEquals(false, files.binaryEquals("1234".getBytes(), "123 ".getBytes()));
+        assertEquals(false, files.binaryEquals("1234".getBytes(), "123".getBytes()));
     }
 
     @Test
@@ -913,31 +908,23 @@ public class FileOperationTest {
         // ## Act ##
         // ## Assert ##
         {
-            final ByteArrayInputStream is1 = new ByteArrayInputStream(
-                    "12345".getBytes());
-            final ByteArrayInputStream is2 = new ByteArrayInputStream(
-                    "12345".getBytes());
+            final ByteArrayInputStream is1 = new ByteArrayInputStream("12345".getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream("12345".getBytes());
             assertEquals(true, files.binaryEquals(is1, is2));
         }
         {
-            final ByteArrayInputStream is1 = new ByteArrayInputStream(
-                    "12345".getBytes());
-            final ByteArrayInputStream is2 = new ByteArrayInputStream(
-                    "123456".getBytes());
+            final ByteArrayInputStream is1 = new ByteArrayInputStream("12345".getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream("123456".getBytes());
             assertEquals(false, files.binaryEquals(is1, is2));
         }
         {
-            final ByteArrayInputStream is1 = new ByteArrayInputStream(
-                    "1234567".getBytes());
-            final ByteArrayInputStream is2 = new ByteArrayInputStream(
-                    "123456".getBytes());
+            final ByteArrayInputStream is1 = new ByteArrayInputStream("1234567".getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream("123456".getBytes());
             assertEquals(false, files.binaryEquals(is1, is2));
         }
         {
-            final ByteArrayInputStream is1 = new ByteArrayInputStream(
-                    "1234".getBytes());
-            final ByteArrayInputStream is2 = new ByteArrayInputStream(
-                    "1235".getBytes());
+            final ByteArrayInputStream is1 = new ByteArrayInputStream("1234".getBytes());
+            final ByteArrayInputStream is2 = new ByteArrayInputStream("1235".getBytes());
             assertEquals(false, files.binaryEquals(is1, is2));
         }
     }
@@ -1005,7 +992,7 @@ public class FileOperationTest {
         final File poijar = files.createFile(poi2, "poi-1.0.0.jar");
         final File poisha = files.createFile(poi2, "poi-1.0.0.jar.sha1");
 
-        final List<String> paths = new ArrayList<String>();
+        final List<String> paths = new ArrayList<>();
 
         // ## Act ##
         files.listDescendant(root, new Callback<File, IOException>() {

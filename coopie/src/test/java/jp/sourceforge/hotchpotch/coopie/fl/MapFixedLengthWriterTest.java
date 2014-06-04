@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -54,7 +54,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -65,11 +65,10 @@ public class MapFixedLengthWriterTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.openWriter(null);
+            layout.build().openWriter(null);
             fail();
         } catch (final NullPointerException npe) {
-            assertTrue(npe.getMessage() != null
-                    && 0 < npe.getMessage().length());
+            assertTrue(npe.getMessage() != null && 0 < npe.getMessage().length());
         }
     }
 
@@ -79,13 +78,13 @@ public class MapFixedLengthWriterTest {
     @Test
     public void read_nosetup() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
 
         // ## Act ##
         // ## Assert ##
         boolean success = false;
         try {
-            layout.openWriter(new StringWriter());
+            layout.build().openWriter(new StringWriter());
             success = true;
         } catch (final AssertionError e) {
             logger.debug(e.getMessage());
@@ -102,7 +101,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -115,8 +114,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -134,10 +132,9 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = ResourceUtil.getResourceAsStream(
-                BeanFixedLengthWriterTest.class.getName() + "-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is,
-                "UTF-8"));
+        final InputStream is = ResourceUtil
+                .getResourceAsStream(BeanFixedLengthWriterTest.class.getName() + "-1", "tsv");
+        final String expected = ReaderUtil.readText(new InputStreamReader(is, "UTF-8"));
         assertEquals(expected, actual);
     }
 
@@ -147,7 +144,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -160,8 +157,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -184,21 +180,20 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-1",
-                "tsv"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-1", "tsv"));
         assertEquals(expected, actual);
     }
 
     /**
      * 空白項目がある場合。
-     * 
+     *
      * CSVでは""はnullとして扱い、" "は" "として扱うが、
      * 固定長では""も" "もnullとし、スペースで埋める。
      */
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -211,8 +206,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -230,20 +224,19 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-4-2",
-                "tsv"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-4-2", "tsv"));
         assertEquals(expected, actual);
     }
 
     /**
      * ファイルヘッダが無い場合。
-     * 
+     *
      * ※これが通常の固定長ファイル
      */
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -255,8 +248,7 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, String>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, String>> csvWriter = layout.build().openWriter(writer);
 
         final Map<String, String> bean = CollectionsUtil.newHashMap();
         bean.put("aaa", "あ1");
@@ -274,8 +266,7 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-3",
-                "tsv"));
+        final String expected = ReaderUtil.readText(getResourceAsReader("-3", "tsv"));
         assertEquals(expected, actual);
     }
 
@@ -289,12 +280,11 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_bigDecimal() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 10).withConverter(
-                        new BigDecimalConverter());
+                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
                 setup.column("bbb", 10, 20);
             }
         });
@@ -302,10 +292,9 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, Object>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, Object>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, Object> bean = new TreeMap<String, Object>();
+        final Map<String, Object> bean = new TreeMap<>();
         bean.put("aaa", new BigDecimal("11.1"));
         bean.put("bbb", "21.02");
         csvWriter.write(bean);
@@ -340,24 +329,21 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_calendar() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
                 setup.column("aaa", 0, 5);
                 // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
                 // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(
-                        new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
+                setup.columns(new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
 
-                            @Override
-                            public void setup(
-                                    final FixedLengthCompositeColumnSetup compositeSetup) {
-                                compositeSetup.column("ymd", 5, 20);
-                                compositeSetup.column("hms", 20, 35);
-                            }
-                        }).toProperty("bbb")
-                        .withConverter(new CalendarConverter());
+                    @Override
+                    public void setup(final FixedLengthCompositeColumnSetup compositeSetup) {
+                        compositeSetup.column("ymd", 5, 20);
+                        compositeSetup.column("hms", 20, 35);
+                    }
+                }).toProperty("bbb").withConverter(new CalendarConverter());
             }
         });
         layout.setWithHeader(true);
@@ -366,10 +352,9 @@ public class MapFixedLengthWriterTest {
 
         // ## Act ##
         final StringWriter writer = new StringWriter();
-        final RecordWriter<Map<String, Object>> csvWriter = layout
-                .openWriter(writer);
+        final RecordWriter<Map<String, Object>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, Object> bean = new TreeMap<String, Object>();
+        final Map<String, Object> bean = new TreeMap<>();
         bean.put("aaa", "a");
         {
             final Calendar c = Calendar.getInstance();
@@ -395,14 +380,10 @@ public class MapFixedLengthWriterTest {
         final String lines = writer.toString();
 
         final LineReader reader = new LineReader(new StringReader(lines));
-        assertEquals("  aaa            ymd            hms",
-                reader.readLineBody());
-        assertEquals("    a     2011-09-13       17:54:01",
-                reader.readLineBody());
-        assertEquals("    b     2011-01-01       00:00:59",
-                reader.readLineBody());
-        assertEquals("    c                              ",
-                reader.readLineBody());
+        assertEquals("  aaa            ymd            hms", reader.readLineBody());
+        assertEquals("    a     2011-09-13       17:54:01", reader.readLineBody());
+        assertEquals("    b     2011-01-01       00:00:59", reader.readLineBody());
+        assertEquals("    c                              ", reader.readLineBody());
         assertNull(reader.readLineBody());
         reader.close();
     }
@@ -412,8 +393,7 @@ public class MapFixedLengthWriterTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(
-                BeanFixedLengthWriterTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResourceAsStream(BeanFixedLengthWriterTest.class.getName() + suffix, ext);
     }
 
 }

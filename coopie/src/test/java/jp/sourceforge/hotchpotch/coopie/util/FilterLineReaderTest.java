@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -29,14 +29,13 @@ public class FilterLineReaderTest {
 
     /**
      * 不要行を除く。
-     * 
+     *
      * ここでは空行を除いている。
      */
     @Test
     public void filter1() throws Throwable {
         // ## Arrange ##
-        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
-                + "\r\n" + "a3" + "\n" + "\r");
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n" + "\r\n" + "a3" + "\n" + "\r");
 
         // ## Act ##
         final LineFilter filter = new SkipLineFilter();
@@ -56,8 +55,7 @@ public class FilterLineReaderTest {
     @Test
     public void filter2() throws Throwable {
         // ## Arrange ##
-        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
-                + "\r\n" + "a3" + "\n" + "\r");
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n" + "\r\n" + "a3" + "\n" + "\r");
 
         // ## Act ##
         final Line line = new LineImpl();
@@ -78,8 +76,7 @@ public class FilterLineReaderTest {
     @Test
     public void iterate() throws Throwable {
         // ## Arrange ##
-        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n"
-                + "\r\n" + "a3" + "\n" + "\r");
+        final LineReader r = create("\r\n" + "a1\r\n" + "a2\n" + "\r\n" + "\r\n" + "a3" + "\n" + "\r");
 
         // ## Act ##
         final LineFilter filter = new SkipLineFilter();

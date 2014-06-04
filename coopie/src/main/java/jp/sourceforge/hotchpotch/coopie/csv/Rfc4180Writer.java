@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -26,10 +26,10 @@ import org.t2framework.commons.exception.IORuntimeException;
 
 /**
  * CSV Writer
- * 
+ *
  * http://www.rfc-editor.org/rfc/rfc4180.txt
  * http://www.kasai.fm/wiki/rfc4180jp (日本語訳)
- * 
+ *
  * @author manhole
  */
 public class Rfc4180Writer implements ElementWriter {
@@ -105,8 +105,7 @@ public class Rfc4180Writer implements ElementWriter {
         quoteMode_ = quoteMode;
     }
 
-    private ElementWriteStrategy getElementWriteStrategy(
-            final QuoteMode quoteMode) {
+    private ElementWriteStrategy getElementWriteStrategy(final QuoteMode quoteMode) {
         switch (quoteMode) {
         case ALWAYS:
             return new AlwaysStrategy();

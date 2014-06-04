@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -27,17 +27,6 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
 
     public MapCsvLayout() {
         csvSetting_ = new DefaultCsvSetting();
-    }
-
-    @Deprecated
-    public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
-        return build().openReader(readable);
-    }
-
-    @Deprecated
-    public RecordWriter<Map<String, PROP>> openWriter(
-            final Appendable appendable) {
-        return build().openWriter(appendable);
     }
 
     public void setElementSeparator(final char elementSeparator) {
@@ -63,9 +52,9 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
     }
 
     public RecordInOut<Map<String, PROP>> build() {
-        prepareOpen();
+        prepareBuild();
 
-        final MapCsvRecordInOut<PROP> obj = new MapCsvRecordInOut<PROP>();
+        final MapCsvRecordInOut<PROP> obj = new MapCsvRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementInOut_ = createElementInOut();
@@ -75,8 +64,7 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
         return obj;
     }
 
-    protected static class MapCsvRecordInOut<PROP> implements
-            RecordInOut<Map<String, PROP>> {
+    protected static class MapCsvRecordInOut<PROP> implements RecordInOut<Map<String, PROP>> {
 
         private RecordDesc<Map<String, PROP>> recordDesc_;
         private boolean withHeader_;
@@ -85,14 +73,12 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
         private ElementEditor elementEditor_;
 
         @Override
-        public RecordReader<Map<String, PROP>> openReader(
-                final Readable readable) {
+        public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
             if (readable == null) {
                 throw new NullPointerException("readable");
             }
 
-            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(
-                    recordDesc_);
+            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             r.setElementReaderHandler(elementReaderHandler_);
@@ -114,14 +100,12 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
         }
 
         @Override
-        public RecordWriter<Map<String, PROP>> openWriter(
-                final Appendable appendable) {
+        public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
             if (appendable == null) {
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(
-                    recordDesc_);
+            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

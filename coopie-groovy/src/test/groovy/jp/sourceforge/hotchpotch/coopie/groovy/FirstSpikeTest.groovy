@@ -18,9 +18,11 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 
 import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting
 import jp.sourceforge.hotchpotch.coopie.csv.Rfc4180Reader
-import groovy.util.GroovyTestCase
+import org.junit.Test
 
-class FirstSpikeTest extends GroovyTestCase {
+class FirstSpikeTest {
+
+    @Test
     void testSomething() {
 
         def reader = new StringReader("""
@@ -39,4 +41,5 @@ a2,b2,c2
         assert null == csvReader.readRecord()
         csvReader.close()
     }
+
 }

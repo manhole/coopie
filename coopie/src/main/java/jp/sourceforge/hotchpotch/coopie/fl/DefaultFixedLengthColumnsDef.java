@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -26,10 +26,8 @@ import org.t2framework.commons.util.CollectionsUtil;
 class DefaultFixedLengthColumnsDef implements FixedLengthColumnsDef {
 
     private String propertyName_;
-    private Converter<?, ?> converter_ = PassthroughStringConverter
-            .getInstance();
-    private final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil
-            .newArrayList();
+    private Converter<?, ?> converter_ = PassthroughStringConverter.getInstance();
+    private final List<FixedLengthColumnDef> columnDefs_ = CollectionsUtil.newArrayList();
 
     @Override
     public List<FixedLengthColumnDef> getColumnDefs() {
@@ -45,6 +43,7 @@ class DefaultFixedLengthColumnsDef implements FixedLengthColumnsDef {
         return propertyName_;
     }
 
+    @Override
     public void setPropertyName(final String propertyName) {
         propertyName_ = propertyName;
     }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -33,11 +33,9 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
     private ColumnDesc<BEAN>[] columnDescs_;
     private final OrderSpecified orderSpecified_;
     private final RecordType<BEAN> recordType_;
-    private ColumnDesc<BEAN>[] ignoredColumnDescs_ = ColumnDescs
-            .newColumnDescs(0);
+    private ColumnDesc<BEAN>[] ignoredColumnDescs_ = ColumnDescs.newColumnDescs(0);
 
-    public DefaultRecordDesc(final ColumnDesc<BEAN>[] columnDescs,
-            final OrderSpecified orderSpecified,
+    public DefaultRecordDesc(final ColumnDesc<BEAN>[] columnDescs, final OrderSpecified orderSpecified,
             final RecordType<BEAN> recordType) {
         columnDescs_ = columnDescs;
         orderSpecified_ = orderSpecified;
@@ -121,13 +119,11 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
          */
         final List<ColumnDesc<BEAN>> tmpCds = CollectionsUtil.newArrayList();
         Collections.addAll(tmpCds, getColumnDescs());
-        final ColumnDesc<BEAN>[] cds = ColumnDescs
-                .newColumnDescs(header.length);
+        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(header.length);
 
         int i = 0;
         HEADER: for (final String headerElem : header) {
-            for (final Iterator<ColumnDesc<BEAN>> it = tmpCds.iterator(); it
-                    .hasNext();) {
+            for (final Iterator<ColumnDesc<BEAN>> it = tmpCds.iterator(); it.hasNext();) {
                 final ColumnDesc<BEAN> cd = it.next();
                 final ColumnName name = cd.getName();
                 if (name.labelEquals(headerElem)) {
@@ -152,8 +148,7 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
 
         if (!tmpCds.isEmpty()) {
             logger.debug("remain ColumnDescs: {}", tmpCds.size());
-            final ColumnDesc<BEAN>[] newColumnDescs = ColumnDescs
-                    .newColumnDescs(tmpCds.size());
+            final ColumnDesc<BEAN>[] newColumnDescs = ColumnDescs.newColumnDescs(tmpCds.size());
             tmpCds.toArray(newColumnDescs);
             copy.ignoredColumnDescs_ = newColumnDescs;
         }
@@ -176,8 +171,7 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
     }
 
     private DefaultRecordDesc<BEAN> createCopy() {
-        final DefaultRecordDesc<BEAN> copy = new DefaultRecordDesc<BEAN>(
-                columnDescs_, orderSpecified_, recordType_);
+        final DefaultRecordDesc<BEAN> copy = new DefaultRecordDesc<>(columnDescs_, orderSpecified_, recordType_);
         return copy;
     }
 

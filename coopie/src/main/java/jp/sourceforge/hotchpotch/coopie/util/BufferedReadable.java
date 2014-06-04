@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -46,9 +46,9 @@ public class BufferedReadable implements Closable {
     /**
      * 次の1文字を読み、ポインタを次へ進めます。
      * 次の文字が無い場合(最後まで読んだ場合)は、NULL_CHAR ('\u0000')を返します。
-     * 
+     *
      * 当メソッドを続けて呼ぶと、1文字ずつ次を返します。
-     * 
+     *
      * @return 次の1文字
      */
     public char readChar() throws IOException {
@@ -75,11 +75,11 @@ public class BufferedReadable implements Closable {
     /**
      * 次の1文字を返します。
      * 次の文字が無い場合(最後まで読んだ場合)は、NULL_CHAR ('\u0000')を返します。
-     * 
+     *
      * {@link #readChar()}と異なり、ポインタを先へ進めません。
-     * 
+     *
      * 当メソッドを続けて呼ぶと、同じ文字を返し続けます。
-     * 
+     *
      * @return 次の1文字
      */
     public char peekChar() throws IOException {
@@ -135,8 +135,7 @@ public class BufferedReadable implements Closable {
         }
 
         final char[] array = charBuffer_.array();
-        final char[] chars = Arrays.copyOfRange(array, charBuffer_.position(),
-                readSize_);
+        final char[] chars = Arrays.copyOfRange(array, charBuffer_.position(), readSize_);
         readSize_ = charBuffer_.position();
         return chars;
     }

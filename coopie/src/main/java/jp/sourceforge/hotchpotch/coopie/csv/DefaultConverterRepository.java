@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 manhole
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
@@ -28,14 +28,13 @@ public class DefaultConverterRepository implements ConverterRepository {
     /*
      * キーは、Java側プロパティの型
      */
-    private final Map<ConverterKey, Converter> propertyTypeMap_ = CollectionsUtil
-            .newHashMap();
+    private final Map<ConverterKey, Converter> propertyTypeMap_ = CollectionsUtil.newHashMap();
     private final Class<?> stringArrayClass_ = new String[0].getClass();
 
     /*
      * BEAN情報 + Property情報
      * - BEANの型 + Propertyの型
-     * 
+     *
      * Property情報
      * - Propertyの型
      */
@@ -54,31 +53,26 @@ public class DefaultConverterRepository implements ConverterRepository {
         //        for (final CsvColumnDef columnDef : columnDefs) {
         //        }
         final Class<?> propertyType = columnsDef.getPropertyType();
-        final Converter converter = propertyTypeMap_.get(new ConverterKey(
-                propertyType, stringArrayClass_));
+        final Converter converter = propertyTypeMap_.get(new ConverterKey(propertyType, stringArrayClass_));
         return converter;
     }
 
     private Converter _detectByType(final Class<?> propertyType) {
-        final Converter converter = propertyTypeMap_.get(new ConverterKey(
-                propertyType, String.class));
+        final Converter converter = propertyTypeMap_.get(new ConverterKey(propertyType, String.class));
         return converter;
     }
 
     public void register(final Converter converter) {
-        final Type[] genericInterfaces = converter.getClass()
-                .getGenericInterfaces();
+        final Type[] genericInterfaces = converter.getClass().getGenericInterfaces();
         for (final Type type : genericInterfaces) {
             final ParameterizedType pType = (ParameterizedType) type;
             final Type rawType = pType.getRawType();
             if (rawType instanceof Class) {
                 if (Converter.class.isAssignableFrom((Class) rawType)) {
-                    final Type[] actualTypeArguments = pType
-                            .getActualTypeArguments();
+                    final Type[] actualTypeArguments = pType.getActualTypeArguments();
                     final Class<?> propertyType = toPropertyType(actualTypeArguments[0]);
                     final Class<?> outerType = toOuterTypes(actualTypeArguments[1]);
-                    propertyTypeMap_.put(new ConverterKey(propertyType,
-                            outerType), converter);
+                    propertyTypeMap_.put(new ConverterKey(propertyType, outerType), converter);
                     return;
                 }
             }
@@ -104,8 +98,7 @@ public class DefaultConverterRepository implements ConverterRepository {
             }
             //            final Object newInstance = Array.newInstance(clazz, 0);
             //            return newInstance.getClass();
-            throw new UnsupportedOperationException("genericComponentType: "
-                    + clazz);
+            throw new UnsupportedOperationException("genericComponentType: " + clazz);
         }
 
         throw new UnsupportedOperationException("type: " + outType);
