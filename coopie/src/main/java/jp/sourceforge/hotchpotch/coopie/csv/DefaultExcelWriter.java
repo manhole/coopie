@@ -177,7 +177,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
         private Workbook workbook_;
         private Sheet sheet_;
 
-        static WriteEditor getInstance() {
+        public static WriteEditor getInstance() {
             return INSTANCE;
         }
 
