@@ -108,7 +108,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
     }
 
-    static class PoiSheetWriter implements ElementWriter {
+    public static class PoiSheetWriter implements ElementWriter {
 
         private boolean closed_ = true;
         @SuppressWarnings("unused")
