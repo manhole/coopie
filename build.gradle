@@ -136,7 +136,12 @@ subprojects { project ->
                         def key = "${groupId}:${artifactId}"
                         def depHolder = projectDependencies[key]
                         logger.info "${key} ... ${scope} -> ${depHolder.mavenScope}"
-                        dependency.scope[0].value = depHolder.mavenScope
+                        // デフォルトであるcompileスコープだったらpom.xmlから<scope>compile</scope>を省略する。
+                        if ("compile" == depHolder.mavenScope) {
+                            dependency.remove(dependency.scope[0])
+                        } else {
+                            dependency.scope[0].value = depHolder.mavenScope
+                        }
                         if (depHolder.optional()) {
                             dependency.children().last() + {
                                 resolveStrategy = Closure.DELEGATE_FIRST
