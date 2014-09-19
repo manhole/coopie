@@ -146,20 +146,6 @@ subprojects { project ->
                             }
                             //new Node(dependency, "optional", [:], "true")
                         }
-                        if (depHolder.gradleDependency.excludeRules) {
-                            dependency.children().last() + {
-                                resolveStrategy = Closure.DELEGATE_FIRST
-                                exclusions {
-                                    resolveStrategy = Closure.DELEGATE_FIRST
-                                    depHolder.gradleDependency.excludeRules.each { excludeRule ->
-                                        exclusion {
-                                            delegate.groupId excludeRule.group
-                                            delegate.artifactId excludeRule.module
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
 
                     // http://maven.apache.org/ref/3.0.5/maven-model/maven.html
