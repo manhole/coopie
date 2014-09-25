@@ -53,6 +53,7 @@
         </XML>
         <codeStyleSettings language="JAVA">
           <option name="SPACE_WITHIN_ARRAY_INITIALIZER_BRACES" value="true" />
+          <option name="SPACE_BEFORE_ARRAY_INITIALIZER_LBRACE" value="true" />
         </codeStyleSettings>
       </value>
     </option>
