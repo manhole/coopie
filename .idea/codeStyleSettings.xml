@@ -14,6 +14,7 @@
             <package name="javax" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="jp" withSubpackages="true" static="false" />
+            <package name="net" withSubpackages="true" static="false" />
             <emptyLine />
             <package name="org" withSubpackages="true" static="false" />
             <emptyLine />
