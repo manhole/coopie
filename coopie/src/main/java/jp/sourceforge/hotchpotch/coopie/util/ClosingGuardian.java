@@ -54,16 +54,20 @@ public class ClosingGuardian {
     }
 
     @Override
-    protected void finalize() {
-        if (closable_.isClosed()) {
-            logger.debug(SUCCESS_TEXT + ": {}", closable_.getClass().getName());
-            return;
-        }
-        warn();
+    protected void finalize() throws Throwable {
         try {
-            closable_.close();
-        } catch (final IOException e) {
-            logger.warn("closing failure at finalize", e);
+            if (closable_.isClosed()) {
+                logger.debug(SUCCESS_TEXT + ": {}", closable_.getClass().getName());
+                return;
+            }
+            warn();
+            try {
+                closable_.close();
+            } catch (final IOException e) {
+                logger.warn("closing failure at finalize", e);
+            }
+        } finally {
+            super.finalize();
         }
     }
 
