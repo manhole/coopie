@@ -78,9 +78,13 @@ subprojects { project ->
             t.manifest.attributes["Created-By"] = "Gradle"
             t.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
             t.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
+            t.manifest.attributes["Specification-Title"] = project.name
+            t.manifest.attributes["Specification-Version"] = project.version
+            //t.manifest.attributes["Specification-Vendor"] = project.organization.name
             t.manifest.attributes["Implementation-Title"] = project.name
             t.manifest.attributes["Implementation-Version"] = project.version
             t.manifest.attributes["Implementation-Vendor-Id"] = project.group
+            //t.manifest.attributes["Implementation-Vendor"] = project.organization.name
             t.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(timestamp)
             t.manifest.attributes["SCM-Revision"] = buildNumber
         }
