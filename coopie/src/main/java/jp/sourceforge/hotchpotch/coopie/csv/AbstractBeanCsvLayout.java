@@ -75,12 +75,12 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends AbstractCsvLayout<BEAN
 
     @Override
     protected PropertyBindingFactory<BEAN> createPropertyBindingFactory() {
-        return new BeanPropertyBinding.Factory<>(beanDesc_);
+        return new BeanPropertyBinding.Factory<BEAN>(beanDesc_);
     }
 
     @Override
     protected BeanRecordType<BEAN> createRecordType() {
-        return new BeanRecordType<>(beanDesc_);
+        return new BeanRecordType<BEAN>(beanDesc_);
     }
 
     private CsvRecordDef recordDef() {

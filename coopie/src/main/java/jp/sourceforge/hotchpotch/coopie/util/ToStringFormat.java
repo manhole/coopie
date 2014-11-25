@@ -191,7 +191,7 @@ public class ToStringFormat {
     private List<FieldDesc<?>> getFieldDescs(final Class<?> clazz) {
         final Field[] declaredFields = clazz.getDeclaredFields();
         AccessibleObject.setAccessible(declaredFields, true);
-        final ArrayList<FieldDesc<?>> l = new ArrayList<>();
+        final ArrayList<FieldDesc<?>> l = new ArrayList<FieldDesc<?>>();
         for (final Field field : declaredFields) {
             final FieldDesc<?> fd = new FieldDesc<Object>(clazz, field);
             l.add(fd);
@@ -253,7 +253,7 @@ public class ToStringFormat {
 
     private static class Context {
 
-        private final Set<Object> set_ = new IdentityHashSet<>();
+        private final Set<Object> set_ = new IdentityHashSet<Object>();
         private int depth_;
 
         public boolean contains(final Object obj) {

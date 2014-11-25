@@ -166,7 +166,7 @@ public class FileOperation {
         final BufferedReader reader = openBufferedReader(file);
         final LineReader lineReader = new LineReader(reader);
         try {
-            final List<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<String>();
             for (final Line line : lineReader) {
                 list.add(line.getBody());
             }
@@ -388,7 +388,7 @@ public class FileOperation {
                 return;
             }
 
-            final List<File> files = new ArrayList<>();
+            final List<File> files = new ArrayList<File>();
             for (final File child : children) {
                 if (child.isDirectory()) {
                     walkDirectory(child, walker);

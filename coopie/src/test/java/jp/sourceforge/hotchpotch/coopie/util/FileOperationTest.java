@@ -250,7 +250,7 @@ public class FileOperationTest {
 
     private static class MockFileWalker implements FileWalker {
 
-        final List<MethodCallEvent> events = new ArrayList<>();
+        final List<MethodCallEvent> events = new ArrayList<MethodCallEvent>();
 
         public List<MethodCallEvent> getEvents() {
             return events;
@@ -992,7 +992,7 @@ public class FileOperationTest {
         final File poijar = files.createFile(poi2, "poi-1.0.0.jar");
         final File poisha = files.createFile(poi2, "poi-1.0.0.jar.sha1");
 
-        final List<String> paths = new ArrayList<>();
+        final List<String> paths = new ArrayList<String>();
 
         // ## Act ##
         files.listDescendant(root, new Callback<File, IOException>() {

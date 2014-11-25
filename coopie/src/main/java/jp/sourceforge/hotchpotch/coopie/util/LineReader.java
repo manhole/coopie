@@ -183,7 +183,7 @@ public class LineReader implements LineReadable {
 
     public void pushback(final Line line) {
         if (pushback_ == null) {
-            pushback_ = new LinkedList<>();
+            pushback_ = new LinkedList<Line>();
         }
         pushback_.push(line);
         lineNumber_--;
