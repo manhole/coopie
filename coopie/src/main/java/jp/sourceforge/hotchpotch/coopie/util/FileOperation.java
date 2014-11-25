@@ -179,8 +179,7 @@ public class FileOperation {
     }
 
     public List<String> readLines(final File file) {
-        final BufferedReader reader = openBufferedReader(file);
-        final LineReader lineReader = new LineReader(reader);
+        final LineReadable lineReader = openLineReader(file);
         try {
             final List<String> list = new ArrayList<String>();
             for (final Line line : lineReader) {
@@ -238,6 +237,11 @@ public class FileOperation {
         final InputStreamReader osw = openInputStreamReader(file);
         final BufferedReader reader = new BufferedReader(osw, bufferSize_);
         return reader;
+    }
+
+    public LineReadable openLineReader(final File file) {
+        final BufferedReader reader = openBufferedReader(file);
+        return new LineReader(reader);
     }
 
     private OutputStreamWriter openOutputStreamWriter(final File file, final Charset charset) {
