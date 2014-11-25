@@ -1,12 +1,10 @@
-buildscript {
-    repositories { mavenCentral() }
-
-    dependencies { classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' }
+plugins {
+    id "com.github.hierynomus.license" version "0.11.0"
 }
 
 allprojects { project ->
     group = "jp.sourceforge.hotchpotch"
-    version = "0.4.0"
+    version = "0.4.1"
 
     repositories {
         mavenCentral()
@@ -44,7 +42,7 @@ allprojects { project ->
 
 configure(rootProject) {
     task wrapper(type: Wrapper) {
-        gradleVersion = 1.11
+        gradleVersion = 2.1
     }
 }
 
@@ -52,7 +50,7 @@ subprojects { project ->
     apply plugin: "java"
     apply plugin: "maven-publish"
 
-    sourceCompatibility = "1.7"
+    sourceCompatibility = "1.6"
     targetCompatibility = sourceCompatibility
 
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -78,9 +76,13 @@ subprojects { project ->
             t.manifest.attributes["Created-By"] = "Gradle"
             t.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
             t.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
+            t.manifest.attributes["Specification-Title"] = project.name
+            t.manifest.attributes["Specification-Version"] = project.version
+            //t.manifest.attributes["Specification-Vendor"] = project.organization.name
             t.manifest.attributes["Implementation-Title"] = project.name
             t.manifest.attributes["Implementation-Version"] = project.version
             t.manifest.attributes["Implementation-Vendor-Id"] = project.group
+            //t.manifest.attributes["Implementation-Vendor"] = project.organization.name
             t.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(timestamp)
             t.manifest.attributes["SCM-Revision"] = buildNumber
         }
@@ -134,27 +136,18 @@ subprojects { project ->
                         def key = "${groupId}:${artifactId}"
                         def depHolder = projectDependencies[key]
                         logger.info "${key} ... ${scope} -> ${depHolder.mavenScope}"
-                        dependency.scope[0].value = depHolder.mavenScope
+                        // デフォルトであるcompileスコープだったらpom.xmlから<scope>compile</scope>を省略する。
+                        if ("compile" == depHolder.mavenScope) {
+                            dependency.remove(dependency.scope[0])
+                        } else {
+                            dependency.scope[0].value = depHolder.mavenScope
+                        }
                         if (depHolder.optional()) {
                             dependency.children().last() + {
                                 resolveStrategy = Closure.DELEGATE_FIRST
                                 optional true
                             }
                             //new Node(dependency, "optional", [:], "true")
-                        }
-                        if (depHolder.gradleDependency.excludeRules) {
-                            dependency.children().last() + {
-                                resolveStrategy = Closure.DELEGATE_FIRST
-                                exclusions {
-                                    resolveStrategy = Closure.DELEGATE_FIRST
-                                    depHolder.gradleDependency.excludeRules.each { excludeRule ->
-                                        exclusion {
-                                            delegate.groupId excludeRule.group
-                                            delegate.artifactId excludeRule.module
-                                        }
-                                    }
-                                }
-                            }
                         }
                     }
 

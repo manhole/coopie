@@ -70,7 +70,7 @@ public class BeanPropertyBinding<BEAN, PROP> implements PropertyBinding<BEAN, PR
                 final String className = concreteClass.getName();
                 throw new PropertyNotFoundException("property not found:<" + name + "> for class:<" + className + ">");
             }
-            return new BeanPropertyBinding<>(pd);
+            return new BeanPropertyBinding<BEAN, PROP>(pd);
         }
 
     }

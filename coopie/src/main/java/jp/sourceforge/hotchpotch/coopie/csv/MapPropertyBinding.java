@@ -47,7 +47,7 @@ public class MapPropertyBinding<PROP> implements PropertyBinding<Map<String, PRO
 
         @Override
         public PropertyBinding<Map<String, PROP>, PROP> getPropertyBinding(final String name) {
-            final MapPropertyBinding<PROP> pb = new MapPropertyBinding<>(name);
+            final MapPropertyBinding<PROP> pb = new MapPropertyBinding<PROP>(name);
             return pb;
         }
 

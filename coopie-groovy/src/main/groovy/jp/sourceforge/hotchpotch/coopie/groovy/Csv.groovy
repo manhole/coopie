@@ -50,7 +50,7 @@ class Csv {
      */
     Closure elementEditor = { it }
 
-    CsvReader openReader(input) {
+    CsvReader openReader(Readable input) {
         def setting = new DefaultCsvSetting(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator, quoteMode: quoteMode)
         def io = new CsvElementInOut(setting)
         def reader = io.openReader(input)
@@ -58,25 +58,25 @@ class Csv {
         return csvReader
     }
 
-    void eachRecord(input, Closure c) {
+    void eachRecord(Readable input, Closure c) {
         openReader(input).eachRecord(c)
     }
 
-    void eachRecordAsMap(input, Closure c) {
+    void eachRecordAsMap(Readable input, Closure c) {
         def layout = new MapCsvLayout(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator /*, quoteMode: quoteMode*/)
         def recordReader = layout.build().openReader(input)
         def csvReader = new CsvRecordReader(reader: recordReader)
         csvReader.eachRecord(c)
     }
 
-    void eachRecordAsBean(input, beanClass, Closure c) {
+    void eachRecordAsBean(Readable input, Class beanClass, Closure c) {
         BeanCsvLayout layout = createBeanCsvLayout(beanClass)
         def recordReader = layout.build().openReader(input)
         def csvReader = new CsvRecordReader(reader: recordReader)
         csvReader.eachRecord(c)
     }
 
-    CsvWriter openWriter(output) {
+    CsvWriter openWriter(Appendable output) {
         def setting = new DefaultCsvSetting(elementSeparator: elementSeparator, quoteMark: quoteMark, lineSeparator: lineSeparator, quoteMode: quoteMode)
         def io = new CsvElementInOut(setting)
         def writer = io.openWriter(output)
@@ -84,7 +84,7 @@ class Csv {
         return csvWriter;
     }
 
-    void withWriter(output, Closure c) {
+    void withWriter(Appendable output, Closure c) {
         def csvWriter = openWriter(output)
         try {
             c(csvWriter)
@@ -93,7 +93,7 @@ class Csv {
         }
     }
 
-    void withBeanWriter(output, beanClass, Closure c) {
+    void withBeanWriter(Appendable output, Class beanClass, Closure c) {
         BeanCsvLayout layout = createBeanCsvLayout(beanClass)
         def recordWriter = layout.build().openWriter(output)
         try {
@@ -112,7 +112,7 @@ class Csv {
         }
     }
 
-    BeanCsvLayout createBeanCsvLayout(beanClass) {
+    BeanCsvLayout createBeanCsvLayout(Class beanClass) {
         def BeanCsvLayout layout = BeanCsvLayout.getInstance(beanClass)
         layout.elementSeparator = elementSeparator
         layout.lineSeparator = lineSeparator

@@ -57,6 +57,7 @@ public class FileOperation {
     private int bufferSize_ = DEFAULT_BUFF_SIZE;
     private Charset charset_ = IOUtil.getUTF8Charset();
     private final BinaryStreamOperation binaryStreams_ = new BinaryStreamOperation();
+    private final CharacterStreamOperation characterStreams_ = new CharacterStreamOperation();
 
     public FileOperation() {
     }
@@ -136,6 +137,21 @@ public class FileOperation {
         }
     }
 
+    public void write(final File file, final Readable text) {
+        write(file, text, charset_);
+    }
+
+    public void write(final File file, final Readable text, final Charset charset) {
+        final Writer writer = openBufferedWriter(file, charset);
+        try {
+            pipe(text, writer);
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        } finally {
+            closeNoException(writer);
+        }
+    }
+
     public void write(final File file, final InputStream is) {
         final OutputStream os = openBufferedOutputStream(file);
         try {
@@ -163,10 +179,9 @@ public class FileOperation {
     }
 
     public List<String> readLines(final File file) {
-        final BufferedReader reader = openBufferedReader(file);
-        final LineReader lineReader = new LineReader(reader);
+        final LineReadable lineReader = openLineReader(file);
         try {
-            final List<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<String>();
             for (final Line line : lineReader) {
                 list.add(line.getBody());
             }
@@ -199,10 +214,11 @@ public class FileOperation {
     }
 
     private void pipe(final Reader in, final Writer out) throws IOException {
-        final char[] buf = new char[bufferSize_];
-        for (int len = 0; (len = in.read(buf, 0, buf.length)) != -1;) {
-            out.write(buf, 0, len);
-        }
+        characterStreams_.pipe(in, out);
+    }
+
+    private void pipe(final Readable in, final Appendable out) throws IOException {
+        characterStreams_.pipe(in, out);
     }
 
     public BufferedWriter openBufferedWriter(final File file) {
@@ -218,9 +234,18 @@ public class FileOperation {
     }
 
     public BufferedReader openBufferedReader(final File file) {
-        final InputStreamReader osw = openInputStreamReader(file);
+        return openBufferedReader(file, charset_);
+    }
+
+    public BufferedReader openBufferedReader(final File file, final Charset charset) {
+        final InputStreamReader osw = openInputStreamReader(file, charset);
         final BufferedReader reader = new BufferedReader(osw, bufferSize_);
         return reader;
+    }
+
+    public LineReadable openLineReader(final File file) {
+        final BufferedReader reader = openBufferedReader(file);
+        return new LineReader(reader);
     }
 
     private OutputStreamWriter openOutputStreamWriter(final File file, final Charset charset) {
@@ -229,9 +254,9 @@ public class FileOperation {
         return osw;
     }
 
-    private InputStreamReader openInputStreamReader(final File file) {
+    private InputStreamReader openInputStreamReader(final File file, final Charset charset) {
         final FileInputStream fis = openInputStream(file);
-        final InputStreamReader isr = new InputStreamReader(fis, charset_);
+        final InputStreamReader isr = new InputStreamReader(fis, charset);
         return isr;
     }
 
@@ -388,7 +413,7 @@ public class FileOperation {
                 return;
             }
 
-            final List<File> files = new ArrayList<>();
+            final List<File> files = new ArrayList<File>();
             for (final File child : children) {
                 if (child.isDirectory()) {
                     walkDirectory(child, walker);
@@ -493,6 +518,7 @@ public class FileOperation {
     public void setBufferSize(final int bufferSize) {
         bufferSize_ = bufferSize;
         binaryStreams_.setBufferSize(bufferSize);
+        characterStreams_.setBufferSize(bufferSize);
     }
 
     public void setEncoding(final String encoding) {

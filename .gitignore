@@ -3,7 +3,9 @@
 *.bak
 .gradle/
 .DS_Store
-
 /build/
-.idea/
+
+### IntelliJ IDEA ###
+/.idea/*
+!/.idea/codeStyleSettings.xml
 *.iml

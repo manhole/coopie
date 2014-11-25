@@ -25,7 +25,7 @@ public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
     public ExcelInOut<Map<String, PROP>> build() {
         prepareBuild();
 
-        final MapExcelInOut<PROP> obj = new MapExcelInOut<>();
+        final MapExcelInOut<PROP> obj = new MapExcelInOut<PROP>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementReaderHandler_ = getElementReaderHandler();
@@ -44,7 +44,7 @@ public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
                 throw new NullPointerException("is");
             }
 
-            final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<>(recordDesc_);
+            final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<Map<String, PROP>>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementReaderHandler(elementReaderHandler_);
 
@@ -59,7 +59,7 @@ public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
                 throw new NullPointerException("os");
             }
 
-            final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<>(recordDesc_);
+            final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<Map<String, PROP>>(recordDesc_);
             w.setWithHeader(withHeader_);
             // TODO openで例外時にcloseすること
             w.open(os);

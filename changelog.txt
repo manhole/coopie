@@ -1,3 +1,14 @@
+0.4.1 2014/11/25
+
+- change java version: 1.7 -> 1.6
+- add class: CharacterStreamOperation
+- add method: FileOperation#openLineReader(File)
+- add method: FileOperation#openBufferedReader(File, Charset)
+
+misc:
+- ビルドに使用するgradleのバージョンを2.1にしました。
+
+
 0.4.0 2014/06/04
 
 - DeprecatedにしていたopenReader,openWriterメソッドを削除しました。
@@ -12,6 +23,7 @@
 
 misc:
 - ビルドに使用するgradleのバージョンを1.11にし、gradle wrapperを使うようにしました。
+- jarに含めるMANIFEST.MFへ、Specification-TitleとSpecification-Versionを追加しました。
 
 
 0.3.1 2014/03/04

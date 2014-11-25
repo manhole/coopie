@@ -108,7 +108,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
 
     }
 
-    static class PoiSheetWriter implements ElementWriter {
+    public static class PoiSheetWriter implements ElementWriter {
 
         private boolean closed_ = true;
         @SuppressWarnings("unused")
@@ -177,7 +177,7 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
         private Workbook workbook_;
         private Sheet sheet_;
 
-        static WriteEditor getInstance() {
+        public static WriteEditor getInstance() {
             return INSTANCE;
         }
 
@@ -210,6 +210,35 @@ public class DefaultExcelWriter<BEAN> extends AbstractRecordWriter<BEAN> {
             return sheet_;
         }
 
+    }
+
+    public static class WriteEditorWrapper implements WriteEditor {
+
+        private final WriteEditor delegate_;
+
+        public WriteEditorWrapper(final WriteEditor delegate) {
+            delegate_ = delegate;
+        }
+
+        @Override
+        public Row createRow(final int rowNum) {
+            return delegate_.createRow(rowNum);
+        }
+
+        @Override
+        public void begin(final Workbook workbook, final Sheet sheet) {
+            delegate_.begin(workbook, sheet);
+        }
+
+        @Override
+        public void setCellValue(final Cell cell, final String value) {
+            delegate_.setCellValue(cell, value);
+        }
+
+        @Override
+        public Cell createCell(final Row row, final int colNum) {
+            return delegate_.createCell(row, colNum);
+        }
     }
 
 }

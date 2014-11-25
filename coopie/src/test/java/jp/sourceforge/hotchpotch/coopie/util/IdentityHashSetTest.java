@@ -29,26 +29,26 @@ public class IdentityHashSetTest {
 
     @Test
     public void add() throws Throwable {
-        spec.testAdd(new HashSet<>());
-        spec.testAdd(new IdentityHashSet<>());
+        spec.testAdd(new HashSet<Object>());
+        spec.testAdd(new IdentityHashSet<Object>());
     }
 
     @Test
     public void isEmpty() throws Throwable {
-        spec.testIsEmpty(new HashSet<>());
-        spec.testIsEmpty(new IdentityHashSet<>());
+        spec.testIsEmpty(new HashSet<Object>());
+        spec.testIsEmpty(new IdentityHashSet<Object>());
     }
 
     @Test
     public void remove() throws Throwable {
-        spec.testRemove(new HashSet<>());
-        spec.testRemove(new IdentityHashSet<>());
+        spec.testRemove(new HashSet<Object>());
+        spec.testRemove(new IdentityHashSet<Object>());
     }
 
     @Test
     public void clear() throws Throwable {
-        spec.testClear(new HashSet<>());
-        spec.testClear(new IdentityHashSet<>());
+        spec.testClear(new HashSet<Object>());
+        spec.testClear(new IdentityHashSet<Object>());
     }
 
     @SuppressWarnings("unchecked")

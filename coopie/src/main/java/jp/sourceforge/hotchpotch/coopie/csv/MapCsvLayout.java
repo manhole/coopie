@@ -54,7 +54,7 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
     public RecordInOut<Map<String, PROP>> build() {
         prepareBuild();
 
-        final MapCsvRecordInOut<PROP> obj = new MapCsvRecordInOut<>();
+        final MapCsvRecordInOut<PROP> obj = new MapCsvRecordInOut<PROP>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementInOut_ = createElementInOut();
@@ -78,7 +78,7 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
                 throw new NullPointerException("readable");
             }
 
-            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<>(recordDesc_);
+            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             r.setElementReaderHandler(elementReaderHandler_);
@@ -105,7 +105,7 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<>(recordDesc_);
+            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

@@ -55,7 +55,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<>(FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(FlAaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -75,7 +75,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -101,7 +101,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -131,7 +131,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -160,7 +160,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-3", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -189,7 +189,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-4", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -235,7 +235,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_empty() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -267,7 +267,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -294,7 +294,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-2", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -320,7 +320,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-1", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -347,7 +347,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read5() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -462,7 +462,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_trim_off() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -496,7 +496,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_trim_all() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -528,7 +528,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_trim_all_whitespace() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -563,7 +563,7 @@ public class BeanFixedLengthReaderTest {
         // ## Arrange ##
         final Reader r = getResourceAsReader("-5", "tsv");
 
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -605,7 +605,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void setup_invalid_readeditor() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -623,7 +623,8 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_bigDecimal() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<BigDecimalBean> layout = new BeanFixedLengthLayout<>(BigDecimalBean.class);
+        final BeanFixedLengthLayout<BigDecimalBean> layout = new BeanFixedLengthLayout<BigDecimalBean>(
+                BigDecimalBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -675,7 +676,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_calendar1() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<>(CalendarBean.class);
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -729,7 +730,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void read_calendar2() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<>(CalendarBean.class);
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -790,7 +791,7 @@ public class BeanFixedLengthReaderTest {
     @Test
     public void invalid_columns_setup_property() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<>(CalendarBean.class);
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(CalendarBean.class);
 
         // ## Act ##
         // ## Assert ##
