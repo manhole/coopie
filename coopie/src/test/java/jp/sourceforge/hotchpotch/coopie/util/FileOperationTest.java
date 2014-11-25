@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +35,9 @@ import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation.DeleteResult;
-import junit.framework.Assert;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -120,6 +121,20 @@ public class FileOperationTest {
         // ## Assert ##
         final byte[] bytes = files.readAsBytes(f);
         assertThat(bytes, is("1234567890".getBytes()));
+    }
+
+    @Test
+    public void write_stream() throws Exception {
+        // ## Arrange ##
+        final FileOperation files = new FileOperation();
+        final File f = files.createTempFile(root);
+
+        // ## Act ##
+        files.write(f, new StringReader("1234\r567\n890\r\n"));
+
+        // ## Assert ##
+        final String text = files.read(f);
+        assertThat(text, is("1234\r567\n890\r\n"));
     }
 
     @Test

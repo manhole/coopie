@@ -17,6 +17,8 @@
 package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.CharBuffer;
 
 public class CharacterStreamOperation {
@@ -43,6 +45,13 @@ public class CharacterStreamOperation {
             for (int i = 0; i < len; i++) {
                 out.append(backing[i]);
             }
+        }
+    }
+
+    public void pipe(final Reader in, final Writer out) throws IOException {
+        final char[] buf = new char[bufferSize_];
+        for (int len = 0; (len = in.read(buf, 0, buf.length)) != -1;) {
+            out.write(buf, 0, len);
         }
     }
 

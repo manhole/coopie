@@ -57,6 +57,7 @@ public class FileOperation {
     private int bufferSize_ = DEFAULT_BUFF_SIZE;
     private Charset charset_ = IOUtil.getUTF8Charset();
     private final BinaryStreamOperation binaryStreams_ = new BinaryStreamOperation();
+    private final CharacterStreamOperation characterStreams_ = new CharacterStreamOperation();
 
     public FileOperation() {
     }
@@ -136,6 +137,21 @@ public class FileOperation {
         }
     }
 
+    public void write(final File file, final Readable text) {
+        write(file, text, charset_);
+    }
+
+    public void write(final File file, final Readable text, final Charset charset) {
+        final Writer writer = openBufferedWriter(file, charset);
+        try {
+            pipe(text, writer);
+        } catch (final IOException e) {
+            throw new IORuntimeException(e);
+        } finally {
+            closeNoException(writer);
+        }
+    }
+
     public void write(final File file, final InputStream is) {
         final OutputStream os = openBufferedOutputStream(file);
         try {
@@ -199,10 +215,11 @@ public class FileOperation {
     }
 
     private void pipe(final Reader in, final Writer out) throws IOException {
-        final char[] buf = new char[bufferSize_];
-        for (int len = 0; (len = in.read(buf, 0, buf.length)) != -1;) {
-            out.write(buf, 0, len);
-        }
+        characterStreams_.pipe(in, out);
+    }
+
+    private void pipe(final Readable in, final Appendable out) throws IOException {
+        characterStreams_.pipe(in, out);
     }
 
     public BufferedWriter openBufferedWriter(final File file) {
@@ -493,6 +510,7 @@ public class FileOperation {
     public void setBufferSize(final int bufferSize) {
         bufferSize_ = bufferSize;
         binaryStreams_.setBufferSize(bufferSize);
+        characterStreams_.setBufferSize(bufferSize);
     }
 
     public void setEncoding(final String encoding) {
