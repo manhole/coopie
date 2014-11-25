@@ -647,7 +647,7 @@ public class MapCsvReaderTest {
     @Test
     public void openMultiReader() throws Throwable {
         // ## Arrange ##
-        final MapCsvLayout<String> layout = new MapCsvLayout<>();
+        final MapCsvLayout<String> layout = new MapCsvLayout<String>();
 
         // ## Act ##
         final RecordReader<Map<String, String>> csvReader1 = layout.build()
