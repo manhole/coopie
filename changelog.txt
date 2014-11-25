@@ -20,6 +20,7 @@ misc:
 
 misc:
 - ビルドに使用するgradleのバージョンを1.11にし、gradle wrapperを使うようにしました。
+- jarに含めるMANIFEST.MFへ、Specification-TitleとSpecification-Versionを追加しました。
 
 
 0.3.1 2014/03/04
