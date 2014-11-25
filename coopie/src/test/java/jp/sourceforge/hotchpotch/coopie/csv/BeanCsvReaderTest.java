@@ -215,16 +215,12 @@ public class BeanCsvReaderTest {
             public void customize(final CsvRecordDef recordDef) {
                 for (final CsvColumnDef def : recordDef.getAllColumnDefs()) {
                     final String pn = def.getLabel();
-                    switch (pn) {
-                    case "aaa":
+                    if ("aaa".equals(pn)) {
                         def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
-                        break;
-                    case "bbb":
+                    } else if ("bbb".equals(pn)) {
                         def.setColumnNameMatcher(new ContainsNameMatcher("いい"));
-                        break;
-                    case "ccc":
+                    } else if ("ccc".equals(pn)) {
                         def.setColumnNameMatcher(new ContainsNameMatcher("ううう"));
-                        break;
                     }
                 }
             }
