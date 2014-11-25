@@ -234,7 +234,11 @@ public class FileOperation {
     }
 
     public BufferedReader openBufferedReader(final File file) {
-        final InputStreamReader osw = openInputStreamReader(file);
+        return openBufferedReader(file, charset_);
+    }
+
+    public BufferedReader openBufferedReader(final File file, final Charset charset) {
+        final InputStreamReader osw = openInputStreamReader(file, charset);
         final BufferedReader reader = new BufferedReader(osw, bufferSize_);
         return reader;
     }
@@ -250,9 +254,9 @@ public class FileOperation {
         return osw;
     }
 
-    private InputStreamReader openInputStreamReader(final File file) {
+    private InputStreamReader openInputStreamReader(final File file, final Charset charset) {
         final FileInputStream fis = openInputStream(file);
-        final InputStreamReader isr = new InputStreamReader(fis, charset_);
+        final InputStreamReader isr = new InputStreamReader(fis, charset);
         return isr;
     }
 
