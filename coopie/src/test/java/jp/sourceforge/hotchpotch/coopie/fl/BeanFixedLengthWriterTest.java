@@ -55,7 +55,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<>(FlAaaBean.class);
+        final BeanFixedLengthLayout<FlAaaBean> layout = new BeanFixedLengthLayout<FlAaaBean>(FlAaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -73,7 +73,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_nosetup() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -96,7 +96,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -138,7 +138,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -187,7 +187,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -230,7 +230,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
+        final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<AaaBean>(AaaBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -326,7 +326,8 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_bigDecimal() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<BigDecimalBean> layout = new BeanFixedLengthLayout<>(BigDecimalBean.class);
+        final BeanFixedLengthLayout<BigDecimalBean> layout = new BeanFixedLengthLayout<BigDecimalBean>(
+                BigDecimalBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -376,7 +377,7 @@ public class BeanFixedLengthWriterTest {
     @Test
     public void write_calendar() throws Throwable {
         // ## Arrange ##
-        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<>(CalendarBean.class);
+        final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<CalendarBean>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {

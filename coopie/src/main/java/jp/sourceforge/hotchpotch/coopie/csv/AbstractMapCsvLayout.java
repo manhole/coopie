@@ -39,7 +39,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<S
                  * Writeの場合は1件目から、
                  * カラム名を構築する。
                  */
-                setRecordDesc(new LazyMapRecordDesc<>(this));
+                setRecordDesc(new LazyMapRecordDesc<PROP>(this));
             }
         }
 
@@ -55,7 +55,7 @@ public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<S
 
     @Override
     protected RecordType<Map<String, PROP>> createRecordType() {
-        return new MapRecordType<>();
+        return new MapRecordType<PROP>();
     }
 
     static class LazyMapRecordDesc<PROP> implements RecordDesc<Map<String, PROP>> {

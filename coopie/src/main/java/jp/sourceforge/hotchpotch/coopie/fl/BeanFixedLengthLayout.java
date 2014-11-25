@@ -43,7 +43,7 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
     private PropertyAnnotationReader propertyAnnotationReader_ = Annotations.getPropertyAnnotationReader();
 
     public static <BEAN> BeanFixedLengthLayout<BEAN> getInstance(final Class<BEAN> beanClass) {
-        final BeanFixedLengthLayout<BEAN> instance = new BeanFixedLengthLayout<>(beanClass);
+        final BeanFixedLengthLayout<BEAN> instance = new BeanFixedLengthLayout<BEAN>(beanClass);
         return instance;
     }
 
@@ -54,7 +54,7 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
     public RecordInOut<BEAN> build() {
         prepareBuild();
 
-        final BeanFixedLengthRecordInOut<BEAN> obj = new BeanFixedLengthRecordInOut<>();
+        final BeanFixedLengthRecordInOut<BEAN> obj = new BeanFixedLengthRecordInOut<BEAN>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementInOut_ = createElementInOut();
@@ -88,12 +88,12 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
 
     @Override
     protected PropertyBindingFactory<BEAN> createPropertyBindingFactory() {
-        return new BeanPropertyBinding.Factory<>(beanDesc_);
+        return new BeanPropertyBinding.Factory<BEAN>(beanDesc_);
     }
 
     @Override
     protected RecordType<BEAN> createRecordType() {
-        return new BeanRecordType<>(beanDesc_);
+        return new BeanRecordType<BEAN>(beanDesc_);
     }
 
     private FixedLengthRecordDef recordDef() {
@@ -157,7 +157,7 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
                 throw new NullPointerException("readable");
             }
 
-            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<>(recordDesc_);
+            final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(recordDesc_);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             r.setElementEditor(elementEditor_);
@@ -172,7 +172,7 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<>(recordDesc_);
+            final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

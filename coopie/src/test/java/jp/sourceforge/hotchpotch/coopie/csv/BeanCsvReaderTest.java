@@ -1206,7 +1206,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_bigDecimal1() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<>(BigDecimalBean.class);
+        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<BigDecimalBean>(BigDecimalBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -1334,7 +1334,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_calendar1() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -1391,7 +1391,7 @@ public class BeanCsvReaderTest {
     @Test
     public void read_calendar2() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -1457,7 +1457,8 @@ public class BeanCsvReaderTest {
     @Test
     public void read_calendar3() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<AnnotatedCalendarBean> layout = new BeanCsvLayout<>(AnnotatedCalendarBean.class);
+        final BeanCsvLayout<AnnotatedCalendarBean> layout = new BeanCsvLayout<AnnotatedCalendarBean>(
+                AnnotatedCalendarBean.class);
         final AtomicBoolean called = new AtomicBoolean();
         layout.setCustomizer(new CsvRecordDefCustomizer() {
             @Override
@@ -1544,7 +1545,7 @@ public class BeanCsvReaderTest {
     @Test
     public void invalid_columns_setup_property() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(CalendarBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -1579,7 +1580,7 @@ public class BeanCsvReaderTest {
     @Ignore
     public void invalid_columns_setup_converter() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(CalendarBean.class);
 
         // ## Act ##
         // ## Assert ##
