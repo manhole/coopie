@@ -17,6 +17,7 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -24,6 +25,9 @@ import java.io.File;
 
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
+import jp.sourceforge.hotchpotch.coopie.util.Line;
+import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
+import jp.sourceforge.hotchpotch.coopie.util.LineSeparator;
 
 import org.junit.After;
 import org.junit.Before;
@@ -186,6 +190,101 @@ public class ExcelToCsvTest {
 
         final File expectedFile = getResourceAsFile("-date-expected", "tsv");
         csvAssert_.assertCsvEquals(expectedFile, outFile);
+    }
+
+    /**
+     * 未指定の場合は、要素に必ずクォートが付く
+     */
+    @Test
+    public void quoteMode_default() throws Throwable {
+        // ## Arrange ##
+        final File excelFile = new File(rootDir_, "quoteMode_default.xls");
+        assertThat(excelFile.exists(), is(false));
+        {
+            final DefaultExcelWriter.PoiWriter writer = new DefaultExcelWriter.PoiWriter(files_.openBufferedOutputStream(excelFile));
+            writer.open();
+            writer.writeRecord(new String[] { "a", "\"b", "c" });
+            writer.writeRecord(new String[] { "1", "2", "3\n4" });
+            writer.close();
+        }
+
+        final File outFile = new File(rootDir_, "quoteMode_default.tsv");
+        assertThat(outFile.exists(), is(false));
+
+        // ## Act ##
+        final ExcelToCsv excelToCsv = new ExcelToCsv();
+        excelToCsv.writeTsv(excelFile);
+
+        // ## Assert ##
+        assertThat(outFile.exists(), is(true));
+        logger.debug("[{}]", files_.read(outFile));
+
+        final LineReadable lineReader = files_.openLineReader(outFile);
+        {
+            final Line line = lineReader.readLine();
+            assertThat(line.getSeparator(), is(LineSeparator.CRLF));
+            assertThat(line.getBody(), is("\"a\"\t\"\"\"b\"\t\"c\""));
+        }
+        {
+            final Line line = lineReader.readLine();
+            assertThat(line.getSeparator(), is(LineSeparator.LF));
+            assertThat(line.getBody(), is("\"1\"\t\"2\"\t\"3"));
+        }
+        {
+            final Line line = lineReader.readLine();
+            assertThat(line.getSeparator(), is(LineSeparator.CRLF));
+            assertThat(line.getBody(), is("4\""));
+        }
+
+        assertThat(lineReader.readLine(), is(nullValue()));
+    }
+
+    /**
+     * QuoteMode.MINIMUM に変更できること。
+     */
+    @Test
+    public void quoteMode_minimum() throws Throwable {
+        // ## Arrange ##
+        final File excelFile = new File(rootDir_, "quoteMode_minimum.xls");
+        assertThat(excelFile.exists(), is(false));
+        {
+            final DefaultExcelWriter.PoiWriter writer = new DefaultExcelWriter.PoiWriter(files_.openBufferedOutputStream(excelFile));
+            writer.open();
+            writer.writeRecord(new String[] { "a", "\"b", "c" });
+            writer.writeRecord(new String[] { "1", "2", "3\n4" });
+            writer.close();
+        }
+
+        final File outFile = new File(rootDir_, "quoteMode_minimum.tsv");
+        assertThat(outFile.exists(), is(false));
+
+        // ## Act ##
+        final ExcelToCsv excelToCsv = new ExcelToCsv();
+        excelToCsv.getOrCreateCsvSetting().setQuoteMode(QuoteMode.MINIMUM);
+        excelToCsv.writeTsv(excelFile);
+
+        // ## Assert ##
+        assertThat(outFile.exists(), is(true));
+        logger.debug("[{}]", files_.read(outFile));
+
+        final LineReadable lineReader = files_.openLineReader(outFile);
+        {
+            final Line line = lineReader.readLine();
+            assertThat(line.getSeparator(), is(LineSeparator.CRLF));
+            assertThat(line.getBody(), is("a\t\"\"\"b\"\tc"));
+        }
+        {
+            final Line line = lineReader.readLine();
+            assertThat(line.getSeparator(), is(LineSeparator.LF));
+            assertThat(line.getBody(), is("1\t2\t\"3"));
+        }
+        {
+            final Line line = lineReader.readLine();
+            assertThat(line.getSeparator(), is(LineSeparator.CRLF));
+            assertThat(line.getBody(), is("4\""));
+        }
+
+        assertThat(lineReader.readLine(), is(nullValue()));
     }
 
     private File getResourceAsFile(final String nameSuffix, final String ext) {

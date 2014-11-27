@@ -36,8 +36,10 @@ import org.t2framework.commons.util.CollectionsUtil;
 public class ExcelToCsv {
 
     private static final Logger logger = LoggerFactory.getLogger();
-    private final FileOperation files_ = new FileOperation();
     private static final String TSV_EXTENSION = ".tsv";
+
+    private final FileOperation files_ = new FileOperation();
+    private CsvSetting csvSetting_;
 
     public void writeTsv(final File file) throws IOException {
         logger.debug("file={}", file.getAbsolutePath());
@@ -73,8 +75,7 @@ public class ExcelToCsv {
                 tsvNaming.setSingle(false);
             }
 
-            final CsvSetting csvSetting = new DefaultCsvSetting();
-            final ElementInOut elementInOut = new CsvElementInOut(csvSetting);
+            final ElementInOut elementInOut = new CsvElementInOut(getOrCreateCsvSetting());
             final FileResource fr = files_.getFileResource(file);
             for (final PoiSheetReader sheetReader : sheets) {
                 final String fileName = tsvNaming.createFileName(sheetReader, fr.getPrefix(), TSV_EXTENSION);
@@ -107,6 +108,21 @@ public class ExcelToCsv {
         } catch (final InvalidFormatException e) {
             throw new IOException(e);
         }
+    }
+
+    public CsvSetting getCsvSetting() {
+        return csvSetting_;
+    }
+
+    public CsvSetting getOrCreateCsvSetting() {
+        if (csvSetting_ == null) {
+            csvSetting_ = new DefaultCsvSetting();
+        }
+        return csvSetting_;
+    }
+
+    public void setCsvSetting(final CsvSetting csvSetting) {
+        csvSetting_ = csvSetting;
     }
 
     private static class TsvNaming {
