@@ -34,18 +34,18 @@ import org.t2framework.commons.util.ResourceUtil;
 public class ExcelToCsvTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
-    private final FileOperation files = new FileOperation();
-    private File rootDir;
+    private final FileOperation files_ = new FileOperation();
+    private File rootDir_;
     private final CsvAssert csvAssert_ = new CsvAssert();
 
     @Before
     public void setUp() throws Throwable {
-        rootDir = files.createTempDir();
+        rootDir_ = files_.createTempDir();
     }
 
     @After
     public void tearDown() {
-        files.delete(rootDir);
+        files_.delete(rootDir_);
     }
 
     @Test
@@ -61,8 +61,8 @@ public class ExcelToCsvTest {
     private void _test1(final String ext) throws Exception {
         // ## Arrange ##
         final File testFile = getResourceAsFile("-1", ext);
-        final File inFile = new File(rootDir, testFile.getName());
-        files.copy(testFile, inFile);
+        final File inFile = new File(rootDir_, testFile.getName());
+        files_.copy(testFile, inFile);
 
         final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-1.tsv");
         logger.debug("outFile={}", outFile);
@@ -95,8 +95,8 @@ public class ExcelToCsvTest {
     private void _test2(final String ext) throws Exception {
         // ## Arrange ##
         final File testFile = getResourceAsFile("-2", ext);
-        final File inFile = new File(rootDir, testFile.getName());
-        files.copy(testFile, inFile);
+        final File inFile = new File(rootDir_, testFile.getName());
+        files_.copy(testFile, inFile);
 
         final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-2.tsv");
         logger.debug("outFile={}", outFile);
@@ -131,14 +131,14 @@ public class ExcelToCsvTest {
         // ## Arrange ##
         final File testFile = getResourceAsFile("-3", ext);
 
-        final File inFile = new File(rootDir, testFile.getName());
-        files.copy(testFile, inFile);
+        final File inFile = new File(rootDir_, testFile.getName());
+        files_.copy(testFile, inFile);
 
-        final File outFile1 = new File(rootDir, "ExcelToCsvTest-3-Sheet1.tsv");
-        final File outFile2 = new File(rootDir, "ExcelToCsvTest-3-Sheet2.tsv");
-        final File outFile3 = new File(rootDir, "ExcelToCsvTest-3-Sheet3.tsv");
+        final File outFile1 = new File(rootDir_, "ExcelToCsvTest-3-Sheet1.tsv");
+        final File outFile2 = new File(rootDir_, "ExcelToCsvTest-3-Sheet2.tsv");
+        final File outFile3 = new File(rootDir_, "ExcelToCsvTest-3-Sheet3.tsv");
         logger.debug("outFile={}", outFile1);
-        assertEquals(1, rootDir.list().length);
+        assertEquals(1, rootDir_.list().length);
 
         // ## Act ##
         final ExcelToCsv excelToCsv = new ExcelToCsv();
@@ -148,7 +148,7 @@ public class ExcelToCsvTest {
         assertEquals(true, outFile1.exists());
         assertEquals("空シートはcsvに出力しない", false, outFile2.exists());
         assertEquals(true, outFile3.exists());
-        assertEquals(3, rootDir.list().length);
+        assertEquals(3, rootDir_.list().length);
 
         final File expectedFile1 = getResourceAsFile("-3-expected1", "tsv");
         final File expectedFile3 = getResourceAsFile("-3-expected3", "tsv");
@@ -170,8 +170,8 @@ public class ExcelToCsvTest {
     private void _test_date(final String ext) throws Exception {
         // ## Arrange ##
         final File testFile = getResourceAsFile("-date", ext);
-        final File inFile = new File(rootDir, testFile.getName());
-        files.copy(testFile, inFile);
+        final File inFile = new File(rootDir_, testFile.getName());
+        files_.copy(testFile, inFile);
 
         final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-date.tsv");
         logger.debug("outFile={}", outFile);
