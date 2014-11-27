@@ -16,7 +16,9 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
@@ -64,8 +66,7 @@ public class ExcelToCsvTest {
 
         final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-1.tsv");
         logger.debug("outFile={}", outFile);
-
-        files.delete(outFile);
+        assertThat(outFile.exists(), is(false));
 
         // ## Act ##
         final ExcelToCsv excelToCsv = new ExcelToCsv();
@@ -99,8 +100,7 @@ public class ExcelToCsvTest {
 
         final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-2.tsv");
         logger.debug("outFile={}", outFile);
-
-        files.delete(outFile);
+        assertThat(outFile.exists(), is(false));
 
         // ## Act ##
         final ExcelToCsv excelToCsv = new ExcelToCsv();
@@ -177,8 +177,7 @@ public class ExcelToCsvTest {
 
         final File outFile = new File(inFile.getParentFile(), "ExcelToCsvTest-date.tsv");
         logger.debug("outFile={}", outFile);
-
-        files.delete(outFile);
+        assertThat(outFile.exists(), is(false));
 
         // ## Act ##
         final ExcelToCsv excelToCsv = new ExcelToCsv();
