@@ -6,6 +6,16 @@
 /build/
 
 ### IntelliJ IDEA ###
-/.idea/*
-!/.idea/codeStyleSettings.xml
 *.iml
+**/.idea/workspace.xml
+**/.idea/misc.xml
+**/.idea/gradle.xml
+**/.idea/modules.xml
+**/.idea/vcs.xml
+**/.idea/compiler.xml
+**/.idea/libraries/
+**/.idea/scopes/scope_settings.xml
+**/.idea/.name
+**/.idea/uiDesigner.xml
+**/.idea/copyright/profiles_settings.xml
+**/.idea/dictionaries/
