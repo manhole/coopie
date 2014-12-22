@@ -117,7 +117,7 @@ class Csv {
         layout
     }
 
-    static class CsvReader {
+    static class CsvReader implements Closeable {
         private ElementReader reader_
         private Closure elementEditor_
 
@@ -181,7 +181,7 @@ class Csv {
 
     }
 
-    private static class CsvRecordReader {
+    private static class CsvRecordReader implements Closeable {
         RecordReader reader
 
         void eachRecord(Closure c) {
@@ -191,9 +191,14 @@ class Csv {
                     c.call(record)
                 }
             } finally {
-                CloseableUtil.closeNoException(reader)
+                close()
             }
         }
+
+        void close() throws IOException {
+            CloseableUtil.closeNoException(reader)
+        }
+
     }
 
     static class CsvWriter implements Closeable {
