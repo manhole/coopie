@@ -86,22 +86,14 @@ class Csv {
 
     void withWriter(Appendable output, Closure c) {
         def csvWriter = openWriter(output)
-        try {
-            c.call(csvWriter)
-        } finally {
-            CloseableUtil.closeNoException(csvWriter)
-        }
+        csvWriter.withWriter(c)
     }
 
     void withBeanWriter(Appendable output, Class beanClass, Closure c) {
         BeanCsvLayout layout = createBeanCsvLayout(beanClass)
         def recordWriter = layout.build().openWriter(output)
-        try {
-            def csvWriter = new CsvRecordWriter(writer: recordWriter)
-            c.call(csvWriter)
-        } finally {
-            CloseableUtil.closeNoException(recordWriter)
-        }
+        def csvWriter = new CsvRecordWriter(writer: recordWriter)
+        csvWriter.withWriter(c)
     }
 
     void setLineSeparator(sep) {
@@ -214,19 +206,40 @@ class Csv {
             this
         }
 
+        def withWriter(Closure c) {
+            try {
+                return c.call(this)
+            } finally {
+                close()
+            }
+        }
+
         void close() {
             CloseableUtil.closeNoException(writer)
         }
 
     }
 
-    private static class CsvRecordWriter {
+    private static class CsvRecordWriter implements Closeable {
         RecordWriter writer
 
         CsvRecordWriter leftShift(record) {
             writer.write(record)
             this
         }
+
+        def withWriter(Closure c) {
+            try {
+                return c.call(this)
+            } finally {
+                close()
+            }
+        }
+
+        void close() {
+            CloseableUtil.closeNoException(writer)
+        }
+
     }
 
     static class CsvRecord {
