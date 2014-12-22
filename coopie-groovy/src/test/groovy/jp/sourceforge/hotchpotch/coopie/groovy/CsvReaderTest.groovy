@@ -78,7 +78,7 @@ a2,, c2
         assert 2 == index
     }
 
-    /*
+    /**
      * CSV要素を展開して受け取れる
      */
     @Test
@@ -103,7 +103,7 @@ a2,, c2
         assert 2 == index
     }
 
-    /*
+    /**
      * CSV要素を展開して受け取る引数がCSV項目数より多い場合は、nullが渡される。
      */
     @Test
@@ -128,7 +128,7 @@ a2,, c2
         assert 2 == index
     }
 
-    /*
+    /**
      * CSV要素を展開して受け取る引数がCSV項目数より少ない場合は、後ろの項目は渡されない。
      */
     @Test
@@ -153,6 +153,9 @@ a2,, c2
         assert 2 == index
     }
 
+    /**
+     * Closure引数にCsvRecordを指定すると、CsvRecord型で受け取ることができる。
+     */
     @Test
     public void read_record_asRecord() {
         def input = new StringReader("""
