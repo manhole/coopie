@@ -87,7 +87,7 @@ class Csv {
     void withWriter(Appendable output, Closure c) {
         def csvWriter = openWriter(output)
         try {
-            c(csvWriter)
+            c.call(csvWriter)
         } finally {
             CloseableUtil.closeNoException(csvWriter)
         }
@@ -98,7 +98,7 @@ class Csv {
         def recordWriter = layout.build().openWriter(output)
         try {
             def csvWriter = new CsvRecordWriter(writer: recordWriter)
-            c(csvWriter)
+            c.call(csvWriter)
         } finally {
             CloseableUtil.closeNoException(recordWriter)
         }
@@ -196,7 +196,7 @@ class Csv {
             try {
                 while (reader.hasNext()) {
                     def record = reader.read()
-                    c(record)
+                    c.call(record)
                 }
             } finally {
                 CloseableUtil.closeNoException(reader)
