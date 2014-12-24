@@ -166,6 +166,7 @@ a2,, c2
         int index = -1
         new Csv().eachRecord(input) { CsvRecord r ->
             index++
+            assert 3 == r.length()
             if (r.index == 0) {
                 assert ["AAA", "BBB", "CCC"] == [r[0], r[1], r[2]]
             } else if (index == 1) {
