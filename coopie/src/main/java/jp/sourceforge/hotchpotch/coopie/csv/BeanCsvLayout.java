@@ -59,11 +59,11 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
         prepareBuild();
 
         final BeanCsvRecordInOut<BEAN> obj = new BeanCsvRecordInOut<BEAN>();
-        obj.recordDesc_ = getRecordDesc();
-        obj.withHeader_ = isWithHeader();
-        obj.elementInOut_ = createElementInOut();
-        obj.elementReaderHandler_ = getElementReaderHandler();
-        obj.elementEditor_ = getElementEditor();
+        obj.setRecordDesc(getRecordDesc());
+        obj.setWithHeader(isWithHeader());
+        obj.setElementInOut(createElementInOut());
+        obj.setElementReaderHandler(getElementReaderHandler());
+        obj.setElementEditor(getElementEditor());
         return obj;
     }
 
@@ -86,7 +86,6 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
             r.setElementInOut(elementInOut_);
             r.setElementReaderHandler(elementReaderHandler_);
             r.setElementEditor(elementEditor_);
-
             new FailureProtection<RuntimeException>() {
 
                 @Override
@@ -115,6 +114,26 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
             // TODO openで例外時にcloseすること
             w.open(appendable);
             return w;
+        }
+
+        public void setRecordDesc(final RecordDesc<BEAN> recordDesc) {
+            recordDesc_ = recordDesc;
+        }
+
+        public void setWithHeader(final boolean withHeader) {
+            withHeader_ = withHeader;
+        }
+
+        public void setElementInOut(final ElementInOut elementInOut) {
+            elementInOut_ = elementInOut;
+        }
+
+        public void setElementReaderHandler(final ElementReaderHandler elementReaderHandler) {
+            elementReaderHandler_ = elementReaderHandler;
+        }
+
+        public void setElementEditor(final ElementEditor elementEditor) {
+            elementEditor_ = elementEditor;
         }
 
     }
