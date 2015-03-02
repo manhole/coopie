@@ -236,11 +236,11 @@ project(":coopie") {
             exclude group: "org.slf4j", module: "slf4j-api"
         }
         compile("org.slf4j:slf4j-api:${versions.slf4j}")
-        compile("ch.qos.logback:logback-core:${versions.logback}")
-        compile("ch.qos.logback:logback-classic:${versions.logback}")
         compile("org.apache.poi:poi-ooxml:3.9") {
             ext.optional = true
         }
+        testCompile("ch.qos.logback:logback-core:${versions.logback}")
+        testCompile("ch.qos.logback:logback-classic:${versions.logback}")
         testCompile("junit:junit-dep:4.10")
         testCompile("org.hamcrest:hamcrest-core:1.2.1")
         testCompile("org.hamcrest:hamcrest-library:1.2.1")
