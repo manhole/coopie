@@ -16,8 +16,6 @@
 
 package jp.sourceforge.hotchpotch.coopie.groovy
 
-import java.lang.annotation.Annotation
-
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvLayout
 import jp.sourceforge.hotchpotch.coopie.csv.ConverterRepository
 import jp.sourceforge.hotchpotch.coopie.csv.CsvElementInOut
@@ -29,13 +27,12 @@ import jp.sourceforge.hotchpotch.coopie.csv.MapCsvLayout
 import jp.sourceforge.hotchpotch.coopie.csv.QuoteMode
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter
-import jp.sourceforge.hotchpotch.coopie.util.Annotations
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil
 import jp.sourceforge.hotchpotch.coopie.util.LineSeparator
-import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader
 
-import org.t2framework.commons.meta.PropertyDesc
-
+/**
+ * @author manhole
+ */
 class Csv {
 
     char elementSeparator = CsvSetting.COMMA
@@ -257,22 +254,6 @@ class Csv {
 
         int length() {
             return elements.length
-        }
-    }
-
-    static class GroovyAnnotationReader implements PropertyAnnotationReader {
-
-        private PropertyAnnotationReader delegate_ = Annotations.getPropertyAnnotationReader()
-        private PropertyAnnotationReader prop_ = new Annotations.FieldPropertyAnnotationReader()
-
-        @Override
-        public <ANN extends Annotation> ANN getAnnotation(
-                PropertyDesc<?> propertyDesc, Class<ANN> annotationClass) {
-            def ann = delegate_.getAnnotation(propertyDesc, annotationClass)
-            if (ann != null) {
-                return ann
-            }
-            return prop_.getAnnotation(propertyDesc, annotationClass)
         }
     }
 
