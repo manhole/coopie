@@ -16,7 +16,8 @@
 
 package jp.sourceforge.hotchpotch.coopie;
 
-import org.junit.internal.matchers.SubstringMatcher;
+
+import org.hamcrest.core.SubstringMatcher;
 
 public class CoopieMatchers {
 

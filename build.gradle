@@ -248,9 +248,8 @@ project(":coopie") {
         }
         testCompile("ch.qos.logback:logback-core:${versions.logback}")
         testCompile("ch.qos.logback:logback-classic:${versions.logback}")
-        testCompile("junit:junit-dep:4.10")
-        testCompile("org.hamcrest:hamcrest-core:1.2.1")
-        testCompile("org.hamcrest:hamcrest-library:1.2.1")
+        testCompile("junit:junit-dep:4.11")
+        testCompile("org.hamcrest:hamcrest-library:1.3")
     }
 }
 
@@ -264,9 +263,8 @@ project(":coopie-groovy") {
         compile(project(":coopie"))
         testCompile("ch.qos.logback:logback-core:${versions.logback}")
         testCompile("ch.qos.logback:logback-classic:${versions.logback}")
-        testCompile("junit:junit:4.10")
-        testCompile("org.hamcrest:hamcrest-core:1.2.1")
-        testCompile("org.hamcrest:hamcrest-library:1.2.1")
+        testCompile("junit:junit-dep:4.11")
+        testCompile("org.hamcrest:hamcrest-library:1.3")
     }
 }
 
