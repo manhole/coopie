@@ -1,0 +1,46 @@
+apply plugin: 'eclipse'
+
+/*
+ * tasks.eclipse {...} ではダメ
+ * このとき、ブロックに渡されるのはtaskインスタンス。
+ * task ":eclipse"
+ * class org.gradle.api.DefaultTask_Decorated
+ * tasks.eclipse.configure {...}も同様にtaskインスタンス
+ *
+ * eclipse {...} ではmodelというものがブロックに渡される。
+ * org.gradle.plugins.ide.eclipse.model.EclipseModel_Decorated@18247418
+ */
+eclipse {
+    // .classpathを共有するための設定。ユーザホームへのフルパスが書かれないようにする。
+    // EclipseのJava > Build Path > Classpath VariablesにGRADLE_USER_HOMEを ~/.gradle(展開したフルパス) に設定しておくこと。
+    pathVariables 'GRADLE_USER_HOME': gradle.gradleUserHomeDir
+}
+
+/*
+ * Eclipseは"org.eclipse.jdt.core.prefs"ファイルをソートして出力するが、gradleプラグインは
+ * (java.util.Propertiesを使っているため)ソートしてくれない。
+ * そのため内容が変わっていなくてもgit変更対象に上がってしまう。
+ * ここではgradle側の出力をソートして、Eclipseに合わせる。
+ *
+ * eclipse.jdt.file.whenMergedで取得できるorg.gradle.plugins.ide.eclipse.model.Jdtや、
+ * eclipse.jdt.file.withPropertiesで取得できるjava.util.Propertiesからは
+ * ソートできないため。
+ */
+tasks.eclipseJdt {
+    assert 'org.eclipse.jdt.core.prefs' == outputFile.name
+    ext.originalOutputFile = outputFile
+    outputFile = (outputFile.absolutePath + '.tmp') as File
+}
+tasks.eclipseJdt << {
+    assert 'org.eclipse.jdt.core.prefs.tmp' == outputFile.name
+    assert 'org.eclipse.jdt.core.prefs' == ext.originalOutputFile.name
+    List lines = outputFile.readLines('UTF-8')
+    Collections.sort(lines)
+    ext.originalOutputFile.withWriter('UTF-8') { writer ->
+        lines.each { line ->
+            writer << line
+            writer << '\r\n'
+        }
+    }
+    assert outputFile.delete()
+}
