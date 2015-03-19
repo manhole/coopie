@@ -108,7 +108,6 @@ subprojects { project ->
                      * "maven-publish"が用意する<dependencies>を破棄して、作り変える。
                      * 1. compile scopeがruntimeになってしまう。
                      * 2. optionalを指定できない。
-                     * 3. excludeを指定できない。
                      */
 
                     def projectDependencies = [:]
