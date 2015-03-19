@@ -103,52 +103,60 @@ subprojects { project ->
             maven(MavenPublication) {
                 from components.java
                 artifact sourcesJar
-                pom.withXml {
+                pom.withXml { /* org.gradle.api.XmlProvider */ XmlProvider xml ->
                     /*
                      * "maven-publish"が用意する<dependencies>を破棄して、作り変える。
                      * 1. compile scopeがruntimeになってしまう。
                      * 2. optionalを指定できない。
+                     * 3. maven-publishが作成するpomのscopeはcompileだけのようだ。test scopeなども加えたい。
                      */
 
-                    def projectDependencies = [:]
-                    // compileとtestCompileを対象にしているが、maven-publishが作成するpomはcompileだけのようだ。
-                    ["compile": "compile", "testCompile": "test"].each { configName, scopeValue ->
-                        // project.configurations["compile"].dependencies で取得できるクラスは、
-                        // org.gradle.api.internal.artifacts.DefaultDependencySet
-                        project.configurations[configName].dependencies.each { dep ->
-                            def holder = new DependencyHolder(gradleDependency: dep, mavenScope: scopeValue)
-                            projectDependencies[holder.key()] = holder
+                    def dependencyList = new DependencyList()
+                    project.configurations.each { Configuration config ->
+                        config.dependencies.each { Dependency dependency ->
+                            dependencyList.add(config, dependency)
                         }
                     }
 
-                    def Node projectNode = asNode()
-                    def Node dependencies = projectNode.dependencies[0]
-                    dependencies.each { Node dependency ->
-                        assert dependency.name().localPart == "dependency"
-                        //// NodeListが返るので添字0でNodeを取得する
-                        //def groupId = dependency.groupId[0].value()[0]
-                        //def artifactId = dependency.artifactId[0].value()[0]
-                        //def scope = dependency.scope[0].value()[0]
-                        def groupId = dependency.groupId.text()
-                        def artifactId = dependency.artifactId.text()
-                        def scope = dependency.scope.text()
-                        def key = "${groupId}:${artifactId}"
-                        def depHolder = projectDependencies[key]
-                        logger.info "${key} ... ${scope} -> ${depHolder.mavenScope}"
-                        // デフォルトであるcompileスコープだったらpom.xmlから<scope>compile</scope>を省略する。
-                        if ("compile" == depHolder.mavenScope) {
-                            dependency.remove(dependency.scope[0])
-                        } else {
-                            dependency.scope[0].value = depHolder.mavenScope
-                        }
-                        if (depHolder.optional()) {
-                            dependency.children().last() + {
+                    // groovy.util.Node
+                    Node projectNode = xml.asNode()
+                    Node dependencies = projectNode.dependencies[0]
+                    // dependenciesを作りなおす
+                    dependencies.children().clear()
+                    Node dummyNode = dependencies.appendNode('dummy')
+                    dummyNode + {
+                        NodeBuilder dependenciesBuilder = delegate
+                        dependencyList.holders.each { String key, DependencyHolder holder ->
+                            dependenciesBuilder.dependency {
                                 resolveStrategy = Closure.DELEGATE_FIRST
-                                optional true
+                                groupId holder.groupId()
+                                artifactId holder.artifactId()
+                                version holder.version()
+                                // pom.xmlから<scope>compile</scope>を省略する。
+                                if ("compile" != holder.mavenScope()) {
+                                    scope holder.mavenScope()
+                                }
+                                if (holder.classifier()) {
+                                    type holder.classifier()
+                                }
+                                if (holder.isOptional()) {
+                                    optional true
+                                }
+                                if (holder.dependency.excludeRules) {
+                                    exclusions {
+                                        resolveStrategy = Closure.DELEGATE_FIRST
+                                        holder.dependency.excludeRules.each { excludeRule ->
+                                            exclusion {
+                                                delegate.artifactId excludeRule.module
+                                                delegate.groupId excludeRule.group
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                            //new Node(dependency, "optional", [:], "true")
                         }
                     }
+                    dependencies.remove(dummyNode)
 
                     // http://maven.apache.org/ref/3.0.5/maven-model/maven.html
                     // dependenciesの前(versionの後ろ)へ追加したい
@@ -260,7 +268,7 @@ project(":coopie-groovy") {
         compile(project(":coopie"))
         testCompile("ch.qos.logback:logback-core:${versions.logback}")
         testCompile("ch.qos.logback:logback-classic:${versions.logback}")
-        testCompile("junit:junit-dep:4.10")
+        testCompile("junit:junit:4.10")
         testCompile("org.hamcrest:hamcrest-core:1.2.1")
         testCompile("org.hamcrest:hamcrest-library:1.2.1")
     }
@@ -286,19 +294,81 @@ def _setupEncoding(Project project) {
     }
 }
 
+def class DependencyList {
+
+    def holders = [:]
+
+    def add(Configuration config, Dependency dependency) {
+        def holder = new DependencyHolder(dependency: dependency, configuration: config)
+        def prev = holders[holder.key()]
+        holders[holder.key()] = holder
+
+        assert prev == null
+    }
+
+    DependencyHolder remove(String key) {
+        println "remove key=" + key
+        return holders.remove(key)
+    }
+
+}
+
 def class DependencyHolder {
-    def gradleDependency
-    def mavenScope
+    Dependency dependency
+    Configuration configuration
 
     def key() {
         // groupId + ":" + artifactId
-        "${gradleDependency.group}:${gradleDependency.name}"
+        "${dependency.group}:${dependency.name}"
     }
 
-    def optional() {
-        if (gradleDependency.ext.has("optional") && gradleDependency.optional) {
+    def groupId() {
+        dependency.group
+    }
+
+    def artifactId() {
+        dependency.name
+    }
+
+    def version() {
+        dependency.version
+    }
+
+    def classifier() {
+        def artifact = dependency.artifacts.find { DependencyArtifact artifact ->
+            if (artifact.classifier) {
+                return true
+            }
+        }
+        if (artifact) {
+            return mavenClassifier(artifact)
+        }
+        return null
+    }
+
+    def isOptional() {
+        if (dependency.ext.has("optional") && dependency.optional) {
             return true
         }
         return false
     }
+
+    def mavenScope() {
+        if (dependency.ext.has('mavenScope')) {
+            return dependency.mavenScope
+        }
+        switch (configuration.name) {
+            case 'testCompile':
+                return 'test'
+        }
+        return configuration.name
+    }
+
+    private mavenClassifier(DependencyArtifact artifact) {
+        if ('tests' == artifact.classifier) {
+            return 'test-jar'
+        }
+        return artifact.classifier
+    }
+
 }
