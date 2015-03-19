@@ -48,6 +48,7 @@ public abstract class AbstractRecordReader<BEAN> implements Closable, RecordRead
 
     private Boolean hasNext_;
     private String[] nextLine_;
+    private String[] lastLine_;
     private int recordNo_;
 
     private ElementEditor elementEditor_;
@@ -69,7 +70,9 @@ public abstract class AbstractRecordReader<BEAN> implements Closable, RecordRead
 
         final String[] line = nextLine_;
         recordDesc_.setValues(bean, line);
+
         recordNo_++;
+        lastLine_ = line;
     }
 
     @Override
@@ -140,6 +143,11 @@ public abstract class AbstractRecordReader<BEAN> implements Closable, RecordRead
     @Override
     public int getRecordNumber() {
         return recordNo_;
+    }
+
+    @Override
+    public String[] getRawRecord() {
+        return lastLine_;
     }
 
     @Override

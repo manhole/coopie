@@ -17,7 +17,10 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -109,22 +112,27 @@ public class BeanCsvReaderTest {
     public static void assertRead1(final RecordReader<AaaBean> csvReader, final AaaBean bean) throws IOException {
 
         assertEquals(0, csvReader.getRecordNumber());
+        assertThat(csvReader.getRawRecord(), is(nullValue()));
         assertEquals(true, csvReader.hasNext());
         assertEquals(0, csvReader.getRecordNumber());
+        assertThat(csvReader.getRawRecord(), is(nullValue()));
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals(1, csvReader.getRecordNumber());
         assertEquals("あ1", bean.getAaa());
         assertEquals("い1", bean.getBbb());
         assertEquals("う1", bean.getCcc());
+        assertThat(csvReader.getRawRecord(), is(a("あ1", "う1", "い1")));
 
         assertEquals(true, csvReader.hasNext());
+        assertThat(csvReader.getRawRecord(), is(a("あ1", "う1", "い1")));
         csvReader.read(bean);
         logger.debug(bean.toString());
         assertEquals(2, csvReader.getRecordNumber());
         assertEquals("あ2", bean.getAaa());
         assertEquals("い2", bean.getBbb());
         assertEquals("う2", bean.getCcc());
+        assertThat(csvReader.getRawRecord(), is(a("あ2", "う2", "い2")));
 
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
@@ -133,6 +141,7 @@ public class BeanCsvReaderTest {
         assertEquals("あ3", bean.getAaa());
         assertEquals("い3", bean.getBbb());
         assertEquals("う3", bean.getCcc());
+        assertThat(csvReader.getRawRecord(), is(a("あ3", "う3", "い3")));
 
         assertEquals(false, csvReader.hasNext());
         assertEquals(3, csvReader.getRecordNumber());

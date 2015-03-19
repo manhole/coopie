@@ -1,7 +1,7 @@
 0.4.2 201X/XX/XX
 
 - ExcelToCsv: 要素のクォートをMINIMUMなどに変更できるようにした。
-
+- add method: RecordReader#getRawRecord() 直前にreadしたBEANの元要素を取得できるようにしました。
 
 misc:
 - logbackのscopeを compile -> testCompile にしました。

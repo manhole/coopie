@@ -35,4 +35,11 @@ public interface RecordReader<BEAN> extends Closable {
      */
     int getRecordNumber();
 
+    /**
+     * 直前に {@link #read()} したrecordの元となった1レコードの要素群を返します。
+     *
+     * read結果に問題があった際に元データをログに残したい、といった用途を想定しています。
+     */
+    String[] getRawRecord();
+
 }
