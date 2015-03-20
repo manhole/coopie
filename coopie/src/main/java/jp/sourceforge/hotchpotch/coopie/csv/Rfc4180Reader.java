@@ -100,7 +100,7 @@ public class Rfc4180Reader implements ElementReader {
     }
 
     private String[] readRecord0() throws IOException {
-        final ReadContect rc = new ReadContect();
+        final ReadContext rc = new ReadContext();
 
         read_loop: while (true) {
             final Line line = readLine();
@@ -305,7 +305,7 @@ public class Rfc4180Reader implements ElementReader {
         return record;
     }
 
-    private void invalid(final ReadContect rc) {
+    private void invalid(final ReadContext rc) {
         /*
          * クォートされた要素内にクォートが登場したら、
          * 続く文字はクォート(→エスケープされたクォート文字とみなす)か、改行(→レコードの終わりとみなす)
@@ -423,7 +423,7 @@ public class Rfc4180Reader implements ElementReader {
         lineReaderHandler_ = lineReaderHandler;
     }
 
-    static class ReadContect {
+    static class ReadContext {
         State state = State.INITIAL;
         /*
          * 要素区切り文字の次の位置
