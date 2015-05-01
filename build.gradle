@@ -14,7 +14,7 @@ allprojects { project ->
     apply from: "${project.getRootDir()}/gradle/eclipse.gradle"
     apply plugin: "license"
     license {
-        header rootProject.file("HEADER.txt")
+        header rootProject.file("LICENSE-coopie.txt")
         strictCheck true
         useDefaultMappings false
         mapping {
