@@ -28,12 +28,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.ArrayMap;
-import org.t2framework.commons.util.CollectionsUtil;
 
 public class BeanMapTest {
 
@@ -125,10 +124,11 @@ public class BeanMapTest {
     }
 
     @Test
-    public void put_badType_notlenient() throws Throwable {
+    public void put_badType_notLenient() throws Throwable {
         // ## Arrange ##
         final Bar obj = new Bar();
         final BeanMap map = new BeanMap(obj);
+        // 厳密にする
         map.setLenient(false);
 
         // ## Act ##
@@ -160,7 +160,7 @@ public class BeanMapTest {
         final Map<String, Object> map = new BeanMap(obj);
 
         // ## Act ##
-        final ArrayMap<String, Object> a = CollectionsUtil.newArrayMap();
+        final Map<String, Object> a = CollectionsUtil.newHashMap();
         a.put("aaa", "1111");
         a.put("ccc", new Date(66667L));
         map.putAll(a);

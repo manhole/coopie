@@ -23,8 +23,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
+import jp.sourceforge.hotchpotch.coopie.util.ReaderUtil;
+
 import org.junit.Test;
-import org.t2framework.commons.util.ReaderUtil;
 
 public class FixedLengthWriterTest {
 
@@ -49,7 +50,9 @@ public class FixedLengthWriterTest {
         final String actual = sw.toString();
 
         final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream("-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is, "UTF-8"));
+        final InputStreamReader r = new InputStreamReader(is, "UTF-8");
+        final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 

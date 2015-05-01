@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.t2framework.commons.util.StringUtil;
-
 public class RandomString {
 
     private final Random random_ = new Random();
@@ -125,7 +123,7 @@ public class RandomString {
         private final int radix_;
 
         public CustomRadixString(final String chars) {
-            if (StringUtil.isEmpty(chars)) {
+            if (Text.isEmpty(chars)) {
                 throw new IllegalArgumentException(String.valueOf(chars));
             }
             chars_ = chars;

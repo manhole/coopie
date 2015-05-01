@@ -16,7 +16,7 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import org.t2framework.commons.util.StringUtil;
+import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 public class DefaultCsvSetting implements CsvSetting {
 
@@ -47,7 +47,7 @@ public class DefaultCsvSetting implements CsvSetting {
 
     @Override
     public String getLineSeparator() {
-        if (StringUtil.isEmpty(lineSeparator_)) {
+        if (Text.isEmpty(lineSeparator_)) {
             lineSeparator_ = CRLF;
         }
         return lineSeparator_;

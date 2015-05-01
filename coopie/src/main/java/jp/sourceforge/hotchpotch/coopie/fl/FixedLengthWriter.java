@@ -23,9 +23,8 @@ import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
-
-import org.t2framework.commons.exception.IORuntimeException;
-import org.t2framework.commons.util.StringUtil;
+import jp.sourceforge.hotchpotch.coopie.util.IORuntimeException;
+import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 public class FixedLengthWriter implements ElementWriter {
 
@@ -76,7 +75,7 @@ public class FixedLengthWriter implements ElementWriter {
     }
 
     public String getLineSeparator() {
-        if (StringUtil.isEmpty(lineSeparator_)) {
+        if (Text.isEmpty(lineSeparator_)) {
             lineSeparator_ = CsvSetting.CRLF;
         }
         return lineSeparator_;

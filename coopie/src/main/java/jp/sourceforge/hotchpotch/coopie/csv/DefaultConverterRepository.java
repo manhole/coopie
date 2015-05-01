@@ -21,7 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import org.t2framework.commons.util.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 
 public class DefaultConverterRepository implements ConverterRepository {
 

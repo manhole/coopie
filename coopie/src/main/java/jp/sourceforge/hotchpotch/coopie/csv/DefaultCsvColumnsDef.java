@@ -18,9 +18,9 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.List;
 
-import org.t2framework.commons.meta.PropertyDesc;
-import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.StringUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
+import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 class DefaultCsvColumnsDef implements CsvColumnsDef {
 
@@ -32,7 +32,7 @@ class DefaultCsvColumnsDef implements CsvColumnsDef {
     public void setup(final CsvColumns columns, final PropertyDesc pd) {
         for (final CsvColumn column : columns.value()) {
             final DefaultCsvColumnDef columnDef = new DefaultCsvColumnDef();
-            if (StringUtil.isBlank(column.label())) {
+            if (Text.isBlank(column.label())) {
                 columnDef.setLabel(pd.getPropertyName());
             } else {
                 columnDef.setLabel(column.label());

@@ -16,8 +16,6 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
-import org.t2framework.commons.util.task.Task;
-
 public class ContextClassLoaderBlock implements TaskExecutable {
 
     private final ClassLoader classLoader_;
@@ -31,7 +29,7 @@ public class ContextClassLoaderBlock implements TaskExecutable {
     }
 
     @Override
-    public <V, E extends Throwable> V execute(final Task<V, E> task) throws E {
+    public <V> V execute(final Task<V> task) {
         final Thread thread = Thread.currentThread();
         final ClassLoader contextClassLoader = thread.getContextClassLoader();
         thread.setContextClassLoader(classLoader_);

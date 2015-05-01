@@ -34,10 +34,10 @@ import java.util.TreeMap;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.util.ReaderUtil;
 
 import org.junit.Test;
-import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.ReaderUtil;
 
 public class MapCsvWriterTest {
 
@@ -82,7 +82,10 @@ public class MapCsvWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = BeanCsvWriterTest.getResourceAsStream("-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is, "UTF-8"));
+        final InputStreamReader in = new InputStreamReader(is, "UTF-8");
+        final String expected = ReaderUtil.readText(in);
+        in.close();
+
         assertEquals(expected, actual);
     }
 
@@ -129,6 +132,7 @@ public class MapCsvWriterTest {
 
         final Reader r = getResourceAsReader("-1", "tsv");
         final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -173,6 +177,7 @@ public class MapCsvWriterTest {
 
         final Reader r = getResourceAsReader("-2", "tsv");
         final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -208,6 +213,7 @@ public class MapCsvWriterTest {
 
         final Reader r = getResourceAsReader("-4", "tsv");
         final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -253,6 +259,7 @@ public class MapCsvWriterTest {
 
         final Reader r = getResourceAsReader("-3", "tsv");
         final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 

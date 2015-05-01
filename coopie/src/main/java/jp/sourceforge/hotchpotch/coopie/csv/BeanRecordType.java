@@ -16,7 +16,7 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import org.t2framework.commons.meta.BeanDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDesc;
 
 public class BeanRecordType<BEAN> implements RecordType<BEAN> {
 

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertSame;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
-import org.t2framework.commons.util.task.Task;
 
 public class ContextClassLoaderBlockTest {
 
@@ -40,9 +39,9 @@ public class ContextClassLoaderBlockTest {
         assertNotSame(cl, Thread.currentThread().getContextClassLoader());
 
         // ## Act ##
-        final Object ret = ContextClassLoaderBlock.with(cl).execute(new Task<Object, RuntimeException>() {
+        final Object ret = ContextClassLoaderBlock.with(cl).execute(new Task<Object>() {
             @Override
-            public Object execute() throws RuntimeException {
+            public Object execute() {
                 called.set(true);
                 assertSame(cl, Thread.currentThread().getContextClassLoader());
                 return returns;

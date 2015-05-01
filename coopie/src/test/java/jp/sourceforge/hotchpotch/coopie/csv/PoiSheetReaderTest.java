@@ -22,9 +22,10 @@ import static org.junit.Assert.assertThat;
 
 import java.io.InputStream;
 
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class PoiSheetReaderTest extends ElementReaderTest {
 

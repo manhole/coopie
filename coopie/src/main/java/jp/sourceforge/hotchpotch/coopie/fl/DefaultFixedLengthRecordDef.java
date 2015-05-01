@@ -18,7 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.util.List;
 
-import org.t2framework.commons.util.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 
 class DefaultFixedLengthRecordDef implements FixedLengthRecordDef {
 

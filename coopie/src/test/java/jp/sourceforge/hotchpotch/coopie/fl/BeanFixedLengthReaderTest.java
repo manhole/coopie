@@ -42,11 +42,11 @@ import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.fl.FixedLengthColumnSetup.FixedLengthCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.CharSequenceWriter;
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class BeanFixedLengthReaderTest {
 

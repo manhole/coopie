@@ -16,8 +16,6 @@
 
 package jp.sourceforge.hotchpotch.coopie.fl;
 
-import java.util.List;
-
 import jp.sourceforge.hotchpotch.coopie.csv.BeanPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
@@ -30,12 +28,11 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordInOut;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDescFactory;
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
 import jp.sourceforge.hotchpotch.coopie.util.Annotations;
 import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader;
-
-import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.meta.BeanDescFactory;
-import org.t2framework.commons.meta.PropertyDesc;
 
 public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN> {
 
@@ -117,8 +114,8 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
 
     private FixedLengthRecordDef createRecordDefByAnnotation() {
         final DefaultFixedLengthRecordDef recordDef = new DefaultFixedLengthRecordDef();
-        final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
-        for (final PropertyDesc<BEAN> pd : pds) {
+        final Iterable<PropertyDesc<BEAN, ?>> pds = beanDesc_.propertyDescs();
+        for (final PropertyDesc<BEAN, ?> pd : pds) {
             final FixedLengthColumn column = getPropertyAnnotationReader().getAnnotation(pd, FixedLengthColumn.class);
             if (column == null) {
                 continue;

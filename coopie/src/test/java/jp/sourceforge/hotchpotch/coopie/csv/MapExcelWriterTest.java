@@ -22,8 +22,9 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
+
 import org.junit.Test;
-import org.t2framework.commons.util.CollectionsUtil;
 
 public class MapExcelWriterTest {
 

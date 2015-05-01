@@ -55,6 +55,12 @@ public class CharacterStreamOperation {
         }
     }
 
+    public String read(final Readable in) throws IOException {
+        final StringBuilder sb = new StringBuilder(256);
+        pipe(in, sb);
+        return sb.toString();
+    }
+
     public void setBufferSize(final int bufferSize) {
         bufferSize_ = bufferSize;
     }

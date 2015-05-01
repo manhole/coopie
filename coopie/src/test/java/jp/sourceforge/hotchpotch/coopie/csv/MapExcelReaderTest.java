@@ -25,12 +25,12 @@ import java.io.InputStream;
 import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class MapExcelReaderTest {
 

@@ -22,11 +22,11 @@ import java.util.List;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.ColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CompositeColumnBuilder;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc.OrderSpecified;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
+import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.slf4j.Logger;
-import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.StringUtil;
 
 public abstract class AbstractCsvLayout<BEAN> {
 
@@ -294,7 +294,7 @@ public abstract class AbstractCsvLayout<BEAN> {
                 } else if (builder instanceof InternalCsvCompositeColumnBuilder) {
                     final CsvColumnsDef columnsDef = ((InternalCsvCompositeColumnBuilder) builder)
                             .getCompositeColumnDef();
-                    if (StringUtil.isEmpty(columnsDef.getPropertyName())) {
+                    if (Text.isEmpty(columnsDef.getPropertyName())) {
                         final List<String> names = CollectionsUtil.newArrayList();
                         final List<CsvColumnDef> defs = columnsDef.getColumnDefs();
                         for (final CsvColumnDef def : defs) {

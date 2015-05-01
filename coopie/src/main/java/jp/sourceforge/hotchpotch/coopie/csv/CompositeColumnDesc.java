@@ -17,13 +17,13 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import org.t2framework.commons.meta.BeanDescFactory;
-import org.t2framework.commons.meta.MethodDesc;
-import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.StringUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDescFactory;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 
 public class CompositeColumnDesc<BEAN> {
 
@@ -72,7 +72,7 @@ public class CompositeColumnDesc<BEAN> {
                 int i = 0;
                 for (final ColumnName name : columnNames_) {
                     final Object value = to[i];
-                    final String s = StringUtil.toString(value);
+                    final String s = toString(value);
                     getValues_.put(name, s);
                     i++;
                 }
@@ -86,6 +86,13 @@ public class CompositeColumnDesc<BEAN> {
         return v;
     }
 
+    private String toString(final Object value) {
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
     private void setValue(final ColumnName columnName, final BEAN bean, final String value) {
         if (setValues_ == null || setValues_.containsKey(columnName)) {
             setValues_ = CollectionsUtil.newHashMap();
@@ -96,9 +103,9 @@ public class CompositeColumnDesc<BEAN> {
             // TODO 引数が配列ではない場合
             Class<?> componentType;
             {
-                final MethodDesc methodDesc = BeanDescFactory.getBeanDesc(converter_.getClass()).getMethodDesc(
-                        "convertFrom");
-                final Class<?>[] parameterTypes = methodDesc.getParameterTypes();
+                final BeanDesc<? extends Converter> beanDesc = BeanDescFactory.getBeanDesc(converter_.getClass());
+                final Method method = beanDesc.getMethod("convertFrom");
+                final Class<?>[] parameterTypes = method.getParameterTypes();
                 componentType = parameterTypes[0].getComponentType();
             }
             final Object[] from = (Object[]) Array.newInstance(componentType, columnNames_.size());

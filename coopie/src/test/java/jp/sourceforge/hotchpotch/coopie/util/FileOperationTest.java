@@ -41,7 +41,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileOperationTest {
 

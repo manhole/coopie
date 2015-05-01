@@ -42,11 +42,11 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CccBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.DddBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.EeeBean;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CsvCompositeColumnSetup;
+import jp.sourceforge.hotchpotch.coopie.util.ReaderUtil;
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.junit.Test;
-import org.t2framework.commons.util.ReaderUtil;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class BeanCsvWriterTest {
 
@@ -140,6 +140,7 @@ public class BeanCsvWriterTest {
 
         final Reader r = getResourceAsReader("-1", "tsv");
         final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -184,6 +185,7 @@ public class BeanCsvWriterTest {
 
         final Reader r = getResourceAsReader("-2", "tsv");
         final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -266,6 +268,7 @@ public class BeanCsvWriterTest {
 
         final Reader r = getResourceAsReader("-3", "tsv");
         final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -540,6 +543,7 @@ public class BeanCsvWriterTest {
 
         final Reader r = getResourceAsReader("-2", "tsv");
         final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -575,6 +579,7 @@ public class BeanCsvWriterTest {
         final InputStream is = getResourceAsStream("-1", "tsv");
         final InputStreamReader reader = new InputStreamReader(is, "UTF-8");
         final String expected = ReaderUtil.readText(reader);
+        reader.close();
         assertEquals(expected, actual);
     }
 

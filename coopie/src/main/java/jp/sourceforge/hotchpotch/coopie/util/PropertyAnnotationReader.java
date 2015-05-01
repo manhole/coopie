@@ -18,10 +18,10 @@ package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.lang.annotation.Annotation;
 
-import org.t2framework.commons.meta.PropertyDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
 
 public interface PropertyAnnotationReader {
 
-    <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?> propertyDesc, final Class<ANN> annotationClass);
+    <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?, ?> propertyDesc, final Class<ANN> annotationClass);
 
 }

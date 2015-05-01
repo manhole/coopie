@@ -19,7 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.logging;
 import java.util.Collections;
 import java.util.List;
 
-import org.t2framework.commons.util.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 
 public class SimpleLog implements Log {
 

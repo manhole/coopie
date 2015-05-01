@@ -22,10 +22,11 @@ import static org.junit.Assert.assertEquals;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class Rfc4180WriterTest {
 

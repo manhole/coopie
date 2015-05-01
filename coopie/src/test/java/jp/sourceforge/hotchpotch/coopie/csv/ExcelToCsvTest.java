@@ -28,12 +28,12 @@ import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 import jp.sourceforge.hotchpotch.coopie.util.LineSeparator;
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class ExcelToCsvTest {
 
@@ -201,7 +201,8 @@ public class ExcelToCsvTest {
         final File excelFile = new File(rootDir_, "quoteMode_default.xls");
         assertThat(excelFile.exists(), is(false));
         {
-            final DefaultExcelWriter.PoiWriter writer = new DefaultExcelWriter.PoiWriter(files_.openBufferedOutputStream(excelFile));
+            final DefaultExcelWriter.PoiWriter writer = new DefaultExcelWriter.PoiWriter(
+                    files_.openBufferedOutputStream(excelFile));
             writer.open();
             writer.writeRecord(new String[] { "a", "\"b", "c" });
             writer.writeRecord(new String[] { "1", "2", "3\n4" });
@@ -248,7 +249,8 @@ public class ExcelToCsvTest {
         final File excelFile = new File(rootDir_, "quoteMode_minimum.xls");
         assertThat(excelFile.exists(), is(false));
         {
-            final DefaultExcelWriter.PoiWriter writer = new DefaultExcelWriter.PoiWriter(files_.openBufferedOutputStream(excelFile));
+            final DefaultExcelWriter.PoiWriter writer = new DefaultExcelWriter.PoiWriter(
+                    files_.openBufferedOutputStream(excelFile));
             writer.open();
             writer.writeRecord(new String[] { "a", "\"b", "c" });
             writer.writeRecord(new String[] { "1", "2", "3\n4" });

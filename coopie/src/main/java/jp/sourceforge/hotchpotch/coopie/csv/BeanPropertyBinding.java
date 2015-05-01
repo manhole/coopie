@@ -17,37 +17,26 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.PropertyNotFoundException;
-
-import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.meta.ClassDesc;
-import org.t2framework.commons.meta.MethodDesc;
-import org.t2framework.commons.meta.PropertyDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
 
 public class BeanPropertyBinding<BEAN, PROP> implements PropertyBinding<BEAN, PROP> {
 
-    private final MethodDesc writeMethodDesc_;
-    private final MethodDesc readMethodDesc_;
+    private final PropertyDesc<BEAN, PROP> propertyDesc_;
 
-    public BeanPropertyBinding(final PropertyDesc<BEAN> propertyDesc) {
-        writeMethodDesc_ = propertyDesc.getWriteMethodDesc();
-        readMethodDesc_ = propertyDesc.getReadMethodDesc();
+    public BeanPropertyBinding(final PropertyDesc<BEAN, PROP> propertyDesc) {
+        propertyDesc_ = propertyDesc;
     }
 
     @Override
     public void setValue(final BEAN bean, final PROP value) {
-        /*
-         * PropertyDesc#setValueだと勝手に変換されるので、
-         * 変換されないようMethodDescを取り出して使用する。
-         */
-        writeMethodDesc_.invoke(bean, new Object[] { value });
+        propertyDesc_.setValue(bean, value);
     }
 
     @Override
     public PROP getValue(final BEAN bean) {
-        final Object value = readMethodDesc_.invoke(bean, null);
-        @SuppressWarnings("unchecked")
-        final PROP v = (PROP) value;
-        return v;
+        final PROP value = propertyDesc_.getValue(bean);
+        return value;
     }
 
     public static class Factory<BEAN> implements PropertyBindingFactory<BEAN> {
@@ -63,14 +52,14 @@ public class BeanPropertyBinding<BEAN, PROP> implements PropertyBinding<BEAN, PR
             if (name == null) {
                 throw new NullPointerException("name");
             }
-            final PropertyDesc<BEAN> pd = beanDesc_.getPropertyDesc(name);
-            if (pd == null) {
-                final ClassDesc<BEAN> classDesc = beanDesc_.getClassDesc();
-                final Class<? extends BEAN> concreteClass = classDesc.getConcreteClass();
-                final String className = concreteClass.getName();
-                throw new PropertyNotFoundException("property not found:<" + name + "> for class:<" + className + ">");
+            final PropertyDesc<BEAN, PROP> pd = beanDesc_.getPropertyDesc(name);
+            if (pd != null) {
+                return new BeanPropertyBinding<BEAN, PROP>(pd);
             }
-            return new BeanPropertyBinding<BEAN, PROP>(pd);
+
+            final Class<? extends BEAN> clazz = beanDesc_.getBeanClass();
+            final String className = clazz.getName();
+            throw new PropertyNotFoundException("property not found:<" + name + "> for class:<" + className + ">");
         }
 
     }

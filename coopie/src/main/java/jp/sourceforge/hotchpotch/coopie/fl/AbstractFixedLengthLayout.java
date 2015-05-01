@@ -17,6 +17,7 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,11 +48,9 @@ import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.csv.SimpleColumnName;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.util.IORuntimeException;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
-
-import org.t2framework.commons.exception.IORuntimeException;
-import org.t2framework.commons.util.CollectionsUtil;
-import org.t2framework.commons.util.StringUtil;
 
 abstract class AbstractFixedLengthLayout<BEAN> {
 
@@ -397,7 +396,7 @@ abstract class AbstractFixedLengthLayout<BEAN> {
                 } else if (builder instanceof InternalFixedLengthCompositeColumnBuilder) {
                     final FixedLengthColumnsDef columnsDef = ((InternalFixedLengthCompositeColumnBuilder) builder)
                             .getCompositeColumnDef();
-                    if (StringUtil.isEmpty(columnsDef.getPropertyName())) {
+                    if (Text.isEmpty(columnsDef.getPropertyName())) {
                         final List<String> names = CollectionsUtil.newArrayList();
                         final List<FixedLengthColumnDef> defs = columnsDef.getColumnDefs();
                         for (final FixedLengthColumnDef def : defs) {
