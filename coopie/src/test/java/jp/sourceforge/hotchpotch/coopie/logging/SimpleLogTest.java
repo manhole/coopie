@@ -17,8 +17,9 @@
 package jp.sourceforge.hotchpotch.coopie.logging;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.containsString;
+
 import jp.sourceforge.hotchpotch.coopie.util.StdOutBlock;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
