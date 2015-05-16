@@ -5,6 +5,7 @@
 - add Class: CodePoints
 - add Class: FixedLengthLineBuilderを。固定長を書く際にbeginIndex/endIndexを見ていなかったため出力順が不定になってしまっていたのを修正しました。
 - junit-addonsをdependencyから外しました。(0.2.1でも外したと書いている。Mavenからgradleに変えた際に入れてしまったようだ)
+- org.t2framework.commonsをdependencyから外しました。
 - change junit version: 4.10 -> 4.11
 -- hamcrest: 1.2.1 -> 1.3
 

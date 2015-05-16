@@ -193,11 +193,6 @@ project(":coopie") {
     description = "Read/Write library for two-dimensional arrays of data."
     _setupEncoding(project)
     dependencies {
-        compile("org.t2framework.commons:commons:0.6.7-ga") {
-            exclude group: "ch.qos.logback", module: "logback-core"
-            exclude group: "ch.qos.logback", module: "logback-classic"
-            exclude group: "org.slf4j", module: "slf4j-api"
-        }
         compile("org.slf4j:slf4j-api:${versions.slf4j}")
         compile("org.apache.poi:poi-ooxml:3.9") {
             ext.optional = true
