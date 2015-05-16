@@ -16,12 +16,18 @@
 
 package jp.sourceforge.hotchpotch.coopie.fl;
 
+import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderTest;
+
+import org.junit.Test;
 
 public class FixedLengthReaderTest extends ElementReaderTest {
 
@@ -35,6 +41,30 @@ public class FixedLengthReaderTest extends ElementReaderTest {
         final FixedLengthReader reader = new FixedLengthReader(descs);
         reader.open(new InputStreamReader(is, Charset.forName("UTF-8")));
         return reader;
+    }
+
+    @Test
+    public void test2() throws Throwable {
+        // ## Arrange ##
+        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream("-1", "tsv");
+        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] { col(0, 5), col(12, 20), col(5, 12) };
+
+        // ## Act ##
+        final FixedLengthReader reader = new FixedLengthReader(descs);
+        reader.open(new InputStreamReader(is, Charset.forName("UTF-8")));
+
+        // ## Assert ##
+        /*
+         * 初期値は"0"。
+         * 1行目を読み終えたら"1"。
+         */
+        assertArrayEquals(a("aaa", "bbb", "ccc"), reader.readRecord());
+        assertArrayEquals(a("あ1", "い1", "う1"), reader.readRecord());
+        assertArrayEquals(a("あ2", "い2", "う2"), reader.readRecord());
+        assertArrayEquals(a("あ3", "い3", "う3"), reader.readRecord());
+        assertNull(reader.readRecord());
+
+        reader.close();
     }
 
     private FixedLengthElementDesc col(final int begin, final int end) {

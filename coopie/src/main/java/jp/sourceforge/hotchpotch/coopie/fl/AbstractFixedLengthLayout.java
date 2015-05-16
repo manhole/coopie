@@ -17,7 +17,6 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -290,10 +289,10 @@ abstract class AbstractFixedLengthLayout<BEAN> {
         }
 
         @Override
-        public void write(final CharSequence elem, final Appendable appendable) {
+        public void write(final CharSequence elem, final FixedLengthLineBuilder lineBuilder) {
             final CharSequence padded = lpad(elem, length_, ' ');
             try {
-                appendable.append(padded);
+                lineBuilder.write(padded, beginIndex_, endIndex_);
             } catch (final IOException e) {
                 throw new IORuntimeException(e);
             }
