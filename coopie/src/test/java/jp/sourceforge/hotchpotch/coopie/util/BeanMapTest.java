@@ -113,7 +113,9 @@ public class BeanMapTest {
     public void put_badType_lenient() throws Throwable {
         // ## Arrange ##
         final Foo obj = new Foo();
-        final Map<String, Object> map = new BeanMap(obj);
+        final BeanMap map = new BeanMap(obj);
+        // 厳密にしない
+        map.setLenient(true);
 
         // ## Act ##
         // ## Assert ##

@@ -33,7 +33,7 @@ public class BeanMap extends AbstractMap<String, Object> {
     private final Object bean_;
     private final BeanDesc<Object> beanDesc_;
     private final int propertyDescSize_;
-    private boolean lenient_ = true;
+    private boolean lenient_ = false;
 
     @SuppressWarnings("unchecked")
     public BeanMap(final Object obj) {
@@ -87,26 +87,36 @@ public class BeanMap extends AbstractMap<String, Object> {
         if (pd == null) {
             throw new IllegalArgumentException("key [" + key + "] does not exist");
         }
-        assertTypeIfNeed(pd, value);
+
+        final Object valueToSet = assertTypeIfNeed(pd, value);
         final Object prev = pd.getValue(bean_);
-        pd.setValue(bean_, value);
+        pd.setValue(bean_, valueToSet);
         return prev;
     }
 
-    private void assertTypeIfNeed(final PropertyDesc<Object, Object> pd, final Object value) {
-        if (lenient_) {
-            return;
-        }
+    private Object assertTypeIfNeed(final PropertyDesc<Object, Object> pd, final Object value) {
         if (value == null) {
-            return;
+            return null;
         }
 
         final Class<?> expectedType = pd.getPropertyType();
         final Class<? extends Object> actualType = value.getClass();
         if (!expectedType.isAssignableFrom(actualType)) {
+            if (lenient_) {
+                final Object convertedValue = convertValueIfAvailable(value, expectedType, actualType);
+                return convertedValue;
+            }
             throw new IllegalArgumentException("invalid type. expected:<" + expectedType.getName() + "> actual:<"
                     + actualType.getName() + ">");
         }
+        return value;
+    }
+
+    private Object convertValueIfAvailable(final Object value, final Class<?> expectedType, final Class<?> actualType) {
+        if (Integer.class.isAssignableFrom(expectedType)) {
+            return Integer.valueOf(value.toString());
+        }
+        return value;
     }
 
     @Override
