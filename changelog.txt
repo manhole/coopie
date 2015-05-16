@@ -2,6 +2,7 @@
 
 - ExcelToCsv: 要素のクォートをMINIMUMなどに変更できるようにした。
 - add method: RecordReader#getRawRecord() 直前にreadしたBEANの元要素を取得できるようにしました。
+- add Class: CodePoints
 - junit-addonsをdependencyから外しました。(0.2.1でも外したと書いている。Mavenからgradleに変えた際に入れてしまったようだ)
 - change junit version: 4.10 -> 4.11
 -- hamcrest: 1.2.1 -> 1.3
