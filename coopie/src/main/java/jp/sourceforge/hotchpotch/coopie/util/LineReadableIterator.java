@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.t2framework.commons.exception.IORuntimeException;
-
 class LineReadableIterator implements Iterator<Line> {
 
     private final LineReadable reader_;

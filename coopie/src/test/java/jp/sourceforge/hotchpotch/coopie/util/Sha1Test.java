@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 
 import org.junit.Test;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class Sha1Test {
 

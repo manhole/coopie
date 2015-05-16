@@ -21,8 +21,7 @@ import java.io.IOException;
 
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
-
-import org.t2framework.commons.exception.IORuntimeException;
+import jp.sourceforge.hotchpotch.coopie.util.IORuntimeException;
 
 /**
  * CSV Writer

@@ -18,14 +18,12 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDescFactory;
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
 import jp.sourceforge.hotchpotch.coopie.util.Annotations;
 import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader;
-
-import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.meta.BeanDescFactory;
-import org.t2framework.commons.meta.PropertyDesc;
 
 public abstract class AbstractBeanCsvLayout<BEAN> extends AbstractCsvLayout<BEAN> {
 
@@ -110,8 +108,8 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends AbstractCsvLayout<BEAN
 
     private CsvRecordDef createRecordDefByAnnotation() {
         final DefaultCsvRecordDef recordDef = new DefaultCsvRecordDef();
-        final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
-        for (final PropertyDesc<BEAN> pd : pds) {
+        final Iterable<PropertyDesc<BEAN, ?>> pds = beanDesc_.propertyDescs();
+        for (final PropertyDesc<BEAN, ?> pd : pds) {
             final CsvColumns columns = getPropertyAnnotationReader().getAnnotation(pd, CsvColumns.class);
             if (columns != null) {
                 final DefaultCsvColumnsDef columnsDef = new DefaultCsvColumnsDef();
@@ -139,8 +137,8 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends AbstractCsvLayout<BEAN
 
     private CsvRecordDef createRecordDefByProperties() {
         final DefaultCsvRecordDef recordDef = new DefaultCsvRecordDef();
-        final List<PropertyDesc<BEAN>> pds = beanDesc_.getAllPropertyDesc();
-        for (final PropertyDesc<BEAN> pd : pds) {
+        final Iterable<PropertyDesc<BEAN, ?>> pds = beanDesc_.propertyDescs();
+        for (final PropertyDesc<BEAN, ?> pd : pds) {
             final DefaultCsvColumnDef columnDef = new DefaultCsvColumnDef();
             // orderは未指定とする
             columnDef.setup(pd);

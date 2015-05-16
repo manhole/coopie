@@ -16,8 +16,8 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import org.t2framework.commons.meta.PropertyDesc;
-import org.t2framework.commons.util.StringUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
+import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
 
@@ -30,7 +30,7 @@ class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
     private ColumnNameMatcher columnNameMatcher_ = ExactNameMatcher.getInstance();
 
     public void setup(final CsvColumn column, final PropertyDesc pd) {
-        if (StringUtil.isBlank(column.label())) {
+        if (Text.isBlank(column.label())) {
             setLabel(pd.getPropertyName());
         } else {
             setLabel(column.label());

@@ -52,13 +52,12 @@ import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup.CsvCompositeColumnSet
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ToStringFormat;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.exception.ParseRuntimeException;
-import org.t2framework.commons.util.ResourceUtil;
 
 /*
  * CSVの設定としては、
@@ -1931,7 +1930,7 @@ public class BeanCsvReaderTest {
             final Number parse = format_.parse(from, pp);
             if (parse == null || pp.getIndex() != from.length()) {
                 // パースエラー
-                throw new ParseRuntimeException(new ParseException(from, pp.getIndex()));
+                throw new RuntimeException(new ParseException(from, pp.getIndex()));
             }
             final BigDecimal o = (BigDecimal) parse;
             return o;
@@ -2065,7 +2064,7 @@ public class BeanCsvReaderTest {
             final Date date = format.parse(s, pp);
             if (date == null || pp.getIndex() != s.length()) {
                 // パースエラー
-                throw new ParseRuntimeException(new ParseException(s, pp.getIndex()));
+                throw new RuntimeException(new ParseException(s, pp.getIndex()));
             }
             return date;
         }

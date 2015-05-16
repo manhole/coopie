@@ -43,8 +43,6 @@ import java.util.List;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
-import org.t2framework.commons.exception.FileNotFoundRuntimeException;
-import org.t2framework.commons.exception.IORuntimeException;
 
 public class FileOperation {
 
@@ -277,7 +275,7 @@ public class FileOperation {
             final FileOutputStream fos = new FileOutputStream(file);
             return fos;
         } catch (final FileNotFoundException e) {
-            throw new FileNotFoundRuntimeException(e, file);
+            throw new IORuntimeException(file.getPath(), e);
         }
     }
 
@@ -286,7 +284,7 @@ public class FileOperation {
             final FileInputStream fis = new FileInputStream(file);
             return fis;
         } catch (final FileNotFoundException e) {
-            throw new FileNotFoundRuntimeException(e, file);
+            throw new IORuntimeException(file.getPath(), e);
         }
     }
 

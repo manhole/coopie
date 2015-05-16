@@ -14,24 +14,23 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.util;
+package jp.sourceforge.hotchpotch.coopie.internal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class ReaderUtil {
+/**
+ * @author manhole
+ */
+public class CollectionsUtil {
 
-    public static BufferedReader toBufferedReader(final Reader r) {
-        if (r instanceof BufferedReader) {
-            return (BufferedReader) r;
-        }
-        return new BufferedReader(r);
+    public static <T> List<T> newArrayList() {
+        return new ArrayList<T>();
     }
 
-    public static String readText(final Reader r) throws IOException {
-        final CharacterStreamOperation characterStreams = new CharacterStreamOperation();
-        return characterStreams.read(r);
+    public static <K, V> HashMap<K, V> newHashMap() {
+        return new HashMap<K, V>();
     }
 
 }

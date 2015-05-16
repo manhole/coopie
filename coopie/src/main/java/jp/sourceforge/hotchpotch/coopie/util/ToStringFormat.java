@@ -26,9 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import org.t2framework.commons.exception.IORuntimeException;
-import org.t2framework.commons.exception.IllegalAccessRuntimeException;
-
 public class ToStringFormat {
 
     private static final String NULL = "<null>";
@@ -193,7 +190,7 @@ public class ToStringFormat {
         AccessibleObject.setAccessible(declaredFields, true);
         final ArrayList<FieldDesc<?>> l = new ArrayList<FieldDesc<?>>();
         for (final Field field : declaredFields) {
-            final FieldDesc<?> fd = new FieldDesc<Object>(clazz, field);
+            final FieldDesc<?> fd = new FieldDesc<Object>(field);
             l.add(fd);
         }
         return l;
@@ -222,11 +219,9 @@ public class ToStringFormat {
 
     private static class FieldDesc<T> {
 
-        private final Class<?> clazz_;
         private final Field field_;
 
-        FieldDesc(final Class<?> clazz, final Field field) {
-            clazz_ = clazz;
+        FieldDesc(final Field field) {
             field_ = field;
         }
 
@@ -240,7 +235,7 @@ public class ToStringFormat {
                 final Object object = field_.get(instance);
                 return (T) object;
             } catch (final IllegalAccessException e) {
-                throw new IllegalAccessRuntimeException(clazz_, e);
+                throw new RuntimeException(e);
             }
         }
 

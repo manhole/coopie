@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.t2framework.commons.meta.PropertyDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
 
 public class Annotations {
 
@@ -37,7 +37,7 @@ public class Annotations {
     public static class AccessorPropertyAnnotationReader implements PropertyAnnotationReader {
 
         @Override
-        public <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?> propertyDesc,
+        public <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?, ?> propertyDesc,
                 final Class<ANN> annotationClass) {
             if (propertyDesc.isReadable()) {
                 final Method method = propertyDesc.getReadMethod();
@@ -67,10 +67,10 @@ public class Annotations {
     public static class FieldPropertyAnnotationReader implements PropertyAnnotationReader {
 
         @Override
-        public <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?> propertyDesc,
+        public <ANN extends Annotation> ANN getAnnotation(final PropertyDesc<?, ?> propertyDesc,
                 final Class<ANN> annotationClass) {
             if (propertyDesc.isReadable() && propertyDesc.isWritable()) {
-                Class<?> targetClass = propertyDesc.getTargetClass();
+                Class<?> targetClass = propertyDesc.getBeanDesc().getBeanClass();
                 while (targetClass != Object.class) {
                     final Field[] fields = targetClass.getDeclaredFields();
                     for (final Field field : fields) {

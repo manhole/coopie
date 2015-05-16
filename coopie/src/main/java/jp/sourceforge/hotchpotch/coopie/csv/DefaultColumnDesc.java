@@ -16,8 +16,6 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
-import org.t2framework.commons.util.StringUtil;
-
 public class DefaultColumnDesc<BEAN> implements ColumnDesc<BEAN> {
 
     /**
@@ -56,7 +54,7 @@ public class DefaultColumnDesc<BEAN> implements ColumnDesc<BEAN> {
     public String getValue(final BEAN bean) {
         final Object from = propertyBinding_.getValue(bean);
         final Object to = converter_.convertTo(from);
-        return StringUtil.toString(to);
+        return toString(to);
     }
 
     @Override
@@ -64,6 +62,13 @@ public class DefaultColumnDesc<BEAN> implements ColumnDesc<BEAN> {
         final String from = value;
         final Object to = converter_.convertFrom(from);
         propertyBinding_.setValue(bean, to);
+    }
+
+    private String toString(final Object value) {
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
     }
 
     public static <T> ColumnDesc<T> newColumnDesc(final ColumnName columnName, final PropertyBinding propertyBinding,

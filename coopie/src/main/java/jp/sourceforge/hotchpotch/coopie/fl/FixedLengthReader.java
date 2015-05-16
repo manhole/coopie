@@ -24,11 +24,10 @@ import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
 import jp.sourceforge.hotchpotch.coopie.csv.LineReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.IORuntimeException;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineImpl;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
-
-import org.t2framework.commons.exception.IORuntimeException;
 
 public class FixedLengthReader implements ElementReader {
 

@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import org.t2framework.commons.exception.IORuntimeException;
-import org.t2framework.commons.util.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 
 /*
  * immutable
@@ -240,6 +239,22 @@ public class Text {
         final int length = str.length();
         final int count = str.codePointCount(0, length);
         return count;
+    }
+
+    public static boolean isEmpty(final String str) {
+        return length(str) == 0;
+    }
+
+    public static boolean isBlank(final String str) {
+        if (isEmpty(str)) {
+            return true;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isWhitespace(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static String substring(final String str, final int beginIndex, final int endIndex) {

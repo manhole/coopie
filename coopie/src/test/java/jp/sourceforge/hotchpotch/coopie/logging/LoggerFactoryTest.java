@@ -20,11 +20,12 @@ import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
 import jp.sourceforge.hotchpotch.coopie.util.StdOutBlock;
+import jp.sourceforge.hotchpotch.coopie.util.Task;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.junit.Test;
-import org.t2framework.commons.util.task.EasyTask;
 
 public class LoggerFactoryTest {
 
@@ -39,7 +40,7 @@ public class LoggerFactoryTest {
     public void debug1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -57,7 +58,7 @@ public class LoggerFactoryTest {
     public void debug2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -75,7 +76,7 @@ public class LoggerFactoryTest {
     public void debug_null() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -93,7 +94,7 @@ public class LoggerFactoryTest {
     public void debug_log_null1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -111,7 +112,7 @@ public class LoggerFactoryTest {
     public void debug_log_null2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -129,7 +130,7 @@ public class LoggerFactoryTest {
     public void debug_log1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -147,7 +148,7 @@ public class LoggerFactoryTest {
     public void debug_log2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -165,7 +166,7 @@ public class LoggerFactoryTest {
     public void warn_log1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -183,7 +184,7 @@ public class LoggerFactoryTest {
     public void warn_log2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -197,7 +198,7 @@ public class LoggerFactoryTest {
         assertThat(ret, containsString("foo bar, baz"));
     }
 
-    private String execute(final EasyTask<Void> task) {
+    private String execute(final Task<Void> task) {
         final Text text = StdOutBlock.trapOut(task);
         return text.toString();
     }

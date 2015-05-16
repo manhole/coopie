@@ -26,6 +26,6 @@ public interface FixedLengthElementDesc {
     /**
      * 1カラムぶんのデータから、固定長ファイルへ記述するだけの文字数とし、出力します。
      */
-    void write(CharSequence elem, Appendable appendable);
+    void write(CharSequence elem, FixedLengthLineBuilder lineBuilder);
 
 }

@@ -19,8 +19,6 @@ package jp.sourceforge.hotchpotch.coopie.util;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.t2framework.commons.exception.IORuntimeException;
-
 public class ByteSize {
 
     public static final ToStringMode DETAIL = new DetailMode();

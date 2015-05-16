@@ -21,10 +21,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.slf4j.Logger;
-import org.t2framework.commons.util.CollectionsUtil;
 
 public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
 

@@ -23,15 +23,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 
+import jp.sourceforge.hotchpotch.coopie.util.ReaderUtil;
+
 import org.junit.Test;
-import org.t2framework.commons.util.ReaderUtil;
 
 public class FixedLengthWriterTest {
 
     @Test
     public void test1() throws Throwable {
         // ## Arrange ##
-
         final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] { col(0, 5), col(5, 12), col(12, 20) };
 
         final StringWriter sw = new StringWriter();
@@ -49,7 +49,35 @@ public class FixedLengthWriterTest {
         final String actual = sw.toString();
 
         final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream("-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is, "UTF-8"));
+        final InputStreamReader r = new InputStreamReader(is, "UTF-8");
+        final String expected = ReaderUtil.readText(r);
+        r.close();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test2() throws Throwable {
+        // ## Arrange ##
+        final FixedLengthElementDesc[] descs = new FixedLengthElementDesc[] { col(0, 5), col(12, 20), col(5, 12) };
+
+        final StringWriter sw = new StringWriter();
+
+        // ## Act ##
+        final FixedLengthWriter writer = new FixedLengthWriter(descs);
+        writer.open(sw);
+        writer.writeRecord(a("aaa", "bbb", "ccc"));
+        writer.writeRecord(a("あ1", "い1", "う1"));
+        writer.writeRecord(a("あ2", "い2", "う2"));
+        writer.writeRecord(a("あ3", "い3", "う3"));
+        writer.close();
+
+        // ## Assert ##
+        final String actual = sw.toString();
+
+        final InputStream is = BeanFixedLengthReaderTest.getResourceAsStream("-1", "tsv");
+        final InputStreamReader r = new InputStreamReader(is, "UTF-8");
+        final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 

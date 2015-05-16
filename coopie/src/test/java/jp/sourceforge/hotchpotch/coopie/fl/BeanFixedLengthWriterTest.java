@@ -42,11 +42,11 @@ import jp.sourceforge.hotchpotch.coopie.fl.BeanFixedLengthReaderTest.FlAaaBean;
 import jp.sourceforge.hotchpotch.coopie.fl.FixedLengthColumnSetup.FixedLengthCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
+import jp.sourceforge.hotchpotch.coopie.util.ReaderUtil;
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.ReaderUtil;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class BeanFixedLengthWriterTest {
 
@@ -128,7 +128,9 @@ public class BeanFixedLengthWriterTest {
         final String actual = writer.toString();
 
         final InputStream is = getResourceAsStream("-1", "tsv");
-        final String expected = ReaderUtil.readText(new InputStreamReader(is, "UTF-8"));
+        final InputStreamReader r = new InputStreamReader(is, "UTF-8");
+        final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -174,7 +176,9 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-1", "tsv"));
+        final Reader r = getResourceAsReader("-1", "tsv");
+        final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -218,7 +222,9 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-4-2", "tsv"));
+        final Reader r = getResourceAsReader("-4-2", "tsv");
+        final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 
@@ -260,7 +266,9 @@ public class BeanFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final String expected = ReaderUtil.readText(getResourceAsReader("-3", "tsv"));
+        final Reader r = getResourceAsReader("-3", "tsv");
+        final String expected = ReaderUtil.readText(r);
+        r.close();
         assertEquals(expected, actual);
     }
 

@@ -20,19 +20,18 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.Logger;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.logging.SimpleLog;
 import jp.sourceforge.hotchpotch.coopie.util.Closable;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
+import jp.sourceforge.hotchpotch.coopie.util.IORuntimeException;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineImpl;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
-
-import org.t2framework.commons.exception.IORuntimeException;
-import org.t2framework.commons.util.CollectionsUtil;
 
 /**
  * CSV Reader

@@ -28,7 +28,6 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.task.Task;
 
 public class ClosingGuardianTest {
 
@@ -41,9 +40,9 @@ public class ClosingGuardianTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.out(baos).execute(new Task<Void, RuntimeException>() {
+        StdOutBlock.out(baos).execute(new Task<Void>() {
             @Override
-            public Void execute() throws RuntimeException {
+            public Void execute() {
                 Aaa a = new Aaa();
                 a = null;
 
@@ -71,11 +70,11 @@ public class ClosingGuardianTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.out(baos).execute(new Task<Void, IOException>() {
+        StdOutBlock.out(baos).execute(new Task<Void>() {
             @Override
-            public Void execute() throws IOException {
+            public Void execute() {
                 Aaa a = new Aaa();
-                a.close();
+                CloseableUtil.closeNoException(a);
                 a = null;
 
                 // さすがに1000回チャンスがあればGCされるでしょう

@@ -21,10 +21,10 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 
 import jp.sourceforge.hotchpotch.coopie.util.StdOutBlock;
+import jp.sourceforge.hotchpotch.coopie.util.Task;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 import org.junit.Test;
-import org.t2framework.commons.util.task.EasyTask;
 
 public class SimpleLogTest {
 
@@ -34,7 +34,7 @@ public class SimpleLogTest {
     public void debug1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -52,7 +52,7 @@ public class SimpleLogTest {
     public void debug2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -68,7 +68,7 @@ public class SimpleLogTest {
     public void debug3() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new EasyTask<Void>() {
+        final String ret = execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 final Logger logger = LoggerFactory.getLogger();
@@ -82,7 +82,7 @@ public class SimpleLogTest {
         assertThat(ret, containsString("foo bar, baz"));
     }
 
-    protected String execute(final EasyTask<Void> task) {
+    protected String execute(final Task<Void> task) {
         final Text text = StdOutBlock.trapOut(task);
         return text.toString();
     }

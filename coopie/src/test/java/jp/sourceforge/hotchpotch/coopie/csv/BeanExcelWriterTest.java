@@ -33,6 +33,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultExcelWriter.DefaultWriteEditor;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
+import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -46,7 +47,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
-import org.t2framework.commons.util.ResourceUtil;
 
 public class BeanExcelWriterTest {
 

@@ -20,8 +20,7 @@ import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.Converter;
 import jp.sourceforge.hotchpotch.coopie.csv.PassthroughStringConverter;
-
-import org.t2framework.commons.util.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 
 class DefaultFixedLengthColumnsDef implements FixedLengthColumnsDef {
 

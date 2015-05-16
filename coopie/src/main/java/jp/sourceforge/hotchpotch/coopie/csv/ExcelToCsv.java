@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultExcelReader.PoiSheetReader;
+import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
@@ -31,7 +32,6 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.CollectionsUtil;
 
 public class ExcelToCsv {
 

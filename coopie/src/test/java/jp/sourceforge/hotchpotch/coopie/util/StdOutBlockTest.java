@@ -28,7 +28,6 @@ import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.t2framework.commons.util.task.EasyTask;
 
 public class StdOutBlockTest {
 
@@ -40,7 +39,7 @@ public class StdOutBlockTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.out(baos).execute(new EasyTask<Void>() {
+        StdOutBlock.out(baos).execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 System.out.println("to sysout");
@@ -61,7 +60,7 @@ public class StdOutBlockTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.err(baos).execute(new EasyTask<Void>() {
+        StdOutBlock.err(baos).execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 System.err.println("to syserr");
@@ -83,7 +82,7 @@ public class StdOutBlockTest {
         final ByteArrayOutputStream err = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.out(out).err(err).execute(new EasyTask<Void>() {
+        StdOutBlock.out(out).err(err).execute(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 System.out.println("to sysout");
@@ -109,7 +108,7 @@ public class StdOutBlockTest {
     public void testTrapOut() {
         // ## Arrange ##
         // ## Act ##
-        final Text text = StdOutBlock.trapOut(new EasyTask<Void>() {
+        final Text text = StdOutBlock.trapOut(new Task<Void>() {
             @Override
             public Void execute() throws RuntimeException {
                 System.out.println("trap sysout");

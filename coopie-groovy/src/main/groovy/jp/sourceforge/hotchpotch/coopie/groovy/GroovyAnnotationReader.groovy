@@ -18,10 +18,9 @@ package jp.sourceforge.hotchpotch.coopie.groovy
 
 import java.lang.annotation.Annotation
 
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc
 import jp.sourceforge.hotchpotch.coopie.util.Annotations
 import jp.sourceforge.hotchpotch.coopie.util.PropertyAnnotationReader
-
-import org.t2framework.commons.meta.PropertyDesc
 
 /**
  * @author manhole
@@ -33,7 +32,7 @@ class GroovyAnnotationReader implements PropertyAnnotationReader {
 
     @Override
     public <ANN extends Annotation> ANN getAnnotation(
-            PropertyDesc<?> propertyDesc, Class<ANN> annotationClass) {
+            PropertyDesc<?, ?> propertyDesc, Class<ANN> annotationClass) {
         def ann = delegate_.getAnnotation(propertyDesc, annotationClass)
         if (ann != null) {
             return ann

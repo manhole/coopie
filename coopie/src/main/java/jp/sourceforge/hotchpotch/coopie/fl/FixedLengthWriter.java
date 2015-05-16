@@ -23,9 +23,8 @@ import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
-
-import org.t2framework.commons.exception.IORuntimeException;
-import org.t2framework.commons.util.StringUtil;
+import jp.sourceforge.hotchpotch.coopie.util.IORuntimeException;
+import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 public class FixedLengthWriter implements ElementWriter {
 
@@ -50,11 +49,13 @@ public class FixedLengthWriter implements ElementWriter {
     public void writeRecord(final String[] line) {
         final int len = Math.min(line.length, elementDescs_.length);
         try {
+            final DefaultFixedLengthLineBuilder lineBuilder = new DefaultFixedLengthLineBuilder();
             for (int i = 0; i < len; i++) {
                 final String s = line[i];
                 final FixedLengthElementDesc elementDesc = elementDescs_[i];
-                elementDesc.write(s, appendable_);
+                elementDesc.write(s, lineBuilder);
             }
+            appendable_.append(lineBuilder.buildString());
             appendable_.append(getLineSeparator());
         } catch (final IOException e) {
             throw new IORuntimeException(e);
@@ -76,7 +77,7 @@ public class FixedLengthWriter implements ElementWriter {
     }
 
     public String getLineSeparator() {
-        if (StringUtil.isEmpty(lineSeparator_)) {
+        if (Text.isEmpty(lineSeparator_)) {
             lineSeparator_ = CsvSetting.CRLF;
         }
         return lineSeparator_;

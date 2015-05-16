@@ -21,28 +21,26 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.t2framework.commons.meta.BeanDesc;
-import org.t2framework.commons.meta.BeanDescFactory;
-import org.t2framework.commons.meta.PropertyDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDesc;
+import jp.sourceforge.hotchpotch.coopie.internal.BeanDescFactory;
+import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
 
 public class BeanMap extends AbstractMap<String, Object> {
 
-    private final Object object_;
+    private final Object bean_;
     private final BeanDesc<Object> beanDesc_;
     private final int propertyDescSize_;
-    private final List<PropertyDesc<Object>> allPropertyDesc_;
-    private boolean lenient_ = true;
+    private boolean lenient_ = false;
 
+    @SuppressWarnings("unchecked")
     public BeanMap(final Object obj) {
-        object_ = obj;
-        final Class<? extends Object> clazz = obj.getClass();
+        bean_ = obj;
+        final Class<Object> clazz = (Class<Object>) obj.getClass();
         beanDesc_ = BeanDescFactory.getBeanDesc(clazz);
         propertyDescSize_ = beanDesc_.getPropertyDescSize();
-        allPropertyDesc_ = beanDesc_.getAllPropertyDesc();
     }
 
     @Override
@@ -58,7 +56,7 @@ public class BeanMap extends AbstractMap<String, Object> {
     @Override
     public boolean containsKey(final Object key) {
         final String s = key(key);
-        final PropertyDesc<Object> pd = beanDesc_.getPropertyDesc(s);
+        final PropertyDesc<?, ?> pd = beanDesc_.getPropertyDesc(s);
         return pd != null;
     }
 
@@ -74,51 +72,51 @@ public class BeanMap extends AbstractMap<String, Object> {
         return v;
     }
 
-    public String getKeyByIndex(final int index) {
-        final PropertyDesc<Object> pd = allPropertyDesc_.get(index);
-        return pd.getPropertyName();
-    }
-
-    public Object getValueByIndex(final int index) {
-        final PropertyDesc<Object> pd = allPropertyDesc_.get(index);
-        return pd.getValue(object_);
-    }
-
     public Object getValue(final String key) {
-        final PropertyDesc<Object> pd = beanDesc_.getPropertyDesc(key);
+        final PropertyDesc<Object, ?> pd = beanDesc_.getPropertyDesc(key);
         if (pd == null) {
             throw new IllegalArgumentException("key [" + key + "] does not exist");
         }
-        final Object v = pd.getValue(object_);
+        final Object v = pd.getValue(bean_);
         return v;
     }
 
     @Override
     public Object put(final String key, final Object value) {
-        final PropertyDesc<Object> pd = beanDesc_.getPropertyDesc(key);
+        final PropertyDesc<Object, Object> pd = beanDesc_.getPropertyDesc(key);
         if (pd == null) {
             throw new IllegalArgumentException("key [" + key + "] does not exist");
         }
-        assertTypeIfNeed(pd, value);
-        final Object prev = pd.getValue(object_);
-        pd.setValue(object_, value);
+
+        final Object valueToSet = assertTypeIfNeed(pd, value);
+        final Object prev = pd.getValue(bean_);
+        pd.setValue(bean_, valueToSet);
         return prev;
     }
 
-    private void assertTypeIfNeed(final PropertyDesc<Object> pd, final Object value) {
-        if (lenient_) {
-            return;
-        }
+    private Object assertTypeIfNeed(final PropertyDesc<Object, Object> pd, final Object value) {
         if (value == null) {
-            return;
+            return null;
         }
 
         final Class<?> expectedType = pd.getPropertyType();
         final Class<? extends Object> actualType = value.getClass();
         if (!expectedType.isAssignableFrom(actualType)) {
+            if (lenient_) {
+                final Object convertedValue = convertValueIfAvailable(value, expectedType, actualType);
+                return convertedValue;
+            }
             throw new IllegalArgumentException("invalid type. expected:<" + expectedType.getName() + "> actual:<"
                     + actualType.getName() + ">");
         }
+        return value;
+    }
+
+    private Object convertValueIfAvailable(final Object value, final Class<?> expectedType, final Class<?> actualType) {
+        if (Integer.class.isAssignableFrom(expectedType)) {
+            return Integer.valueOf(value.toString());
+        }
+        return value;
     }
 
     @Override
@@ -150,12 +148,8 @@ public class BeanMap extends AbstractMap<String, Object> {
         lenient_ = lenient;
     }
 
-    protected Object getObject() {
-        return object_;
-    }
-
-    protected List<PropertyDesc<Object>> getAllPropertyDesc() {
-        return allPropertyDesc_;
+    protected Object getBean() {
+        return bean_;
     }
 
     protected BeanDesc<Object> getBeanDesc() {
@@ -203,23 +197,21 @@ public class BeanMap extends AbstractMap<String, Object> {
         private static class EntryIterator implements Iterator<Map.Entry<String, Object>> {
 
             private final BeanMap map_;
-            private final List<PropertyDesc<Object>> allPropertyDesc_;
-            private int index_;
+            private final Iterator<PropertyDesc<Object, ?>> iterator_;
 
             EntryIterator(final BeanMap map) {
                 map_ = map;
-                allPropertyDesc_ = map_.getAllPropertyDesc();
+                iterator_ = map.getBeanDesc().propertyDescs().iterator();
             }
 
             @Override
             public boolean hasNext() {
-                return index_ < allPropertyDesc_.size();
+                return iterator_.hasNext();
             }
 
             @Override
             public Map.Entry<String, Object> next() {
-                final PropertyDesc<Object> pd = allPropertyDesc_.get(index_);
-                index_++;
+                final PropertyDesc<Object, ?> pd = iterator_.next();
                 return new PropertyEntry(map_, pd.getPropertyName());
             }
 
@@ -278,25 +270,21 @@ public class BeanMap extends AbstractMap<String, Object> {
 
         private static class KeysIterator implements Iterator<String> {
 
-            private final BeanMap map_;
-            private final List<PropertyDesc<Object>> allPropertyDesc_;
-            private int index_;
+            private final Iterator<PropertyDesc<Object, ?>> iterator_;
 
             KeysIterator(final BeanMap map) {
-                map_ = map;
-                allPropertyDesc_ = map_.getAllPropertyDesc();
+                iterator_ = map.getBeanDesc().propertyDescs().iterator();
             }
 
             @Override
             public boolean hasNext() {
-                return index_ < allPropertyDesc_.size();
+                return iterator_.hasNext();
             }
 
             @Override
             public String next() {
-                final String value = map_.getKeyByIndex(index_);
-                index_++;
-                return value;
+                final PropertyDesc<Object, ?> pd = iterator_.next();
+                return pd.getPropertyName();
             }
 
             @Override
@@ -328,25 +316,23 @@ public class BeanMap extends AbstractMap<String, Object> {
 
         private static class ValuesIterator implements Iterator<Object> {
 
-            private final BeanMap map_;
-            private final List<PropertyDesc<Object>> allPropertyDesc_;
-            private int index_;
+            private final Iterator<PropertyDesc<Object, ?>> iterator_;
+            private final Object bean_;
 
             ValuesIterator(final BeanMap map) {
-                map_ = map;
-                allPropertyDesc_ = map_.getAllPropertyDesc();
+                bean_ = map.getBean();
+                iterator_ = map.getBeanDesc().propertyDescs().iterator();
             }
 
             @Override
             public boolean hasNext() {
-                return index_ < allPropertyDesc_.size();
+                return iterator_.hasNext();
             }
 
             @Override
             public Object next() {
-                final Object value = map_.getValueByIndex(index_);
-                index_++;
-                return value;
+                final PropertyDesc<Object, ?> pd = iterator_.next();
+                return pd.getValue(bean_);
             }
 
             @Override
