@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import jp.sourceforge.hotchpotch.coopie.CoopieException;
+
 public class Sha1 {
 
     private final FileOperation files_ = new FileOperation();
@@ -51,7 +53,7 @@ public class Sha1 {
             final MessageDigest md = MessageDigest.getInstance("SHA1");
             return md;
         } catch (final NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            throw new CoopieException(e);
         }
     }
 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.CoopieException;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
 /**
@@ -69,9 +70,9 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
         try {
             return beanClass_.newInstance();
         } catch (final InstantiationException e) {
-            throw new RuntimeException(e);
+            throw new CoopieException(e);
         } catch (final IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new CoopieException(e);
         }
     }
 

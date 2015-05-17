@@ -26,6 +26,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import jp.sourceforge.hotchpotch.coopie.CoopieException;
+
 public class ToStringFormat {
 
     private static final String NULL = "<null>";
@@ -235,7 +237,7 @@ public class ToStringFormat {
                 final Object object = field_.get(instance);
                 return (T) object;
             } catch (final IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw new CoopieException(e);
             }
         }
 

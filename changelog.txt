@@ -4,6 +4,7 @@
 - add method: RecordReader#getRawRecord() 直前にreadしたBEANの元要素を取得できるようにしました。
 - add Class: CodePoints
 - add Class: FixedLengthLineBuilderを。固定長を書く際にbeginIndex/endIndexを見ていなかったため出力順が不定になってしまっていたのを修正しました。
+- CoopieExceptionを例外の親クラスにしました。
 - junit-addonsをdependencyから外しました。(0.2.1でも外したと書いている。Mavenからgradleに変えた際に入れてしまったようだ)
 - org.t2framework.commonsをdependencyから外しました。
 - change junit version: 4.10 -> 4.11

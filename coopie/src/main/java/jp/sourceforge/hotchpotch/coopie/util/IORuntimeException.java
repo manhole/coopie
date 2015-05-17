@@ -16,10 +16,12 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import jp.sourceforge.hotchpotch.coopie.CoopieException;
+
 /**
  * @author manhole
  */
-public class IORuntimeException extends RuntimeException {
+public class IORuntimeException extends CoopieException {
 
     private static final long serialVersionUID = 1L;
 

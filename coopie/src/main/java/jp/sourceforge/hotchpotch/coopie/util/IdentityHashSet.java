@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import jp.sourceforge.hotchpotch.coopie.CoopieException;
+
 public class IdentityHashSet<E> implements Set<E> {
 
     private final Map<E, Object> map_ = new IdentityHashMap<E, Object>();
@@ -35,7 +37,7 @@ public class IdentityHashSet<E> implements Set<E> {
 
     @Override
     public boolean addAll(final Collection<? extends E> c) {
-        throw new RuntimeException("not implemented");
+        throw new CoopieException("not implemented");
     }
 
     @Override

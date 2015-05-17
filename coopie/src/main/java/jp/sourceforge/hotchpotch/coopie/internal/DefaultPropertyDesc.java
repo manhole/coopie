@@ -19,6 +19,8 @@ package jp.sourceforge.hotchpotch.coopie.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import jp.sourceforge.hotchpotch.coopie.CoopieException;
+
 /**
  * @author manhole
  */
@@ -73,9 +75,9 @@ class DefaultPropertyDesc<BEAN, PROPERTY> implements PropertyDesc<BEAN, PROPERTY
         try {
             return (T) method.invoke(obj, args);
         } catch (final IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new CoopieException(e);
         } catch (final InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new CoopieException(e);
         }
     }
 
