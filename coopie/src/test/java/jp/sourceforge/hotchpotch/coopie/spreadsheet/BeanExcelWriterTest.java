@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.junit.Assert.assertArrayEquals;
@@ -29,9 +29,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
-import jp.sourceforge.hotchpotch.coopie.csv.DefaultExcelWriter.DefaultWriteEditor;
+import jp.sourceforge.hotchpotch.coopie.spreadsheet.DefaultExcelWriter.DefaultWriteEditor;
+import jp.sourceforge.hotchpotch.coopie.spreadsheet.BeanExcelLayout;
+import jp.sourceforge.hotchpotch.coopie.spreadsheet.DefaultExcelReader;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 

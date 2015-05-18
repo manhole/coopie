@@ -175,7 +175,7 @@ public class MapCsvReaderTest {
         assertRead3(csvReader, bean);
     }
 
-    static void assertRead3(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+    public static void assertRead3(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
             throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);
@@ -212,7 +212,7 @@ public class MapCsvReaderTest {
         assertRead3_2(csvReader);
     }
 
-    static void assertRead3_2(final RecordReader<Map<String, String>> csvReader) throws IOException {
+    public static void assertRead3_2(final RecordReader<Map<String, String>> csvReader) throws IOException {
         {
             assertEquals(true, csvReader.hasNext());
             final Map<String, String> bean = csvReader.read();
@@ -535,7 +535,7 @@ public class MapCsvReaderTest {
         assertRead5(csvReader, bean);
     }
 
-    static void assertRead5(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
+    public static void assertRead5(final RecordReader<Map<String, String>> csvReader, final Map<String, String> bean)
             throws IOException {
         assertEquals(true, csvReader.hasNext());
         csvReader.read(bean);

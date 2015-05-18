@@ -14,11 +14,14 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractRecordWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;
 import jp.sourceforge.hotchpotch.coopie.util.ClosingGuardian;
 

@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +24,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
+import jp.sourceforge.hotchpotch.coopie.csv.MapCsvReaderTest;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
+import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
@@ -266,8 +271,8 @@ public class MapExcelReaderTest {
     @Test
     public void read_strange1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(BeanCsvReaderTest.class.getPackage().getName()
-                + "/strange-excel-1", "xls");
+        final InputStream is = ResourceUtil.getResourceAsStream(getClass().getPackage().getName() + "/strange-excel-1",
+                "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<String>();
 

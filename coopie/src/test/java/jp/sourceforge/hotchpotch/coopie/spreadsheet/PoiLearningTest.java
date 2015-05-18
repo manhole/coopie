@@ -14,12 +14,14 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
+
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;

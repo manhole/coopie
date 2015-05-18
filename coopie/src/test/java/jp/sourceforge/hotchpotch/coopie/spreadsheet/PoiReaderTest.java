@@ -14,9 +14,14 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import java.io.InputStream;
+
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderTest;
+import jp.sourceforge.hotchpotch.coopie.spreadsheet.DefaultExcelReader;
 
 public class PoiReaderTest extends ElementReaderTest {
 

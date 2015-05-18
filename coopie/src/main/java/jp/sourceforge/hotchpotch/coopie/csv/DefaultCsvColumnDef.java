@@ -19,7 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
 import jp.sourceforge.hotchpotch.coopie.util.Text;
 
-class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
+public class DefaultCsvColumnDef implements CsvColumnDef, Comparable<CsvColumnDef> {
 
     private String label_;
     private String propertyName_;

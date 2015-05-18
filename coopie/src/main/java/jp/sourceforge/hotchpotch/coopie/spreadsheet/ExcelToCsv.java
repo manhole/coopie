@@ -14,14 +14,20 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import jp.sourceforge.hotchpotch.coopie.csv.DefaultExcelReader.PoiSheetReader;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvElementInOut;
+import jp.sourceforge.hotchpotch.coopie.csv.CsvSetting;
+import jp.sourceforge.hotchpotch.coopie.csv.DefaultCsvSetting;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementInOut;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementWriter;
+import jp.sourceforge.hotchpotch.coopie.spreadsheet.DefaultExcelReader;
+import jp.sourceforge.hotchpotch.coopie.spreadsheet.DefaultExcelReader.PoiSheetReader;
 import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;

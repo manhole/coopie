@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import jp.sourceforge.hotchpotch.coopie.csv.AbstractRecordReader;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.CloseableUtil;

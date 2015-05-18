@@ -14,14 +14,18 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.InputStream;
 
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReader;
+import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderTest;
 import jp.sourceforge.hotchpotch.coopie.util.ResourceUtil;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -58,7 +62,9 @@ public class PoiSheetReaderTest extends ElementReaderTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(PoiSheetReaderTest.class.getName() + suffix, ext);
+        final InputStream is = ResourceUtil.getResourceAsStream(PoiSheetReaderTest.class.getName() + suffix, ext);
+        assertThat(is, is(notNullValue()));
+        return is;
     }
 
 }

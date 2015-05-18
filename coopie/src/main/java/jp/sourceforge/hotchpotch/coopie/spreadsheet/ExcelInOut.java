@@ -14,18 +14,18 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 
-public class PoiReaderTest extends ElementReaderTest {
+import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
-    @Override
-    protected ElementReader constructTest1Reader() {
-        final InputStream is = BeanCsvReaderTest.getResourceAsStream("-1", "xls");
-        final DefaultExcelReader.PoiReader poiReader = new DefaultExcelReader.PoiReader(is);
-        poiReader.focusSheet(0);
-        return poiReader;
-    }
+public interface ExcelInOut<BEAN> {
+
+    RecordReader<BEAN> openReader(InputStream is);
+
+    RecordWriter<BEAN> openWriter(OutputStream os);
 
 }

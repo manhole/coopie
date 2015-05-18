@@ -14,15 +14,18 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
+import jp.sourceforge.hotchpotch.coopie.csv.CsvAssert;
+import jp.sourceforge.hotchpotch.coopie.csv.QuoteMode;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.FileOperation;
 import jp.sourceforge.hotchpotch.coopie.util.Line;
@@ -290,7 +293,9 @@ public class ExcelToCsvTest {
     }
 
     private File getResourceAsFile(final String nameSuffix, final String ext) {
-        return ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + nameSuffix, ext);
+        final File resource = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + nameSuffix, ext);
+        assertThat(resource, is(notNullValue()));
+        return resource;
     }
 
 }

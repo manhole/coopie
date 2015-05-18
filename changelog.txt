@@ -7,6 +7,7 @@
 - CoopieExceptionを例外の親クラスにしました。
 - junit-addonsをdependencyから外しました。(0.2.1でも外したと書いている。Mavenからgradleに変えた際に入れてしまったようだ)
 - org.t2framework.commonsをdependencyから外しました。
+- spreadsheetパッケージを設け、excelまわりのクラスを移しました。
 
 misc:
 - logbackのscopeを compile -> testCompile にしました。

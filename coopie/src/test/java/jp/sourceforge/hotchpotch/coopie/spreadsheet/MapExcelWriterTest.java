@@ -14,7 +14,7 @@
  * governing permissions and limitations under the License.
  */
 
-package jp.sourceforge.hotchpotch.coopie.csv;
+package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -22,7 +22,11 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
+import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
+import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
+import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
+import jp.sourceforge.hotchpotch.coopie.spreadsheet.MapExcelLayout;
 
 import org.junit.Test;
 

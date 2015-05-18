@@ -712,7 +712,7 @@ public class BeanCsvReaderTest {
         assertRead1(csvReader, bean);
     }
 
-    static class TestReadEditor extends DefaultReaderHandler {
+    public static class TestReadEditor extends DefaultReaderHandler {
 
         @Override
         public Line readLine(final LineReadable lineReader, final Line reusableLine) throws IOException {
@@ -1625,7 +1625,7 @@ public class BeanCsvReaderTest {
         return reader;
     }
 
-    static InputStream getResourceAsStream(final String suffix, final String ext) {
+    public static InputStream getResourceAsStream(final String suffix, final String ext) {
         return ResourceUtil.getResourceAsStream(BeanCsvReaderTest.class.getName() + suffix, ext);
     }
 
