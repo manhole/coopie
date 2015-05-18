@@ -7,11 +7,11 @@
 - CoopieExceptionを例外の親クラスにしました。
 - junit-addonsをdependencyから外しました。(0.2.1でも外したと書いている。Mavenからgradleに変えた際に入れてしまったようだ)
 - org.t2framework.commonsをdependencyから外しました。
-- change junit version: 4.10 -> 4.11
--- hamcrest: 1.2.1 -> 1.3
 
 misc:
 - logbackのscopeを compile -> testCompile にしました。
+- change junit version: 4.10 -> 4.11
+-- hamcrest: 1.2.1 -> 1.3
 
 
 0.4.1 2014/11/25
