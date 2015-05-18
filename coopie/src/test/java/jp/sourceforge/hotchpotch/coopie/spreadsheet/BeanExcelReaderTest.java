@@ -26,17 +26,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
+import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 import jp.sourceforge.hotchpotch.coopie.csv.ContainsNameMatcher;
 import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultCsvColumnDef;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
-import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.AaaBean;
-import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BbbBean;
-import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.TestReadEditor;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
-import jp.sourceforge.hotchpotch.coopie.spreadsheet.BeanExcelLayout;
-import jp.sourceforge.hotchpotch.coopie.spreadsheet.DefaultExcelWriter;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;

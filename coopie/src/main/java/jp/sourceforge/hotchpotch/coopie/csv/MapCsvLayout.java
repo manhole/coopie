@@ -51,7 +51,7 @@ public class MapCsvLayout<PROP> extends AbstractMapCsvLayout<PROP> {
     public RecordInOut<Map<String, PROP>> build() {
         prepareBuild();
 
-        final BeanCsvLayout.BeanCsvRecordInOut<Map<String, PROP>> obj = new BeanCsvLayout.BeanCsvRecordInOut<Map<String, PROP>>();
+        final CsvRecordInOut<Map<String, PROP>> obj = new CsvRecordInOut<Map<String, PROP>>();
         obj.setRecordDesc(getRecordDesc());
         obj.setWithHeader(isWithHeader());
         obj.setElementInOut(createElementInOut());

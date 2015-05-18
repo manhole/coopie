@@ -26,7 +26,6 @@ import jp.sourceforge.hotchpotch.coopie.csv.CsvColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;
-import jp.sourceforge.hotchpotch.coopie.spreadsheet.MapExcelLayout;
 
 import org.junit.Test;
 
