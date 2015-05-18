@@ -69,6 +69,9 @@ public class ResourceUtil {
             return null;
         }
         final URL url = loader.getResource(resourcePath.toPath());
+        if (url == null) {
+            return null;
+        }
         return new Resource(url);
     }
 
