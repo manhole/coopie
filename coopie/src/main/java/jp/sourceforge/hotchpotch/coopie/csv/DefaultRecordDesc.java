@@ -112,21 +112,21 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
      * CSVを読むとき
      */
     @Override
-    public RecordDesc<BEAN> setupByHeader(final String[] header) {
-        logger.debug("setupByHeader: {}", Arrays.toString(header));
+    public RecordDesc<BEAN> setupByHeader(final String[] headerValues) {
+        logger.debug("setupByHeader: {}", Arrays.toString(headerValues));
         /*
          * ColumnDescをヘッダの順序に合わせてソートし直す。
          */
         final List<ColumnDesc<BEAN>> tmpCds = CollectionsUtil.newArrayList();
         Collections.addAll(tmpCds, getColumnDescs());
-        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(header.length);
+        final ColumnDesc<BEAN>[] cds = ColumnDescs.newColumnDescs(headerValues.length);
 
         int i = 0;
-        HEADER: for (final String headerElem : header) {
+        HEADER: for (final String header : headerValues) {
             for (final Iterator<ColumnDesc<BEAN>> it = tmpCds.iterator(); it.hasNext();) {
                 final ColumnDesc<BEAN> cd = it.next();
                 final ColumnName name = cd.getName();
-                if (name.labelEquals(headerElem)) {
+                if (name.labelEquals(header)) {
                     cds[i] = cd;
                     i++;
                     it.remove();
@@ -136,14 +136,13 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
             /*
              * ヘッダ行に存在しない列は無視する
              */
-            //throw new RuntimeException("headerElem=" + headerElem);
-            logger.debug("ignore column=[{}]", headerElem);
+            //throw new RuntimeException("header=" + header);
+            logger.debug("ignore column=[{}]", header);
             cds[i] = DefaultRecordDesc.IgnoreColumnDesc.getInstance();
             i++;
         }
 
         final DefaultRecordDesc<BEAN> copy = createCopy();
-
         copy.columnDescs_ = cds;
 
         if (!tmpCds.isEmpty()) {
