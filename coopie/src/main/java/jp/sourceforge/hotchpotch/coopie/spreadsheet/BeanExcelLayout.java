@@ -16,12 +16,7 @@
 
 package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout;
-import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderHandler;
-import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
@@ -48,72 +43,15 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
         writeEditor_ = writeEditor;
     }
 
-    public BeanExcelInOut<BEAN> build() {
+    public ExcelRecordInOut<BEAN> build() {
         prepareBuild();
 
-        final BeanExcelInOut<BEAN> obj = new BeanExcelInOut<BEAN>();
-        obj.recordDesc_ = getRecordDesc();
-        obj.withHeader_ = isWithHeader();
-        obj.elementReaderHandler_ = getElementReaderHandler();
-        obj.writeEditor_ = writeEditor_;
+        final ExcelRecordInOut<BEAN> obj = new ExcelRecordInOut<BEAN>();
+        obj.setRecordDesc(getRecordDesc());
+        obj.setWithHeader(isWithHeader());
+        obj.setElementReaderHandler(getElementReaderHandler());
+        obj.setWriteEditor(writeEditor_);
         return obj;
-    }
-
-    public static class BeanExcelInOut<BEAN> implements ExcelInOut<BEAN> {
-
-        private RecordDesc<BEAN> recordDesc_;
-        private boolean withHeader_;
-        private ElementReaderHandler elementReaderHandler_;
-        private DefaultExcelWriter.WriteEditor writeEditor_;
-
-        @Override
-        public RecordReader<BEAN> openReader(final InputStream is) {
-            if (is == null) {
-                throw new NullPointerException("is");
-            }
-
-            final DefaultExcelReader<BEAN> r = new DefaultExcelReader<BEAN>(recordDesc_);
-            r.setWithHeader(withHeader_);
-            r.setElementReaderHandler(elementReaderHandler_);
-
-            // TODO openで例外時にcloseすること
-            r.open(is);
-            return r;
-        }
-
-        @Override
-        public RecordWriter<BEAN> openWriter(final OutputStream os) {
-            if (os == null) {
-                throw new NullPointerException("os");
-            }
-
-            final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<BEAN>(recordDesc_);
-            w.setWithHeader(withHeader_);
-            if (writeEditor_ != null) {
-                w.setWriteEditor(writeEditor_);
-            }
-            // TODO openで例外時にcloseすること
-            w.open(os);
-            return w;
-        }
-
-        public RecordReader<BEAN> openSheetReader(final Sheet sheet) {
-            final DefaultExcelReader<BEAN> r = new DefaultExcelReader<BEAN>(recordDesc_);
-            r.setWithHeader(withHeader_);
-            r.setElementReaderHandler(elementReaderHandler_);
-
-            // TODO openで例外時にcloseすること
-            r.openSheetReader(sheet);
-            return r;
-        }
-
-        public RecordWriter<BEAN> openSheetWriter(final Workbook workbook, final Sheet sheet) {
-            final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<BEAN>(recordDesc_);
-            w.setWithHeader(withHeader_);
-            // TODO openで例外時にcloseすること
-            w.openSheetWriter(workbook, sheet);
-            return w;
-        }
     }
 
 }

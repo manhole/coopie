@@ -16,61 +16,20 @@
 
 package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Map;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractMapCsvLayout;
-import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderHandler;
-import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
-import jp.sourceforge.hotchpotch.coopie.csv.RecordReader;
-import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
 
 public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
 
     public ExcelInOut<Map<String, PROP>> build() {
         prepareBuild();
 
-        final MapExcelInOut<PROP> obj = new MapExcelInOut<PROP>();
-        obj.recordDesc_ = getRecordDesc();
-        obj.withHeader_ = isWithHeader();
-        obj.elementReaderHandler_ = getElementReaderHandler();
+        final ExcelRecordInOut<Map<String, PROP>> obj = new ExcelRecordInOut<Map<String, PROP>>();
+        obj.setRecordDesc(getRecordDesc());
+        obj.setWithHeader(isWithHeader());
+        obj.setElementReaderHandler(getElementReaderHandler());
         return obj;
     }
 
-    public static class MapExcelInOut<PROP> implements ExcelInOut<Map<String, PROP>> {
-
-        private RecordDesc<Map<String, PROP>> recordDesc_;
-        private boolean withHeader_;
-        private ElementReaderHandler elementReaderHandler_;
-
-        @Override
-        public RecordReader<Map<String, PROP>> openReader(final InputStream is) {
-            if (is == null) {
-                throw new NullPointerException("is");
-            }
-
-            final DefaultExcelReader<Map<String, PROP>> r = new DefaultExcelReader<Map<String, PROP>>(recordDesc_);
-            r.setWithHeader(withHeader_);
-            r.setElementReaderHandler(elementReaderHandler_);
-
-            // TODO openで例外時にcloseすること
-            r.open(is);
-            return r;
-        }
-
-        @Override
-        public RecordWriter<Map<String, PROP>> openWriter(final OutputStream os) {
-            if (os == null) {
-                throw new NullPointerException("os");
-            }
-
-            final DefaultExcelWriter<Map<String, PROP>> w = new DefaultExcelWriter<Map<String, PROP>>(recordDesc_);
-            w.setWithHeader(withHeader_);
-            // TODO openで例外時にcloseすること
-            w.open(os);
-            return w;
-        }
-
-    }
 }
