@@ -236,8 +236,8 @@ public class FileOperation {
     }
 
     public BufferedReader openBufferedReader(final File file, final Charset charset) {
-        final InputStreamReader osw = openInputStreamReader(file, charset);
-        final BufferedReader reader = new BufferedReader(osw, bufferSize_);
+        final InputStreamReader isr = openInputStreamReader(file, charset);
+        final BufferedReader reader = new BufferedReader(isr, bufferSize_);
         return reader;
     }
 
