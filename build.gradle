@@ -199,7 +199,7 @@ project(":coopie") {
         }
         testCompile("ch.qos.logback:logback-core:${versions.logback}")
         testCompile("ch.qos.logback:logback-classic:${versions.logback}")
-        testCompile("junit:junit-dep:4.11")
+        testCompile("junit:junit:4.12")
         testCompile("org.hamcrest:hamcrest-library:1.3")
     }
 }
