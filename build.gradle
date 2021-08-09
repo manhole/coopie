@@ -8,7 +8,7 @@ allprojects { project ->
 
     repositories {
         mavenCentral()
-        maven { url "http://hotchpotch.sourceforge.jp/maven2/release" }
+        maven { url "https://hotchpotch.osdn.jp/maven2/release" }
     }
 
     apply from: "${project.getRootDir()}/gradle/eclipse.gradle"
@@ -24,9 +24,14 @@ allprojects { project ->
     }
 }
 
-configure(rootProject) {
-    task wrapper(type: Wrapper) {
-        gradleVersion = 2.7
+// https://qiita.com/cypher256/items/f3db6bba86692c3c7733
+// @see org.gradle.api.tasks.wrapper.Wrapper, org.gradle.util.DistributionLocator
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+    doFirst {
+        def versionService = new URL('https://services.gradle.org/versions/current')
+        gradleVersion = new groovy.json.JsonSlurper().parseText(versionService.text).version
+        println "gradleVersion: ${gradleVersion}"
     }
 }
 
@@ -42,35 +47,38 @@ subprojects { project ->
         from sourceSets.main.allSource
     }
 
-    task buildNumberTask << {
-        def gitCommand = "git rev-parse --verify --short=8 HEAD"
-        def p = gitCommand.execute(null, project.getRootDir())
-        def w = new StringBuilder()
-        p.waitForProcessOutput(w, System.err)
-        if (p.exitValue() != 0) {
-            throw new Exception("execution failed: <${gitCommand}>")
-        }
-        def buildNumber = w.toString().trim()
-        assert buildNumber
+    task buildNumberTask {
+        doLast {
+            def gitCommand = "git rev-parse --verify --short=8 HEAD"
+            def p = gitCommand.execute(null, project.getRootDir())
+            def w = new StringBuilder()
+            p.waitForProcessOutput(w, System.err)
+            if (p.exitValue() != 0) {
+                throw new Exception("execution failed: <${gitCommand}>")
+            }
+            def buildNumber = w.toString().trim()
+            assert buildNumber
 
-        def timestamp = new Date()
+            def timestamp = new Date()
 
-        project.tasks.withType(Jar).each { t ->
-            t.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
-            t.manifest.attributes["Created-By"] = "Gradle"
-            t.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
-            t.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
-            t.manifest.attributes["Specification-Title"] = project.name
-            t.manifest.attributes["Specification-Version"] = project.version
-            //t.manifest.attributes["Specification-Vendor"] = project.organization.name
-            t.manifest.attributes["Implementation-Title"] = project.name
-            t.manifest.attributes["Implementation-Version"] = project.version
-            t.manifest.attributes["Implementation-Vendor-Id"] = project.group
-            //t.manifest.attributes["Implementation-Vendor"] = project.organization.name
-            t.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(timestamp)
-            t.manifest.attributes["SCM-Revision"] = buildNumber
+            project.tasks.withType(Jar).each { t ->
+                t.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
+                t.manifest.attributes["Created-By"] = "Gradle"
+                t.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
+                t.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
+                t.manifest.attributes["Specification-Title"] = project.name
+                t.manifest.attributes["Specification-Version"] = project.version
+                //t.manifest.attributes["Specification-Vendor"] = project.organization.name
+                t.manifest.attributes["Implementation-Title"] = project.name
+                t.manifest.attributes["Implementation-Version"] = project.version
+                t.manifest.attributes["Implementation-Vendor-Id"] = project.group
+                //t.manifest.attributes["Implementation-Vendor"] = project.organization.name
+                t.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(timestamp)
+                t.manifest.attributes["SCM-Revision"] = buildNumber
+            }
         }
     }
+
     /*
      * jarを作る前にbuildNumberを実行したい。
      * jarタスクのdoLastのタイミングでは遅い。(既にjarが作られた後。)
@@ -193,14 +201,14 @@ project(":coopie") {
     description = "Read/Write library for two-dimensional arrays of data."
     _setupEncoding(project)
     dependencies {
-        compile("org.slf4j:slf4j-api:${versions.slf4j}")
-        compile("org.apache.poi:poi-ooxml:3.9") {
+        implementation("org.slf4j:slf4j-api:${versions.slf4j}")
+        implementation("org.apache.poi:poi-ooxml:3.9") {
             ext.optional = true
         }
-        testCompile("ch.qos.logback:logback-core:${versions.logback}")
-        testCompile("ch.qos.logback:logback-classic:${versions.logback}")
-        testCompile("junit:junit:4.12")
-        testCompile("org.hamcrest:hamcrest-library:1.3")
+        testImplementation("ch.qos.logback:logback-core:${versions.logback}")
+        testImplementation("ch.qos.logback:logback-classic:${versions.logback}")
+        testImplementation("junit:junit:4.12")
+        testImplementation("org.hamcrest:hamcrest-library:1.3")
     }
 }
 
@@ -210,12 +218,13 @@ project(":coopie-groovy") {
 
     _setupEncoding(project)
     dependencies {
-        compile("org.codehaus.groovy:groovy-all:2.1.3")
-        compile(project(":coopie"))
-        testCompile("ch.qos.logback:logback-core:${versions.logback}")
-        testCompile("ch.qos.logback:logback-classic:${versions.logback}")
-        testCompile("junit:junit-dep:4.11")
-        testCompile("org.hamcrest:hamcrest-library:1.3")
+        implementation("org.slf4j:slf4j-api:${versions.slf4j}")
+        implementation("org.codehaus.groovy:groovy-all:2.1.3")
+        implementation(project(":coopie"))
+        testImplementation("ch.qos.logback:logback-core:${versions.logback}")
+        testImplementation("ch.qos.logback:logback-classic:${versions.logback}")
+        testImplementation("junit:junit-dep:4.11")
+        testImplementation("org.hamcrest:hamcrest-library:1.3")
     }
 }
 
@@ -239,7 +248,7 @@ def _setupEncoding(Project project) {
     }
 }
 
-def class DependencyList {
+class DependencyList {
 
     def holders = [:]
 
@@ -258,7 +267,7 @@ def class DependencyList {
 
 }
 
-def class DependencyHolder {
+class DependencyHolder {
     Dependency dependency
     Configuration configuration
 
@@ -303,7 +312,9 @@ def class DependencyHolder {
             return dependency.mavenScope
         }
         switch (configuration.name) {
-            case 'testCompile':
+            case 'implementation':
+                return 'compile'
+            case 'testImplementation':
                 return 'test'
         }
         return configuration.name

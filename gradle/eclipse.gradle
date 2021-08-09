@@ -32,17 +32,19 @@ if (tasks.findByName('eclipseJdt')) {
         ext.originalOutputFile = outputFile
         outputFile = (outputFile.absolutePath + '.tmp') as File
     }
-    tasks.eclipseJdt << {
-        assert 'org.eclipse.jdt.core.prefs.tmp' == outputFile.name
-        assert 'org.eclipse.jdt.core.prefs' == ext.originalOutputFile.name
-        List lines = outputFile.readLines('UTF-8')
-        Collections.sort(lines)
-        ext.originalOutputFile.withWriter('UTF-8') { writer ->
-            lines.each { line ->
-                writer << line
-                writer << '\r\n'
+    tasks.eclipseJdt {
+        doLast {
+            assert 'org.eclipse.jdt.core.prefs.tmp' == outputFile.name
+            assert 'org.eclipse.jdt.core.prefs' == ext.originalOutputFile.name
+            List lines = outputFile.readLines('UTF-8')
+            Collections.sort(lines)
+            ext.originalOutputFile.withWriter('UTF-8') { writer ->
+                lines.each { line ->
+                    writer << line
+                    writer << '\r\n'
+                }
             }
+            assert outputFile.delete()
         }
-        assert outputFile.delete()
     }
 }
