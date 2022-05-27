@@ -34,7 +34,8 @@ public class LineReader implements LineReadable {
     private final Object finalizerGuardian_ = new ClosingGuardian(this);
     private final Readable readable_;
     private LineSeparator lineSeparator_;
-    private String line_;
+    // 改行文字を除いた、1行の文字列
+    private String lineBody_;
     private int lineNumber_;
     private Deque<Line> pushback_;
     private boolean eof_;
@@ -58,7 +59,7 @@ public class LineReader implements LineReadable {
 
     public String readLineBody() throws IOException {
         read0();
-        return line_;
+        return lineBody_;
     }
 
     @Override
@@ -71,11 +72,11 @@ public class LineReader implements LineReadable {
     @Override
     public Line readLine(final Line reusableLine) throws IOException {
         read0();
-        if (line_ == null) {
+        if (lineBody_ == null) {
             return null;
         }
 
-        reusableLine.reinit(line_, lineNumber_, lineSeparator_);
+        reusableLine.reinit(lineBody_, lineNumber_, lineSeparator_);
         return reusableLine;
     }
 
@@ -86,7 +87,7 @@ public class LineReader implements LineReadable {
     private void read0() throws IOException {
         if (pushback_ != null) {
             final Line line = pushback_.pop();
-            line_ = line.getBody();
+            lineBody_ = line.getBody();
             lineNumber_++;
             lineSeparator_ = line.getSeparator();
             if (pushback_.isEmpty()) {
@@ -96,7 +97,7 @@ public class LineReader implements LineReadable {
         }
 
         if (eof_) {
-            line_ = null;
+            lineBody_ = null;
             lineSeparator_ = null;
             return;
         }
@@ -135,13 +136,13 @@ public class LineReader implements LineReadable {
         }
 
         if (eof_ && bodyBuffer_ == null && bodyLength_ == 0) {
-            line_ = null;
+            lineBody_ = null;
             lineSeparator_ = null;
             return;
         }
 
         if (bodyBuffer_ == null) {
-            line_ = new String(buffer_, bodyStartPos_, bodyLength_);
+            lineBody_ = new String(buffer_, bodyStartPos_, bodyLength_);
         } else {
             /*
              * fillする前にbodyBufferへ退避しているので、
@@ -151,7 +152,7 @@ public class LineReader implements LineReadable {
             } else {
                 bodyBuffer_.append(buffer_, bodyStartPos_, bodyLength_);
             }
-            line_ = bodyBuffer_.toString();
+            lineBody_ = bodyBuffer_.toString();
         }
 
         lineNumber_++;
@@ -188,7 +189,7 @@ public class LineReader implements LineReadable {
         pushback_.push(line);
         lineNumber_--;
         // XXX この時点では手前の行のことは忘れているため、わからない
-        line_ = null;
+        lineBody_ = null;
         lineSeparator_ = null;
     }
 
