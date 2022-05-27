@@ -107,13 +107,14 @@ public class LineReader implements LineReadable {
         bodyLength_ = 0;
         LineSeparator sep = LineSeparator.NONE;
 
+        // 改行文字まで or 文字列の最後まで読む
         read_loop: while (true) {
             readIfNecessary();
             if (eof_) {
-                break read_loop;
+                break;
             }
 
-            for (; pos_ < length_;) {
+            while (pos_ < length_) {
                 final char c = buffer_[pos_];
                 pos_++;
                 if (sep == LineSeparator.CR) {
@@ -174,9 +175,9 @@ public class LineReader implements LineReadable {
                 length_ = 0;
             } else {
                 charBuffer_.rewind();
-                pos_ = 0;
                 length_ = len;
-                bodyStartPos_ = pos_;
+                pos_ = 0;
+                bodyStartPos_ = 0;
                 bodyLength_ = 0;
             }
         }
