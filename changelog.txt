@@ -1,5 +1,6 @@
-0.4.2 201X/XX/XX
+0.5.0 202X/XX/XX
 
+- 動作環境を Java 8 に上げます。
 - ExcelToCsv: 要素のクォートをMINIMUMなどに変更できるようにした。
 - add method: RecordReader#getRawRecord() 直前にreadしたBEANの元要素を取得できるようにしました。
 - add Class: CodePoints
