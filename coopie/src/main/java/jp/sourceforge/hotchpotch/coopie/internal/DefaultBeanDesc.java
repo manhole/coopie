@@ -105,7 +105,7 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
     }
 
     public static <T> Builder<T> builder() {
-        return new Builder<T>();
+        return new Builder<>();
     }
 
     public static class Builder<BEAN> {
@@ -122,7 +122,7 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
         public DefaultBeanDesc<BEAN> build() {
             setupPropertyDescs();
             setupMethods();
-            final DefaultBeanDesc<BEAN> beanDesc = new DefaultBeanDesc<BEAN>();
+            final DefaultBeanDesc<BEAN> beanDesc = new DefaultBeanDesc<>();
             beanDesc.setBeanClass(beanClass_);
             for (final DefaultPropertyDesc.Builder<BEAN, ?> propertyBuilder : properties_.values()) {
                 propertyBuilder.beanDesc(beanDesc);
@@ -174,7 +174,7 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
                 final String methodName = m.getName();
                 List<Method> list = methods_.get(methodName);
                 if (list == null) {
-                    list = new ArrayList<Method>();
+                    list = new ArrayList<>();
                     methods_.put(methodName, list);
                 }
                 list.add(m);

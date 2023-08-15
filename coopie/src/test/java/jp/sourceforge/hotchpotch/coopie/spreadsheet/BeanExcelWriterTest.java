@@ -56,7 +56,7 @@ public class BeanExcelWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
 
         // ## Act ##
         // ## Assert ##
@@ -74,7 +74,7 @@ public class BeanExcelWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -131,7 +131,7 @@ public class BeanExcelWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -185,7 +185,7 @@ public class BeanExcelWriterTest {
     @Test
     public void writeTwoSheets() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout1 = new BeanExcelLayout<AaaBean>(AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout1 = new BeanExcelLayout<>(AaaBean.class);
         layout1.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -195,7 +195,7 @@ public class BeanExcelWriterTest {
             }
         });
 
-        final BeanExcelLayout<BbbBean> layout2 = new BeanExcelLayout<BbbBean>(BbbBean.class);
+        final BeanExcelLayout<BbbBean> layout2 = new BeanExcelLayout<>(BbbBean.class);
         layout2.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -269,7 +269,7 @@ public class BeanExcelWriterTest {
     @Test
     public void write_customStyle() throws Throwable {
         // ## Arrange ##
-        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<AaaBean>(AaaBean.class);
+        final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {

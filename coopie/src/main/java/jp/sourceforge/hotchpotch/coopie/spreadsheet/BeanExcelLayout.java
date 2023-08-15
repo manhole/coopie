@@ -46,7 +46,7 @@ public class BeanExcelLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
     public ExcelRecordInOut<BEAN> build() {
         prepareBuild();
 
-        final ExcelRecordInOut<BEAN> obj = new ExcelRecordInOut<BEAN>();
+        final ExcelRecordInOut<BEAN> obj = new ExcelRecordInOut<>();
         obj.setRecordDesc(getRecordDesc());
         obj.setWithHeader(isWithHeader());
         obj.setElementReaderHandler(getElementReaderHandler());

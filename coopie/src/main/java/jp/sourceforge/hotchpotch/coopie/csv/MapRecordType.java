@@ -23,7 +23,7 @@ public class MapRecordType<PROP> implements RecordType<Map<String, PROP>> {
 
     @Override
     public Map<String, PROP> newInstance() {
-        return new TreeMap<String, PROP>();
+        return new TreeMap<>();
     }
 
 }

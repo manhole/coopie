@@ -34,7 +34,7 @@ public class MapExcelWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final MapExcelLayout<String> layout = new MapExcelLayout<String>();
+        final MapExcelLayout<String> layout = new MapExcelLayout<>();
 
         // ## Act ##
         // ## Assert ##
@@ -52,7 +52,7 @@ public class MapExcelWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapExcelLayout<String> layout = new MapExcelLayout<String>();
+        final MapExcelLayout<String> layout = new MapExcelLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -95,7 +95,7 @@ public class MapExcelWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final MapExcelLayout<String> layout = new MapExcelLayout<String>();
+        final MapExcelLayout<String> layout = new MapExcelLayout<>();
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {

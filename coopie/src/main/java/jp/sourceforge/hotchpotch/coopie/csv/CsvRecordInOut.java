@@ -36,7 +36,7 @@ class CsvRecordInOut<BEAN> implements RecordInOut<BEAN> {
             throw new NullPointerException("readable");
         }
 
-        final DefaultRecordReader<BEAN> r = new DefaultRecordReader<BEAN>(recordDesc_);
+        final DefaultRecordReader<BEAN> r = new DefaultRecordReader<>(recordDesc_);
         r.setWithHeader(withHeader_);
         r.setElementInOut(elementInOut_);
         r.setElementReaderHandler(elementReaderHandler_);
@@ -63,7 +63,7 @@ class CsvRecordInOut<BEAN> implements RecordInOut<BEAN> {
             throw new NullPointerException("appendable");
         }
 
-        final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<BEAN>(recordDesc_);
+        final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<>(recordDesc_);
         w.setWithHeader(withHeader_);
         w.setElementInOut(elementInOut_);
         // TODO openで例外時にcloseすること

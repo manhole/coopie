@@ -21,7 +21,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
     private final CsvSetting csvSetting_;
 
     public static <BEAN> BeanCsvLayout<BEAN> getInstance(final Class<BEAN> beanClass) {
-        final BeanCsvLayout<BEAN> instance = new BeanCsvLayout<BEAN>(beanClass);
+        final BeanCsvLayout<BEAN> instance = new BeanCsvLayout<>(beanClass);
         return instance;
     }
 
@@ -55,7 +55,7 @@ public class BeanCsvLayout<BEAN> extends AbstractBeanCsvLayout<BEAN> {
     public RecordInOut<BEAN> build() {
         prepareBuild();
 
-        final CsvRecordInOut<BEAN> obj = new CsvRecordInOut<BEAN>();
+        final CsvRecordInOut<BEAN> obj = new CsvRecordInOut<>();
         obj.setRecordDesc(getRecordDesc());
         obj.setWithHeader(isWithHeader());
         obj.setElementInOut(createElementInOut());

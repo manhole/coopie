@@ -109,7 +109,7 @@ class DefaultPropertyDesc<BEAN, PROPERTY> implements PropertyDesc<BEAN, PROPERTY
     }
 
     public static <BEAN, PROPERTY> Builder<BEAN, PROPERTY> builder() {
-        return new Builder<BEAN, PROPERTY>();
+        return new Builder<>();
     }
 
     public static class Builder<BEAN, PROPERTY> {
@@ -125,7 +125,7 @@ class DefaultPropertyDesc<BEAN, PROPERTY> implements PropertyDesc<BEAN, PROPERTY
             if (!isValid()) {
                 throw new IllegalStateException("invalid");
             }
-            final DefaultPropertyDesc<BEAN, PROPERTY> pd = new DefaultPropertyDesc<BEAN, PROPERTY>();
+            final DefaultPropertyDesc<BEAN, PROPERTY> pd = new DefaultPropertyDesc<>();
             pd.setBeanDesc(beanDesc_);
             pd.setPropertyName(propertyName_);
             pd.setPropertyType(propertyType_);

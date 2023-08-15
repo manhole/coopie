@@ -54,7 +54,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_open_null() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -78,7 +78,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void read_nosetup() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
 
         // ## Act ##
         // ## Assert ##
@@ -101,7 +101,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write1() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -146,7 +146,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write2() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -197,7 +197,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write4() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -242,7 +242,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_noheader() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<String>();
+        final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -288,7 +288,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_bigDecimal() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -302,7 +302,7 @@ public class MapFixedLengthWriterTest {
         final StringWriter writer = new StringWriter();
         final RecordWriter<Map<String, Object>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, Object> bean = new TreeMap<String, Object>();
+        final Map<String, Object> bean = new TreeMap<>();
         bean.put("aaa", new BigDecimal("11.1"));
         bean.put("bbb", "21.02");
         csvWriter.write(bean);
@@ -337,7 +337,7 @@ public class MapFixedLengthWriterTest {
     @Test
     public void write_calendar() throws Throwable {
         // ## Arrange ##
-        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<Object>();
+        final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<>();
         layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
             @Override
             public void setup(final FixedLengthColumnSetup setup) {
@@ -362,7 +362,7 @@ public class MapFixedLengthWriterTest {
         final StringWriter writer = new StringWriter();
         final RecordWriter<Map<String, Object>> csvWriter = layout.build().openWriter(writer);
 
-        final Map<String, Object> bean = new TreeMap<String, Object>();
+        final Map<String, Object> bean = new TreeMap<>();
         bean.put("aaa", "a");
         {
             final Calendar c = Calendar.getInstance();

@@ -35,7 +35,7 @@ public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<St
     public RecordInOut<Map<String, PROP>> build() {
         prepareBuild();
 
-        final MapFixedLengthRecordInOut<PROP> obj = new MapFixedLengthRecordInOut<PROP>();
+        final MapFixedLengthRecordInOut<PROP> obj = new MapFixedLengthRecordInOut<>();
         obj.recordDesc_ = getRecordDesc();
         obj.withHeader_ = isWithHeader();
         obj.elementInOut_ = createElementInOut();
@@ -71,7 +71,7 @@ public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<St
 
     @Override
     protected RecordType<Map<String, PROP>> createRecordType() {
-        return new MapRecordType<PROP>();
+        return new MapRecordType<>();
     }
 
     protected static class MapFixedLengthRecordInOut<PROP> implements RecordInOut<Map<String, PROP>> {
@@ -87,7 +87,7 @@ public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<St
             }
 
             final RecordDesc<Map<String, PROP>> rd = recordDesc_;
-            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<Map<String, PROP>>(rd);
+            final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<>(rd);
             r.setWithHeader(withHeader_);
             r.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること
@@ -101,7 +101,7 @@ public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<St
                 throw new NullPointerException("appendable");
             }
 
-            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<Map<String, PROP>>(recordDesc_);
+            final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
             w.setElementInOut(elementInOut_);
             // TODO openで例外時にcloseすること

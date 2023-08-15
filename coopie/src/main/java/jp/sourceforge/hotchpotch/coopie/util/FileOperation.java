@@ -179,7 +179,7 @@ public class FileOperation {
     public List<String> readLines(final File file) {
         final LineReadable lineReader = openLineReader(file);
         try {
-            final List<String> list = new ArrayList<String>();
+            final List<String> list = new ArrayList<>();
             for (final Line line : lineReader) {
                 list.add(line.getBody());
             }
@@ -411,7 +411,7 @@ public class FileOperation {
                 return;
             }
 
-            final List<File> files = new ArrayList<File>();
+            final List<File> files = new ArrayList<>();
             for (final File child : children) {
                 if (child.isDirectory()) {
                     walkDirectory(child, walker);

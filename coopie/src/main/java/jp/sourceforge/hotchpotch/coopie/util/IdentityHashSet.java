@@ -26,7 +26,7 @@ import jp.sourceforge.hotchpotch.coopie.CoopieException;
 
 public class IdentityHashSet<E> implements Set<E> {
 
-    private final Map<E, Object> map_ = new IdentityHashMap<E, Object>();
+    private final Map<E, Object> map_ = new IdentityHashMap<>();
     private static final Object ITEM = new Object();
 
     @Override

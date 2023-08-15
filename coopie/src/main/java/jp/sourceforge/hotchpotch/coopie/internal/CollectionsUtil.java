@@ -26,11 +26,11 @@ import java.util.List;
 public class CollectionsUtil {
 
     public static <T> List<T> newArrayList() {
-        return new ArrayList<T>();
+        return new ArrayList<>();
     }
 
     public static <K, V> HashMap<K, V> newHashMap() {
-        return new HashMap<K, V>();
+        return new HashMap<>();
     }
 
 }

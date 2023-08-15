@@ -175,7 +175,7 @@ abstract class AbstractFixedLengthLayout<BEAN> {
         final PropertyBindingFactory<BEAN> pbf = getPropertyBindingFactory();
         final RecordType<BEAN> recordType = getRecordType();
         final ColumnDesc<BEAN>[] cds = recordDefToColumnDesc(recordDef, pbf);
-        final RecordDesc<BEAN> recordDesc = new FixedLengthRecordDesc<BEAN>(cds, recordType);
+        final RecordDesc<BEAN> recordDesc = new FixedLengthRecordDesc<>(cds, recordType);
         return recordDesc;
     }
 
@@ -460,7 +460,7 @@ abstract class AbstractFixedLengthLayout<BEAN> {
 
         protected FixedLengthRecordDesc(final ColumnDesc<BEAN>[] columnDescs, final RecordType<BEAN> recordType) {
             // 固定長なので、常に指定した順序
-            delegate_ = new DefaultRecordDesc<BEAN>(columnDescs, OrderSpecified.SPECIFIED, recordType);
+            delegate_ = new DefaultRecordDesc<>(columnDescs, OrderSpecified.SPECIFIED, recordType);
         }
 
         @Override

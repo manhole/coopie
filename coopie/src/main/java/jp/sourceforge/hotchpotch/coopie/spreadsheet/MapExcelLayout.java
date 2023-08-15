@@ -25,7 +25,7 @@ public class MapExcelLayout<PROP> extends AbstractMapCsvLayout<PROP> {
     public ExcelInOut<Map<String, PROP>> build() {
         prepareBuild();
 
-        final ExcelRecordInOut<Map<String, PROP>> obj = new ExcelRecordInOut<Map<String, PROP>>();
+        final ExcelRecordInOut<Map<String, PROP>> obj = new ExcelRecordInOut<>();
         obj.setRecordDesc(getRecordDesc());
         obj.setWithHeader(isWithHeader());
         obj.setElementReaderHandler(getElementReaderHandler());

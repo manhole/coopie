@@ -54,7 +54,7 @@ public class BeanPropertyBinding<BEAN, PROP> implements PropertyBinding<BEAN, PR
             }
             final PropertyDesc<BEAN, PROP> pd = beanDesc_.getPropertyDesc(name);
             if (pd != null) {
-                return new BeanPropertyBinding<BEAN, PROP>(pd);
+                return new BeanPropertyBinding<>(pd);
             }
 
             final Class<? extends BEAN> clazz = beanDesc_.getBeanClass();

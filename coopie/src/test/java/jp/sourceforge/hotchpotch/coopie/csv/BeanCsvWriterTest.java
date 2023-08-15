@@ -589,7 +589,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write_bigDecimal() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<BigDecimalBean>(BigDecimalBean.class);
+        final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<>(BigDecimalBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {
@@ -639,7 +639,7 @@ public class BeanCsvWriterTest {
     @Test
     public void write_calendar() throws Throwable {
         // ## Arrange ##
-        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<CalendarBean>(CalendarBean.class);
+        final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
         layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
             @Override
             public void setup(final CsvColumnSetup setup) {

@@ -170,7 +170,7 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
     }
 
     private DefaultRecordDesc<BEAN> createCopy() {
-        final DefaultRecordDesc<BEAN> copy = new DefaultRecordDesc<BEAN>(columnDescs_, orderSpecified_, recordType_);
+        final DefaultRecordDesc<BEAN> copy = new DefaultRecordDesc<>(columnDescs_, orderSpecified_, recordType_);
         return copy;
     }
 

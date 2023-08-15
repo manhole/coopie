@@ -43,7 +43,7 @@ class ExcelRecordInOut<BEAN> implements ExcelInOut<BEAN> {
             throw new NullPointerException("is");
         }
 
-        final DefaultExcelReader<BEAN> r = new DefaultExcelReader<BEAN>(recordDesc_);
+        final DefaultExcelReader<BEAN> r = new DefaultExcelReader<>(recordDesc_);
         r.setWithHeader(withHeader_);
         r.setElementReaderHandler(elementReaderHandler_);
 
@@ -58,7 +58,7 @@ class ExcelRecordInOut<BEAN> implements ExcelInOut<BEAN> {
             throw new NullPointerException("os");
         }
 
-        final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<BEAN>(recordDesc_);
+        final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<>(recordDesc_);
         w.setWithHeader(withHeader_);
         if (writeEditor_ != null) {
             w.setWriteEditor(writeEditor_);
@@ -69,7 +69,7 @@ class ExcelRecordInOut<BEAN> implements ExcelInOut<BEAN> {
     }
 
     public RecordReader<BEAN> openSheetReader(final Sheet sheet) {
-        final DefaultExcelReader<BEAN> r = new DefaultExcelReader<BEAN>(recordDesc_);
+        final DefaultExcelReader<BEAN> r = new DefaultExcelReader<>(recordDesc_);
         r.setWithHeader(withHeader_);
         r.setElementReaderHandler(elementReaderHandler_);
 
@@ -79,7 +79,7 @@ class ExcelRecordInOut<BEAN> implements ExcelInOut<BEAN> {
     }
 
     public RecordWriter<BEAN> openSheetWriter(final Workbook workbook, final Sheet sheet) {
-        final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<BEAN>(recordDesc_);
+        final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<>(recordDesc_);
         w.setWithHeader(withHeader_);
         // TODO openで例外時にcloseすること
         w.openSheetWriter(workbook, sheet);
