@@ -118,13 +118,10 @@ public class MapCsvReaderTest {
         final Reader r = getResourceAsReader("-2", "tsv");
 
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-                setup.column("いい").toProperty("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
+            setup.column("いい").toProperty("bbb");
         });
 
         // ## Act ##
@@ -243,16 +240,13 @@ public class MapCsvReaderTest {
         final Reader r = getResourceAsReader("-3", "tsv");
 
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * CSVの列順
-                 */
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * CSVの列順
+             */
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
 
         layout.setWithHeader(false);
@@ -321,16 +315,13 @@ public class MapCsvReaderTest {
     public void read_empty2() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * CSVの列順
-                 */
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * CSVの列順
+             */
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
         layout.setWithHeader(false);
 
@@ -474,12 +465,9 @@ public class MapCsvReaderTest {
         final Reader r = getResourceAsReader("-2", "tsv");
 
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
         });
 
         // ## Act ##
@@ -519,12 +507,9 @@ public class MapCsvReaderTest {
         final Reader r = getResourceAsReader("-6", "tsv");
 
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ddd").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ddd").toProperty("ccc");
         });
 
         // ## Act ##
@@ -567,13 +552,10 @@ public class MapCsvReaderTest {
         final Reader r = BeanCsvReaderTest.getResourceAsReader("-9", "tsv", Charset.forName("UTF-8"));
 
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("bbb");
-                setup.column("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("bbb");
+            setup.column("ccc");
         });
 
         // ## Act ##
@@ -953,12 +935,9 @@ public class MapCsvReaderTest {
     public void read_bigDecimal() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout<Object> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa").withConverter(new BigDecimalConverter());
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa").withConverter(new BigDecimalConverter());
+            setup.column("bbb");
         });
 
         // ## Act ##

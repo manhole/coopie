@@ -105,13 +105,10 @@ public class BeanExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("いい").toProperty("bbb");
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("いい").toProperty("bbb");
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
         });
 
         // ## Act ##
@@ -134,27 +131,24 @@ public class BeanExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                {
-                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                    def.setPropertyName("bbb");
-                    def.setColumnNameMatcher(new ContainsNameMatcher("い"));
-                    setup.column(def);
-                }
-                {
-                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                    def.setPropertyName("aaa");
-                    def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
-                    setup.column(def);
-                }
-                {
-                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                    def.setPropertyName("ccc");
-                    def.setColumnNameMatcher(new ContainsNameMatcher("う"));
-                    setup.column(def);
-                }
+        layout.setupColumns(setup -> {
+            {
+                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                def.setPropertyName("bbb");
+                def.setColumnNameMatcher(new ContainsNameMatcher("い"));
+                setup.column(def);
+            }
+            {
+                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                def.setPropertyName("aaa");
+                def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
+                setup.column(def);
+            }
+            {
+                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                def.setPropertyName("ccc");
+                def.setColumnNameMatcher(new ContainsNameMatcher("う"));
+                setup.column(def);
             }
         });
 
@@ -195,16 +189,13 @@ public class BeanExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3", "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * CSVの列順
-                 */
-                setup.column("ううう").toProperty("ccc");
-                setup.column("あ").toProperty("aaa");
-                setup.column("いい").toProperty("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * CSVの列順
+             */
+            setup.column("ううう").toProperty("ccc");
+            setup.column("あ").toProperty("aaa");
+            setup.column("いい").toProperty("bbb");
         });
 
         layout.setWithHeader(false);
@@ -246,12 +237,9 @@ public class BeanExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
         });
 
         // ## Act ##
@@ -271,12 +259,9 @@ public class BeanExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6", "xls");
 
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ddd").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ddd").toProperty("ccc");
         });
 
         // ## Act ##

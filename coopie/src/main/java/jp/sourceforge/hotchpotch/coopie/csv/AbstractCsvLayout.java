@@ -257,16 +257,13 @@ public abstract class AbstractCsvLayout<BEAN> {
 
             final DefaultCsvColumnsDef columnsDef = new DefaultCsvColumnsDef();
             final CsvCompositeColumnBuilder builder = new CsvCompositeColumnBuilder(columnsDef);
-            compositeSetup.setup(new CsvCompositeColumnSetup() {
-                @Override
-                public ColumnBuilder column(final String name) {
-                    final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
-                    def.setLabel(name);
-                    def.setPropertyName(name);
-                    final CsvColumnBuilder builder = new CsvColumnBuilder(def);
-                    columnsDef.addColumnDef(def);
-                    return builder;
-                }
+            compositeSetup.setup(name -> {
+                final DefaultCsvColumnDef def = new DefaultCsvColumnDef();
+                def.setLabel(name);
+                def.setPropertyName(name);
+                final CsvColumnBuilder builder1 = new CsvColumnBuilder(def);
+                columnsDef.addColumnDef(def);
+                return builder1;
             });
             columnBuilders_.add(builder);
             return builder;

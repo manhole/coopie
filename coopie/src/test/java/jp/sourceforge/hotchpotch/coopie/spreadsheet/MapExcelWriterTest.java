@@ -53,13 +53,10 @@ public class MapExcelWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ccc");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ccc");
+            setup.column("bbb");
         });
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -96,16 +93,13 @@ public class MapExcelWriterTest {
     public void write_noheader() throws Throwable {
         // ## Arrange ##
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * プロパティ名, CSV項目名 の順
-                 */
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * プロパティ名, CSV項目名 の順
+             */
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
         layout.setWithHeader(false);
 

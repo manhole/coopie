@@ -39,13 +39,10 @@ public class ContextClassLoaderBlockTest {
         assertNotSame(cl, Thread.currentThread().getContextClassLoader());
 
         // ## Act ##
-        final Object ret = ContextClassLoaderBlock.with(cl).execute(new Task<Object>() {
-            @Override
-            public Object execute() {
-                called.set(true);
-                assertSame(cl, Thread.currentThread().getContextClassLoader());
-                return returns;
-            }
+        final Object ret = ContextClassLoaderBlock.with(cl).execute(() -> {
+            called.set(true);
+            assertSame(cl, Thread.currentThread().getContextClassLoader());
+            return returns;
         });
 
         // ## Assert ##

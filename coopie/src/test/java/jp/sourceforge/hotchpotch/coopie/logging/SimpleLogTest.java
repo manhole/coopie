@@ -34,13 +34,10 @@ public class SimpleLogTest {
     public void debug1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug(new SimpleLog(null, null));
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug(new SimpleLog(null, null));
+            return null;
         });
 
         // ## Assert ##
@@ -52,13 +49,10 @@ public class SimpleLogTest {
     public void debug2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug(new SimpleLog("foo", null));
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug(new SimpleLog("foo", null));
+            return null;
         });
         logger.debug("[[{}]]", ret);
         assertThat(ret, containsString("foo"));
@@ -68,13 +62,10 @@ public class SimpleLogTest {
     public void debug3() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug(new SimpleLog("foo {}, {}", a("bar", "baz")));
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug(new SimpleLog("foo {}, {}", a("bar", "baz")));
+            return null;
         });
 
         // ## Assert ##

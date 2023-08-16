@@ -40,12 +40,7 @@ class DefaultFixedLengthLineBuilder implements FixedLengthLineBuilder {
     public String buildString() {
         final List<Req> requests = CollectionsUtil.newArrayList();
         requests.addAll(requests_);
-        Collections.sort(requests, new Comparator<Req>() {
-            @Override
-            public int compare(final Req o1, final Req o2) {
-                return o1.beginIndex_ - o2.beginIndex_;
-            }
-        });
+        Collections.sort(requests, (o1, o2) -> o1.beginIndex_ - o2.beginIndex_);
 
         final StringBuilder sb = new StringBuilder();
         int pos = 0;

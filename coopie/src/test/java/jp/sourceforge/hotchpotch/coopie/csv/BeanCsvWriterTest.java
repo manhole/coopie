@@ -104,13 +104,10 @@ public class BeanCsvWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ccc");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ccc");
+            setup.column("bbb");
         });
 
         // ## Act ##
@@ -151,16 +148,13 @@ public class BeanCsvWriterTest {
     public void write3() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * プロパティ名, CSV項目名 の順
-                 */
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-                setup.column("いい").toProperty("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * プロパティ名, CSV項目名 の順
+             */
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
+            setup.column("いい").toProperty("bbb");
         });
 
         // ## Act ##
@@ -233,16 +227,13 @@ public class BeanCsvWriterTest {
     public void write_noheader() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * プロパティ名, CSV項目名 の順
-                 */
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * プロパティ名, CSV項目名 の順
+             */
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
         layout.setWithHeader(false);
 
@@ -276,13 +267,10 @@ public class BeanCsvWriterTest {
     public void writeCsv() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
         layout.setElementSeparator(CsvSetting.COMMA);
 
@@ -590,12 +578,9 @@ public class BeanCsvWriterTest {
     public void write_bigDecimal() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<>(BigDecimalBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa").withConverter(new BigDecimalConverter());
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa").withConverter(new BigDecimalConverter());
+            setup.column("bbb");
         });
 
         // ## Act ##
@@ -640,18 +625,12 @@ public class BeanCsvWriterTest {
     public void write_calendar() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.columns(new SetupBlock<CsvCompositeColumnSetup>() {
-                    @Override
-                    public void setup(final CsvCompositeColumnSetup compositeSetup) {
-                        compositeSetup.column("ymd");
-                        compositeSetup.column("hms");
-                    }
-                }).toProperty("bbb").withConverter(new CalendarConverter());
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.columns(compositeSetup -> {
+                compositeSetup.column("ymd");
+                compositeSetup.column("hms");
+            }).toProperty("bbb").withConverter(new CalendarConverter());
         });
         final DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 

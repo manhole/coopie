@@ -1009,12 +1009,9 @@ public class FileOperationTest {
         final List<String> paths = new ArrayList<>();
 
         // ## Act ##
-        files.listDescendant(root, new Callback<File, IOException>() {
-            @Override
-            public void callback(final File file) throws IOException {
-                logger.debug("callback {}", file);
-                paths.add(file.getCanonicalPath());
-            }
+        files.listDescendant(root, file -> {
+            logger.debug("callback {}", file);
+            paths.add(file.getCanonicalPath());
         });
 
         // ## Assert ##

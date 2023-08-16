@@ -438,7 +438,7 @@ public class FileOperation {
         walker.file(file);
     }
 
-    public void listDescendant(final File parent, final Callback callback) {
+    public void listDescendant(final File parent, final Callback<File, IOException> callback) {
         final FileWalker fileWalker = new FileCallbackAdapter(callback);
         walkDescendant(parent, fileWalker);
     }

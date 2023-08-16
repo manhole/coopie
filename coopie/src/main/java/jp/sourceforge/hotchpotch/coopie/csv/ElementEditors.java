@@ -35,31 +35,16 @@ public class ElementEditors {
     /**
      * 何もしません。
      */
-    private static final ElementEditor PASS_THROUGH = new ElementEditor() {
-        @Override
-        public String edit(final String element) {
-            return element;
-        }
-    };
+    private static final ElementEditor PASS_THROUGH = element -> element;
 
     /**
      * {@link String#trim()}します。
      */
-    private static final ElementEditor TRIM = new ElementEditor() {
-        @Override
-        public String edit(final String element) {
-            return element.trim();
-        }
-    };
+    private static final ElementEditor TRIM = element -> element.trim();
 
     /**
      * {@link Character#isWhitespace(char)}である文字をtrimします。
      */
-    private static final ElementEditor TRIM_WHITESPACE = new ElementEditor() {
-        @Override
-        public String edit(final String element) {
-            return Text.trimWhitespace(element);
-        }
-    };
+    private static final ElementEditor TRIM_WHITESPACE = element -> Text.trimWhitespace(element);
 
 }

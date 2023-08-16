@@ -39,12 +39,9 @@ public class StdOutBlockTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.out(baos).execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                System.out.println("to sysout");
-                return null;
-            }
+        StdOutBlock.out(baos).execute(() -> {
+            System.out.println("to sysout");
+            return null;
         });
 
         final String ret = baos.toString();
@@ -60,12 +57,9 @@ public class StdOutBlockTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.err(baos).execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                System.err.println("to syserr");
-                return null;
-            }
+        StdOutBlock.err(baos).execute(() -> {
+            System.err.println("to syserr");
+            return null;
         });
 
         final String ret = baos.toString();
@@ -82,13 +76,10 @@ public class StdOutBlockTest {
         final ByteArrayOutputStream err = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.out(out).err(err).execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                System.out.println("to sysout");
-                System.err.println("to syserr");
-                return null;
-            }
+        StdOutBlock.out(out).err(err).execute(() -> {
+            System.out.println("to sysout");
+            System.err.println("to syserr");
+            return null;
         });
 
         final String retOut = out.toString();
@@ -108,12 +99,9 @@ public class StdOutBlockTest {
     public void testTrapOut() {
         // ## Arrange ##
         // ## Act ##
-        final Text text = StdOutBlock.trapOut(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                System.out.println("trap sysout");
-                return null;
-            }
+        final Text text = StdOutBlock.trapOut(() -> {
+            System.out.println("trap sysout");
+            return null;
         });
 
         final String ret = text.toString();

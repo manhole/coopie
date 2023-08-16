@@ -75,13 +75,10 @@ public class BeanExcelWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ccc");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ccc");
+            setup.column("bbb");
         });
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -132,16 +129,13 @@ public class BeanExcelWriterTest {
     public void write_noheader() throws Throwable {
         // ## Arrange ##
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * プロパティ名, CSV項目名 の順
-                 */
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * プロパティ名, CSV項目名 の順
+             */
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
         layout.setWithHeader(false);
 
@@ -186,22 +180,16 @@ public class BeanExcelWriterTest {
     public void writeTwoSheets() throws Throwable {
         // ## Arrange ##
         final BeanExcelLayout<AaaBean> layout1 = new BeanExcelLayout<>(AaaBean.class);
-        layout1.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ccc");
-                setup.column("bbb");
-            }
+        layout1.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ccc");
+            setup.column("bbb");
         });
 
         final BeanExcelLayout<BbbBean> layout2 = new BeanExcelLayout<>(BbbBean.class);
-        layout2.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aa");
-                setup.column("bb");
-            }
+        layout2.setupColumns(setup -> {
+            setup.column("aa");
+            setup.column("bb");
         });
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -270,13 +258,10 @@ public class BeanExcelWriterTest {
     public void write_customStyle() throws Throwable {
         // ## Arrange ##
         final BeanExcelLayout<AaaBean> layout = new BeanExcelLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
         layout.setWriteEditor(new TestWriteEditor());
 

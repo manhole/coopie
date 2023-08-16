@@ -100,13 +100,10 @@ public class MapExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-                setup.column("いい").toProperty("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
+            setup.column("いい").toProperty("bbb");
         });
 
         // ## Act ##
@@ -163,16 +160,13 @@ public class MapExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-3", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * CSVの列順
-                 */
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * CSVの列順
+             */
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
 
         layout.setWithHeader(false);
@@ -191,12 +185,9 @@ public class MapExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-2", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
         });
 
         // ## Act ##
@@ -213,12 +204,9 @@ public class MapExcelReaderTest {
         final InputStream is = BeanCsvReaderTest.getResourceAsStream("-6", "xls");
 
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ddd").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ddd").toProperty("ccc");
         });
 
         // ## Act ##

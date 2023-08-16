@@ -96,13 +96,10 @@ public class MapCsvWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ccc");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ccc");
+            setup.column("bbb");
         });
 
         // ## Act ##
@@ -143,16 +140,13 @@ public class MapCsvWriterTest {
     public void write3() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * プロパティ名, CSV項目名 の順
-                 */
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-                setup.column("いい").toProperty("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * プロパティ名, CSV項目名 の順
+             */
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
+            setup.column("いい").toProperty("bbb");
         });
 
         // ## Act ##
@@ -224,16 +218,13 @@ public class MapCsvWriterTest {
     public void write_noheader() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * プロパティ名, CSV項目名 の順
-                 */
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * プロパティ名, CSV項目名 の順
+             */
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
         layout.setWithHeader(false);
 
@@ -267,13 +258,10 @@ public class MapCsvWriterTest {
     public void writeCsv() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout<String> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("ccc");
-                setup.column("aaa");
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("ccc");
+            setup.column("aaa");
+            setup.column("bbb");
         });
         layout.setElementSeparator(CsvSetting.COMMA);
 
@@ -420,12 +408,9 @@ public class MapCsvWriterTest {
     public void write_bigDecimal() throws Throwable {
         // ## Arrange ##
         final MapCsvLayout<Object> layout = new MapCsvLayout<>();
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa").withConverter(new BigDecimalConverter());
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa").withConverter(new BigDecimalConverter());
+            setup.column("bbb");
         });
 
         // ## Act ##

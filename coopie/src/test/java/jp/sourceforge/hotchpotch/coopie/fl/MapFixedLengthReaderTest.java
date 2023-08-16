@@ -53,12 +53,7 @@ public class MapFixedLengthReaderTest {
     public void read_open_null() throws Throwable {
         // ## Arrange ##
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-            }
-        });
+        layout.setupColumns(setup -> setup.column("aaa", 0, 5));
 
         // ## Act ##
         // ## Assert ##
@@ -105,13 +100,10 @@ public class MapFixedLengthReaderTest {
         final Reader r = getResourceAsReader("-1", "tsv");
 
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                setup.column("ccc", 5, 12);
-                setup.column("bbb", 12, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            setup.column("ccc", 5, 12);
+            setup.column("bbb", 12, 20);
         });
         layout.setWithHeader(true);
 
@@ -135,13 +127,10 @@ public class MapFixedLengthReaderTest {
         final Reader r = getResourceAsReader("-2", "tsv");
 
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                setup.column("ccc", 5, 12);
-                setup.column("bbb", 12, 30);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            setup.column("ccc", 5, 12);
+            setup.column("bbb", 12, 30);
         });
         layout.setWithHeader(true);
 
@@ -164,13 +153,10 @@ public class MapFixedLengthReaderTest {
         final Reader r = getResourceAsReader("-3", "tsv");
 
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("ccc", 0, 6);
-                setup.column("aaa", 6, 12);
-                setup.column("bbb", 12, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("ccc", 0, 6);
+            setup.column("aaa", 6, 12);
+            setup.column("bbb", 12, 20);
         });
 
         // ## Act ##
@@ -193,13 +179,10 @@ public class MapFixedLengthReaderTest {
         final Reader r = getResourceAsReader("-4", "tsv");
 
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 7);
-                setup.column("bbb", 7, 14);
-                setup.column("ccc", 14, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 7);
+            setup.column("bbb", 7, 14);
+            setup.column("ccc", 14, 20);
         });
         layout.setWithHeader(true);
 
@@ -240,14 +223,11 @@ public class MapFixedLengthReaderTest {
     public void read_empty() throws Throwable {
         // ## Arrange ##
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                // 空ファイルなので、ここは何でも良い
-                setup.column("aaa", 0, 7);
-                setup.column("bbb", 7, 14);
-                setup.column("ccc", 14, 20);
-            }
+        layout.setupColumns(setup -> {
+            // 空ファイルなので、ここは何でも良い
+            setup.column("aaa", 0, 7);
+            setup.column("bbb", 7, 14);
+            setup.column("ccc", 14, 20);
         });
 
         // ## Act ##
@@ -270,13 +250,10 @@ public class MapFixedLengthReaderTest {
         final Reader r = getResourceAsReader("-5", "tsv");
 
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 7);
-                setup.column("ccc", 7, 14);
-                setup.column("bbb", 14, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 7);
+            setup.column("ccc", 7, 14);
+            setup.column("bbb", 14, 20);
         });
         layout.setWithHeader(true);
 
@@ -297,12 +274,9 @@ public class MapFixedLengthReaderTest {
         final Reader r = getResourceAsReader("-2", "tsv");
 
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                setup.column("ccc", 5, 12);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            setup.column("ccc", 5, 12);
         });
         layout.setWithHeader(true);
 
@@ -323,13 +297,10 @@ public class MapFixedLengthReaderTest {
         final Reader r = getResourceAsReader("-1", "tsv");
 
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                setup.column("ccc", 5, 12);
-                setup.column("bbb", 12, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            setup.column("ccc", 5, 12);
+            setup.column("bbb", 12, 20);
         });
         layout.setWithHeader(true);
 
@@ -350,13 +321,10 @@ public class MapFixedLengthReaderTest {
     public void read5() throws Throwable {
         // ## Arrange ##
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 3);
-                setup.column("bbb", 3, 6);
-                setup.column("ccc", 6, 9);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 3);
+            setup.column("bbb", 3, 6);
+            setup.column("ccc", 6, 9);
         });
 
         // ## Act ##
@@ -401,13 +369,10 @@ public class MapFixedLengthReaderTest {
         final Reader r = getResourceAsReader("-5", "tsv");
 
         final MapFixedLengthLayout<String> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 7);
-                setup.column("ccc", 7, 14);
-                setup.column("bbb", 14, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 7);
+            setup.column("ccc", 7, 14);
+            setup.column("bbb", 14, 20);
         });
         layout.setWithHeader(true);
 
@@ -461,12 +426,9 @@ public class MapFixedLengthReaderTest {
     public void read_bigDecimal() throws Throwable {
         // ## Arrange ##
         final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
-                setup.column("bbb", 10, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
+            setup.column("bbb", 10, 20);
         });
         layout.setWithHeader(true);
 
@@ -513,21 +475,15 @@ public class MapFixedLengthReaderTest {
     public void read_calendar1() throws Throwable {
         // ## Arrange ##
         final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
-                // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                // TODO ここでpropertyを呼び忘れた場合のエラーを、わかりやすくする
-                setup.columns(new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
-                    @Override
-                    public void setup(final FixedLengthCompositeColumnSetup compositeSetup) {
-                        compositeSetup.column("ymd", 5, 20);
-                        compositeSetup.column("hms", 20, 35);
-                    }
-                }).toProperty("bbb").withConverter(new CalendarConverter());
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+            // 2列 <=> 1プロパティ の変換にConverterを使用する。
+            // TODO ここでpropertyを呼び忘れた場合のエラーを、わかりやすくする
+            setup.columns(compositeSetup -> {
+                compositeSetup.column("ymd", 5, 20);
+                compositeSetup.column("hms", 20, 35);
+            }).toProperty("bbb").withConverter(new CalendarConverter());
         });
         layout.setWithHeader(true);
 
@@ -569,21 +525,14 @@ public class MapFixedLengthReaderTest {
     public void read_calendar2() throws Throwable {
         // ## Arrange ##
         final MapFixedLengthLayout<Object> layout = new MapFixedLengthLayout<>();
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
-                // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
-
-                    @Override
-                    public void setup(final FixedLengthCompositeColumnSetup compositeSetup) {
-                        compositeSetup.column("ymd", 5, 20);
-                        compositeSetup.column("hms", 20, 35);
-                    }
-                }).toProperty("bbb").withConverter(new CalendarConverter());
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+            // 2列 <=> 1プロパティ の変換にConverterを使用する。
+            setup.columns(compositeSetup -> {
+                compositeSetup.column("ymd", 5, 20);
+                compositeSetup.column("hms", 20, 35);
+            }).toProperty("bbb").withConverter(new CalendarConverter());
         });
         layout.setWithHeader(true);
 

@@ -97,13 +97,10 @@ public class BeanFixedLengthWriterTest {
     public void write1() throws Throwable {
         // ## Arrange ##
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                setup.column("bbb", 5, 12);
-                setup.column("ccc", 12, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            setup.column("bbb", 5, 12);
+            setup.column("ccc", 12, 20);
         });
         layout.setWithHeader(true);
 
@@ -141,13 +138,10 @@ public class BeanFixedLengthWriterTest {
     public void write2() throws Throwable {
         // ## Arrange ##
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                setup.column("ccc", 5, 12);
-                setup.column("bbb", 12, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            setup.column("ccc", 5, 12);
+            setup.column("bbb", 12, 20);
         });
         layout.setWithHeader(true);
 
@@ -192,13 +186,10 @@ public class BeanFixedLengthWriterTest {
     public void write4() throws Throwable {
         // ## Arrange ##
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 7);
-                setup.column("bbb", 7, 14);
-                setup.column("ccc", 14, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 7);
+            setup.column("bbb", 7, 14);
+            setup.column("ccc", 14, 20);
         });
         layout.setWithHeader(true);
 
@@ -237,13 +228,10 @@ public class BeanFixedLengthWriterTest {
     public void write_noheader() throws Throwable {
         // ## Arrange ##
         final BeanFixedLengthLayout<AaaBean> layout = new BeanFixedLengthLayout<>(AaaBean.class);
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("ccc", 0, 6);
-                setup.column("aaa", 6, 12);
-                setup.column("bbb", 12, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("ccc", 0, 6);
+            setup.column("aaa", 6, 12);
+            setup.column("bbb", 12, 20);
         });
 
         // ## Act ##
@@ -336,12 +324,9 @@ public class BeanFixedLengthWriterTest {
         // ## Arrange ##
         final BeanFixedLengthLayout<BigDecimalBean> layout = new BeanFixedLengthLayout<>(
                 BigDecimalBean.class);
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
-                setup.column("bbb", 10, 20);
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 10).withConverter(new BigDecimalConverter());
+            setup.column("bbb", 10, 20);
         });
         layout.setWithHeader(true);
 
@@ -386,20 +371,14 @@ public class BeanFixedLengthWriterTest {
     public void write_calendar() throws Throwable {
         // ## Arrange ##
         final BeanFixedLengthLayout<CalendarBean> layout = new BeanFixedLengthLayout<>(CalendarBean.class);
-        layout.setupColumns(new SetupBlock<FixedLengthColumnSetup>() {
-            @Override
-            public void setup(final FixedLengthColumnSetup setup) {
-                setup.column("aaa", 0, 5);
-                // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
-                // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(new SetupBlock<FixedLengthColumnSetup.FixedLengthCompositeColumnSetup>() {
-                    @Override
-                    public void setup(final FixedLengthCompositeColumnSetup compositeSetup) {
-                        compositeSetup.column("ymd", 5, 20);
-                        compositeSetup.column("hms", 20, 35);
-                    }
-                }).toProperty("bbb").withConverter(new CalendarConverter());
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa", 0, 5);
+            // ファイルの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+            // 2列 <=> 1プロパティ の変換にConverterを使用する。
+            setup.columns(compositeSetup -> {
+                compositeSetup.column("ymd", 5, 20);
+                compositeSetup.column("hms", 20, 35);
+            }).toProperty("bbb").withConverter(new CalendarConverter());
         });
         layout.setWithHeader(true);
 

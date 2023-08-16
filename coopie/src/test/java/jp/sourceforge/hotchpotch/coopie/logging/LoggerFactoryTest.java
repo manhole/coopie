@@ -40,13 +40,10 @@ public class LoggerFactoryTest {
     public void debug1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug("hogehoge");
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug("hogehoge");
+            return null;
         });
 
         // ## Assert ##
@@ -58,13 +55,10 @@ public class LoggerFactoryTest {
     public void debug2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug("hello {}.", "world");
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug("hello {}.", "world");
+            return null;
         });
 
         // ## Assert ##
@@ -76,13 +70,10 @@ public class LoggerFactoryTest {
     public void debug_null() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug((String) null);
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug((String) null);
+            return null;
         });
 
         // ## Assert ##
@@ -94,13 +85,10 @@ public class LoggerFactoryTest {
     public void debug_log_null1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug((Log) null);
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug((Log) null);
+            return null;
         });
 
         // ## Assert ##
@@ -112,13 +100,10 @@ public class LoggerFactoryTest {
     public void debug_log_null2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug(new AaaLog(null, null));
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug(new AaaLog(null, null));
+            return null;
         });
 
         // ## Assert ##
@@ -130,13 +115,10 @@ public class LoggerFactoryTest {
     public void debug_log1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug(new AaaLog("fooo", null));
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug(new AaaLog("fooo", null));
+            return null;
         });
 
         // ## Assert ##
@@ -148,13 +130,10 @@ public class LoggerFactoryTest {
     public void debug_log2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.debug(new AaaLog("foo {}, {}", a("bar", "baz")));
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.debug(new AaaLog("foo {}, {}", a("bar", "baz")));
+            return null;
         });
 
         // ## Assert ##
@@ -166,13 +145,10 @@ public class LoggerFactoryTest {
     public void warn_log1() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.warn(new AaaLog("foooo", null));
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.warn(new AaaLog("foooo", null));
+            return null;
         });
 
         // ## Assert ##
@@ -184,13 +160,10 @@ public class LoggerFactoryTest {
     public void warn_log2() {
         // ## Arrange ##
         // ## Act ##
-        final String ret = execute(new Task<Void>() {
-            @Override
-            public Void execute() throws RuntimeException {
-                final Logger logger = LoggerFactory.getLogger();
-                logger.warn(new AaaLog("foo {}, {}", a("bar", "baz")));
-                return null;
-            }
+        final String ret = execute(() -> {
+            final Logger logger = LoggerFactory.getLogger();
+            logger.warn(new AaaLog("foo {}, {}", a("bar", "baz")));
+            return null;
         });
 
         // ## Assert ##

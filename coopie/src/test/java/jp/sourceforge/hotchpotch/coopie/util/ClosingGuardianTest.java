@@ -40,18 +40,15 @@ public class ClosingGuardianTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.out(baos).execute(new Task<Void>() {
-            @Override
-            public Void execute() {
-                Aaa a = new Aaa();
-                a = null;
+        StdOutBlock.out(baos).execute((Task<Void>) () -> {
+            Aaa a = new Aaa();
+            a = null;
 
-                // さすがに1000回チャンスがあればGCされるでしょう
-                for (int i = 0; i < 1000 && baos.size() == 0; i++) {
-                    runGC();
-                }
-                return null;
+            // さすがに1000回チャンスがあればGCされるでしょう
+            for (int i = 0; i < 1000 && baos.size() == 0; i++) {
+                runGC();
             }
+            return null;
         });
 
         final String ret = baos.toString();
@@ -70,19 +67,16 @@ public class ClosingGuardianTest {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         // ## Act ##
-        StdOutBlock.out(baos).execute(new Task<Void>() {
-            @Override
-            public Void execute() {
-                Aaa a = new Aaa();
-                CloseableUtil.closeNoException(a);
-                a = null;
+        StdOutBlock.out(baos).execute((Task<Void>) () -> {
+            Aaa a = new Aaa();
+            CloseableUtil.closeNoException(a);
+            a = null;
 
-                // さすがに1000回チャンスがあればGCされるでしょう
-                for (int i = 0; i < 1000 && baos.size() == 0; i++) {
-                    runGC();
-                }
-                return null;
+            // さすがに1000回チャンスがあればGCされるでしょう
+            for (int i = 0; i < 1000 && baos.size() == 0; i++) {
+                runGC();
             }
+            return null;
         });
 
         final String ret = baos.toString();

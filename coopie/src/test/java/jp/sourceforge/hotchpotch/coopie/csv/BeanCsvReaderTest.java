@@ -157,13 +157,10 @@ public class BeanCsvReaderTest {
         final Reader r = getResourceAsReader("-2", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("いい").toProperty("bbb");
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("いい").toProperty("bbb");
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
         });
 
         // ## Act ##
@@ -186,13 +183,10 @@ public class BeanCsvReaderTest {
         final Reader r = getResourceAsReader("-2", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("bbb").withColumnNameMatcher(new ContainsNameMatcher("い"));
-                setup.column("aaa").withColumnNameMatcher(new ContainsNameMatcher("あ"));
-                setup.column("ccc").withColumnNameMatcher(new ContainsNameMatcher("う"));
-            }
+        layout.setupColumns(setup -> {
+            setup.column("bbb").withColumnNameMatcher(new ContainsNameMatcher("い"));
+            setup.column("aaa").withColumnNameMatcher(new ContainsNameMatcher("あ"));
+            setup.column("ccc").withColumnNameMatcher(new ContainsNameMatcher("う"));
         });
 
         // ## Act ##
@@ -218,18 +212,15 @@ public class BeanCsvReaderTest {
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
 
-        layout.setCustomizer(new CsvRecordDefCustomizer() {
-            @Override
-            public void customize(final CsvRecordDef recordDef) {
-                for (final CsvColumnDef def : recordDef.getAllColumnDefs()) {
-                    final String pn = def.getLabel();
-                    if ("aaa".equals(pn)) {
-                        def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
-                    } else if ("bbb".equals(pn)) {
-                        def.setColumnNameMatcher(new ContainsNameMatcher("いい"));
-                    } else if ("ccc".equals(pn)) {
-                        def.setColumnNameMatcher(new ContainsNameMatcher("ううう"));
-                    }
+        layout.setCustomizer(recordDef -> {
+            for (final CsvColumnDef def : recordDef.getAllColumnDefs()) {
+                final String pn = def.getLabel();
+                if ("aaa".equals(pn)) {
+                    def.setColumnNameMatcher(new ContainsNameMatcher("あ"));
+                } else if ("bbb".equals(pn)) {
+                    def.setColumnNameMatcher(new ContainsNameMatcher("いい"));
+                } else if ("ccc".equals(pn)) {
+                    def.setColumnNameMatcher(new ContainsNameMatcher("ううう"));
                 }
             }
         });
@@ -346,16 +337,13 @@ public class BeanCsvReaderTest {
         final Reader r = getResourceAsReader("-3", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                /*
-                 * CSVの列順
-                 */
-                setup.column("ううう").toProperty("ccc");
-                setup.column("あ").toProperty("aaa");
-                setup.column("いい").toProperty("bbb");
-            }
+        layout.setupColumns(setup -> {
+            /*
+             * CSVの列順
+             */
+            setup.column("ううう").toProperty("ccc");
+            setup.column("あ").toProperty("aaa");
+            setup.column("いい").toProperty("bbb");
         });
 
         layout.setWithHeader(false);
@@ -525,12 +513,9 @@ public class BeanCsvReaderTest {
         final Reader r = getResourceAsReader("-2", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("あ").toProperty("aaa");
-                setup.column("ううう").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("あ").toProperty("aaa");
+            setup.column("ううう").toProperty("ccc");
         });
 
         // ## Act ##
@@ -570,12 +555,9 @@ public class BeanCsvReaderTest {
         final Reader r = getResourceAsReader("-6", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("ddd").toProperty("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("ddd").toProperty("ccc");
         });
 
         // ## Act ##
@@ -616,12 +598,7 @@ public class BeanCsvReaderTest {
 
         // ## Act ##
         // ## Assert ##
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("bad_property_name");
-            }
-        });
+        layout.setupColumns(setup -> setup.column("bad_property_name"));
         try {
             layout.prepareBuild();
             fail();
@@ -640,13 +617,10 @@ public class BeanCsvReaderTest {
         final Reader r = getResourceAsReader("-9", "tsv");
 
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("bbb");
-                setup.column("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("bbb");
+            setup.column("ccc");
         });
 
         // ## Act ##
@@ -777,13 +751,10 @@ public class BeanCsvReaderTest {
     public void read_moreThanOnce() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                setup.column("bbb");
-                setup.column("ccc");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            setup.column("bbb");
+            setup.column("ccc");
         });
 
         // ## Act ##
@@ -1215,12 +1186,9 @@ public class BeanCsvReaderTest {
     public void read_bigDecimal1() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<BigDecimalBean> layout = new BeanCsvLayout<>(BigDecimalBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa").withConverter(new BigDecimalConverter());
-                setup.column("bbb");
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa").withConverter(new BigDecimalConverter());
+            setup.column("bbb");
         });
 
         // ## Act ##
@@ -1263,14 +1231,11 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final BeanCsvLayout<BigDecimalBean> layout = BeanCsvLayout.getInstance(BigDecimalBean.class);
         final BigDecimalConverter converter = new BigDecimalConverter();
-        layout.setCustomizer(new CsvRecordDefCustomizer() {
-            @Override
-            public void customize(final CsvRecordDef recordDef) {
-                for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
-                    final Class<?> propertyType = columnDef.getPropertyType();
-                    if (propertyType.isAssignableFrom(BigDecimal.class)) {
-                        columnDef.setConverter(converter);
-                    }
+        layout.setCustomizer(recordDef -> {
+            for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
+                final Class<?> propertyType = columnDef.getPropertyType();
+                if (propertyType.isAssignableFrom(BigDecimal.class)) {
+                    columnDef.setConverter(converter);
                 }
             }
         });
@@ -1294,14 +1259,11 @@ public class BeanCsvReaderTest {
         // ## Arrange ##
         final BeanCsvLayout<BigDecimal2Bean> layout = BeanCsvLayout.getInstance(BigDecimal2Bean.class);
         final BigDecimalConverter converter = new BigDecimalConverter();
-        layout.setCustomizer(new CsvRecordDefCustomizer() {
-            @Override
-            public void customize(final CsvRecordDef recordDef) {
-                for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
-                    final Class<?> propertyType = columnDef.getPropertyType();
-                    if (propertyType.isAssignableFrom(BigDecimal.class)) {
-                        columnDef.setConverter(converter);
-                    }
+        layout.setCustomizer(recordDef -> {
+            for (final CsvColumnDef columnDef : recordDef.getColumnDefs()) {
+                final Class<?> propertyType = columnDef.getPropertyType();
+                if (propertyType.isAssignableFrom(BigDecimal.class)) {
+                    columnDef.setConverter(converter);
                 }
             }
         });
@@ -1343,20 +1305,14 @@ public class BeanCsvReaderTest {
     public void read_calendar1() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                // CSVの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
-                // 2列 <=> 1プロパティ の変換にConverterを使用する。
-                setup.columns(new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
-                    @Override
-                    public void setup(final CsvCompositeColumnSetup setup) {
-                        setup.column("ymd");
-                        setup.column("hms");
-                    }
-                }).toProperty("bbb").withConverter(new CalendarConverter());
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            // CSVの"ymd"と"hms"列を、JavaBeanの"bbb"プロパティと対応付ける。
+            // 2列 <=> 1プロパティ の変換にConverterを使用する。
+            setup.columns(setup1 -> {
+                setup1.column("ymd");
+                setup1.column("hms");
+            }).toProperty("bbb").withConverter(new CalendarConverter());
         });
         final String text = _calendar1_text();
 
@@ -1400,19 +1356,13 @@ public class BeanCsvReaderTest {
     public void read_calendar2() throws Throwable {
         // ## Arrange ##
         final BeanCsvLayout<CalendarBean> layout = new BeanCsvLayout<>(CalendarBean.class);
-        layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-            @Override
-            public void setup(final CsvColumnSetup setup) {
-                setup.column("aaa");
-                // TODO CsvColumnCustomizerと単位が合わない
-                setup.columns(new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
-                    @Override
-                    public void setup(final CsvCompositeColumnSetup setup) {
-                        setup.column("ymd");
-                        setup.column("hms");
-                    }
-                }).toProperty("bbb").withConverter(new CalendarConverter());
-            }
+        layout.setupColumns(setup -> {
+            setup.column("aaa");
+            // TODO CsvColumnCustomizerと単位が合わない
+            setup.columns(setup1 -> {
+                setup1.column("ymd");
+                setup1.column("hms");
+            }).toProperty("bbb").withConverter(new CalendarConverter());
         });
 
         final String text = _calendar2_text();
@@ -1468,15 +1418,12 @@ public class BeanCsvReaderTest {
         final BeanCsvLayout<AnnotatedCalendarBean> layout = new BeanCsvLayout<>(
                 AnnotatedCalendarBean.class);
         final AtomicBoolean called = new AtomicBoolean();
-        layout.setCustomizer(new CsvRecordDefCustomizer() {
-            @Override
-            public void customize(final CsvRecordDef recordDef) {
-                for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
-                    final String propertyName = columnsDef.getPropertyName();
-                    called.set(true);
-                    if ("bbb".equals(propertyName)) {
-                        columnsDef.setConverter(new CalendarConverter());
-                    }
+        layout.setCustomizer(recordDef -> {
+            for (final CsvColumnsDef columnsDef : recordDef.getColumnsDefs()) {
+                final String propertyName = columnsDef.getPropertyName();
+                called.set(true);
+                if ("bbb".equals(propertyName)) {
+                    columnsDef.setConverter(new CalendarConverter());
                 }
             }
         });
@@ -1558,19 +1505,13 @@ public class BeanCsvReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-                @Override
-                public void setup(final CsvColumnSetup setup) {
-                    setup.column("aaa");
-                    // property設定し忘れ
-                    setup.columns(new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
-                        @Override
-                        public void setup(final CsvCompositeColumnSetup setup) {
-                            setup.column("ymd");
-                            setup.column("hms");
-                        }
-                    });
-                }
+            layout.setupColumns(setup -> {
+                setup.column("aaa");
+                // property設定し忘れ
+                setup.columns(setup1 -> {
+                    setup1.column("ymd");
+                    setup1.column("hms");
+                });
             });
             fail();
         } catch (final IllegalStateException e) {
@@ -1593,19 +1534,13 @@ public class BeanCsvReaderTest {
         // ## Act ##
         // ## Assert ##
         try {
-            layout.setupColumns(new SetupBlock<CsvColumnSetup>() {
-                @Override
-                public void setup(final CsvColumnSetup setup) {
-                    setup.column("aaa");
-                    // converter設定し忘れ
-                    setup.columns(new SetupBlock<CsvColumnSetup.CsvCompositeColumnSetup>() {
-                        @Override
-                        public void setup(final CsvCompositeColumnSetup setup) {
-                            setup.column("ymd");
-                            setup.column("hms");
-                        }
-                    }).toProperty("bbb");
-                }
+            layout.setupColumns(setup -> {
+                setup.column("aaa");
+                // converter設定し忘れ
+                setup.columns(setup1 -> {
+                    setup1.column("ymd");
+                    setup1.column("hms");
+                }).toProperty("bbb");
             });
             fail();
         } catch (final IllegalStateException e) {

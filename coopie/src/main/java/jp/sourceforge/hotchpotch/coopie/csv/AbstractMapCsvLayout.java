@@ -77,12 +77,9 @@ public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<S
             /*
              * ヘッダをMapのキーとして扱う。
              */
-            final CsvRecordDef recordDef = layout_.setupCsvRecordDef(new SetupBlock<CsvColumnSetup>() {
-                @Override
-                public void setup(final CsvColumnSetup setup) {
-                    for (final String headerElem : header) {
-                        setup.column(headerElem);
-                    }
+            final CsvRecordDef recordDef = layout_.setupCsvRecordDef(setup -> {
+                for (final String headerElem : header) {
+                    setup.column(headerElem);
                 }
             });
 
@@ -109,13 +106,10 @@ public abstract class AbstractMapCsvLayout<PROP> extends AbstractCsvLayout<Map<S
              * TODO これではCsvLayoutを毎回異なるインスタンスにしなければならない。
              * 一度設定すれば同一インスタンスのLayoutを使えるようにしたい。
              */
-            layout_.setupColumns(new SetupBlock<CsvColumnSetup>() {
-                @Override
-                public void setup(final CsvColumnSetup setup) {
-                    final Set<String> keys = bean.keySet();
-                    for (final String key : keys) {
-                        setup.column(key);
-                    }
+            layout_.setupColumns(setup -> {
+                final Set<String> keys = bean.keySet();
+                for (final String key : keys) {
+                    setup.column(key);
                 }
             });
 
