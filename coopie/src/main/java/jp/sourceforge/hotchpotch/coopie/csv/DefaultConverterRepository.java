@@ -81,6 +81,9 @@ public class DefaultConverterRepository implements ConverterRepository {
 
     // XXX 型チェックが必要かも
     private Class<?> toPropertyType(final Type inType) {
+        /*
+        TODO List<String> だと Typeが sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl になり、ClassCastExceptionが発生する。
+         */
         return (Class<?>) inType;
     }
 
