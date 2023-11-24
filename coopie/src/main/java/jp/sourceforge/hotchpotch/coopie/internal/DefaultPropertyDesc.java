@@ -18,6 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 
 import jp.sourceforge.hotchpotch.coopie.CoopieException;
 
@@ -26,7 +27,7 @@ import jp.sourceforge.hotchpotch.coopie.CoopieException;
  */
 class DefaultPropertyDesc<BEAN, PROPERTY> implements PropertyDesc<BEAN, PROPERTY> {
 
-    private BeanDesc<BEAN> beanDesc_;
+    private Supplier<BeanDesc<BEAN>> beanDescSupplier_;
     private String propertyName_;
     private Class<PROPERTY> propertyType_;
     private Method readMethod_;
@@ -74,20 +75,18 @@ class DefaultPropertyDesc<BEAN, PROPERTY> implements PropertyDesc<BEAN, PROPERTY
     private <T> T invokeMethod(final Method method, final Object obj, final Object... args) {
         try {
             return (T) method.invoke(obj, args);
-        } catch (final IllegalAccessException e) {
-            throw new CoopieException(e);
-        } catch (final InvocationTargetException e) {
+        } catch (final IllegalAccessException | InvocationTargetException e) {
             throw new CoopieException(e);
         }
     }
 
     @Override
     public BeanDesc<BEAN> getBeanDesc() {
-        return beanDesc_;
+        return beanDescSupplier_.get();
     }
 
-    protected void setBeanDesc(final BeanDesc<BEAN> beanDesc) {
-        beanDesc_ = beanDesc;
+    protected void setBeanDescSupplier(final Supplier<BeanDesc<BEAN>> beanDesc) {
+        beanDescSupplier_ = beanDesc;
     }
 
     @Override
@@ -114,19 +113,19 @@ class DefaultPropertyDesc<BEAN, PROPERTY> implements PropertyDesc<BEAN, PROPERTY
 
     public static class Builder<BEAN, PROPERTY> {
 
-        private BeanDesc<BEAN> beanDesc_;
+        private Supplier<BeanDesc<BEAN>> beanDescSupplier_;
         private String propertyName_;
         private Method readMethod_;
         private Method writeMethod_;
         private Class<PROPERTY> propertyType_;
         private boolean valid_ = false;
 
-        public DefaultPropertyDesc<BEAN, ?> build() {
+        DefaultPropertyDesc<BEAN, ?> build() {
             if (!isValid()) {
                 throw new IllegalStateException("invalid");
             }
             final DefaultPropertyDesc<BEAN, PROPERTY> pd = new DefaultPropertyDesc<>();
-            pd.setBeanDesc(beanDesc_);
+            pd.setBeanDescSupplier(beanDescSupplier_);
             pd.setPropertyName(propertyName_);
             pd.setPropertyType(propertyType_);
             pd.setReadMethod(readMethod_);
@@ -134,8 +133,8 @@ class DefaultPropertyDesc<BEAN, PROPERTY> implements PropertyDesc<BEAN, PROPERTY
             return pd;
         }
 
-        public Builder<BEAN, PROPERTY> beanDesc(final BeanDesc<BEAN> beanDesc) {
-            beanDesc_ = beanDesc;
+        public Builder<BEAN, PROPERTY> beanDescSupplier(final Supplier<BeanDesc<BEAN>> beanDescSupplier) {
+            beanDescSupplier_ = beanDescSupplier;
             return this;
         }
 
