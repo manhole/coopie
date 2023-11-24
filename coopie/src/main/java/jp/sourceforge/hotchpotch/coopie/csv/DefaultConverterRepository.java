@@ -29,7 +29,7 @@ public class DefaultConverterRepository implements ConverterRepository {
      * キーは、Java側プロパティの型
      */
     private final Map<ConverterKey, Converter> propertyTypeMap_ = CollectionsUtil.newHashMap();
-    private final Class<?> stringArrayClass_ = new String[0].getClass();
+    private final Class<?> stringArrayClass_ = String[].class;
 
     /*
      * BEAN情報 + Property情報
