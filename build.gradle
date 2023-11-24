@@ -152,7 +152,7 @@ subprojects { project ->
 
                     // http://maven.apache.org/ref/3.0.5/maven-model/maven.html
                     // dependenciesの前(versionの後ろ)へ追加したい
-                    def Node versionNode = projectNode.version[0]
+                    Node versionNode = projectNode.version[0]
                     versionNode + {
                         resolveStrategy = Closure.DELEGATE_FIRST
 
@@ -219,7 +219,7 @@ project(":coopie-groovy") {
     _setupEncoding(project)
     dependencies {
         implementation("org.slf4j:slf4j-api:${versions.slf4j}")
-        implementation("org.codehaus.groovy:groovy-all:2.1.3")
+        implementation("org.apache.groovy:groovy:4.0.15")
         implementation(project(":coopie"))
         testImplementation("ch.qos.logback:logback-core:${versions.logback}")
         testImplementation("ch.qos.logback:logback-classic:${versions.logback}")
