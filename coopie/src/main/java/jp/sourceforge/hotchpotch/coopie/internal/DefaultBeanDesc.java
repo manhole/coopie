@@ -31,7 +31,7 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
 
     private Class<BEAN> beanClass_;
     private final Map<String, PropertyDesc<BEAN, ?>> properties_ = CollectionsUtil.newHashMap();
-    private Map<String, List<Method>> methods_;
+    private BeanMethods methods_;
 
     protected DefaultBeanDesc() {
     }
@@ -88,14 +88,10 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
 
     @Override
     public Method getMethod(final String methodName) {
-        final List<Method> methods = methods_.get(methodName);
-        if (methods != null) {
-            return methods.get(0);
-        }
-        return null;
+        return methods_.get(methodName);
     }
 
-    protected void setMethods(final Map<String, List<Method>> methods) {
+    private void setMethods(final BeanMethods methods) {
         methods_ = methods;
     }
 
@@ -129,7 +125,7 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
                     beanDesc.addPropertyDesc(pd);
                 }
             }
-            final Map<String, List<Method>> methods = setupMethods();
+            final BeanMethods methods = BeanMethods.builder().build(beanClass_);
             beanDesc.setMethods(methods);
             return beanDesc;
         }
@@ -164,24 +160,6 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
             }
         }
 
-        private Map<String, List<Method>> setupMethods() {
-            final Map<String, List<Method>> methods = CollectionsUtil.newHashMap();
-            for (final Method m : beanClass_.getMethods()) {
-                if (m.isBridge() || m.isSynthetic()) {
-                    continue;
-                }
-
-                final String methodName = m.getName();
-                List<Method> list = methods.get(methodName);
-                if (list == null) {
-                    list = new ArrayList<>();
-                    methods.put(methodName, list);
-                }
-                list.add(m);
-            }
-            return methods;
-        }
-
         private String decapitalizePropertyName(final String name) {
             if (Text.isEmpty(name)) {
                 return name;
@@ -213,6 +191,48 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
                 properties_.put(propertyName, builder);
             }
             return builder;
+        }
+
+    }
+
+    private static class BeanMethods {
+        private final Map<String, List<Method>> methods_;
+
+        private BeanMethods(final Map<String, List<Method>> methods) {
+            methods_ = methods;
+        }
+
+        static Builder builder() {
+            return new Builder();
+        }
+
+        public Method get(final String methodName) {
+            final List<Method> methods = methods_.get(methodName);
+            if (methods != null) {
+                return methods.get(0);
+            }
+            return null;
+        }
+
+        private static class Builder {
+            BeanMethods build(final Class<?> beanClass) {
+                final Map<String, List<Method>> methods = CollectionsUtil.newHashMap();
+
+                for (final Method m : beanClass.getMethods()) {
+                    if (m.isBridge() || m.isSynthetic()) {
+                        continue;
+                    }
+
+                    final String methodName = m.getName();
+                    List<Method> list = methods.get(methodName);
+                    if (list == null) {
+                        list = new ArrayList<>();
+                        methods.put(methodName, list);
+                    }
+                    list.add(m);
+                }
+                return new BeanMethods(methods);
+            }
         }
 
     }
