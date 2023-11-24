@@ -112,7 +112,6 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
 
         private Class<BEAN> beanClass_;
         private final Map<String, DefaultPropertyDesc.Builder<BEAN, ?>> properties_ = CollectionsUtil.newHashMap();
-        private final Map<String, List<Method>> methods_ = CollectionsUtil.newHashMap();
 
         public Builder<BEAN> beanClass(final Class<BEAN> clazz) {
             beanClass_ = clazz;
@@ -121,7 +120,6 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
 
         public DefaultBeanDesc<BEAN> build() {
             setupPropertyDescs();
-            setupMethods();
             final DefaultBeanDesc<BEAN> beanDesc = new DefaultBeanDesc<>();
             beanDesc.setBeanClass(beanClass_);
             for (final DefaultPropertyDesc.Builder<BEAN, ?> propertyBuilder : properties_.values()) {
@@ -131,7 +129,8 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
                     beanDesc.addPropertyDesc(pd);
                 }
             }
-            beanDesc.setMethods(methods_);
+            final Map<String, List<Method>> methods = setupMethods();
+            beanDesc.setMethods(methods);
             return beanDesc;
         }
 
@@ -165,20 +164,22 @@ class DefaultBeanDesc<BEAN> implements BeanDesc<BEAN> {
             }
         }
 
-        private void setupMethods() {
+        private Map<String, List<Method>> setupMethods() {
+            final Map<String, List<Method>> methods = CollectionsUtil.newHashMap();
             for (final Method m : beanClass_.getMethods()) {
                 if (m.isBridge() || m.isSynthetic()) {
                     continue;
                 }
 
                 final String methodName = m.getName();
-                List<Method> list = methods_.get(methodName);
+                List<Method> list = methods.get(methodName);
                 if (list == null) {
                     list = new ArrayList<>();
-                    methods_.put(methodName, list);
+                    methods.put(methodName, list);
                 }
                 list.add(m);
             }
+            return methods;
         }
 
         private String decapitalizePropertyName(final String name) {
