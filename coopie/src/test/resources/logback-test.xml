@@ -30,16 +30,14 @@
   </appender>
   -->
 
-  <logger name="jp.sourceforge.hotchpotch.coopie" additivity="false">
-    <level value="debug" />
+  <logger name="jp.sourceforge.hotchpotch.coopie" level="debug" additivity="false">
     <appender-ref ref="STDOUT" />
     <!--
     <appender-ref ref="FILE" />
     -->
   </logger>
 
-  <root>
-    <level value="info" />
+  <root level="info">
     <appender-ref ref="STDOUT" />
     <!--
     <appender-ref ref="FILE" />
