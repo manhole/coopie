@@ -1,3 +1,6 @@
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+
 plugins {
     id "com.github.hierynomus.license" version "0.11.0"
 }
@@ -35,6 +38,8 @@ wrapper {
     }
 }
 
+final timestamp = Instant.now()
+
 subprojects { project ->
     apply plugin: "java"
     apply plugin: "maven-publish"
@@ -64,23 +69,27 @@ subprojects { project ->
             }
             def buildNumber = w.toString().trim()
             assert buildNumber
+            project.ext.buildNumberValue = buildNumber
+        }
+    }
 
-            def timestamp = new Date()
-
-            project.tasks.withType(Jar).each { t ->
-                t.manifest.attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
-                t.manifest.attributes["Created-By"] = "Gradle"
-                t.manifest.attributes["Built-By"] = "${System.getProperty("user.name")}"
-                t.manifest.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
-                t.manifest.attributes["Specification-Title"] = project.name
-                t.manifest.attributes["Specification-Version"] = project.version
-                //t.manifest.attributes["Specification-Vendor"] = project.organization.name
-                t.manifest.attributes["Implementation-Title"] = project.name
-                t.manifest.attributes["Implementation-Version"] = project.version
-                t.manifest.attributes["Implementation-Vendor-Id"] = project.group
-                //t.manifest.attributes["Implementation-Vendor"] = project.organization.name
-                t.manifest.attributes["Built-Timestamp"] = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z (z)").format(timestamp)
-                t.manifest.attributes["SCM-Revision"] = buildNumber
+    tasks.withType(Jar).configureEach {
+        dependsOn buildNumberTask
+        doFirst {
+            manifest {
+                attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
+                attributes["Created-By"] = "Gradle"
+                attributes["Built-By"] = "${System.getProperty("user.name")}"
+                attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vm.vendor")} ${System.getProperty("java.vm.version")})"
+                attributes["Specification-Title"] = project.name
+                attributes["Specification-Version"] = project.version
+                //attributes["Specification-Vendor"] = project.organization.name
+                attributes["Implementation-Title"] = project.name
+                attributes["Implementation-Version"] = project.version
+                attributes["Implementation-Vendor-Id"] = project.group
+                //attributes["Implementation-Vendor"] = project.organization.name
+                attributes["Built-Timestamp"] = timestamp.truncatedTo(ChronoUnit.SECONDS).toString()
+                attributes["SCM-Revision"] = project.ext.buildNumberValue
             }
         }
     }
