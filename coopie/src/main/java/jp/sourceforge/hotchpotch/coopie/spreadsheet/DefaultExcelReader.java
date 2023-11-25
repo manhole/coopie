@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractRecordReader;
@@ -150,6 +151,12 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
             sheets_.set(sheetNo, reader);
 
             return reader;
+        }
+
+        @Override
+        public Iterator<String[]> iterator() {
+            // TODO
+            throw new UnsupportedOperationException("iterator");
         }
 
     }
@@ -328,6 +335,12 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
 
         private boolean isInt(final double numericValue) {
             return (int) numericValue == numericValue;
+        }
+
+        @Override
+        public Iterator<String[]> iterator() {
+            // TODO
+            throw new UnsupportedOperationException("iterator");
         }
 
     }

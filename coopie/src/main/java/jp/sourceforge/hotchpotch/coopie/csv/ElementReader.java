@@ -18,7 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import jp.sourceforge.hotchpotch.coopie.util.Closable;
 
-public interface ElementReader extends Closable {
+public interface ElementReader extends Closable, Iterable<String[]> {
 
     /**
      * レコード番号を返します。

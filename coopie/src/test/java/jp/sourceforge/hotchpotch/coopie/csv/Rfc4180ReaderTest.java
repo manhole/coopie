@@ -17,11 +17,17 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import jp.sourceforge.hotchpotch.coopie.util.Line;
 import jp.sourceforge.hotchpotch.coopie.util.LineReadable;
@@ -69,6 +75,23 @@ public class Rfc4180ReaderTest {
         assertEquals(2, reader.getLineNumber());
         assertEquals(Rfc4180Reader.RecordState.VALID, reader.getRecordState());
 
+        reader.close();
+    }
+
+    @Test
+    public void rfc1_iterable() throws Throwable {
+        // ## Arrange ##
+        final Rfc4180Reader reader = open("aaa,bbb,ccc" + CRLF + "zzz,yyy,xxx" + CRLF);
+
+        // ## Act ##
+        final List<String[]> collected = StreamSupport.stream(reader.spliterator(), false).collect(Collectors.toList());
+
+        // ## Assert ##
+        assertThat(collected, is(hasSize(2)));
+        assertArrayEquals(a("aaa", "bbb", "ccc"), collected.get(0));
+        assertArrayEquals(a("zzz", "yyy", "xxx"), collected.get(1));
+
+        assertNull(reader.readRecord());
         reader.close();
     }
 

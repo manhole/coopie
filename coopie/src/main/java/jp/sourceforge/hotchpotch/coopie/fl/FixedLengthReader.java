@@ -17,6 +17,7 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultLineReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.ElementParserContext;
@@ -110,6 +111,12 @@ public class FixedLengthReader implements ElementReader {
 
     public void setLineReaderHandler(final LineReaderHandler lineReaderHandler) {
         lineReaderHandler_ = lineReaderHandler;
+    }
+
+    @Override
+    public Iterator<String[]> iterator() {
+        // TODO
+        throw new UnsupportedOperationException("iterator");
     }
 
     private static class FixedLengthParserContext implements ElementParserContext {
