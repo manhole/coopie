@@ -19,6 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Objects;
 
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 
@@ -35,10 +36,7 @@ public class ClosingGuardian {
     private final String createdBy_;
 
     public ClosingGuardian(final Closable closable) {
-        if (closable == null) {
-            throw new NullPointerException("closable");
-        }
-        closable_ = closable;
+        closable_ = Objects.requireNonNull(closable, "closable");
 
         /*
          * where construct instance

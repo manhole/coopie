@@ -16,6 +16,8 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.Objects;
+
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.PropertyNotFoundException;
 import jp.sourceforge.hotchpotch.coopie.internal.BeanDesc;
 import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
@@ -49,9 +51,8 @@ public class BeanPropertyBinding<BEAN, PROP> implements PropertyBinding<BEAN, PR
 
         @Override
         public <PROP> PropertyBinding<BEAN, PROP> getPropertyBinding(final String name) {
-            if (name == null) {
-                throw new NullPointerException("name");
-            }
+            Objects.requireNonNull(name, "name");
+
             final PropertyDesc<BEAN, PROP> pd = beanDesc_.getPropertyDesc(name);
             if (pd != null) {
                 return new BeanPropertyBinding<>(pd);

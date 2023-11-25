@@ -18,6 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class ByteSize {
 
@@ -76,10 +77,7 @@ public class ByteSize {
     }
 
     public void setToStringMode(final ToStringMode toStringMode) {
-        if (toStringMode == null) {
-            throw new NullPointerException("toStringMode");
-        }
-        toStringMode_ = toStringMode;
+        toStringMode_ = Objects.requireNonNull(toStringMode, "toStringMode");
     }
 
     public ByteSizeUnits.BaseType getBaseType() {
@@ -87,10 +85,7 @@ public class ByteSize {
     }
 
     public void setBaseType(final ByteSizeUnits.BaseType baseType) {
-        if (baseType == null) {
-            throw new NullPointerException("baseType");
-        }
-        baseType_ = baseType;
+        baseType_ = Objects.requireNonNull(baseType, "baseType");
     }
 
     public static interface ToStringMode {

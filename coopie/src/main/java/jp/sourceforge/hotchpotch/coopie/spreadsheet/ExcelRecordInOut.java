@@ -18,6 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import jp.sourceforge.hotchpotch.coopie.csv.ElementReaderHandler;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordDesc;
@@ -39,9 +40,7 @@ class ExcelRecordInOut<BEAN> implements ExcelInOut<BEAN> {
 
     @Override
     public RecordReader<BEAN> openReader(final InputStream is) {
-        if (is == null) {
-            throw new NullPointerException("is");
-        }
+        Objects.requireNonNull(is, "is");
 
         final DefaultExcelReader<BEAN> r = new DefaultExcelReader<>(recordDesc_);
         r.setWithHeader(withHeader_);
@@ -54,9 +53,7 @@ class ExcelRecordInOut<BEAN> implements ExcelInOut<BEAN> {
 
     @Override
     public RecordWriter<BEAN> openWriter(final OutputStream os) {
-        if (os == null) {
-            throw new NullPointerException("os");
-        }
+        Objects.requireNonNull(os, "os");
 
         final DefaultExcelWriter<BEAN> w = new DefaultExcelWriter<>(recordDesc_);
         w.setWithHeader(withHeader_);

@@ -16,16 +16,15 @@
 
 package jp.sourceforge.hotchpotch.coopie.csv;
 
+import java.util.Objects;
+
 public class CsvElementInOut implements ElementInOut {
 
     private final CsvSetting csvSetting_;
     private LineReaderHandler lineReaderHandler_;
 
     public CsvElementInOut(final CsvSetting csvSetting) {
-        if (csvSetting == null) {
-            throw new NullPointerException("csvSetting");
-        }
-        csvSetting_ = csvSetting;
+        csvSetting_ = Objects.requireNonNull(csvSetting, "csvSetting");
     }
 
     @Override

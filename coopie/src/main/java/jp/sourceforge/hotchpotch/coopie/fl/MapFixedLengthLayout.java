@@ -17,6 +17,7 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.util.Map;
+import java.util.Objects;
 
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordWriter;
@@ -82,9 +83,7 @@ public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<St
 
         @Override
         public RecordReader<Map<String, PROP>> openReader(final Readable readable) {
-            if (readable == null) {
-                throw new NullPointerException("readable");
-            }
+            Objects.requireNonNull(readable, "readable");
 
             final RecordDesc<Map<String, PROP>> rd = recordDesc_;
             final DefaultRecordReader<Map<String, PROP>> r = new DefaultRecordReader<>(rd);
@@ -97,9 +96,7 @@ public class MapFixedLengthLayout<PROP> extends AbstractFixedLengthLayout<Map<St
 
         @Override
         public RecordWriter<Map<String, PROP>> openWriter(final Appendable appendable) {
-            if (appendable == null) {
-                throw new NullPointerException("appendable");
-            }
+            Objects.requireNonNull(appendable, "appendable");
 
             final DefaultRecordWriter<Map<String, PROP>> w = new DefaultRecordWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);

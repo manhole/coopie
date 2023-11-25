@@ -16,6 +16,8 @@
 
 package jp.sourceforge.hotchpotch.coopie.fl;
 
+import java.util.Objects;
+
 import jp.sourceforge.hotchpotch.coopie.csv.BeanPropertyBinding;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanRecordType;
 import jp.sourceforge.hotchpotch.coopie.csv.DefaultRecordReader;
@@ -150,9 +152,7 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
 
         @Override
         public RecordReader<BEAN> openReader(final Readable readable) {
-            if (readable == null) {
-                throw new NullPointerException("readable");
-            }
+            Objects.requireNonNull(readable, "readable");
 
             final DefaultRecordReader<BEAN> r = new DefaultRecordReader<>(recordDesc_);
             r.setWithHeader(withHeader_);
@@ -165,9 +165,7 @@ public class BeanFixedLengthLayout<BEAN> extends AbstractFixedLengthLayout<BEAN>
 
         @Override
         public RecordWriter<BEAN> openWriter(final Appendable appendable) {
-            if (appendable == null) {
-                throw new NullPointerException("appendable");
-            }
+            Objects.requireNonNull(appendable, "appendable");
 
             final DefaultRecordWriter<BEAN> w = new DefaultRecordWriter<>(recordDesc_);
             w.setWithHeader(withHeader_);
