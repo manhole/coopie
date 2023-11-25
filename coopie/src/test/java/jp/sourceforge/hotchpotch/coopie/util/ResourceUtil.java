@@ -20,21 +20,32 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author manhole
  */
 public class ResourceUtil {
 
+    public static Path getResourceAsPath(final String path) throws URISyntaxException {
+        final Resource resource = getResource(path, null);
+        if (resource == null) {
+            return null;
+        }
+        return resource.toPath();
+    }
+
     public static File getResourceAsFile(final String path) {
         final Resource resource = getResource(path, null);
         if (resource == null) {
             return null;
         }
-        return resource.asFile();
+        return resource.toFile();
     }
 
     public static File getResourceAsFile(final String path, final String extension) {
@@ -42,7 +53,7 @@ public class ResourceUtil {
         if (resource == null) {
             return null;
         }
-        return resource.asFile();
+        return resource.toFile();
     }
 
     public static InputStream getResourceAsStream(final String path, final String extension) {
@@ -50,7 +61,7 @@ public class ResourceUtil {
         if (resource == null) {
             return null;
         }
-        return resource.asStream();
+        return resource.openStream();
     }
 
     private static Resource getResource(final String path, final String extension) {
@@ -73,19 +84,6 @@ public class ResourceUtil {
             return null;
         }
         return new Resource(url);
-    }
-
-    private static File toFile(final URL url) {
-        if (url == null) {
-            return null;
-        }
-
-        final String fileName = getFileName(url);
-        final File file = new File(fileName);
-        if (file.exists()) {
-            return file;
-        }
-        return null;
     }
 
     private static String getFileName(final URL url) {
@@ -120,39 +118,29 @@ public class ResourceUtil {
         }
     }
 
-    private static InputStream openStream(final URL url) {
-        try {
-            final URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
-            return connection.getInputStream();
-        } catch (final IOException e) {
-            throw new IORuntimeException(e);
-        }
-    }
-
     private static String replace(final String s) {
         return s.replace('.', '/');
     }
 
     private static class ResourcePath {
 
-        private final String _path;
+        private final String path_;
 
         protected ResourcePath(final String path, final String extension) {
             if (extension == null) {
-                _path = path;
+                path_ = path;
             } else {
                 final String prefix = replace(path);
                 if (extension.startsWith(".")) {
-                    _path = prefix + extension;
+                    path_ = prefix + extension;
                 } else {
-                    _path = prefix + "." + extension;
+                    path_ = prefix + "." + extension;
                 }
             }
         }
 
         public String toPath() {
-            return _path;
+            return path_;
         }
 
         public static ResourcePath create(final String path, final String extension) {
@@ -167,22 +155,49 @@ public class ResourceUtil {
 
     private static class Resource {
 
-        private final URL _url;
+        private final URL url_;
 
         protected Resource(final URL url) {
-            _url = url;
+            url_ = url;
         }
 
         public URL getUrl() {
-            return _url;
+            return url_;
         }
 
-        public File asFile() {
-            return toFile(_url);
+        public Path toPath() throws URISyntaxException {
+            return Paths.get(url_.toURI());
         }
 
-        public InputStream asStream() {
-            return openStream(_url);
+        public File toFile() {
+            return toFile(url_);
+        }
+
+        public InputStream openStream() {
+            return openStream(url_);
+        }
+
+        private static File toFile(final URL url) {
+            if (url == null) {
+                return null;
+            }
+
+            final String fileName = getFileName(url);
+            final File file = new File(fileName);
+            if (file.exists()) {
+                return file;
+            }
+            return null;
+        }
+
+        private static InputStream openStream(final URL url) {
+            try {
+                final URLConnection con = url.openConnection();
+                con.setUseCaches(false);
+                return con.getInputStream();
+            } catch (final IOException e) {
+                throw new IORuntimeException(e);
+            }
         }
 
     }
