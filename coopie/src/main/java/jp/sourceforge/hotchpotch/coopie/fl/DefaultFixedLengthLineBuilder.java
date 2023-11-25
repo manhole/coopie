@@ -17,7 +17,6 @@
 package jp.sourceforge.hotchpotch.coopie.fl;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import jp.sourceforge.hotchpotch.coopie.internal.CollectionsUtil;

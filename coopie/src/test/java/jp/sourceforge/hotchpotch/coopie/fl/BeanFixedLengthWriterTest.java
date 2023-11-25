@@ -37,9 +37,7 @@ import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.BigDecimalConverte
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarBean;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvReaderTest.CalendarConverter;
 import jp.sourceforge.hotchpotch.coopie.csv.RecordWriter;
-import jp.sourceforge.hotchpotch.coopie.csv.SetupBlock;
 import jp.sourceforge.hotchpotch.coopie.fl.BeanFixedLengthReaderTest.FlAaaBean;
-import jp.sourceforge.hotchpotch.coopie.fl.FixedLengthColumnSetup.FixedLengthCompositeColumnSetup;
 import jp.sourceforge.hotchpotch.coopie.logging.LoggerFactory;
 import jp.sourceforge.hotchpotch.coopie.util.LineReader;
 import jp.sourceforge.hotchpotch.coopie.util.ReaderUtil;
