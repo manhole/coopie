@@ -835,8 +835,8 @@ public class FileOperation {
     static class FileResourceImpl implements FileResource {
 
         private final File file_;
-        private String extensionPrefix_;
-        private String extension_;
+        private final String extensionPrefix_;
+        private final String extension_;
 
         public FileResourceImpl(final File file) {
             file_ = file;
@@ -872,7 +872,7 @@ public class FileOperation {
 
     public static class FileNameComparator implements Comparator<File> {
 
-        private static FileNameComparator INSTANCE = new FileNameComparator();
+        private static final FileNameComparator INSTANCE = new FileNameComparator();
 
         public static FileNameComparator getInstance() {
             return INSTANCE;

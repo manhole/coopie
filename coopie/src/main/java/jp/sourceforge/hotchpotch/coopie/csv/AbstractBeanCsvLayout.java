@@ -161,7 +161,7 @@ public abstract class AbstractBeanCsvLayout<BEAN> extends AbstractCsvLayout<BEAN
 
     static class CsvColumnDefComparator implements Comparator<CsvColumnDef> {
 
-        private static CsvColumnDefComparator INSTANCE = new CsvColumnDefComparator();
+        private static final CsvColumnDefComparator INSTANCE = new CsvColumnDefComparator();
 
         public static CsvColumnDefComparator getInstance() {
             return INSTANCE;

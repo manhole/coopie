@@ -176,7 +176,7 @@ public class DefaultRecordDesc<BEAN> implements RecordDesc<BEAN> {
 
     private static class IgnoreColumnDesc<BEAN> implements ColumnDesc<BEAN> {
 
-        private static IgnoreColumnDesc INSTANCE = new IgnoreColumnDesc();
+        private static final IgnoreColumnDesc INSTANCE = new IgnoreColumnDesc();
 
         public static <BEAN> IgnoreColumnDesc<BEAN> getInstance() {
             return INSTANCE;

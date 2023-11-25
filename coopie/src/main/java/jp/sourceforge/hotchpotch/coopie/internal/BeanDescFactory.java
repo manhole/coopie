@@ -24,7 +24,7 @@ import java.util.Map;
 public class BeanDescFactory {
 
     @SuppressWarnings("rawtypes")
-    private static Map<Class, BeanDesc> cache = CollectionsUtil.newHashMap();
+    private static final Map<Class, BeanDesc> cache = CollectionsUtil.newHashMap();
 
     @SuppressWarnings("unchecked")
     public static <BEAN> BeanDesc<BEAN> getBeanDesc(final Class<BEAN> clazz) {

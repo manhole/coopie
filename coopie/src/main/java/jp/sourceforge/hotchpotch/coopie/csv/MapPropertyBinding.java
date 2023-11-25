@@ -39,7 +39,7 @@ public class MapPropertyBinding<PROP> implements PropertyBinding<Map<String, PRO
 
     public static class Factory<PROP> implements PropertyBindingFactory<Map<String, PROP>> {
 
-        private static Factory INSTANCE = new Factory();
+        private static final Factory INSTANCE = new Factory();
 
         public static <PROP> Factory<PROP> getInstance() {
             return INSTANCE;

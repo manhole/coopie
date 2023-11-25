@@ -18,7 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 public class ExactNameMatcher implements ColumnNameMatcher {
 
-    private static ExactNameMatcher INSTANCE = new ExactNameMatcher();
+    private static final ExactNameMatcher INSTANCE = new ExactNameMatcher();
 
     public static ExactNameMatcher getInstance() {
         return INSTANCE;

@@ -25,7 +25,7 @@ import jp.sourceforge.hotchpotch.coopie.internal.PropertyDesc;
 
 public class Annotations {
 
-    private static PropertyAnnotationReader INSTANCE = new AccessorPropertyAnnotationReader();
+    private static final PropertyAnnotationReader INSTANCE = new AccessorPropertyAnnotationReader();
 
     public static PropertyAnnotationReader getPropertyAnnotationReader() {
         return INSTANCE;
