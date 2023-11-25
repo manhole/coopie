@@ -47,12 +47,13 @@ subprojects { project ->
             .findAll { t -> t.options.hasProperty('encoding') }
             .each { t -> t.options.encoding = 'UTF-8' }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
+    tasks.register('sourcesJar', Jar) {
+        dependsOn classes
         classifier = "sources"
         from sourceSets.main.allSource
     }
 
-    task buildNumberTask {
+    tasks.register('buildNumberTask') {
         doLast {
             def gitCommand = "git rev-parse --verify --short=8 HEAD"
             def p = gitCommand.execute(null, project.getRootDir())
