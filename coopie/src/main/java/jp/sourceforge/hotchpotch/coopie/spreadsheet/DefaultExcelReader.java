@@ -70,6 +70,12 @@ class DefaultExcelReader<BEAN> extends AbstractRecordReader<BEAN> {
         setupByHeader();
     }
 
+    @Override
+    public Iterator<BEAN> iterator() {
+        // TODO
+        throw new UnsupportedOperationException("iterator");
+    }
+
     static class PoiReader implements ElementReader {
 
         private Workbook workbook_;

@@ -17,10 +17,11 @@
 package jp.sourceforge.hotchpotch.coopie.csv;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -43,8 +44,11 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import jp.sourceforge.hotchpotch.coopie.csv.AbstractBeanCsvLayout.PropertyNotFoundException;
 import jp.sourceforge.hotchpotch.coopie.csv.BeanCsvWriterTest.AaaBeanBasicSetup;
@@ -145,6 +149,44 @@ public class BeanCsvReaderTest {
         assertEquals(3, csvReader.getRecordNumber());
         csvReader.close();
     }
+
+    @Test
+    public void read1_iterable() throws Throwable {
+        // ## Arrange ##
+        final Reader r = getResourceAsReader("-1", "tsv");
+
+        final BeanCsvLayout<AaaBean> layout = BeanCsvLayout.getInstance(AaaBean.class);
+
+        // ## Act ##
+        final RecordReader<AaaBean> csvReader = layout.build().openReader(r);
+        final List<AaaBean> collected = StreamSupport.stream(csvReader.spliterator(), false).collect(Collectors.toList());
+
+        // ## Assert ##
+        assertThat(collected, is(hasSize(3)));
+
+        {
+            final AaaBean bean = collected.get(0);
+            assertEquals("あ1", bean.getAaa());
+            assertEquals("い1", bean.getBbb());
+            assertEquals("う1", bean.getCcc());
+        }
+        {
+            final AaaBean bean = collected.get(1);
+            assertEquals("あ2", bean.getAaa());
+            assertEquals("い2", bean.getBbb());
+            assertEquals("う2", bean.getCcc());
+        }
+        {
+            final AaaBean bean = collected.get(2);
+            assertEquals("あ3", bean.getAaa());
+            assertEquals("い3", bean.getBbb());
+            assertEquals("う3", bean.getCcc());
+        }
+
+        assertEquals(false, csvReader.hasNext());
+        assertEquals(3, csvReader.getRecordNumber());
+    }
+
 
     /**
      * ヘッダがBeanのプロパティ名と異なる場合。

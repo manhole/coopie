@@ -18,7 +18,7 @@ package jp.sourceforge.hotchpotch.coopie.csv;
 
 import jp.sourceforge.hotchpotch.coopie.util.Closable;
 
-public interface RecordReader<BEAN> extends Closable {
+public interface RecordReader<BEAN> extends Closable, Iterable<BEAN> {
 
     BEAN read();
 
