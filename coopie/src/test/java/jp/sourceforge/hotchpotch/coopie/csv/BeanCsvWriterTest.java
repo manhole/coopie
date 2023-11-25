@@ -316,8 +316,8 @@ public class BeanCsvWriterTest {
         }
     }
 
-    static String CRLF = CsvSetting.CRLF;
-    static String LF = CsvSetting.LF_S;
+    static final String CRLF = CsvSetting.CRLF;
+    static final String LF = CsvSetting.LF_S;
 
     @Test
     public void write_separator_comma() throws Throwable {

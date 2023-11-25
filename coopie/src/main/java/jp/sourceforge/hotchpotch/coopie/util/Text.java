@@ -270,11 +270,11 @@ public class Text {
 
     }
 
-    public static CharacterGroup STANDARD_TRIM = c -> {
+    public static final CharacterGroup STANDARD_TRIM = c -> {
         // java.lang.String#trimと同じ
         return c <= ' ';
     };
 
-    public static CharacterGroup WHITESPACE = c -> Character.isWhitespace(c) || c == 0xA0;
+    public static final CharacterGroup WHITESPACE = c -> Character.isWhitespace(c) || c == 0xA0;
 
 }
