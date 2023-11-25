@@ -109,11 +109,10 @@ public class Rfc4180Reader implements ElementReader {
             } else {
                 rc.substringFromPos = 0;
                 rc.body = line.getBody();
-                final char[] bodyChars = rc.body.toCharArray();
-                final int length = bodyChars.length;
+                final int length = rc.body.length();
                 rc.pos = 0;
                 for (; rc.pos < length; rc.pos++) {
-                    final char c = bodyChars[rc.pos];
+                    final char c = rc.body.charAt(rc.pos);
                     switch (rc.state) {
                     case INITIAL:
                         if (c == quoteMark_) {
