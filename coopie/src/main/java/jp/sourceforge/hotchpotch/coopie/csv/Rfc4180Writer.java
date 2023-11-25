@@ -190,7 +190,7 @@ public class Rfc4180Writer implements ElementWriter {
                         shouldQuote = true;
                     }
                 }
-                if (!hasQuoteChar && c == quoteMark_) {
+                if (c == quoteMark_) {
                     shouldQuote = true;
                     hasQuoteChar = true;
                     break;
