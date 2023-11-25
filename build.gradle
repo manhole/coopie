@@ -7,7 +7,6 @@ plugins {
 
 allprojects { project ->
     group = "jp.sourceforge.hotchpotch"
-    version = "0.5.0-SNAPSHOT"
 
     repositories {
         mavenCentral()
