@@ -40,7 +40,7 @@ wrapper {
 final timestamp = Instant.now()
 
 subprojects { project ->
-    apply plugin: "java"
+    apply plugin: "java-library"
     apply plugin: "maven-publish"
 
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -231,9 +231,9 @@ project(":coopie-groovy") {
     apply plugin: "groovy"
 
     dependencies {
+        api(project(":coopie"))
         implementation("org.slf4j:slf4j-api:${versions.slf4j}")
         implementation("org.apache.groovy:groovy:4.0.15")
-        implementation(project(":coopie"))
         testImplementation("ch.qos.logback:logback-core:${versions.logback}")
         testImplementation("ch.qos.logback:logback-classic:${versions.logback}")
         testImplementation 'junit:junit:4.13.2'
@@ -305,6 +305,8 @@ class DependencyHolder {
             return dependency.mavenScope
         }
         switch (configuration.name) {
+            case 'api':
+                return 'compile'
             case 'implementation':
                 return 'compile'
             case 'testImplementation':
