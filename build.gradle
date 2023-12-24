@@ -42,6 +42,7 @@ final timestamp = Instant.now()
 subprojects { project ->
     apply plugin: "java-library"
     apply plugin: "maven-publish"
+    apply plugin: "signing"
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -105,7 +106,7 @@ subprojects { project ->
 
     publishing {
         publications {
-            maven(MavenPublication) {
+            mavenJava(MavenPublication) {
                 from components.java
                 artifact sourcesJar
                 pom.withXml { /* org.gradle.api.XmlProvider */ XmlProvider xml ->
@@ -205,6 +206,10 @@ subprojects { project ->
                 }
             }
         }
+    }
+
+    signing {
+        sign publishing.publications.mavenJava
     }
 }
 
