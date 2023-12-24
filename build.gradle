@@ -28,7 +28,7 @@ allprojects { project ->
 
 // https://qiita.com/cypher256/items/f3db6bba86692c3c7733
 // @see org.gradle.api.tasks.wrapper.Wrapper, org.gradle.util.DistributionLocator
-wrapper {
+tasks.withType(Wrapper).configureEach {
     distributionType = Wrapper.DistributionType.ALL
     doFirst {
         def versionService = new URL('https://services.gradle.org/versions/current')
