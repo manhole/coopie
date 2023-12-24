@@ -52,7 +52,6 @@ subprojects { project ->
             .each { t -> t.options.encoding = 'UTF-8' }
 
     tasks.register('sourcesJar', Jar) {
-        dependsOn classes
         classifier = "sources"
         from sourceSets.main.allSource
     }
