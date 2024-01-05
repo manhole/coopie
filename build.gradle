@@ -3,6 +3,7 @@ import java.time.temporal.ChronoUnit
 
 plugins {
     id "com.github.hierynomus.license" version "0.11.0"
+    id "com.tdder.gradle.buildNumber"
 }
 
 allprojects { project ->
@@ -37,8 +38,6 @@ tasks.withType(Wrapper).configureEach {
     }
 }
 
-final timestamp = Instant.now()
-
 subprojects { project ->
     apply plugin: "java-library"
     apply plugin: "maven-publish"
@@ -57,23 +56,15 @@ subprojects { project ->
         from sourceSets.main.allSource
     }
 
-    tasks.register('buildNumberTask') {
-        doLast {
-            def gitCommand = "git rev-parse --verify --short=8 HEAD"
-            def p = gitCommand.execute(null, project.getRootDir())
-            def w = new StringBuilder()
-            p.waitForProcessOutput(w, System.err)
-            if (p.exitValue() != 0) {
-                throw new Exception("execution failed: <${gitCommand}>")
-            }
-            def buildNumber = w.toString().trim()
-            assert buildNumber
-            project.ext.buildNumberValue = buildNumber
-        }
-    }
-
     tasks.withType(Jar).configureEach {
-        dependsOn buildNumberTask
+        /*
+         * jarを作る前にbuildNumberを実行したい。
+         * jarタスクのdoLastのタイミングでは遅い。(既にjarが作られた後。)
+         * doFirstでも、先にjarを作る処理が動いてしまっている。
+         *
+         * jar, sourcesJarを対象。
+         */
+        dependsOn buildNumber
         doFirst {
             manifest {
                 attributes["Archiver-Version"] = "Gradle ${gradle.gradleVersion}"
@@ -87,20 +78,11 @@ subprojects { project ->
                 attributes["Implementation-Version"] = project.version
                 attributes["Implementation-Vendor-Id"] = project.group
                 //attributes["Implementation-Vendor"] = project.organization.name
-                attributes["Built-Timestamp"] = timestamp.truncatedTo(ChronoUnit.SECONDS).toString()
-                attributes["SCM-Revision"] = project.ext.buildNumberValue
+                attributes["Built-Timestamp"] = (rootProject.ext.builtTimestamp as Instant).truncatedTo(ChronoUnit.SECONDS).toString()
+                attributes["SCM-Revision"] = rootProject.ext.buildNumberValue
             }
         }
     }
-
-    /*
-     * jarを作る前にbuildNumberを実行したい。
-     * jarタスクのdoLastのタイミングでは遅い。(既にjarが作られた後。)
-     * doFirstでも、先にjarを作る処理が動いてしまっている。
-     *
-     * jar, sourcesJarを対象。
-     */
-    tasks.withType(Jar).each { it.dependsOn buildNumberTask }
 
     artifacts { archives sourcesJar }
 
