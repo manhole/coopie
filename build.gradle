@@ -7,8 +7,6 @@ plugins {
 }
 
 allprojects { project ->
-    group = "jp.sourceforge.hotchpotch"
-
     repositories {
         mavenCentral()
     }
