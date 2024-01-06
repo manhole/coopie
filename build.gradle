@@ -11,7 +11,6 @@ allprojects { project ->
 
     repositories {
         mavenCentral()
-        maven { url "https://hotchpotch.osdn.jp/maven2/release" }
     }
 
     apply from: "${project.getRootDir()}/gradle/eclipse.gradle"
