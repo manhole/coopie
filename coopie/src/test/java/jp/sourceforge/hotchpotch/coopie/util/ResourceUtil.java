@@ -66,8 +66,7 @@ public class ResourceUtil {
 
     private static Resource getResource(final String path, final String extension) {
         final ResourcePath resourcePath = ResourcePath.create(path, extension);
-        final Resource resource = getResource(resourcePath);
-        return resource;
+        return getResource(resourcePath);
     }
 
     private static ClassLoader getContextClassLoader() {
