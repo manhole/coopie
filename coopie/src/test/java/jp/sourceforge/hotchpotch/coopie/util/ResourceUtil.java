@@ -19,6 +19,7 @@ package jp.sourceforge.hotchpotch.coopie.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -109,7 +110,7 @@ public class ResourceUtil {
         try {
             return URLDecoder.decode(s, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -191,7 +192,7 @@ public class ResourceUtil {
                 con.setUseCaches(false);
                 return con.getInputStream();
             } catch (final IOException e) {
-                throw new IORuntimeException(e);
+                throw new UncheckedIOException(e);
             }
         }
 
