@@ -16,9 +16,9 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.StringReader;
@@ -86,21 +86,21 @@ public class FilterLineReaderTest {
         int count = 0;
         for (final Line line : rr) {
             switch (count) {
-            case 0:
-                assertThat(line.getBody(), is("a1"));
-                assertThat(line.getNumber(), is(2));
-                break;
-            case 1:
-                assertThat(line.getBody(), is("a2"));
-                assertThat(line.getNumber(), is(3));
-                break;
-            case 2:
-                assertThat(line.getBody(), is("a3"));
-                assertThat(line.getNumber(), is(6));
-                break;
-            default:
-                fail();
-                break;
+                case 0:
+                    assertThat(line.getBody(), is("a1"));
+                    assertThat(line.getNumber(), is(2));
+                    break;
+                case 1:
+                    assertThat(line.getBody(), is("a2"));
+                    assertThat(line.getNumber(), is(3));
+                    break;
+                case 2:
+                    assertThat(line.getBody(), is("a3"));
+                    assertThat(line.getNumber(), is(6));
+                    break;
+                default:
+                    fail();
+                    break;
             }
             count++;
         }
@@ -114,6 +114,7 @@ public class FilterLineReaderTest {
     }
 
     private static class SkipLineFilter implements LineFilter {
+
         @Override
         public boolean accept(final Line line) {
             if ("".equals(line.getBody())) {
@@ -121,6 +122,7 @@ public class FilterLineReaderTest {
             }
             return true;
         }
+
     }
 
 }

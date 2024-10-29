@@ -16,11 +16,11 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -404,6 +404,7 @@ public class ToStringFormatTest {
     public static class Foo {
 
         private String aaa;
+
         private String bbbBbb;
 
         public String getAaa() {
@@ -452,6 +453,7 @@ public class ToStringFormatTest {
     public static class Buzz1 {
 
         private Buzz2 aaa;
+
         private String bbb;
 
         public Buzz2 getAaa() {
@@ -475,6 +477,7 @@ public class ToStringFormatTest {
     private static class Buzz2 {
 
         private String aaa;
+
         private String bbb;
 
         public String getAaa() {
@@ -498,6 +501,7 @@ public class ToStringFormatTest {
     public static class Composite {
 
         private String name;
+
         private Composite composite;
 
         public Composite(final String name) {
@@ -530,6 +534,7 @@ public class ToStringFormatTest {
     public static class LoopGetter {
 
         private final int instanceNo;
+
         private static volatile int totalNo;
 
         public LoopGetter() {

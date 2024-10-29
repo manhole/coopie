@@ -17,9 +17,9 @@
 package jp.sourceforge.hotchpotch.coopie.logging;
 
 import static jp.sourceforge.hotchpotch.coopie.util.VarArgs.a;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import jp.sourceforge.hotchpotch.coopie.util.StdOutBlock;
 import jp.sourceforge.hotchpotch.coopie.util.Task;
@@ -179,6 +179,7 @@ public class LoggerFactoryTest {
     private static class AaaLog implements Log {
 
         private final Object[] args_;
+
         private final String format_;
 
         public AaaLog(final String format, final Object[] args) {
@@ -195,6 +196,7 @@ public class LoggerFactoryTest {
         public Object[] getArgs() {
             return args_;
         }
+
     }
 
 }

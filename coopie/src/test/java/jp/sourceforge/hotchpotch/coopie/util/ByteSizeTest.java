@@ -16,9 +16,9 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -228,6 +228,7 @@ public class ByteSizeTest {
 
         // ## Act ##
         class CustomByteSizeFormatter1 implements ToStringMode {
+
             private final NumberFormat format_ = NumberFormat.getNumberInstance();
 
             public CustomByteSizeFormatter1() {
@@ -245,6 +246,7 @@ public class ByteSizeTest {
                 sb.append(unit.getUnitLabel());
                 return sb.toString();
             }
+
         }
 
         byteSize.setToStringMode(new CustomByteSizeFormatter1());

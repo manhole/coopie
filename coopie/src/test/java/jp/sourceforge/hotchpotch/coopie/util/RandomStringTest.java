@@ -16,9 +16,9 @@
 
 package jp.sourceforge.hotchpotch.coopie.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
@@ -31,10 +31,15 @@ import org.junit.Test;
 public class RandomStringTest {
 
     private final String lowerChars = "abcdefghijklmnopqrstuvwxyz";
+
     private final String upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     private final String symbol1 = "!\"#$%&'()*+,-./";
+
     private final String symbol2 = ":;<=>?@";
+
     private final String symbol3 = "[\\]^_`";
+
     private final String symbol4 = "{|}~";
 
     @Test

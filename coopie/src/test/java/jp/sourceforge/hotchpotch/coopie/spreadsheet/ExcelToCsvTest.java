@@ -16,11 +16,11 @@
 
 package jp.sourceforge.hotchpotch.coopie.spreadsheet;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
@@ -41,8 +41,11 @@ import org.slf4j.Logger;
 public class ExcelToCsvTest {
 
     private static final Logger logger = LoggerFactory.getLogger();
+
     private final FileOperation files_ = new FileOperation();
+
     private File rootDir_;
+
     private final CsvAssert csvAssert_ = new CsvAssert();
 
     @Before
