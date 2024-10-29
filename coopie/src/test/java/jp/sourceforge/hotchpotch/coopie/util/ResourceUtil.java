@@ -69,12 +69,8 @@ public class ResourceUtil {
         return getResource(resourcePath);
     }
 
-    private static ClassLoader getContextClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
-    }
-
     private static Resource getResource(final ResourcePath resourcePath) {
-        final ClassLoader loader = getContextClassLoader();
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (resourcePath == null || loader == null) {
             return null;
         }
