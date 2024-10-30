@@ -285,10 +285,6 @@ public class BeanExcelWriterTest {
         // ヘッダ行の色が変わっていること
         // nullカラムの色が変わっていること
         final HSSFWorkbook book = new HSSFWorkbook(new ByteArrayInputStream(baos.toByteArray()));
-        final File dir = ResourceUtil.getBuildDir(getClass());
-        final BufferedOutputStream os = new FileOperation().openBufferedOutputStream(new File(dir, "test.xls"));
-        book.write(os);
-        os.close();
         assertEquals(1, book.getNumberOfSheets());
         final HSSFSheet sheet = book.getSheetAt(0);
 
