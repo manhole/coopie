@@ -27,6 +27,11 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 /**
  * @author manhole
@@ -82,9 +87,18 @@ public class ResourceUtil {
         return new Resource(url);
     }
 
-    private static String getFileName(final URL url) {
+    private static File toFile(final URL url) {
         final String s = url.getFile();
-        return decodeUrl(s);
+        final String fileName = decodeUrl(s);
+        return new File(fileName);
+    }
+
+    private static String decodeUrl(final String s) {
+        try {
+            return URLDecoder.decode(s, "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public static File getBuildDir(final Class<?> clazz) {
@@ -97,7 +111,7 @@ public class ResourceUtil {
         final String protocol = url.getProtocol();
         if ("file".equals(protocol)) {
             final int num = resourcePath.toPath().split("/").length;
-            File dir = new File(getFileName(url));
+            File dir = toFile(url);
             for (int i = 0; i < num; ++i, dir = dir.getParentFile()) {
             }
             return dir;
@@ -106,16 +120,51 @@ public class ResourceUtil {
         }
     }
 
-    private static String decodeUrl(final String s) {
-        try {
-            return URLDecoder.decode(s, "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
-            throw new UncheckedIOException(e);
-        }
+    public static Resource getResource(final Consumer<ResourcePathBuilder> o) {
+        final ResourcePathBuilder builder = new ResourcePathBuilder();
+        o.accept(builder);
+        final ResourcePath resourcePath = builder.build();
+        return getResource(resourcePath);
     }
 
-    private static String replace(final String s) {
-        return s.replace('.', '/');
+    public static class ResourcePathBuilder {
+
+        private final List<String> components_ = new ArrayList<>();
+
+        private String extension_;
+
+        public ResourcePathBuilder append(final Class<?> clazz) {
+            Collections.addAll(components_, clazz.getName().split("\\."));
+            return this;
+        }
+
+        public ResourcePathBuilder append(final Package pkg) {
+            Collections.addAll(components_, pkg.getName().split("\\."));
+            return this;
+        }
+
+        public ResourcePathBuilder append(final String component) {
+            components_.add(component);
+            return this;
+        }
+
+        public ResourcePathBuilder editLast(final UnaryOperator<String> editor) {
+            final String component = components_.remove(components_.size() - 1);
+            final String result = editor.apply(component);
+            components_.add(result);
+            return this;
+        }
+
+        public ResourcePathBuilder extension(final String extension) {
+            extension_ = extension;
+            return this;
+        }
+
+        ResourcePath build() {
+            final String path = String.join("/", components_);
+            return ResourcePath.create(path, extension_);
+        }
+
     }
 
     private static class ResourcePath {
@@ -126,11 +175,10 @@ public class ResourceUtil {
             if (extension == null) {
                 path_ = path;
             } else {
-                final String prefix = replace(path);
                 if (extension.startsWith(".")) {
-                    path_ = prefix + extension;
+                    path_ = path + extension;
                 } else {
-                    path_ = prefix + "." + extension;
+                    path_ = path + "." + extension;
                 }
             }
         }
@@ -149,7 +197,7 @@ public class ResourceUtil {
 
     }
 
-    private static class Resource {
+    public static class Resource {
 
         private final URL url_;
 
@@ -166,24 +214,11 @@ public class ResourceUtil {
         }
 
         public File toFile() {
-            return toFile(url_);
+            return ResourceUtil.toFile(url_);
         }
 
         public InputStream openStream() {
             return openStream(url_);
-        }
-
-        private static File toFile(final URL url) {
-            if (url == null) {
-                return null;
-            }
-
-            final String fileName = getFileName(url);
-            final File file = new File(fileName);
-            if (file.exists()) {
-                return file;
-            }
-            return null;
         }
 
         private static InputStream openStream(final URL url) {

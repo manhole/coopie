@@ -257,8 +257,11 @@ public class MapExcelReaderTest {
     @Test
     public void read_strange1() throws Throwable {
         // ## Arrange ##
-        final InputStream is = ResourceUtil.getResourceAsStream(getClass().getPackage().getName() + "/strange-excel-1",
-                "xls");
+        final InputStream is = ResourceUtil.getResource(builder -> builder
+                .append(getClass().getPackage())
+                .append("strange-excel-1")
+                .extension("xls")
+        ).openStream();
 
         final MapExcelLayout<String> layout = new MapExcelLayout<>();
 

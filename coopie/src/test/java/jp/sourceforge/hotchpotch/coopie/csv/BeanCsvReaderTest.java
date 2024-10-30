@@ -187,7 +187,6 @@ public class BeanCsvReaderTest {
         assertEquals(3, csvReader.getRecordNumber());
     }
 
-
     /**
      * ヘッダがBeanのプロパティ名と異なる場合。
      * ヘッダ名とbeanのプロパティ名をマッピングすること。
@@ -1602,7 +1601,11 @@ public class BeanCsvReaderTest {
     }
 
     public static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(BeanCsvReaderTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResource(builder -> builder
+                .append(BeanCsvReaderTest.class)
+                .editLast(c -> c + suffix)
+                .extension(ext)
+        ).openStream();
     }
 
     @Test

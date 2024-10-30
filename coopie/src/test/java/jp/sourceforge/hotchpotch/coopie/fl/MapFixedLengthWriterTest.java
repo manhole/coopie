@@ -122,8 +122,12 @@ public class MapFixedLengthWriterTest {
         // ## Assert ##
         final String actual = writer.toString();
 
-        final InputStream is = ResourceUtil
-                .getResourceAsStream(BeanFixedLengthWriterTest.class.getName() + "-1", "tsv");
+        final InputStream is = ResourceUtil.getResource(builder -> builder
+                .append(BeanFixedLengthWriterTest.class)
+                .editLast(c -> c + "-1")
+                .extension("tsv")
+        ).openStream();
+
         final InputStreamReader r = new InputStreamReader(is, "UTF-8");
         final String expected = ReaderUtil.readText(r);
         r.close();

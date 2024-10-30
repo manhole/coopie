@@ -767,7 +767,11 @@ public class BeanFixedLengthReaderTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(BeanFixedLengthReaderTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResource(builder -> builder
+                .append(BeanFixedLengthReaderTest.class)
+                .editLast(c -> c + suffix)
+                .extension(ext)
+        ).openStream();
     }
 
     public static class FlAaaBean {

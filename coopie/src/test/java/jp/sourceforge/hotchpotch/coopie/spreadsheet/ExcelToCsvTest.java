@@ -296,9 +296,11 @@ public class ExcelToCsvTest {
     }
 
     private File getResourceAsFile(final String nameSuffix, final String ext) {
-        final File resource = ResourceUtil.getResourceAsFile(ExcelToCsvTest.class.getName() + nameSuffix, ext);
-        assertThat(resource, is(notNullValue()));
-        return resource;
+        return ResourceUtil.getResource(builder -> builder
+                .append(ExcelToCsvTest.class)
+                .editLast(c -> c + nameSuffix)
+                .extension(ext)
+        ).toFile();
     }
 
 }

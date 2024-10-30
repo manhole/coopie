@@ -425,7 +425,11 @@ public class BeanFixedLengthWriterTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(BeanFixedLengthWriterTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResource(builder -> builder
+                .append(BeanFixedLengthWriterTest.class)
+                .editLast(c -> c + suffix)
+                .extension(ext)
+        ).openStream();
     }
 
 }

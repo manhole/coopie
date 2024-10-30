@@ -308,15 +308,18 @@ public class BeanCsvWriterTest {
     }
 
     static class AaaBeanBasicSetup implements SetupBlock<CsvColumnSetup> {
+
         @Override
         public void setup(final CsvColumnSetup setup) {
             setup.column("a").toProperty("aaa");
             setup.column("b").toProperty("bbb");
             setup.column("c").toProperty("ccc");
         }
+
     }
 
     static final String CRLF = CsvSetting.CRLF;
+
     static final String LF = CsvSetting.LF_S;
 
     @Test
@@ -676,7 +679,11 @@ public class BeanCsvWriterTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        return ResourceUtil.getResourceAsStream(BeanCsvWriterTest.class.getName() + suffix, ext);
+        return ResourceUtil.getResource(builder -> builder
+                .append(BeanCsvWriterTest.class)
+                .editLast(c -> c + suffix)
+                .extension(ext)
+        ).openStream();
     }
 
     static Reader getResourceAsReader(final String suffix, final String ext) {

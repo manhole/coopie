@@ -62,9 +62,11 @@ public class PoiSheetReaderTest extends ElementReaderTest {
     }
 
     static InputStream getResourceAsStream(final String suffix, final String ext) {
-        final InputStream is = ResourceUtil.getResourceAsStream(PoiSheetReaderTest.class.getName() + suffix, ext);
-        assertThat(is, is(notNullValue()));
-        return is;
+        return ResourceUtil.getResource(builder -> builder
+                .append(PoiSheetReaderTest.class)
+                .editLast(c -> c + suffix)
+                .extension(ext)
+        ).openStream();
     }
 
 }
